@@ -3,6 +3,9 @@ import 'package:deck/pages/auth/signup.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+/// The AuthGate widget serves as the entry point for the authentication flow.
+/// It listens to Firebase authentication state changes and updates the user
+/// interface accordingly, either showing the MainPage or the SignUpPage.
 class AuthGate extends StatefulWidget {
   const AuthGate({super.key});
 
@@ -12,30 +15,48 @@ class AuthGate extends StatefulWidget {
 
 class _AuthGateState extends State<AuthGate> {
   @override
-  void initState() {
-    super.initState();
-    _updateFcmToken();
-  }
- 
-  Future<void> _updateFcmToken() async {
-    final currentUser = FirebaseAuth.instance.currentUser;
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: StreamBuilder<User?>(
-        stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (snapshot.hasData) {
-            return MainPage(index: 0,);
-          } else {
-            return const SignUpPage();
-          }
-        },
+      body: Stack(
+        children: [
+          // StreamBuilder listens to Firebase authentication state changes.
+          StreamBuilder<User?>(
+            stream: FirebaseAuth.instance.authStateChanges(),
+            builder: (context, snapshot) {
+              // If the connection is still waiting, show the loading spinner.
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: SizedBox(
+                    width: 50.0, // Set the width of the loading indicator
+                    height: 50.0, // Set the height of the loading indicator
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.greenAccent), // Set the color of the progress indicator
+                      strokeWidth: 8.0, // Adjust the thickness of the progress indicator
+                    ),
+                  ),
+                );
+              }
+
+              // If an error occurs during authentication, display an error message.
+              if (snapshot.hasError) {
+                return Center(
+                  child: Text(
+                    'An error occurred: ${snapshot.error}', // Display the error message
+                    style: TextStyle(color: Colors.red), // Style the error message
+                  ),
+                );
+              }
+
+              // If authenticated (snapshot has data), navigate to MainPage.
+              if (snapshot.hasData) {
+                return MainPage(index: 0); // Display MainPage for authenticated users
+              } else {
+                // If not authenticated, show the SignUpPage.
+                return const SignUpPage(); // Display SignUpPage for unauthenticated users
+              }
+            },
+          ),
+        ],
       ),
     );
   }
