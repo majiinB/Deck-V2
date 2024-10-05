@@ -73,6 +73,9 @@ class AuthUtils {
         return null;
       }
     }
+    else{
+      return null;
+    }
   }
 
 }

@@ -3,6 +3,8 @@ import 'package:deck/pages/auth/signup.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../../pages/misc/widget_method.dart';
+
 /// The AuthGate widget serves as the entry point for the authentication flow.
 /// It listens to Firebase authentication state changes and updates the user
 /// interface accordingly, either showing the MainPage or the SignUpPage.
@@ -33,16 +35,6 @@ class _AuthGateState extends State<AuthGate> {
                       valueColor: AlwaysStoppedAnimation<Color>(Colors.greenAccent), // Set the color of the progress indicator
                       strokeWidth: 8.0, // Adjust the thickness of the progress indicator
                     ),
-                  ),
-                );
-              }
-
-              // If an error occurs during authentication, display an error message.
-              if (snapshot.hasError) {
-                return Center(
-                  child: Text(
-                    'An error occurred: ${snapshot.error}', // Display the error message
-                    style: TextStyle(color: Colors.red), // Style the error message
                   ),
                 );
               }
