@@ -1,0 +1,11 @@
+flutter_native_splash:
+  android: true
+  ios: false
+  web: false
+
+  # color: "#99F3BD"
+  background_image: "assets/images/Deck-SplashScreen.png"
+
+android 12:
+  # color: "#99F3BD"
+  background_image: "assets/images/Deck-SplashScreen.png"
