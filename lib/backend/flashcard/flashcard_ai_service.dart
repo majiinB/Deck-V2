@@ -46,7 +46,7 @@ class FlashcardAiService{
 
     // Make the API call
     final response = await http.post(
-      Uri.parse('http://$ipAddress:8080/message/$id'), //API endpoint
+      Uri.parse('https://zdt8v319-3000.asse.devtunnels.ms/message/$id'), //API endpoint
       body: jsonEncode(requestBody),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
@@ -94,7 +94,7 @@ class FlashcardAiService{
     print(ipAddress);
     // Make the API call
     final response = await http.get(
-      Uri.parse('http://$ipAddress:8080/response/$id?thread_id=$threadID&run_id=$runID'), //API endpoint
+      Uri.parse('https://zdt8v319-3000.asse.devtunnels.ms/response/$id?thread_id=$threadID&run_id=$runID'), //API endpoint
     );
 
     // Check if the response is successful
