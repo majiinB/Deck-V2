@@ -349,7 +349,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                           if (_pickedFileController.text.toString().trim().isNotEmpty) {
                             fileName = await _flashcardService.uploadPdfFileToFirebase(_pickedFileController.text.toString().trim(), widget.userId.toString());
                           }
-
+                          print(fileName);
                           try{
                             // sendData function
                             Map<String, dynamic> runAndThreadId = await _flashcardAiService.sendData(
