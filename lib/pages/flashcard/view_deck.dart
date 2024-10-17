@@ -202,7 +202,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
             ),
             if (_cardsCollection.isNotEmpty || _starredCardCollection.isNotEmpty)
               Padding(
-                padding: EdgeInsets.only(top: 40.0),
+                padding: const EdgeInsets.only(top: 40.0),
                 child: BuildTextBox(
                   controller: _searchController,
                   hintText: 'Search Flashcard',
@@ -223,19 +223,19 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                     ///
                     /// ------------------------- START OF TAB 'ALL' CONTENT ----------------------------
 
-                    if (_cardsCollection.isEmpty) ifCollectionEmpty(
+                    if (_cardsCollection.isEmpty) IfCollectionEmpty(
                         ifCollectionEmptyText: 'No Flashcard(s) Available',
-                        ifCollectionEmptyheight: MediaQuery.of(context).size.height * 0.3,
+                        ifCollectionEmptyHeight: MediaQuery.of(context).size.height * 0.3,
                       )
-                    else if(_cardsCollection.isNotEmpty && _filteredCardsCollection.isEmpty) ifCollectionEmpty(
+                    else if(_cardsCollection.isNotEmpty && _filteredCardsCollection.isEmpty) IfCollectionEmpty(
                         ifCollectionEmptyText: 'No Results Found',
                         ifCollectionEmptySubText: 'Try adjusting your search to \nfind what your looking for.',
-                        ifCollectionEmptyheight:  MediaQuery.of(context).size.height * 0.4,
+                        ifCollectionEmptyHeight:  MediaQuery.of(context).size.height * 0.4,
                       )else Padding(
                         padding: const EdgeInsets.only(right: 8.0),
                         child: SingleChildScrollView(
                           child: Padding(
-                            padding: EdgeInsets.only(top: 20.0),
+                            padding: const EdgeInsets.only(top: 20.0),
                             child: ListView.builder(
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
@@ -348,22 +348,22 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                     ///
                     /// ------------------------- START OF TAB 'STARRED' CONTENT ----------------------------
                     if (_starredCardCollection.isEmpty)
-                      ifCollectionEmpty(
+                      IfCollectionEmpty(
                         ifCollectionEmptyText: 'No Starred Flashcard(s) Available',
-                        ifCollectionEmptyheight: MediaQuery.of(context).size.height * 0.3,
+                        ifCollectionEmptyHeight: MediaQuery.of(context).size.height * 0.3,
                       )
                     else if(_starredCardCollection.isNotEmpty && _filteredStarredCardCollection.isEmpty)
-                      ifCollectionEmpty(
+                      IfCollectionEmpty(
                         ifCollectionEmptyText: 'No Results Found',
                         ifCollectionEmptySubText: 'Try adjusting your search to \nfind what your looking for.',
-                        ifCollectionEmptyheight:  MediaQuery.of(context).size.height * 0.4,
+                        ifCollectionEmptyHeight:  MediaQuery.of(context).size.height * 0.4,
                       )
                     else
                       Padding(
                         padding: const EdgeInsets.only(right: 8.0),
                         child: SingleChildScrollView(
                           child: Padding(
-                            padding: EdgeInsets.only(top: 20.0),
+                            padding: const EdgeInsets.only(top: 20.0),
                             child: ListView.builder(
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),

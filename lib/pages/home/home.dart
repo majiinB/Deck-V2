@@ -1,22 +1,16 @@
 import 'package:deck/backend/models/task.dart';
-import 'package:deck/backend/task/task_service.dart';
 import 'package:deck/pages/flashcard/view_deck.dart';
 import 'package:deck/pages/misc/colors.dart';
-import 'package:deck/pages/misc/deck_icons.dart';
 import 'package:deck/pages/misc/widget_method.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../../backend/auth/auth_service.dart';
-import '../../backend/fcm/notifications_service.dart';
 import '../../backend/flashcard/flashcard_service.dart';
 import '../../backend/models/deck.dart';
 import '../../backend/task/task_provider.dart';
 import '../task/view_task.dart';
-// import 'package:deck/pages/account/account.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -28,7 +22,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final AuthService _authService = AuthService();
   final FlashcardService _flashcardService = FlashcardService();
-  Deck? _latestDeck;
   List<Deck> _decks = [];
   late User? _user;
   //Initial values for testing
@@ -106,18 +99,18 @@ class _HomePageState extends State<HomePage> {
               ),
               if (taskToday.isEmpty && _decks.isEmpty)
                 SliverToBoxAdapter(
-                    child: ifCollectionEmpty(
+                    child: IfCollectionEmpty(
                         ifCollectionEmptyText:
                             "Start Creating Your\nTask and Flashcards!",
                         ifCollectionEmptySubText:
                             "No content is currently\navailable",
-                        ifCollectionEmptyheight:
+                        ifCollectionEmptyHeight:
                             MediaQuery.of(context).size.height * 0.7))
               else if (taskToday.isEmpty && _decks.isNotEmpty)
                 SliverToBoxAdapter(
-                    child: ifCollectionEmpty(
+                    child: IfCollectionEmpty(
                         ifCollectionEmptyText: "No Task(s) Available Today",
-                        ifCollectionEmptyheight:
+                        ifCollectionEmptyHeight:
                             MediaQuery.of(context).size.height * 0.5))
               else if (taskToday.isNotEmpty)
                 SliverList(
@@ -137,7 +130,6 @@ class _HomePageState extends State<HomePage> {
                         deadline.isAtSameMomentAs(today)) {
                       return LayoutBuilder(
                           builder: (context, BoxConstraints constraints) {
-                        double cardWidth = constraints.maxWidth;
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 10),
                           child: HomeTaskTile(
@@ -176,9 +168,9 @@ class _HomePageState extends State<HomePage> {
                 ),
               if (_decks.isEmpty && taskToday.isNotEmpty)
                 SliverToBoxAdapter(
-                    child: ifCollectionEmpty(
+                    child: IfCollectionEmpty(
                         ifCollectionEmptyText: "No Deck(s) Available",
-                        ifCollectionEmptyheight:
+                        ifCollectionEmptyHeight:
                             MediaQuery.of(context).size.height * 0.5))
               else if (_decks.isNotEmpty)
                 SliverGrid(
@@ -209,7 +201,7 @@ class _HomePageState extends State<HomePage> {
                       mainAxisSpacing: 10,
                       crossAxisSpacing: 10,
                     )),
-              SliverPadding(padding: EdgeInsets.symmetric(vertical: 60))
+              const SliverPadding(padding: EdgeInsets.symmetric(vertical: 60))
             ],
           )),
     );

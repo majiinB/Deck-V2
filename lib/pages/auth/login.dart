@@ -13,7 +13,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../backend/auth/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
-  LoginPage({super.key});
+  const LoginPage({super.key});
 
   @override
   State<LoginPage> createState() => _LoginPageState();

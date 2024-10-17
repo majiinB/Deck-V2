@@ -1,6 +1,4 @@
 import 'package:deck/backend/task/task_provider.dart';
-import 'package:deck/backend/task/task_service.dart';
-import 'package:deck/pages/misc/deck_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:deck/pages/misc/widget_method.dart';
 import 'package:deck/pages/misc/colors.dart';
@@ -49,11 +47,6 @@ class _TaskPageState extends State<TaskPage> {
   Widget build(BuildContext context) {
     final provider = Provider.of<TaskProvider>(context);
     final tasks = provider.getList;
-
-    //check if there are task in the list
-    bool isThereTask() {
-      return tasks.isNotEmpty ? true : false;
-    }
 
     //check if there is task for the day
     bool isThereTaskForDay(DateTime selectedDay, bool isToDo) {
@@ -284,11 +277,11 @@ class _TaskPageState extends State<TaskPage> {
                         },
                       )
                     else
-                      ifCollectionEmpty(
+                      IfCollectionEmpty(
                         ifCollectionEmptyText: 'No new task',
                         ifCollectionEmptySubText:
                             'To create another Task, \nsimply Click the "+" button  ',
-                        ifCollectionEmptyheight:
+                        ifCollectionEmptyHeight:
                             MediaQuery.of(context).size.height * 0.1,
                       ),
 
@@ -359,9 +352,9 @@ class _TaskPageState extends State<TaskPage> {
                         },
                       )
                     else
-                      ifCollectionEmpty(
+                      IfCollectionEmpty(
                         ifCollectionEmptyText: 'No new task',
-                        ifCollectionEmptyheight:
+                        ifCollectionEmptyHeight:
                             MediaQuery.of(context).size.height * 0.1,
                       )
                   ],

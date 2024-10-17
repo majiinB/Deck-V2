@@ -31,7 +31,7 @@ class _AuthGateState extends State<AuthGate> {
             return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasData) {
-            return MainPage(index: 0,);
+            return const MainPage();
           } else {
             return const SignUpPage();
           }

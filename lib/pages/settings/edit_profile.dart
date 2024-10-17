@@ -208,7 +208,7 @@ class EditProfileState extends State<EditProfile> {
             Stack(
               clipBehavior: Clip.none,
               children: [
-                BuildCoverImage(borderRadiusContainer: 0, borderRadiusImage: 0, CoverPhotofile: coverUrl,),
+                BuildCoverImage(borderRadiusContainer: 0, borderRadiusImage: 0, coverPhotoFile: coverUrl,),
                 Positioned(
                   top: 150,
                   left: 10,

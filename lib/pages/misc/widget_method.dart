@@ -1,5 +1,4 @@
-import 'dart:io';
-import 'package:deck/backend/auth/auth_utils.dart';
+
 import 'package:deck/pages/misc/colors.dart';
 import 'package:deck/pages/misc/deck_icons.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -75,7 +74,7 @@ class DeckBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
 
 ///
@@ -260,12 +259,12 @@ class BuildButton extends StatelessWidget {
 ///
 /// BuildCoverImage is a method for Cover Photo
 class BuildCoverImage extends StatefulWidget {
-  final Image? CoverPhotofile;
+  final Image? coverPhotoFile;
   final double borderRadiusContainer, borderRadiusImage;
 
   const BuildCoverImage(
       {super.key,
-      this.CoverPhotofile,
+      this.coverPhotoFile,
       required this.borderRadiusContainer,
       required this.borderRadiusImage});
 
@@ -280,15 +279,15 @@ class BuildCoverImageState extends State<BuildCoverImage> {
       height: 200,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(widget.borderRadiusContainer),
-        color: widget.CoverPhotofile != null
+        color: widget.coverPhotoFile != null
             ? null
             : DeckColors.coverImageColorSettings,
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(widget.borderRadiusImage),
-        child: widget.CoverPhotofile != null
+        child: widget.coverPhotoFile != null
             ? Image(
-                image: widget.CoverPhotofile!.image,
+                image: widget.coverPhotoFile!.image,
                 width: double.infinity,
                 height: double.infinity,
                 fit: BoxFit.cover,
@@ -306,13 +305,13 @@ class BuildCoverImageUrl extends StatelessWidget {
   final double borderRadiusContainer, borderRadiusImage;
   final Color backgroundColor;
 
-  BuildCoverImageUrl({
-    Key? key,
+  const BuildCoverImageUrl({
+    super.key,
     this.imageUrl,
     required this.borderRadiusContainer,
     required this.borderRadiusImage,
     this.backgroundColor = Colors.transparent,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -345,9 +344,9 @@ class BuildCoverImageUrl extends StatelessWidget {
 ///
 /// BuildProfileImage is a method for Profile Photo
 class BuildProfileImage extends StatefulWidget {
-  final Image? profilePhotofile;
+  final Image? profilePhotoFile;
 
-  BuildProfileImage(this.profilePhotofile, {Key? key}) : super(key: key);
+  const BuildProfileImage(this.profilePhotoFile, {super.key});
 
   @override
   BuildProfileImageState createState() => BuildProfileImageState();
@@ -363,9 +362,9 @@ class BuildProfileImageState extends State<BuildProfileImage> {
       ),
       child: CircleAvatar(
         backgroundColor: DeckColors.white,
-        backgroundImage: widget.profilePhotofile?.image,
+        backgroundImage: widget.profilePhotoFile?.image,
         radius: 60,
-        child: widget.profilePhotofile?.image == null
+        child: widget.profilePhotoFile?.image == null
             ? const Icon(DeckIcons.account,
                 size: 60, color: DeckColors.backgroundColor)
             : null,
@@ -451,14 +450,14 @@ class BuildListOfDecks extends StatefulWidget {
   final bool enableSwipeToRetrieve;
 
   const BuildListOfDecks({
-    Key? key,
+    super.key,
     this.deckImageUrl,
     required this.titleText,
     required this.numberText,
     required this.onDelete,
     this.onRetrieve,
     this.enableSwipeToRetrieve = true,
-  }) : super(key: key);
+  });
 
   @override
   State<BuildListOfDecks> createState() => BuildListOfDecksState();
@@ -493,7 +492,7 @@ class BuildListOfDecksState extends State<BuildListOfDecks> {
                       errorBuilder: (context, error, stackTrace) {
                         return Container(
                           color: DeckColors.white,
-                          child: Center(
+                          child: const Center(
                               child:
                                   Icon(Icons.broken_image, color: Colors.grey)),
                         );
@@ -726,7 +725,7 @@ class BuildSettingsContainerState extends State<BuildSettingsContainer> {
                         fontSize: 16,
                         fontWeight: FontWeight.w900,
                         color: _isToggled
-                            ? (widget.textColor ?? widget.textColor)
+                            ? (widget.textColor)
                             : widget.textColor,
                       ),
                     ),
@@ -792,7 +791,7 @@ class BuildTextBox extends StatefulWidget {
   final VoidCallback? onTap;
 
   const BuildTextBox({
-    Key? key,
+    super.key,
     this.hintText,
     this.showPassword = false,
     this.leftIcon,
@@ -802,7 +801,7 @@ class BuildTextBox extends StatefulWidget {
     this.onTap,
     this.isMultiLine = false,
     this.isReadOnly = false,
-  }) : super(key: key);
+  });
 
   @override
   State<BuildTextBox> createState() => BuildTextBoxState();
@@ -940,7 +939,7 @@ class CustomDropdown extends StatelessWidget {
   final IconData? leftIcon;
   final Color? leftIconColor;
 
-  const CustomDropdown({
+  const CustomDropdown({super.key,
     required this.items,
     this.onChanged,
     this.validator,
@@ -956,7 +955,7 @@ class CustomDropdown extends StatelessWidget {
       decoration: InputDecoration(
         filled: true,
         fillColor: Colors.grey[200],
-        contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
+        contentPadding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
         prefixIcon: leftIcon != null
             ? Icon(
                 leftIcon,
@@ -965,7 +964,7 @@ class CustomDropdown extends StatelessWidget {
             : null,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10), // Fixed radius of 10 pixels
-          borderSide: BorderSide(color: Colors.grey),
+          borderSide: const BorderSide(color: Colors.grey),
         ),
       ),
       hint: const Text(
@@ -1022,7 +1021,7 @@ class CustomDropdown extends StatelessWidget {
 ///Checkbox Widget
 class DeckBox extends StatefulWidget {
   bool isChecked = false;
-  DeckBox({Key? key}) : super(key: key);
+  DeckBox({super.key});
 
   @override
   State<DeckBox> createState() => DeckBoxState();
@@ -1079,7 +1078,7 @@ class BuildContentOfBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(top: 10),
+      padding: const EdgeInsets.only(top: 10),
       child: BuildButton(
         onPressed: onPressed,
         buttonText: bottomSheetButtonText,
@@ -1171,21 +1170,17 @@ class DeckFAB extends StatelessWidget {
 /// ---------------------- S T A R T ---------------------------
 /// --------------- B O T T O M  S H E E T ---------------------
 
-class ifCollectionEmpty extends StatelessWidget {
+class IfCollectionEmpty extends StatelessWidget {
   final String ifCollectionEmptyText;
   final String? ifCollectionEmptySubText;
-  final double ifCollectionEmptyheight;
+  final double ifCollectionEmptyHeight;
 
-  const ifCollectionEmpty(
-      {super.key,
-      required this.ifCollectionEmptyText,
-      this.ifCollectionEmptySubText,
-      required this.ifCollectionEmptyheight});
+  const IfCollectionEmpty({super.key, required this.ifCollectionEmptyText, this.ifCollectionEmptySubText, required this.ifCollectionEmptyHeight});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: ifCollectionEmptyheight,
+    return SizedBox(
+      height: ifCollectionEmptyHeight,
       child: Center(
           child:
               // Container(
@@ -1200,7 +1195,7 @@ class ifCollectionEmpty extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Container(
+          SizedBox(
               height: MediaQuery.of(context).size.width / 2.5,
               child: AspectRatio(
                 aspectRatio: 1,
@@ -1371,14 +1366,14 @@ class BuildDeckContainer extends StatefulWidget {
   final bool enableSwipeToRetrieve;
 
   const BuildDeckContainer({
-    Key? key,
+    super.key,
     required this.onDelete,
     this.onRetrieve,
     this.enableSwipeToRetrieve = true,
     this.deckCoverPhotoUrl,
     required this.titleOfDeck,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   State<BuildDeckContainer> createState() => BuildDeckContainerState();
@@ -1530,11 +1525,11 @@ class BuildTabBar extends StatelessWidget {
   final List<Widget> tabContent;
 
   const BuildTabBar({
-    Key? key,
+    super.key,
     required this.titles,
     required this.length,
     required this.tabContent,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -1619,7 +1614,7 @@ class BuildContainerOfFlashCards extends StatefulWidget {
   final VoidCallback onStarUnshaded;
 
   BuildContainerOfFlashCards({
-    Key? key,
+    super.key,
     required this.onDelete,
     required this.isStarShaded,
     required this.onStarShaded,
@@ -1629,7 +1624,7 @@ class BuildContainerOfFlashCards extends StatefulWidget {
     required this.titleOfFlashCard,
     required this.contentOfFlashCard,
     this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   State<BuildContainerOfFlashCards> createState() =>
@@ -1711,7 +1706,7 @@ class BuildContainerOfFlashCardsState extends State<BuildContainerOfFlashCards>
                 ],
               ),
               Padding(
-                padding: EdgeInsets.only(top: 20),
+                padding: const EdgeInsets.only(top: 20),
                 child: Text(
                   widget.contentOfFlashCard,
                   maxLines: 4,
@@ -1806,8 +1801,7 @@ class DeckDelegate extends SliverPersistentHeaderDelegate {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          SizedBox(
-            width: 300,
+          Expanded(
             child: Align(
               alignment: Alignment.centerLeft,
               child: Text(
@@ -1818,7 +1812,6 @@ class DeckDelegate extends SliverPersistentHeaderDelegate {
               ),
             ),
           ),
-          Spacer(),
           if (hasIcon)
             BuildIconButton(
               onPressed: onPressed,
@@ -1943,13 +1936,13 @@ class HomeDeckTile extends StatelessWidget {
   final VoidCallback? onPressed;
 
   const HomeDeckTile({
-    Key? key,
+    super.key,
     required this.deckName,
     required this.deckColor,
     required this.cardWidth,
     this.onPressed,
     this.deckImageUrl,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -2065,7 +2058,7 @@ class DeckTaskTile extends StatefulWidget {
   final bool enableRetrieve;
 
   const DeckTaskTile({
-    Key? key,
+    super.key,
     required this.title,
     required this.deadline,
     required this.isChecked,
@@ -2074,7 +2067,7 @@ class DeckTaskTile extends StatefulWidget {
     this.onRetrieve,
     this.enableRetrieve = false,
     this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   State<DeckTaskTile> createState() => DeckTaskTileState();
@@ -2125,7 +2118,7 @@ class DeckTaskTileState extends State<DeckTaskTile> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(4.0),
                     ),
-                    side: BorderSide(
+                    side: const BorderSide(
                       color: DeckColors.white,
                       width: 3.0,
                     )),
@@ -2185,7 +2178,7 @@ void showLoad(BuildContext context) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
-      return Center(
+      return const Center(
         child: CircularProgressIndicator(
           color: DeckColors.primaryColor,
         ),
@@ -2219,13 +2212,10 @@ class DeckIntroPage extends StatelessWidget{
   });
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child:
-        Center(
-          child: Image.asset(img,
-              fit: BoxFit.contain
-          ),
-        )
+    return Center(
+      child: Image.asset(img,
+          fit: BoxFit.contain
+      ),
     );
   }
 }

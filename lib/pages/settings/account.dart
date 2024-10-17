@@ -1,5 +1,3 @@
-import 'dart:ffi';
-import 'dart:typed_data';
 
 import 'package:deck/backend/auth/auth_service.dart';
 import 'package:deck/backend/auth/auth_utils.dart';
@@ -96,7 +94,7 @@ class AccountPageState extends State<AccountPage> {
                   BuildCoverImage(
                     borderRadiusContainer: 0,
                     borderRadiusImage: 0,
-                    CoverPhotofile: coverUrl,
+                    coverPhotoFile: coverUrl,
                   ),
                   Positioned(
                     top: 200,
@@ -199,9 +197,9 @@ class AccountPageState extends State<AccountPage> {
                 ),
               ),
               if (_decks.isEmpty)
-                ifCollectionEmpty(
+                IfCollectionEmpty(
                     ifCollectionEmptyText: 'No Deck(s) Available',
-                    ifCollectionEmptyheight: MediaQuery.of(context).size.height * 0.4),
+                    ifCollectionEmptyHeight: MediaQuery.of(context).size.height * 0.4),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: ListView.builder(
