@@ -5,7 +5,6 @@ import 'package:deck/backend/auth/auth_gate.dart';
 import 'package:deck/backend/auth/auth_service.dart';
 import 'package:deck/backend/fcm/fcm_service.dart';
 import 'package:deck/pages/auth/privacy_policy.dart';
-import 'package:deck/pages/auth/signup.dart';
 import 'package:deck/pages/auth/terms_of_use.dart';
 import 'package:deck/pages/misc/colors.dart';
 import 'package:deck/pages/misc/deck_icons.dart';
@@ -60,7 +59,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
           child: Column(
             children: [
               Padding(
-                padding: EdgeInsets.only(top: 20),
+                padding: const EdgeInsets.only(top: 20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
