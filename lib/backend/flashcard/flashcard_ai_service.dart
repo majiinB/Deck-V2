@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:deck/backend/custom_exceptions/api_exception.dart';
-import 'package:deck/backend/flashcard/flashcard_utils.dart';
 import 'package:deck/backend/models/cardAi.dart';
 import 'package:http/http.dart' as http;
 
@@ -29,6 +28,122 @@ class FlashcardAiService {
     }
     return toReturn;
   }
+
+
+  /// Sends a request to the Gemini API to generate flashcards based on the provided data.
+  /// This function performs API availability checks, sends a POST request with the necessary
+  /// payload, processes the response, and returns a list of [Cardai] objects.
+  /// It handles various error cases by throwing appropriate exceptions based on the HTTP status codes.
+  ///
+  /// Parameters:
+  /// - [id]: A unique identifier for the API request. This can represent the user or session.
+  /// - [subject]: The subject or field of knowledge for the flashcards (e.g., "Math").
+  /// - [topic]: A more specific topic within the subject (e.g., "Algebra").
+  /// - [addDescription]: Additional description or context to include with the request.
+  /// - [pdfFileName]: The name of the PDF file to be associated with the flashcard generation.
+  /// - [pdfFileExtension]: The file extension for the PDF (e.g., '.pdf').
+  /// - [numberOfQuestions]: The number of flashcard questions to generate. If invalid or 0, no cards will be generated.
+  ///
+  /// Returns:
+  /// - A `Future` that resolves to a list of [Cardai] objects representing the generated flashcards.
+  ///
+  /// Throws:
+  /// - [ApiException]: If the API request fails with a specific status code.
+  /// - [IncompleteRequestBodyException], [NumberOfCardsException], [TextExtractionException],
+  ///   [FileDeletionException], [NoInformationException], [MessageRouteException],
+  ///   [InternalServerErrorException]: Specific exceptions based on different status codes.
+  Future<List<Cardai>> sendAndRequestDataToGemini({
+    required String id,              // Unique identifier for the API request.
+    required String subject,         // Subject of the flashcards.
+    required String topic,           // Topic within the subject.
+    required String addDescription,  // Additional description or context.
+    required String pdfFileName,     // Name of the associated PDF file.
+    required String pdfFileExtension, // File extension of the PDF (e.g., '.pdf').
+    required int numberOfQuestions,  // Number of questions to generate.
+  }) async {
+
+    // Check if the API is available before sending the request.
+    if (!await checkAPIAvailability()) {
+      throw ApiException(500, 'Error: API unavailable');
+    }
+
+    // Construct the request body in JSON format.
+    Map<String, dynamic> requestBody = {
+      'subject': subject,
+      'topic': topic,
+      'numberOfQuestions': numberOfQuestions,
+      'fileName': pdfFileName,
+      'addDescription': addDescription,
+      'fileExtension': pdfFileExtension
+    };
+
+    // Send a POST request to the API with the request body and headers.
+    final response = await http.post(
+      Uri.parse('https://zdt8v319-3000.asse.devtunnels.ms/prompt/v2/gemini/$id'), // API endpoint.
+      body: jsonEncode(requestBody), // JSON-encoded request body.
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8', // Specify content type as JSON.
+      },
+    );
+    print(response.statusCode); // Log the status code for debugging.
+
+    // Check if the response was successful (status code 200).
+    if (response.statusCode == 200) {
+      List<Cardai> flashCards = []; // List to store flashcards.
+
+      // Parse the response body as a JSON object.
+      var jsonData = jsonDecode(response.body) as Map<String, dynamic>;
+      print(jsonData); // Log parsed data for debugging.
+
+      // If the JSON data is non-empty, process it.
+      if (jsonData.isNotEmpty) {
+        try {
+          // Extract the list of questions from the JSON response.
+          List<dynamic> questionsList = jsonData['questions'];
+
+          // Create [Cardai] objects from the question-answer pairs.
+          for (var questionAnswerPair in questionsList) {
+            String question = questionAnswerPair['question'];
+            String answer = questionAnswerPair['answer'];
+            Cardai flashcard = Cardai(question: question, answer: answer);
+            flashCards.add(flashcard); // Add to the list.
+          }
+        } catch (e) {
+          print(e); // Log any errors during processing.
+          return flashCards; // Return any flashcards created so far.
+        }
+      }
+
+      return flashCards; // Return the generated flashcards.
+
+    } else {
+      // Handle errors based on status codes using a switch-case.
+      switch (response.statusCode) {
+        case 418:
+          throw IncompleteRequestBodyException('Incomplete request body: ${response.body}');
+        case 420:
+          throw NumberOfCardsException('Unknown number of cards: ${response.body}');
+        case 421:
+          throw TextExtractionException('Text Extraction error: ${response.body}');
+        case 422:
+          throw FileDeletionException('File was not deleted: ${response.body}');
+        case 423:
+          throw NoInformationException('Incomplete request body: ${response.body}');
+        case 424:
+          throw MessageRouteException('Internal server error: ${response.body}');
+        case 425:
+          throw RequestException('Internal server: ${response.body}');
+        case 500:
+        case 501:
+          throw InternalServerErrorException('Internal server error: ${response.body}');
+        default:
+          print(response.statusCode); // Log unexpected status codes.
+          throw ApiException(response.statusCode, 'Error: ${response.body}'); // Generic error handling.
+      }
+    }
+  }
+
+
 
   /// Sends data to the API gateway for creating or updating a message/thread.
   ///
@@ -82,7 +197,7 @@ class FlashcardAiService {
 
     // Send HTTP POST request to the API with the request body and headers
     final response = await http.post(
-      Uri.parse('https://zdt8v319-3000.asse.devtunnels.ms/message/$id'), // API endpoint
+      Uri.parse('https://zdt8v319-3000.asse.devtunnels.ms/prompt/v1/openAI/$id'), // API endpoint
       body: jsonEncode(requestBody),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
@@ -95,25 +210,28 @@ class FlashcardAiService {
       final jsonData = jsonDecode(response.body);
       return jsonData;
     } else {
-      // Handle specific error cases based on status code
-      if (response.statusCode == 418) {
-        throw IncompleteRequestBodyException('Incomplete request body: ${response.body}');
-      } else if (response.statusCode == 420) {
-        throw NumberOfCardsException('Unknown number of cards: ${response.body}');
-      } else if (response.statusCode == 421) {
-        throw TextExtractionException('Text Extraction error: ${response.body}');
-      } else if (response.statusCode == 422) {
-        throw FileDeletionException('File was not deleted: ${response.body}');
-      } else if (response.statusCode == 423) {
-        throw NoInformationException('Incomplete request body: ${response.body}');
-      } else if (response.statusCode == 424) {
-        throw MessageRouteException('Internal server error: ${response.body}');
-      } else if (response.statusCode == 425) {
-        throw RequestException('Internal server: ${response.body}');
-      } else if (response.statusCode == 500 || response.statusCode == 501) {
-        throw InternalServerErrorException('Internal server error: ${response.body}');
-      } else {
-        throw ApiException(response.statusCode, 'Error: ${response.body}');
+      // Handle errors based on status codes using a switch-case.
+      switch (response.statusCode) {
+        case 418:
+          throw IncompleteRequestBodyException('Incomplete request body: ${response.body}');
+        case 420:
+          throw NumberOfCardsException('Unknown number of cards: ${response.body}');
+        case 421:
+          throw TextExtractionException('Text Extraction error: ${response.body}');
+        case 422:
+          throw FileDeletionException('File was not deleted: ${response.body}');
+        case 423:
+          throw NoInformationException('Incomplete request body: ${response.body}');
+        case 424:
+          throw MessageRouteException('Internal server error: ${response.body}');
+        case 425:
+          throw RequestException('Internal server: ${response.body}');
+        case 500:
+        case 501:
+          throw InternalServerErrorException('Internal server error: ${response.body}');
+        default:
+          print(response.statusCode); // Log unexpected status codes.
+          throw ApiException(response.statusCode, 'Error: ${response.body}'); // Generic error handling.
       }
     }
   }
@@ -138,7 +256,7 @@ class FlashcardAiService {
 
     // Send HTTP GET request to fetch flashcard data from the API
     final response = await http.get(
-      Uri.parse('https://zdt8v319-3000.asse.devtunnels.ms/response/$id?thread_id=$threadID&run_id=$runID'), // API endpoint
+      Uri.parse('https://zdt8v319-3000.asse.devtunnels.ms/response/v1/openAI/$id?thread_id=$threadID&run_id=$runID'), // API endpoint
     );
 
     // Check if the response is successful (status code 200 means OK)
@@ -150,7 +268,7 @@ class FlashcardAiService {
       var jsonData = jsonDecode(response.body) as List;
 
       // Check if the parsed data is valid and non-empty
-      if (jsonData != null && jsonData.isNotEmpty && jsonData is List<dynamic>) {
+      if (jsonData.isNotEmpty) {
         try {
           // Extract the list of questions from the first object in the JSON data
           List<dynamic> questionsList = jsonData[0]['questions'];
