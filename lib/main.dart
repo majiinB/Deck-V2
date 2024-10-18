@@ -76,8 +76,7 @@ class _myAppState extends State<MyApp> {
 /// Main Page
 // ignore: must_be_immutable
 class MainPage extends StatefulWidget {
-  int index = 0;
-  MainPage({super.key, required this.index});
+  const MainPage({super.key});
 
   @override
   State<MainPage> createState() => _MainPageState();
@@ -85,6 +84,8 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   final GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
+
+  int _currentIndex = 0;
 
   final screens = const [
     HomePage(),
@@ -96,9 +97,11 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState(){
     super.initState();
-    if(Provider.of<TaskProvider>(context, listen: false).checkIfDeadlineIsToday()) {
-      NotificationService().showNotification(title: 'You have due tasks today!', body: 'Finish them!', payload: 'load');
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if(Provider.of<TaskProvider>(context, listen: false).checkIfDeadlineIsToday()) {
+        NotificationService().showNotification(title: 'You have due tasks today!', body: 'Finish them!', payload: 'load');
+      }
+    });
   }
 
   ///  Navbar Icons and Label
@@ -159,7 +162,7 @@ class _MainPageState extends State<MainPage> {
       child: Scaffold(
         extendBody: true,
         appBar: null,
-        body: screens[widget.index],
+        body: screens[_currentIndex],
         bottomNavigationBar: curvedNavigationBar(),
       ),
     );
@@ -174,9 +177,9 @@ class _MainPageState extends State<MainPage> {
       animationDuration: const Duration(milliseconds: 300),
       animationCurve: Curves.easeInOut,
       height: 80,
-      index: widget.index,
+      index: _currentIndex,
       items: items,
-      onTap: (index) => setState(() => widget.index = index),
+      onTap: (index) => setState(() => _currentIndex = index),
     );
   }
 }

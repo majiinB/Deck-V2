@@ -176,9 +176,9 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
                 ],
               ),
             ),
-            if(_filteredDecks.isEmpty) ifCollectionEmpty(ifCollectionEmptyText: "Nothing in Trash",
+            if(_filteredDecks.isEmpty) IfCollectionEmpty(ifCollectionEmptyText: "Nothing in Trash",
                   ifCollectionEmptySubText: "Deleted Items go here",
-                  ifCollectionEmptyheight: MediaQuery.of(context).size.height*0.7),
+                  ifCollectionEmptyHeight: MediaQuery.of(context).size.height*0.7),
 
             if(_filteredDecks.isNotEmpty) Padding(
               padding: const EdgeInsets.only(top: 20),

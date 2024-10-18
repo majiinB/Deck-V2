@@ -14,7 +14,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../backend/flashcard/flashcard_utils.dart';
 
 class FlashcardPage extends StatefulWidget {
-  const FlashcardPage({Key? key}) : super(key: key);
+  const FlashcardPage({super.key});
 
   @override
   _FlashcardPageState createState() => _FlashcardPageState();
@@ -174,9 +174,9 @@ class _FlashcardPageState extends State<FlashcardPage> {
                 ),
               ),
             if (_decks.isEmpty)
-              ifCollectionEmpty(
+              IfCollectionEmpty(
                   ifCollectionEmptyText: 'No Deck(s) Available',
-                  ifCollectionEmptyheight:
+                  ifCollectionEmptyHeight:
                       MediaQuery.of(context).size.height * 0.7),
             if (_decks.isNotEmpty)
               Padding(
@@ -270,11 +270,11 @@ class _FlashcardPageState extends State<FlashcardPage> {
                 ),
               ),
             if (_decks.isNotEmpty && _filteredDecks.isEmpty)
-              ifCollectionEmpty(
+              IfCollectionEmpty(
                 ifCollectionEmptyText: 'No Results Found',
                 ifCollectionEmptySubText:
                     'Try adjusting your search to \nfind what your looking for.',
-                ifCollectionEmptyheight:
+                ifCollectionEmptyHeight:
                     MediaQuery.of(context).size.height * 0.4,
               ),
           ],

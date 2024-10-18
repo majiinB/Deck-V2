@@ -16,7 +16,7 @@ import '../../backend/auth/auth_service.dart';
 /// It includes input fields for email and password, and buttons for login
 /// and password recovery.
 class LoginPage extends StatefulWidget {
-  LoginPage({super.key});
+  const LoginPage({super.key});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
