@@ -1,12 +1,64 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:deck/backend/config/firebase_remote_config.dart';
+import 'package:deck/backend/config/gemini_config.dart';
 import 'package:deck/backend/custom_exceptions/api_exception.dart';
+import 'package:deck/backend/flashcard/flashcard_utils.dart';
 import 'package:deck/backend/models/cardAi.dart';
+import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:http/http.dart' as http;
 
 class FlashcardAiService {
 
+  Future<List<Cardai>> promptGeminiInApp({
+    required String subject,         // Subject of the flashcards.
+    required String topic,           // Topic within the subject.
+    required String addDescription,  // Additional description or context.
+    required int numberOfQuestions,  // Number of questions to generate.
+  }) async{
+    // Initialize utils
+    FlashcardUtils utils = FlashcardUtils();
+    // Initialize gemini config
+    GeminiConfig geminiConfig = GeminiConfig();
+
+    await geminiConfig.init();
+    // Get gemini model
+    GenerativeModel model = geminiConfig.model;
+    // Call the method using the instance
+    List<Cardai> flashCards = [];
+
+    String prompt = utils.constructGoogleAIPrompt(
+      topic: topic,
+      subject: subject,
+      addDescription: addDescription,
+      numberOfQuestions: numberOfQuestions
+    );
+
+    final result = await model.generateContent([Content.text(prompt)]);
+    Map<String, dynamic> jsonData = utils.extractGoogleAIJsonFromText(result.text);
+
+    if (jsonData.isNotEmpty) {
+      try {
+        // Extract the list of questions from the JSON response.
+        List<dynamic> questionsList = jsonData['questions'];
+
+        // Create [Cardai] objects from the question-answer pairs.
+        for (var questionAnswerPair in questionsList) {
+          String question = questionAnswerPair['question'];
+          String answer = questionAnswerPair['answer'];
+          Cardai flashcard = Cardai(question: question, answer: answer);
+          flashCards.add(flashcard); // Add to the list.
+        }
+      } catch (e) {
+        print(e); // Log any errors during processing.
+        return flashCards; // Return any flashcards created so far.
+      }
+    }else{
+      throw ApiException(400, 'Error: The AI did not respond please try again');
+    }
+    return flashCards;
+  }
   /// Checks if the API is available.
   ///
   /// Returns:
@@ -28,7 +80,6 @@ class FlashcardAiService {
     }
     return toReturn;
   }
-
 
   /// Sends a request to the Gemini API to generate flashcards based on the provided data.
   /// This function performs API availability checks, sends a POST request with the necessary
@@ -142,8 +193,6 @@ class FlashcardAiService {
       }
     }
   }
-
-
 
   /// Sends data to the API gateway for creating or updating a message/thread.
   ///
