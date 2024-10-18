@@ -1,7 +1,10 @@
 
 import 'package:deck/backend/auth/auth_service.dart';
 import 'package:deck/backend/auth/auth_utils.dart';
+import 'package:deck/pages/auth/signup.dart';
+import 'package:deck/pages/settings/change_password.dart';
 import 'package:deck/pages/settings/edit_profile.dart';
+import 'package:deck/pages/settings/recently_deleted.dart';
 import 'package:deck/pages/settings/settings.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +12,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:deck/pages/misc/colors.dart';
 import 'package:deck/pages/misc/deck_icons.dart';
 import 'package:deck/pages/misc/widget_method.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import '../../backend/flashcard/flashcard_service.dart';
 import '../../backend/flashcard/flashcard_utils.dart';
@@ -87,7 +91,7 @@ class AccountPageState extends State<AccountPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Stack(
+              /*Stack(
                 clipBehavior: Clip.none,
                 alignment: Alignment.centerLeft,
                 children: [
@@ -123,20 +127,25 @@ class AccountPageState extends State<AccountPage> {
                   ),
                   Positioned(
                     top: 150,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 10),
+                    child: */
+              Padding(
+                      padding: const EdgeInsets.only(top: 50),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          BuildProfileImage(AuthUtils().getPhoto()),
+                          Center(
+                            child:
+                              BuildProfileImage(AuthUtils().getPhoto()),
+                          ),
                           Padding(
-                            padding: const EdgeInsets.only(top: 20.0, left: 8.0),
+                            padding: const EdgeInsets.only(top: 5, left: 8.0),
                             child: Text(
                               AuthUtils().getDisplayName() ?? "Guest",
-                              style: GoogleFonts.nunito(
-                                fontSize: 16,
+                              style: const TextStyle(
+                                fontFamily: 'Fraiche',
+                                fontSize: 24,
                                 fontWeight: FontWeight.w900,
-                                color: DeckColors.white,
+                                color: DeckColors.primaryColor,
                               ),
                             ),
                           ),
@@ -153,102 +162,111 @@ class AccountPageState extends State<AccountPage> {
                         ],
                       ),
                     ),
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
                   Padding(
                     padding: const EdgeInsets.only(top: 12, right: 7.0),
-                    child: BuildButton(
-                      onPressed: () async {
-                        final result = await Navigator.of(context).push(
-                          RouteGenerator.createRoute(const EditProfile()),
-                        );
-                        if(result != null && result['updated'] == true) {
-                          _updateAccountPage();
-                         Provider.of<ProfileProvider>(context, listen: false).addListener(_updateAccountPage);
-                         setState(() { coverUrl = result['file']; });
-                        }
-                      },
-                      buttonText: 'edit profile',
-                      height: 40,
-                      width: 140,
-                      backgroundColor: DeckColors.white,
-                      textColor: DeckColors.backgroundColor,
-                      radius: 20.0,
-                      fontSize: 16,
-                      borderWidth: 0,
-                      borderColor: Colors.transparent,
+                    child: Center(
+                      child: BuildButton(
+                        onPressed: () async {
+                          final result = await Navigator.of(context).push(
+                            RouteGenerator.createRoute(const EditProfile()),
+                          );
+                          if(result != null && result['updated'] == true) {
+                            _updateAccountPage();
+                           Provider.of<ProfileProvider>(context, listen: false).addListener(_updateAccountPage);
+                           setState(() { coverUrl = result['file']; });
+                          }
+                        },
+                        buttonText: 'edit profile',
+                        height: 40,
+                        width: 140,
+                        backgroundColor: DeckColors.white,
+                        textColor: DeckColors.backgroundColor,
+                        radius: 20.0,
+                        fontSize: 16,
+                        borderWidth: 0,
+                        borderColor: Colors.transparent,
+                      ),
                     ),
                   ),
-                ],
-              ),
               Padding(
-                padding: const EdgeInsets.only(top: 130, left: 16.0),
-                child: Text(
-                  "My Decks",
-                  style: GoogleFonts.nunito(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w900,
-                    color: DeckColors.primaryColor,
-                  ),
-                ),
-              ),
-              if (_decks.isEmpty)
-                IfCollectionEmpty(
-                    ifCollectionEmptyText: 'No Deck(s) Available',
-                    ifCollectionEmptyHeight: MediaQuery.of(context).size.height * 0.4),
+                  padding: const EdgeInsets.only(top:50, left: 15, right: 15),
+                  child: !AuthService()
+                      .getCurrentUser()!
+                      .providerData[0]
+                      .providerId
+                      .contains('google.com')
+                      ? BuildSettingsContainer(
+                    selectedIcon: DeckIcons.lock,
+                    nameOfTheContainer: 'Change Password',
+                    showArrow: true,
+                    showSwitch: false,
+                    containerColor:
+                    DeckColors.accentColor, // Container Color
+                    selectedColor:
+                    DeckColors.primaryColor, // Left Icon Color
+                    textColor: Colors.white, // Text Color
+                    toggledColor: DeckColors
+                        .accentColor, // Left Icon Color when Toggled
+                    onTap: () {
+                      Navigator.of(context).push(
+                        RouteGenerator.createRoute(
+                            const ChangePasswordPage()),
+                      );
+                    },
+                  )
+                      : const SizedBox()),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: _decks.length,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 6.0),
-                      child: BuildListOfDecks(
-                        titleText: _decks[index].title.toString(),
-                        numberText: _deckCardCount[_decks[index].deckId].toString() + " Card(s)",
-                        deckImageUrl: _decks[index].coverPhoto.toString(),
-                        onDelete: () {
-                          Deck deletedDeck = _decks[index];
-                          final String deletedTitle = deletedDeck.title.toString();
-                          _decks.removeAt(index);
-                          showConfirmationDialog(
-                            context,
-                            "Delete Item",
-                            "Are you sure you want to delete '$deletedTitle'?",
-                                () async {
-                              try {
-                                if (await deletedDeck.updateDeleteStatus(true)) {
-                                  setState(() {
-                                    _deckCardCount.remove(deletedDeck.deckId);
-                                    _decks.removeWhere((d) => d.deckId == deletedDeck.deckId);
-                                  });
-                                }
-                              } catch (e) {
-                                print('Deletion error: $e');
-                                setState(() {
-                                  _decks.insert(index, deletedDeck);
-                                });
-                              }
-                            },
-                                () {
-                              setState(() {
-                                _decks.insert(index, deletedDeck);
-                              });
-                            },
-                          );
-                        },
-                        enableSwipeToRetrieve: false,
-                      ),
+                padding: const EdgeInsets.only(top:8, left: 15, right: 15),
+                child: BuildSettingsContainer(
+                  selectedIcon: DeckIcons.trash_bin,
+                  nameOfTheContainer: 'Recently Deleted',
+                  showArrow: true,
+                  showSwitch: false,
+                  containerColor: DeckColors.accentColor, // Container Color
+                  selectedColor: DeckColors.primaryColor, // Left Icon Color
+                  textColor: Colors.white, // Text Color
+                  toggledColor:
+                  DeckColors.accentColor, // Left Icon Color when Toggled
+                  onTap: () {
+                    Navigator.of(context).push(
+                      RouteGenerator.createRoute(const RecentlyDeletedPage()),
                     );
                   },
                 ),
-              )
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top:8, left: 15, right: 15),
+                child: BuildSettingsContainer(
+                  selectedIcon: DeckIcons.logout,
+                  nameOfTheContainer: 'Log Out',
+                  showArrow: false,
+                  showSwitch: false,
+                  containerColor: DeckColors.accentColor, // Container Color
+                  selectedColor: DeckColors.primaryColor, // Left Icon Color
+                  textColor: Colors.white, // Text Color
+                  toggledColor:
+                  DeckColors.accentColor, // Left Icon Color when Toggled
+                  onTap: () async {
+                    final authService = AuthService();
+                    authService.signOut();
+                    GoogleSignIn _googleSignIn = GoogleSignIn();
+                    if (await _googleSignIn.isSignedIn()) {
+                      await _googleSignIn.signOut();
+                    }
+                    Navigator.of(context).pushAndRemoveUntil(
+                      RouteGenerator.createRoute(const SignUpPage()),
+                          (Route<dynamic> route) => false,
+                    );
+                    // Navigator.of(context).pop()
+                    // Navigator.of(context).push(
+                    //   RouteGenerator.createRoute(const SignUpPage()),
+                    // );
+                    // ignore: avoid_print
+                    print("Log Out Clicked");
+                  },
+                ),
+              ),
+
             ],
           ),
         ),
