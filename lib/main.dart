@@ -68,17 +68,6 @@ class _myAppState extends State<MyApp> {
       title: 'Deck',
       theme: Provider.of<ThemeProvider>(context).themeData,
       navigatorKey: navigatorKey,
-      // theme: ThemeData(
-      //   colorScheme: lightColorScheme,
-      //   brightness: Brightness.dark,
-      //   // primaryColor: Colors.blue,
-      //   scaffoldBackgroundColor: DeckColors.backgroundColor,
-      //   textTheme: TextTheme(
-      //     bodyMedium: GoogleFonts.nunito(
-      //       fontWeight: FontWeight.w500,
-      //     ),
-      //   ),
-      // ),
       home: const AuthGate(),
     );
   }
@@ -140,9 +129,11 @@ class _MainPageState extends State<MainPage> {
       ),
     ),
     CurvedNavigationBarItem(
-      child: Icon(
-        DeckIcons.flashcard,
-        color: DeckColors.primaryColor,
+      child: Center(
+        child: Icon(
+          DeckIcons.flashcard,
+          color: DeckColors.primaryColor,
+        ),
       ),
       label: 'Flashcards',
       labelStyle: TextStyle(

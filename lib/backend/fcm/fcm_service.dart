@@ -1,11 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:deck/backend/auth/auth_service.dart';
-import 'package:deck/main.dart';
-import 'package:deck/pages/task/task.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
-
-import '../../pages/misc/widget_method.dart';
 
 class FCMService {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;

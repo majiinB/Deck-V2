@@ -3,6 +3,9 @@ import 'package:deck/pages/auth/signup.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+/// The AuthGate widget serves as the entry point for the authentication flow.
+/// It listens to Firebase authentication state changes and updates the user
+/// interface accordingly, either showing the MainPage or the SignUpPage.
 class AuthGate extends StatefulWidget {
   const AuthGate({super.key});
 
@@ -12,18 +15,9 @@ class AuthGate extends StatefulWidget {
 
 class _AuthGateState extends State<AuthGate> {
   @override
-  void initState() {
-    super.initState();
-    _updateFcmToken();
-  }
- 
-  Future<void> _updateFcmToken() async {
-    final currentUser = FirebaseAuth.instance.currentUser;
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       body: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
