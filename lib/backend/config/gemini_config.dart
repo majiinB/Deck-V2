@@ -5,11 +5,9 @@ class GeminiConfig{
   late final String _apiKey;
   late final GenerativeModel _model;
 
-  GeminiConfig(){
-    _init();
-  }
+  GeminiConfig();
 
-  Future<void> _init() async{
+  Future<void> init() async{
     _apiKey = await _getAPIKey();
     _model = GenerativeModel(
       model: 'gemini-1.5-flash',
@@ -29,5 +27,7 @@ class GeminiConfig{
     return await service.fetchStringConfig();
   }
   // Public getter for the model
-  GenerativeModel get model => _model;
+  GenerativeModel get model {
+    return _model;
+  }
 }

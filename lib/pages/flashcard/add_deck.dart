@@ -305,13 +305,13 @@ class _AddDeckPageState extends State<AddDeckPage> {
                     () async{
                       if(_isToggled){
                         // START OF AI
-
                         // Check if there is a title
                         if(_deckTitleController.text.trim().isEmpty && _numCardsController.text.trim().isNotEmpty){
                           await Future.delayed(const Duration(milliseconds: 300));
                           showInformationDialog(context, "Error adding Deck", "Your deck requires a title");
                           return;
                         }
+
                         //Check if the number of cards to be generate was given
                         if(_numCardsController.text.trim().isEmpty){
                           await Future.delayed(const Duration(milliseconds: 300));
@@ -351,9 +351,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                           if (_pickedFileController.text.toString().trim().isNotEmpty) {
                             fileName = await _flashcardService.uploadPdfFileToFirebase(_pickedFileController.text.toString().trim(), widget.userId.toString());
                           }
-                          print('filename: $fileName');
 
-                          print(fileName);
                           //OPENAI
                           // try{
                           //   // sendData function
@@ -387,28 +385,46 @@ class _AddDeckPageState extends State<AddDeckPage> {
                           // }
 
                           //GEMINI
-                          try{
-                            //Send and retrieve ai
-                            flashCardDataList = await _flashcardAiService.sendAndRequestDataToGemini(
-                                id: widget.userId,
-                                subject: _subjectController.text.trim(),
-                                topic: _topicController.text.trim(),
-                                addDescription: _descriptionController.text.trim(),
-                                pdfFileName: fileName.toString(),
-                                pdfFileExtension: '.pdf',
-                                numberOfQuestions: int.tryParse(_numCardsController.text) ?? 0
-                            );
-                            print(flashCardDataList);
-                          }on ApiException catch(e){
-                            showInformationDialog(context, "Error while creating Deck!", e.message.toString());
-                            return;
-                          }catch(e){
-                            print(flashCardDataList);
-                            print(e);
-                            await Future.delayed(const Duration(milliseconds: 300));
-                            showInformationDialog(context, "Unknown Error Occurred",
-                                'An unknown error has occurred while generating your deck. Please try again.');
-                            return;
+                          if(fileName.isEmpty || fileName == ""){
+                            try{
+                              flashCardDataList = await _flashcardAiService.promptGeminiInApp(
+                                  subject: _subjectController.text.trim(),
+                                  topic: _topicController.text.trim(),
+                                  addDescription: _descriptionController.text.trim(),
+                                  numberOfQuestions: int.tryParse(_numCardsController.text) ?? 0
+                              );
+                            }catch(e){
+                              print(flashCardDataList);
+                              print(e);
+                              await Future.delayed(const Duration(milliseconds: 300));
+                              showInformationDialog(context, "Unknown Error Occurred",
+                                  'An unknown error has occurred while generating your deck. Please try again.');
+                              return;
+                            }
+                          }else{
+                            try{
+                              //Send and retrieve ai
+                              flashCardDataList = await _flashcardAiService.sendAndRequestDataToGemini(
+                                  id: widget.userId,
+                                  subject: _subjectController.text.trim(),
+                                  topic: _topicController.text.trim(),
+                                  addDescription: _descriptionController.text.trim(),
+                                  pdfFileName: fileName.toString(),
+                                  pdfFileExtension: '.pdf',
+                                  numberOfQuestions: int.tryParse(_numCardsController.text) ?? 0
+                              );
+                              print(flashCardDataList);
+                            }on ApiException catch(e){
+                              showInformationDialog(context, "Error while creating Deck!", e.message.toString());
+                              return;
+                            }catch(e){
+                              print(flashCardDataList);
+                              print(e);
+                              await Future.delayed(const Duration(milliseconds: 300));
+                              showInformationDialog(context, "Unknown Error Occurred",
+                                  'An unknown error has occurred while generating your deck. Please try again.');
+                              return;
+                            }
                           }
 
                           if (flashCardDataList.isEmpty) {

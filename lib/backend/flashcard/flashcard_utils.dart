@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -42,5 +43,55 @@ class FlashcardUtils{
   }
   void sortByQuestion(List<Cards> cards) {
     cards.sort((a, b) => a.question.compareTo(b.question));
+  }
+
+  String constructGoogleAIPrompt({
+    String? topic,
+    String? subject,
+    String? addDescription,
+    required int numberOfQuestions,
+  }) {
+    // Initialize prompt
+    String prompt =
+        'I want you to act as a Professor providing students with questions and answers but strictly, '
+        'answer in JSON format and no introductory sentences, write it like a code generator. '
+        'The format is {questions:{question: "1+1", answer: "2"}, {question: "2+3", answer: "5"}}.';
+
+    String instruction =
+        'Instructions: give me $numberOfQuestions questions with answers.';
+
+    String lastLinePrompt =
+        'Do not repeat questions. Also make the questions 1-2 sentences max and the answers 1 sentence max or the keypoint only.';
+
+    // Condition to determine prompt
+    if (subject != null) prompt += 'The subject is $subject. ';
+    if (topic != null) prompt += 'And the topic is $topic. ';
+    if (addDescription != null) prompt += 'Additional description: $addDescription. ';
+
+    prompt += instruction;
+    prompt += lastLinePrompt;
+
+    return prompt;
+  }
+
+  Map<String, dynamic> extractGoogleAIJsonFromText(String? response) {
+    // Check if the response is null or not a string
+    if (response == null || response.isEmpty) {
+      print('Invalid input: response is missing or not a string');
+      return {}; // Return an empty map if input is invalid
+    }
+
+    // Remove the backticks and the 'json' keyword
+    String cleanedText = response
+        .replaceFirst(RegExp(r'^```json\s*'), '') // Remove leading ```json
+        .replaceFirst(RegExp(r'```$'), ''); // Remove trailing ```
+
+    try {
+      // Parse the cleaned text into a JSON object
+      return jsonDecode(cleanedText) as Map<String, dynamic>;
+    } catch (error) {
+      print('Failed to parse JSON: $error');
+      return {}; // Return an empty map if parsing fails
+    }
   }
 }
