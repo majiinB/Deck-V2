@@ -1,12 +1,21 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:deck/backend/config/firebase_remote_config.dart';
 import 'package:deck/backend/custom_exceptions/api_exception.dart';
 import 'package:deck/backend/models/cardAi.dart';
 import 'package:http/http.dart' as http;
 
 class FlashcardAiService {
 
+  Future<List<Cardai>> promptGeminiInApp() async{
+    // Initialize RemoteConfig and get Key
+    // Call the method using the instance
+    List<Cardai> flashcardDatalist = [];
+
+
+    return flashcardDatalist;
+}
   /// Checks if the API is available.
   ///
   /// Returns:
@@ -28,7 +37,6 @@ class FlashcardAiService {
     }
     return toReturn;
   }
-
 
   /// Sends a request to the Gemini API to generate flashcards based on the provided data.
   /// This function performs API availability checks, sends a POST request with the necessary
@@ -142,8 +150,6 @@ class FlashcardAiService {
       }
     }
   }
-
-
 
   /// Sends data to the API gateway for creating or updating a message/thread.
   ///

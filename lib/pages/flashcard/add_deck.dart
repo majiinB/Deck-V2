@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:deck/backend/config/firebase_remote_config.dart';
 import 'package:deck/backend/custom_exceptions/api_exception.dart';
 import 'package:deck/backend/flashcard/flashcard_ai_service.dart';
 import 'package:deck/backend/flashcard/flashcard_service.dart';
@@ -304,6 +305,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                     () async{
                       if(_isToggled){
                         // START OF AI
+
                         // Check if there is a title
                         if(_deckTitleController.text.trim().isEmpty && _numCardsController.text.trim().isNotEmpty){
                           await Future.delayed(const Duration(milliseconds: 300));
