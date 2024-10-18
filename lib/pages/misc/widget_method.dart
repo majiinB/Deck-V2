@@ -357,16 +357,16 @@ class BuildProfileImageState extends State<BuildProfileImage> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: DeckColors.backgroundColor, width: 5.0),
+        border: Border.all(color: DeckColors.backgroundColor, width: 3.0),
         shape: BoxShape.circle,
       ),
       child: CircleAvatar(
         backgroundColor: DeckColors.white,
         backgroundImage: widget.profilePhotoFile?.image,
-        radius: 60,
+        radius: 70,
         child: widget.profilePhotoFile?.image == null
             ? const Icon(DeckIcons.account,
-                size: 60, color: DeckColors.backgroundColor)
+                size: 70, color: DeckColors.backgroundColor)
             : null,
       ),
     );
@@ -888,7 +888,8 @@ class BuildIconButton extends StatelessWidget {
   final VoidCallback onPressed;
   final IconData icon;
   final Color iconColor, backgroundColor;
-  final double containerWidth, containerHeight;
+  final Color ? borderColor;
+  final double containerWidth, borderWidth, containerHeight;
 
   const BuildIconButton({
     super.key,
@@ -898,6 +899,8 @@ class BuildIconButton extends StatelessWidget {
     required this.backgroundColor,
     required this.containerWidth,
     required this.containerHeight,
+    this.borderColor,
+    this.borderWidth = 0.0,
   });
 
   @override
@@ -908,6 +911,10 @@ class BuildIconButton extends StatelessWidget {
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(25),
+        border: Border.all(
+          color: borderColor ?? Colors.transparent,
+          width: borderWidth,
+        )
       ),
       child: IconButton(
         icon: Icon(icon, color: iconColor),

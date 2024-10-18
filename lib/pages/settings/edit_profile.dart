@@ -208,13 +208,17 @@ class EditProfileState extends State<EditProfile> {
             Stack(
               clipBehavior: Clip.none,
               children: [
-                BuildCoverImage(borderRadiusContainer: 0, borderRadiusImage: 0, coverPhotoFile: coverUrl,),
-                Positioned(
-                  top: 150,
-                  left: 10,
+                // BuildCoverImage(borderRadiusContainer: 0, borderRadiusImage: 0, coverPhotoFile: coverUrl,),
+                // Positioned(
+                //   top: 150,
+                //   left: 10,
+            Center(
+            child: Padding(padding: const EdgeInsets.only(top: 50),
                   child: BuildProfileImage(photoUrl),
-                ),
-                Positioned(
+                  ),
+            ),
+                // ),
+               /* Positioned(
                   top: 140,
                   right: 10,
                   child: BuildIconButton(
@@ -275,11 +279,12 @@ class EditProfileState extends State<EditProfile> {
                     iconColor: DeckColors.white,
                     backgroundColor: DeckColors.accentColor,
                   ),
-                ),
-              ],
-            ),
-            Padding(
-                padding: const EdgeInsets.only(top: 25, left: 100),
+                ),*/
+                Positioned(
+                  top: 160,
+                  left: 110,
+                  child: Padding(
+                padding: const EdgeInsets.only(left: 100),
                 child: BuildIconButton(
                   containerWidth: 40,
                   containerHeight: 40,
@@ -336,17 +341,22 @@ class EditProfileState extends State<EditProfile> {
                   icon: DeckIcons.pencil,
                   iconColor: DeckColors.white,
                   backgroundColor: DeckColors.accentColor,
+                  borderColor: DeckColors.backgroundColor,
+                  borderWidth: 3.0,
                 )),
+                ),
+            ],
+            ),
             Padding(
-              padding: const EdgeInsets.only(top: 60, left: 16, right: 16),
+              padding: const EdgeInsets.only(top: 60, left: 15, right: 15),
               child: BuildTextBox(showPassword: false, hintText: "First Name", controller: firstNameController,),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 20, left: 16, right: 16),
+              padding: const EdgeInsets.only(top: 20, left: 15, right: 15),
               child: BuildTextBox(showPassword: false, hintText: "Last Name", controller: lastNameController,),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 20, left: 16, right: 16),
+              padding: const EdgeInsets.only(top: 20, left: 15, right: 15),
               child: !AuthService().getCurrentUser()!.providerData[0].providerId.contains('google.com') ?
                 BuildTextBox(
                   showPassword: false,
@@ -408,7 +418,7 @@ class EditProfileState extends State<EditProfile> {
                 borderColor: Colors.transparent,
               ),
             ),
-          ],
+        ],
         ),
       ),
     );
