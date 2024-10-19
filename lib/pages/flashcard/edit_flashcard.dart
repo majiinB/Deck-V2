@@ -14,16 +14,17 @@ class EditFlashcardPage extends StatefulWidget {
   final Cards card;
 
   const EditFlashcardPage({
-    Key? key,
+    super.key,
     required this.deck,
     required this.card,
-  }) : super(key: key);
+  });
 
   @override
   _EditFlashcardPageState createState() => _EditFlashcardPageState();
 }
 
 class _EditFlashcardPageState extends State<EditFlashcardPage> {
+  bool _isLoading = false;
   bool buttonsEnabled = false; // Flag to track button state
   late final TextEditingController _descriptionOrAnswerController;
   late final TextEditingController _questionOrTermController;
@@ -62,7 +63,7 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
           });
         },
       ),
-      body: SingleChildScrollView(
+      body: _isLoading ? const Center(child: CircularProgressIndicator()) : SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -123,14 +124,17 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
                         "Save Changes",
                         "Are you sure you want to save changes you made on this flash card?",
                             () async {
+                          setState(() => _isLoading = true);
                           try {
                             if (_questionOrTermController.text.trim().isEmpty) {
                               await Future.delayed(const Duration(milliseconds: 300));
+                              setState(() => _isLoading = false);
                               showInformationDialog(context, "Input Error", "This flash card requires a term/question");
                               return;
                             }
                             if (_descriptionOrAnswerController.text.trim().isEmpty) {
                               await Future.delayed(const Duration(milliseconds: 300));
+                              setState(() => _isLoading = false);
                               showInformationDialog(context, "Input Error", "This flash card requires a description/answer");
                               return;
                             }
@@ -147,12 +151,15 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
                               );
                             }
                             await Future.delayed(const Duration(milliseconds: 300));
+                            setState(() => _isLoading = false);
+                            Navigator.pop(context);
                             showInformationDialog(context, "Changed flash card information!", "Successfully changed flash card information.");
                             setState(() {
                               buttonsEnabled = !buttonsEnabled;
                             });
                           } catch (e) {
                             print('Error saving changes $e');
+                            setState(() => _isLoading = false);
                             showInformationDialog(context, "Unknown Error Occurred",
                                 'An unknown error has occurred while editing flash card. Please try again.');
                           }

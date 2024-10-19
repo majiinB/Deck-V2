@@ -43,7 +43,9 @@ class AccountPageState extends State<AccountPage> {
     FlashcardUtils.updateSettingsNeeded.addListener(_updateAccountPage);
     _user = _authService.getCurrentUser();
     _initUserDecks(_user);
-    Provider.of<ProfileProvider>(context, listen: false).addListener(_updateAccountPage);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<ProfileProvider>(context, listen: false).addListener(_updateAccountPage);
+    });
   }
 
   @override
