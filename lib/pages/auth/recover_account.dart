@@ -69,7 +69,7 @@ class RecoverAccountPage extends StatelessWidget {
                   try {
                     await AuthService().sendResetPass(emailController.text).then((_) => {
                     showInformationDialog(context, "Success!", "Process was a success. Please check your email."),
-                    Navigator.of(context).pop(RouteGenerator.createRoute(LoginPage()),)
+                    Navigator.of(context).pop(RouteGenerator.createRoute(const LoginPage()),)
                     });
                   } on FirebaseAuthException catch (e) {
                     print(e.toString());
