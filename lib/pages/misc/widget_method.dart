@@ -1557,7 +1557,7 @@ class BuildTabBar extends StatelessWidget {
                 indicatorSize: TabBarIndicatorSize.tab,
                 dividerColor: Colors.transparent,
                 indicator: BoxDecoration(
-                  color: DeckColors.gray,
+                  color: DeckColors.green,
                   borderRadius: BorderRadius.circular(20.0),
                 ),
                 labelColor: DeckColors.white,
@@ -2053,8 +2053,58 @@ class HomeDeckTile extends StatelessWidget {
 ///############################################################
 
 ///
-/// ----------------------- S T A R T --------------------------
 /// ------------ D E C K  T A S K T I L E ----------------------
+/// a custom widget that is used in the task page
+
+//dunno wer to put this sample
+// enum TaskPriority { low, medium, urgent }
+//
+// class DeckTaskTile extends StatefulWidget {
+//   final String title;
+//   final String dueDate;
+//   final String dueTimee
+//   final String deadline;
+//   final VoidCallback onDelete;
+//   final VoidCallback? onRetrieve, onTap;
+//   final bool enableRetrieve;
+//   final String progressStatus;
+//
+//     const DeckTaskTile({
+//       super.key,
+//       required this.title,
+//       required this.deadline,
+//       required this.onDelete,
+//       this.onRetrieve,
+//       this.enableRetrieve = false,
+//       this.onTap,
+//       this.progressStatus  //default status of a task is not done
+// });
+//
+//
+//   @override
+//   State<DeckTaskTile> createState() => DeckTaskTileState();
+// }
+//
+// class DeckTaskTileState extends State<DeckTaskTile> {
+//     Color _containerColor = DeckColors.accentColor;
+//     // Dropdown menu for progress status
+//     String? _selectedProgressStatus;
+//     @override
+//     void initState() {
+//       super.initState();
+//       _selectedProgressStatus = widget.progressStatus; // Initialize with default progress status
+//     }
+//
+//     //method to get color based on priority
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     // TODO: implement build
+//     return GestureDetector();
+//    }
+// }
+// }
+
 class DeckTaskTile extends StatefulWidget {
   final String title;
   final String deadline;
