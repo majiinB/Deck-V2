@@ -23,6 +23,7 @@ class EditProfile extends StatefulWidget {
 }
 
 class EditProfileState extends State<EditProfile> {
+  bool _isLoading = false;
   final TextEditingController firstNameController = TextEditingController(text: AuthUtils().getFirstName());
   final TextEditingController lastNameController = TextEditingController(text: AuthUtils().getLastName());
   final TextEditingController emailController = TextEditingController(text: AuthUtils().getEmail());
@@ -67,12 +68,10 @@ class EditProfileState extends State<EditProfile> {
     print('photoUrl: $photoUrl');
     await _updateProfilePhoto(user, uniqueFileName);
 
-    Provider.of<ProfileProvider>(context, listen: false).updateProfile();
     String message = 'Updated user information!';
     if(user?.email != emailController.text) {
       message = "Updated user information! Please check your new email in order to change.";
     }
-
 
     if(user?.email != emailController.text) {
       AuthService().signOut();
@@ -81,8 +80,9 @@ class EditProfileState extends State<EditProfile> {
             (Route<dynamic> route) => false);
       return;
     }
+    setState(() => _isLoading = false);
     Navigator.pop(context, {'updated': true});
-    showInformationDialog(context, "Sucessfully updated information", message);
+    showInformationDialog(context, "Successfully updated information", message);
   }
 
   String getNewName() {
@@ -113,7 +113,7 @@ class EditProfileState extends State<EditProfile> {
     } on FirebaseAuthException catch (e){
       String message = '';
       if(e.code == 'invalid-email'){
-        message = 'Invalid email format! Plewase try again.';
+        message = 'Invalid email format! Please try again.';
       } else {
         message = e.toString();
       }
@@ -155,7 +155,7 @@ class EditProfileState extends State<EditProfile> {
         color: DeckColors.white,
         fontSize: 24,
       ),
-      body: SingleChildScrollView(
+      body: _isLoading ? const Center(child: CircularProgressIndicator()) : SingleChildScrollView(
         padding: const EdgeInsets.only(bottom: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -332,9 +332,11 @@ class EditProfileState extends State<EditProfile> {
                     "Are you sure you want to change your account information?",
                     () async {
                       try {
+                        setState(() => _isLoading = true);
                         await updateAccountInformation(context);
                       } catch (e){
                         print(e);
+                        setState(() => _isLoading = false);
                         showInformationDialog(context, "Error changing information", e.toString());
                       }
                     } ,

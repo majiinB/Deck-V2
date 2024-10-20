@@ -841,6 +841,7 @@ class BuildTextBoxState extends State<BuildTextBox> {
         hintText: widget.hintText,
         hintStyle: GoogleFonts.nunito(
           fontSize: 16,
+          fontStyle: FontStyle.italic,
           color: Colors.white,
         ),
         filled: true,
@@ -1207,7 +1208,8 @@ class IfCollectionEmpty extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(
-              height: MediaQuery.of(context).size.width / 2.5,
+              width: MediaQuery.of(context).size.width / 2.5,
+              height: 130,
               child: AspectRatio(
                 aspectRatio: 1,
                 child: Image.asset(
@@ -1215,13 +1217,13 @@ class IfCollectionEmpty extends StatelessWidget {
                   'assets/images/Deck-Logo7.png',
                 ),
               )),
-          const SizedBox(height: 5),
           Text(
             ifCollectionEmptyText,
-            style: GoogleFonts.nunito(
-              fontSize: 20,
+            style:TextStyle(
+              fontFamily: 'Fraiche',
+              fontSize: 30,
+              color: DeckColors.white,
               fontWeight: FontWeight.bold,
-              color: Colors.white54,
             ),
             textAlign: TextAlign.center,
           ),
@@ -1561,7 +1563,7 @@ class BuildTabBar extends StatelessWidget {
                 indicatorSize: TabBarIndicatorSize.tab,
                 dividerColor: Colors.transparent,
                 indicator: BoxDecoration(
-                  color: DeckColors.gray,
+                  color: DeckColors.primaryColor,
                   borderRadius: BorderRadius.circular(20.0),
                 ),
                 labelColor: DeckColors.white,
@@ -1707,7 +1709,7 @@ class BuildContainerOfFlashCardsState extends State<BuildContainerOfFlashCards>
                       });
                     },
                     child: Icon(
-                      size: 32,
+                      size: 24,
                       widget.isStarShaded ? Icons.star : Icons.star_border,
                       color: widget.isStarShaded
                           ? DeckColors.primaryColor
@@ -1715,6 +1717,14 @@ class BuildContainerOfFlashCardsState extends State<BuildContainerOfFlashCards>
                     ),
                   ),
                 ],
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 10.0),
+                child: Container(
+                  color: DeckColors.white,
+                  width: MediaQuery.of(context).size.width,
+                  height: 1,
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 20),
@@ -1829,8 +1839,8 @@ class DeckDelegate extends SliverPersistentHeaderDelegate {
               icon: icon,
               iconColor: DeckColors.white,
               backgroundColor: backgroundColor,
-              containerWidth: 50,
-              containerHeight: 50,
+              containerWidth: 60,
+              containerHeight: 60,
             ),
         ],
       ),
@@ -2078,23 +2088,24 @@ class HomeDeckTile extends StatelessWidget {
 ///############################################################
 
 ///
-/// ----------------------- S T A R T --------------------------
 /// ------------ D E C K  T A S K T I L E ----------------------
+/// a custom widget that is used in the task page
+
 class DeckTaskTile extends StatefulWidget {
   final String title;
   final String deadline;
-  final bool isChecked;
-  final ValueChanged<bool?> onChanged;
+  final String priority; // high, medium, low
+  String progressStatus;
   final VoidCallback onDelete;
   final VoidCallback? onRetrieve, onTap;
   final bool enableRetrieve;
 
-  const DeckTaskTile({
+  /*const*/ DeckTaskTile({
     super.key,
     required this.title,
     required this.deadline,
-    required this.isChecked,
-    required this.onChanged,
+    required this.priority,
+    this.progressStatus = 'to do',
     required this.onDelete,
     this.onRetrieve,
     this.enableRetrieve = false,
@@ -2106,7 +2117,50 @@ class DeckTaskTile extends StatefulWidget {
 }
 
 class DeckTaskTileState extends State<DeckTaskTile> {
-  Color _containerColor = DeckColors.accentColor;
+  Color _containerColor = DeckColors.gray; // Default color
+
+  @override
+  void initState() {
+    super.initState();
+    _updatePriorityColor(); // Set initial color based on priority
+  }
+
+  // Function to change icon based on task status
+  IconData _getProgressIcon() {
+    switch (widget.progressStatus.toLowerCase()) {
+      case 'to do':
+        return Icons.circle_outlined;
+      case 'in progress':
+        return Icons.circle;
+      case 'completed':
+        return Icons.check_circle;
+      default:
+        return Icons.circle_outlined;
+    }
+  }
+
+  // Function to set the container color based on priority level
+  Color _updatePriorityColor() {
+    switch (widget.priority.toLowerCase()) {
+      case "high":
+        return Colors.red;
+      case "medium":
+        return Colors.yellow;
+      case "low":
+        return Colors.blue;
+      default:
+        return Colors.grey;
+    }
+  }
+
+
+
+  void _onProgressChange(String value) {
+    setState(() {
+      widget.progressStatus = value; // Update the progress status
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -2118,86 +2172,227 @@ class DeckTaskTileState extends State<DeckTaskTile> {
         });
       },
       onTapUp: (_) {
-        setState(() {
-          _containerColor = DeckColors.accentColor;
-        });
+        _containerColor = DeckColors.accentColor;
         widget.onTap?.call();
       },
       onTapCancel: () {
-        setState(() {
-          _containerColor = DeckColors.accentColor;
-        });
+        _containerColor = DeckColors.accentColor;
       },
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 5),
+        padding: const EdgeInsets.only(bottom: 20),
         child: SwipeToDeleteAndRetrieve(
           onRetrieve: widget.enableRetrieve ? widget.onRetrieve : null,
           enableRetrieve: widget.enableRetrieve,
           onDelete: widget.onDelete,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15.0),
-              color: _containerColor,
-            ),
-            child: Row(
-              children: [
-                Checkbox(
-                    activeColor: Colors.transparent,
-                    checkColor: DeckColors.primaryColor,
-                    value: widget.isChecked,
-                    onChanged: widget.onChanged,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4.0),
+          child: Stack(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15.0),
+                  color: _containerColor,
+                ),
+                child: Row(
+                  children: [
+                    PopupMenuButton<String>(
+                      onSelected: _onProgressChange,
+                      itemBuilder: (BuildContext context) {
+                        return [
+                          PopupMenuItem(
+                            value: 'to do',
+                            child: Text('To do'),
+                          ),
+                          PopupMenuItem(
+                            value: 'in progress',
+                            child: Text('In Progress'),
+                          ),
+                          PopupMenuItem(
+                            value: 'completed',
+                            child: Text('Completed'),
+                          ),
+                        ];
+                      },
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            _getProgressIcon(),
+                            color: _updatePriorityColor(),
+                          ),
+                        ],
+                      ),
                     ),
-                    side: const BorderSide(
-                      color: DeckColors.white,
-                      width: 3.0,
-                    )),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 15.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        SizedBox(
-                          width: 100,
-                          child: Text(
+                    SizedBox(width: 15),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
                             widget.title,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
+                            style: TextStyle(
+                              fontFamily: 'Fraiche',
+                              fontSize: 20,
                               color: DeckColors.white,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                        ),
-                        SizedBox(
-                          width: 100,
-                          child: Text(
+                          Text(
                             widget.deadline,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontSize: 16,
+                            style: GoogleFonts.nunito(
+                              fontSize: 15,
                               fontWeight: FontWeight.w700,
                               color: DeckColors.white,
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
+                  ],
+                ),
+              ),
+              Positioned(
+                right: 0,
+                top: 0,
+                bottom: 0,
+                child: Container(
+                  width: 30,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(15.0),
+                      bottomRight: Radius.circular(15.0),
+                    ),
+                    color: _updatePriorityColor(),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 }
+
+
+// class DeckTaskTile extends StatefulWidget {
+//   final String title;
+//   final String deadline;
+//   final bool isChecked;
+//   final ValueChanged<bool?> onChanged;
+//   final VoidCallback onDelete;
+//   final VoidCallback? onRetrieve, onTap;
+//   final bool enableRetrieve;
+//
+//   const DeckTaskTile({
+//     super.key,
+//     required this.title,
+//     required this.deadline,
+//     required this.isChecked,
+//     required this.onChanged,
+//     required this.onDelete,
+//     this.onRetrieve,
+//     this.enableRetrieve = false,
+//     this.onTap,
+//   });
+//
+//   @override
+//   State<DeckTaskTile> createState() => DeckTaskTileState();
+// }
+//
+// class DeckTaskTileState extends State<DeckTaskTile> {
+//   Color _containerColor = DeckColors.accentColor;
+//   @override
+//   Widget build(BuildContext context) {
+//     return GestureDetector(
+//       onTapDown: (_) {
+//         setState(() {
+//           if (widget.onTap != null) {
+//             _containerColor = DeckColors.accentColor.withOpacity(0.7);
+//           }
+//         });
+//       },
+//       onTapUp: (_) {
+//         setState(() {
+//           _containerColor = DeckColors.accentColor;
+//         });
+//         widget.onTap?.call();
+//       },
+//       onTapCancel: () {
+//         setState(() {
+//           _containerColor = DeckColors.accentColor;
+//         });
+//       },
+//       child: Padding(
+//         padding: const EdgeInsets.symmetric(horizontal: 5),
+//         child: SwipeToDeleteAndRetrieve(
+//           onRetrieve: widget.enableRetrieve ? widget.onRetrieve : null,
+//           enableRetrieve: widget.enableRetrieve,
+//           onDelete: widget.onDelete,
+//           child: Container(
+//             padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+//             decoration: BoxDecoration(
+//               borderRadius: BorderRadius.circular(15.0),
+//               color: _containerColor,
+//             ),
+//             child: Row(
+//               children: [
+//                 Checkbox(
+//                     activeColor: Colors.transparent,
+//                     checkColor: DeckColors.primaryColor,
+//                     value: widget.isChecked,
+//                     onChanged: widget.onChanged,
+//                     shape: RoundedRectangleBorder(
+//                       borderRadius: BorderRadius.circular(4.0),
+//                     ),
+//                     side: const BorderSide(
+//                       color: DeckColors.white,
+//                       width: 3.0,
+//                     )),
+//                 Expanded(
+//                   child: Padding(
+//                     padding: const EdgeInsets.only(left: 15.0),
+//                     child: Row(
+//                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                       children: [
+//                         SizedBox(
+//                           width: 100,
+//                           child: Text(
+//                             widget.title,
+//                             maxLines: 1,
+//                             overflow: TextOverflow.ellipsis,
+//                             style: const TextStyle(
+//                               fontSize: 16,
+//                               fontWeight: FontWeight.w700,
+//                               color: DeckColors.white,
+//                             ),
+//                           ),
+//                         ),
+//                         SizedBox(
+//                           width: 100,
+//                           child: Text(
+//                             widget.deadline,
+//                             maxLines: 1,
+//                             overflow: TextOverflow.ellipsis,
+//                             style: const TextStyle(
+//                               fontSize: 16,
+//                               fontWeight: FontWeight.w700,
+//                               color: DeckColors.white,
+//                             ),
+//                           ),
+//                         ),
+//                       ],
+//                     ),
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
 
 /// ------------------------- E N D ----------------------------
 /// ------------ D E C K  T A S K T I L E ----------------------

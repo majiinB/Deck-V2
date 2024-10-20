@@ -26,7 +26,9 @@ class AccountPage extends StatefulWidget {
 }
 
 class AccountPageState extends State<AccountPage> {
+  bool _isLoading = false;
   String name = '';
+<<<<<<< main
   final AuthService _authService = AuthService();
   final FlashcardService _flashcardService = FlashcardService();
   List<Deck> _decks = [];
@@ -86,6 +88,8 @@ class AccountPageState extends State<AccountPage> {
       FlashcardUtils.updateSettingsNeeded.value = false; // Reset the notifier
     }
   }
+=======
+>>>>>>> hajimaru-pole
 
   @override
   Widget build(BuildContext context) {
@@ -255,16 +259,21 @@ class AccountPageState extends State<AccountPage> {
                   toggledColor:
                       DeckColors.accentColor, // Left Icon Color when Toggled
                   onTap: () async {
+                    setState(() => _isLoading = true);
+                    await Future.delayed(const Duration(milliseconds: 300));
                     final authService = AuthService();
-                    authService.signOut();
+                    await authService.signOut();
                     GoogleSignIn _googleSignIn = GoogleSignIn();
                     if (await _googleSignIn.isSignedIn()) {
                       await _googleSignIn.signOut();
                     }
-                    Navigator.of(context).pushAndRemoveUntil(
-                      RouteGenerator.createRoute(const SignUpPage()),
-                      (Route<dynamic> route) => false,
-                    );
+                    if (mounted) {
+                      setState(() => _isLoading = false);
+                      Navigator.of(context).pushAndRemoveUntil(
+                        RouteGenerator.createRoute(const SignUpPage()),
+                            (Route<dynamic> route) => false,
+                      );
+                    }
                     // Navigator.of(context).pop()
                     // Navigator.of(context).push(
                     //   RouteGenerator.createRoute(const SignUpPage()),

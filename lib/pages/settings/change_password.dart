@@ -13,6 +13,7 @@ class ChangePasswordPage extends StatefulWidget {
 }
 
 class ChangePasswordPageState extends State<ChangePasswordPage> {
+  bool _isLoading = false;
   final newPasswordController = TextEditingController();
   final newConfirmPasswordController = TextEditingController();
   final oldPasswordController = TextEditingController();
@@ -90,6 +91,7 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
                             () async {
                               //when user clicks yes
                               //add logic here
+                              setState(() => _isLoading = true);
                               try{
                                 User? user = FirebaseAuth.instance.currentUser;
                                 String? email = user?.email;
@@ -110,8 +112,9 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
                                   return;
                                 }
                                 AuthService().resetPass(newPasswordController.text);
+                                setState(() => _isLoading = false);
                                 ///display error
-                                showInformationDialog(context, "Successfully changed password","");
+                                showInformationDialog(context, "Success","You have successfully changed your password.");
 
                                 Navigator.pop(context);
                               } on FirebaseAuthException catch (e){
@@ -132,11 +135,13 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
                                   message = 'Error changing your password! Please try again.';
                                 }
                                 print(e.toString());
+                                setState(() => _isLoading = false);
                                 ///display error
                                 showInformationDialog(context, "Error changing password", message);
 
                               } catch (e) {
                                 print(e.toString());
+                                setState(() => _isLoading = false);
                                 ///display error
                                 showInformationDialog(context, "Error changing password", "An Unknown error occured during the process. Please try again.");
                               }

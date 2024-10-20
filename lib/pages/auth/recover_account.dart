@@ -68,8 +68,8 @@ class RecoverAccountPage extends StatelessWidget {
                 onPressed: () async {
                   try {
                     await AuthService().sendResetPass(emailController.text).then((_) => {
-                    showInformationDialog(context, "Success!", "Process was a success. Please check your email."),
-                    Navigator.of(context).pop(RouteGenerator.createRoute(LoginPage()),)
+                    showInformationDialog(context, "Success!", "Please check your email to verify."),
+                    Navigator.of(context).pop(RouteGenerator.createRoute(const LoginPage()),)
                     });
                   } on FirebaseAuthException catch (e) {
                     print(e.toString());
@@ -82,7 +82,6 @@ class RecoverAccountPage extends StatelessWidget {
                       message = 'There was an error finding email! Please try again';
                     }
                     showInformationDialog(context, "Error while trying to recover account", message);
-
                   } catch (e){
                     print(e.toString());
                     showInformationDialog(context, "Error while trying to recover account", "An unknown error occured while performing process. Please try again");
