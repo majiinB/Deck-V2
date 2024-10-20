@@ -6,6 +6,7 @@ import 'package:deck/backend/models/deck.dart';
 import 'package:deck/pages/flashcard/add_deck.dart';
 import 'package:deck/pages/flashcard/view_deck.dart';
 import 'package:deck/pages/misc/colors.dart';
+import 'package:deck/pages/misc/deck_icons.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:deck/pages/misc/widget_method.dart';
@@ -30,6 +31,8 @@ class _FlashcardPageState extends State<FlashcardPage> {
 
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = "";
+
+  bool _isSearchBoxVisible = false;
 
   @override
   void initState() {
@@ -80,7 +83,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: Padding(
+      /*floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 100),
         child: DeckFAB(
           text: "Add Deck",
@@ -105,25 +108,73 @@ class _FlashcardPageState extends State<FlashcardPage> {
             }
           },
         ),
-      ),
-      appBar: const DeckBar(
+      ),*/
+      /*appBar: const DeckBar(
         title: 'flash card',
         color: DeckColors.white,
         fontSize: 24,
-      ),
+      ),*/
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+             Padding(
+              padding: const EdgeInsets.only(top: 20.0),
+              child: Row(
+                children: [
+                  const Icon(
+                    DeckIcons.flashcard,
+                    color: DeckColors.white,
+                    size: 32,
+                  ),
+                  const Spacer(),
+                  IconButton(
+                    icon: const Icon (Icons.add,
+                    color: DeckColors.white,
+                    size: 32),
+                    onPressed: () async {
+                      if (_user != null) {
+                        try {
+                          String userId = _user!.uid.toString();
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    AddDeckPage(decks: _decks, userId: userId)),
+                          );
+                          _onSearchChanged();
+                        } catch (e) {
+                          print('error in navigating add deck $e');
+                        }
+                      }
+                    },
+                  ),
+                  IconButton(
+                    icon: const Icon(
+                    Icons.search_rounded,
+                    color: DeckColors.white,
+                    size: 32),
+                    onPressed: () {
+                      setState(() {
+                        _isSearchBoxVisible = !_isSearchBoxVisible;
+                      });
+                    },
+                  )
+                ],
+              ),
+            ),
             if (_latestDeck != null)
-              Text(
-                'Latest Review',
-                style: GoogleFonts.nunito(
-                  color: DeckColors.primaryColor,
-                  fontSize: 24,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 1,
+              const Padding(
+                padding: EdgeInsets.only(top: 10.0),
+                child: Text(
+                  'Latest Review',
+                  style: TextStyle(
+                    fontFamily: 'Fraiche',
+                    color: DeckColors.primaryColor,
+                    fontSize: 32,
+                    fontWeight: FontWeight.w900,
+                  ),
                 ),
               ),
             if (_latestDeck != null)
@@ -140,12 +191,11 @@ class _FlashcardPageState extends State<FlashcardPage> {
                     children: [
                       Text(
                         _latestDeck!.title.toString(),
-                        overflow: TextOverflow.ellipsis,
+                        overflow: TextOverflow.visible,
                         style: GoogleFonts.nunito(
                           color: DeckColors.white,
                           fontSize: 24,
                           fontWeight: FontWeight.w800,
-                          letterSpacing: 1,
                         ),
                       ),
                       Padding(
@@ -179,19 +229,20 @@ class _FlashcardPageState extends State<FlashcardPage> {
                   ifCollectionEmptyHeight:
                       MediaQuery.of(context).size.height * 0.7),
             if (_decks.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.only(top: 20.0),
+              const Padding(
+                padding: EdgeInsets.only(top: 20.0),
                 child: Text(
                   'My Decks',
-                  style: GoogleFonts.nunito(
+                  style: TextStyle(
+                    fontFamily: 'Fraiche',
                     color: DeckColors.primaryColor,
-                    fontSize: 24,
+                    fontSize: 32,
                     fontWeight: FontWeight.w900,
-                    letterSpacing: 1,
                   ),
                 ),
               ),
             if (_decks.isNotEmpty)
+              if (_isSearchBoxVisible)
               Padding(
                 padding: const EdgeInsets.only(top: 20.0),
                 child: BuildTextBox(
