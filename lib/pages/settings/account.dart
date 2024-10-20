@@ -28,7 +28,6 @@ class AccountPage extends StatefulWidget {
 class AccountPageState extends State<AccountPage> {
   bool _isLoading = false;
   String name = '';
-<<<<<<< main
   final AuthService _authService = AuthService();
   final FlashcardService _flashcardService = FlashcardService();
   List<Deck> _decks = [];
@@ -88,8 +87,6 @@ class AccountPageState extends State<AccountPage> {
       FlashcardUtils.updateSettingsNeeded.value = false; // Reset the notifier
     }
   }
-=======
->>>>>>> hajimaru-pole
 
   @override
   Widget build(BuildContext context) {

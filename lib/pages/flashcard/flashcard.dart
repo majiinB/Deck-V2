@@ -109,7 +109,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
             }
           },
         ),
-      ),*/
+      ),
       /*appBar: const DeckBar(
         title: 'flash card',
         color: DeckColors.white,
