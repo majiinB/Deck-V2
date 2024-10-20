@@ -16,7 +16,7 @@ import '../../backend/models/deck.dart';
 
 class ViewDeckPage extends StatefulWidget {
   final Deck deck;
-  const ViewDeckPage({Key? key, required this.deck}) : super(key: key);
+  const ViewDeckPage({super.key, required this.deck});
 
   @override
   _ViewDeckPageState createState() => _ViewDeckPageState();

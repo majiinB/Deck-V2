@@ -48,6 +48,7 @@ class TaskService {
         for (int i = 0; i < list.length; i++) {
           if (list[i].uid == task.uid) {
             list[i] = loadedTask;
+            break;
           }
         }
     } catch (e){

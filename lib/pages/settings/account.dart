@@ -27,60 +27,8 @@ class AccountPage extends StatefulWidget {
 }
 
 class AccountPageState extends State<AccountPage> {
+  bool _isLoading = false;
   String name = '';
-  final AuthService _authService = AuthService();
-  final FlashcardService _flashcardService = FlashcardService();
-  List<Deck> _decks = [];
-  Map<String, int> _deckCardCount = {};
-  late User? _user;
-  late Image? coverUrl;
-
-  @override
-  void initState() {
-    coverUrl = null;
-    getCoverUrl();
-    super.initState();
-    FlashcardUtils.updateSettingsNeeded.addListener(_updateAccountPage);
-    _user = _authService.getCurrentUser();
-    _initUserDecks(_user);
-    Provider.of<ProfileProvider>(context, listen: false).addListener(_updateAccountPage);
-  }
-
-  @override
-  void dispose() {
-    FlashcardUtils.updateSettingsNeeded.removeListener(_updateAccountPage);
-    super.dispose();
-  }
-
-  void getCoverUrl() async {
-    coverUrl = await AuthUtils().getCoverPhotoUrl();
-    setState(() { print(coverUrl);});
-  }
-
-  void _initUserDecks(User? user) async {
-    if (user != null) {
-      String userId = user.uid;
-      List<Deck> decks = await _flashcardService.getDecksByUserId(userId); // Call method to fetch decks
-      Map<String, int> deckCardCount = {};
-      for (Deck deckCount in decks) {
-        int count = await deckCount.getCardCount();
-        deckCardCount[deckCount.deckId] = count;
-      }
-      setState(() {
-        _decks = decks; // Update state with fetched decks
-        _deckCardCount = deckCardCount; // Update state with fetched decks count
-      });
-    }
-  }
-
-  void _updateAccountPage() {
-    if (FlashcardUtils.updateSettingsNeeded.value) {
-      setState(() {
-        _initUserDecks(_user);
-      });
-      FlashcardUtils.updateSettingsNeeded.value = false; // Reset the notifier
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -171,9 +119,7 @@ class AccountPageState extends State<AccountPage> {
                             RouteGenerator.createRoute(const EditProfile()),
                           );
                           if(result != null && result['updated'] == true) {
-                            _updateAccountPage();
-                           Provider.of<ProfileProvider>(context, listen: false).addListener(_updateAccountPage);
-                           setState(() { coverUrl = result['file']; });
+                            setState((){});
                           }
                         },
                         buttonText: 'edit profile',
@@ -247,16 +193,22 @@ class AccountPageState extends State<AccountPage> {
                   toggledColor:
                   DeckColors.accentColor, // Left Icon Color when Toggled
                   onTap: () async {
+                    setState(() => _isLoading = true);
+                    await Future.delayed(const Duration(milliseconds: 300));
                     final authService = AuthService();
-                    authService.signOut();
+                    await authService.signOut();
                     GoogleSignIn _googleSignIn = GoogleSignIn();
                     if (await _googleSignIn.isSignedIn()) {
                       await _googleSignIn.signOut();
                     }
-                    Navigator.of(context).pushAndRemoveUntil(
-                      RouteGenerator.createRoute(const SignUpPage()),
-                          (Route<dynamic> route) => false,
-                    );
+
+                    if (mounted) {
+                      setState(() => _isLoading = false);
+                      Navigator.of(context).pushAndRemoveUntil(
+                        RouteGenerator.createRoute(const SignUpPage()),
+                            (Route<dynamic> route) => false,
+                      );
+                    }
                     // Navigator.of(context).pop()
                     // Navigator.of(context).push(
                     //   RouteGenerator.createRoute(const SignUpPage()),

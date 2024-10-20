@@ -26,6 +26,7 @@ class LoginPage extends StatefulWidget {
 /// It includes text controllers for email and password and integrates
 /// Firebase for authentication services.
 class _LoginPageState extends State<LoginPage> {
+  bool _isLoading = false;
   // Controllers to handle input from the email and password text fields.
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -40,7 +41,7 @@ class _LoginPageState extends State<LoginPage> {
         color: DeckColors.white,
         fontSize: 24,
       ),
-      body: SingleChildScrollView(
+      body: _isLoading ? const Center(child: CircularProgressIndicator()) : SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.only(left: 30, right: 30),
           child: Column(
@@ -137,6 +138,7 @@ class _LoginPageState extends State<LoginPage> {
               // Log In button. Triggers email/password authentication.
               BuildButton(
                 onPressed: () async {
+                  setState(() => _isLoading = true);
                   try {
                     // Authenticate using email and password.
                     await AuthService().signInWithEmail(
@@ -145,10 +147,13 @@ class _LoginPageState extends State<LoginPage> {
                     // After logging in, renew FCM token for notifications.
                     await FCMService().renewToken();
 
-                    // Navigate to AuthGate (main application screen).
-                    Navigator.of(context).push(
-                      RouteGenerator.createRoute(const AuthGate()),
-                    );
+                    if(mounted){
+                      setState(() => _isLoading = false);
+                      // Navigate to AuthGate after successful login.
+                      Navigator.of(context).push(
+                        RouteGenerator.createRoute(const AuthGate()),
+                      );
+                    }
                   } on FirebaseAuthException catch (e) {
                     // Handle specific Firebase authentication errors.
                     String message = '';
@@ -164,14 +169,21 @@ class _LoginPageState extends State<LoginPage> {
                       message = 'Error logging in user!';
                     }
 
-                    // Display error dialog to the user.
-                    showInformationDialog(
-                        context, message, "A problem occurred while signing in. Please try again.");
+                    if(mounted){
+                      setState(() => _isLoading = false);
+                      // Display error dialog to the user.
+                      showInformationDialog(
+                          context, message, "A problem occurred while signing in. Please try again.");
+                    }
                   } catch (e) {
                     // Handle any other errors.
                     print(e.toString());
-                    showInformationDialog(
-                        context, "Error signing in.", "A problem occurred while signing in. Please try again.");
+                    if (mounted) {
+                      setState(() => _isLoading = false);
+                      showInformationDialog(
+                          context, "Error signing in.",
+                          "A problem occurred while signing in. Please try again.");
+                    }
                   }
                 },
                 buttonText: 'Log In',
@@ -218,6 +230,7 @@ class _LoginPageState extends State<LoginPage> {
               // Google sign-in button. Uses Firebase Authentication with Google.
               BuildButton(
                 onPressed: () async {
+                  setState(() => _isLoading = true);
                   final authService = AuthService();
                   try {
                     // Sign in using Google.
@@ -242,14 +255,19 @@ class _LoginPageState extends State<LoginPage> {
                       // Renew FCM token if the user already exists.
                       await FCMService().renewToken();
                     }
-
-                    // Navigate to AuthGate after successful login.
-                    Navigator.of(context).push(
-                      RouteGenerator.createRoute(const AuthGate()),
-                    );
+                    if(mounted){
+                      setState(() => _isLoading = false);
+                      // Navigate to AuthGate after successful login.
+                      Navigator.of(context).push(
+                        RouteGenerator.createRoute(const AuthGate()),
+                      );
+                    }
                   } catch (e) {
                     print(e.toString());
-                    showInformationDialog(context, "Error signing in.", "A problem occurred while signing in. Please try again.");
+                    if(mounted){
+                      setState(() => _isLoading = false);
+                      showInformationDialog(context, "Error signing in.", "A problem occurred while signing in. Please try again.");
+                    }
                   }
                 },
                 buttonText: 'Continue with Google',
