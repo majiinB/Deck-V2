@@ -1704,7 +1704,7 @@ class BuildContainerOfFlashCardsState extends State<BuildContainerOfFlashCards>
                       });
                     },
                     child: Icon(
-                      size: 32,
+                      size: 24,
                       widget.isStarShaded ? Icons.star : Icons.star_border,
                       color: widget.isStarShaded
                           ? DeckColors.primaryColor
@@ -1712,6 +1712,14 @@ class BuildContainerOfFlashCardsState extends State<BuildContainerOfFlashCards>
                     ),
                   ),
                 ],
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 10.0),
+                child: Container(
+                  color: DeckColors.white,
+                  width: MediaQuery.of(context).size.width,
+                  height: 1,
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 20),

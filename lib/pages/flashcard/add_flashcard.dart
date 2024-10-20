@@ -29,131 +29,154 @@ class _AddFlashcardPageState extends State<AddFlashcardPage> {
           fontSize: 24,
         ),*/
         body: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(
-              'Simply fill in the text fields below to add flash card on your deck.',
-              textAlign: TextAlign.justify,
-              style: GoogleFonts.nunito(
-                fontSize: 16,
-                color: DeckColors.white,
-              ),
-            ),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Image(
+                  image: AssetImage('assets/images/AddDeck_Header.png'),
+                  fit: BoxFit.cover,
+                ),
             Padding(
-              padding: const EdgeInsets.only(top: 20.0),
-              child: Container(
-                color: DeckColors.white,
-                height: 2,
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(top: 40.0),
-              child: BuildTextBox(
-                  controller: _questionOrTermController,
-                  hintText: 'Enter Term'
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 20),
-              child: BuildTextBox(
-                      controller: _descriptionOrAnswerController,
-                      hintText: 'Enter Description',
-                      isMultiLine: true
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Padding(padding: EdgeInsets.only(top: 10, bottom: 20),
+                    child: Text(
+                      'Add A New FlashCard To The Deck',
+                      style: TextStyle(
+                        fontFamily: 'Fraiche',
+                        color: DeckColors.primaryColor,
+                        fontSize: 32,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
                   ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(top: 35),
-              child: BuildButton(
-                onPressed: () {
-                  showConfirmationDialog(
-                    context,
-                    "Add Flash Card",
-                    "Are you sure you want to add this flash card on your deck?",
-                        () async {
-                          try {
-                            if (_descriptionOrAnswerController.text.isNotEmpty &&
-                                _questionOrTermController.text.isNotEmpty) {
-                              Cards? card = await widget.deck.addQuestionToDeck(
-                                _questionOrTermController.text.toString(),
-                                _descriptionOrAnswerController.text.toString(),
-                              );
-                              if (card != null) {
-                                await Future.delayed(Duration(milliseconds: 300));
-                                Navigator.pop(context, card);
-                                showInformationDialog(context, "Card Added Successfully", "You can now view this card in you deck");
-                              }
-                            } else {
-                              //Navigator.of(context).pop(); // Close the confirmation dialog
-                              await Future.delayed(Duration(milliseconds: 300)); // Ensure the dialog is fully closed
-                              showInformationDialog(
-                                  context,
-                                  "Input Error",
-                                  "Please fill out all of the input fields and try again.");
-                          // showDialog(
-                              //   context: context,
-                              //   builder: (BuildContext context) {
-                              //     return AlertDialog(
-                              //       title: const Text('Input Error'),
-                              //       content: const Text('Please fill out all of the input fields.'),
-                              //       actions: <Widget>[
-                              //         TextButton(
-                              //           onPressed: () {
-                              //             Navigator.of(context).pop(); // Close the dialog
-                              //           },
-                              //           child: const Text(
-                              //             'Close',
-                              //             style: TextStyle(
-                              //               color: Colors.red,
-                              //             ),
-                              //           ),
-                              //         ),
-                              //       ],
-                              //     );
-                              //   },
-                              // );
-                            }
-                          } catch (e) {
-                            print('add card error: $e');
-                            showInformationDialog(
-                                context,
-                                "An error occured" ,
-                                "An unknown error occured. Please try again.");
-                          }
-                        },
-                        () {
-                      // when user clicks no
-                      // add logic here
-                        },
-                  );
-                },
-                buttonText: 'Save Changes',
-                height: 50.0,
-                width: MediaQuery.of(context).size.width,
-                backgroundColor: DeckColors.primaryColor,
-                textColor: DeckColors.white,
-                radius: 10.0,
-                fontSize: 16,
-                borderWidth: 0,
-                borderColor: Colors.transparent,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: BuildButton(
-                onPressed: () {
-                  print(
-                      "cancel button clicked");
-                  Navigator.pop(context);
-                },
-                buttonText: 'Cancel',
-                height: 50.0,
-                width: MediaQuery.of(context).size.width,
-                backgroundColor: DeckColors.white,
-                textColor: DeckColors.primaryColor,
-                radius: 10.0,
-                fontSize: 16,
-                borderWidth: 0,
-                borderColor: Colors.transparent,
+                  Text(
+                    'Simply fill in the text fields below to add flash card on your deck.',
+                    textAlign: TextAlign.justify,
+                    style: GoogleFonts.nunito(
+                      fontSize: 16,
+                      color: DeckColors.white,
+                    ),
+                  ),
+                  /*Padding(
+                    padding: const EdgeInsets.only(top: 20.0),
+                    child: Container(
+                      color: DeckColors.primaryColor,
+                      height: 1,
+                    ),
+                  ),*/
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20.0),
+                    child: BuildTextBox(
+                        controller: _questionOrTermController,
+                        hintText: 'Enter Terminology'
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    child: BuildTextBox(
+                            controller: _descriptionOrAnswerController,
+                            hintText: 'Enter Description',
+                            isMultiLine: true
+                        ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: BuildButton(
+                      onPressed: () {
+                        showConfirmationDialog(
+                          context,
+                          "Add Flash Card",
+                          "Are you sure you want to add this flash card on your deck?",
+                              () async {
+                                try {
+                                  if (_descriptionOrAnswerController.text.isNotEmpty &&
+                                      _questionOrTermController.text.isNotEmpty) {
+                                    Cards? card = await widget.deck.addQuestionToDeck(
+                                      _questionOrTermController.text.toString(),
+                                      _descriptionOrAnswerController.text.toString(),
+                                    );
+                                    if (card != null) {
+                                      await Future.delayed(Duration(milliseconds: 300));
+                                      Navigator.pop(context, card);
+                                      showInformationDialog(context, "Card Added Successfully", "You can now view this card in you deck");
+                                    }
+                                  } else {
+                                    //Navigator.of(context).pop(); // Close the confirmation dialog
+                                    await Future.delayed(Duration(milliseconds: 300)); // Ensure the dialog is fully closed
+                                    showInformationDialog(
+                                        context,
+                                        "Input Error",
+                                        "Please fill out all of the input fields and try again.");
+                                // showDialog(
+                                    //   context: context,
+                                    //   builder: (BuildContext context) {
+                                    //     return AlertDialog(
+                                    //       title: const Text('Input Error'),
+                                    //       content: const Text('Please fill out all of the input fields.'),
+                                    //       actions: <Widget>[
+                                    //         TextButton(
+                                    //           onPressed: () {
+                                    //             Navigator.of(context).pop(); // Close the dialog
+                                    //           },
+                                    //           child: const Text(
+                                    //             'Close',
+                                    //             style: TextStyle(
+                                    //               color: Colors.red,
+                                    //             ),
+                                    //           ),
+                                    //         ),
+                                    //       ],
+                                    //     );
+                                    //   },
+                                    // );
+                                  }
+                                } catch (e) {
+                                  print('add card error: $e');
+                                  showInformationDialog(
+                                      context,
+                                      "An error occured" ,
+                                      "An unknown error occured. Please try again.");
+                                }
+                              },
+                              () {
+                            // when user clicks no
+                            // add logic here
+                              },
+                        );
+                      },
+                      buttonText: 'Save Changes',
+                      height: 50.0,
+                      width: MediaQuery.of(context).size.width,
+                      backgroundColor: DeckColors.primaryColor,
+                      textColor: DeckColors.white,
+                      radius: 10.0,
+                      fontSize: 16,
+                      borderWidth: 0,
+                      borderColor: Colors.transparent,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: BuildButton(
+                      onPressed: () {
+                        print(
+                            "cancel button clicked");
+                        Navigator.pop(context);
+                      },
+                      buttonText: 'Cancel',
+                      height: 50.0,
+                      width: MediaQuery.of(context).size.width,
+                      backgroundColor: DeckColors.white,
+                      textColor: DeckColors.primaryColor,
+                      radius: 10.0,
+                      fontSize: 16,
+                      borderWidth: 0,
+                      borderColor: Colors.transparent,
+                    ),
+                  ),
+                ],
               ),
             ),
           ]),

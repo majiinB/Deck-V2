@@ -191,12 +191,11 @@ class _FlashcardPageState extends State<FlashcardPage> {
                     children: [
                       Text(
                         _latestDeck!.title.toString(),
-                        overflow: TextOverflow.ellipsis,
+                        overflow: TextOverflow.visible,
                         style: GoogleFonts.nunito(
                           color: DeckColors.white,
                           fontSize: 24,
                           fontWeight: FontWeight.w800,
-                          letterSpacing: 1,
                         ),
                       ),
                       Padding(
