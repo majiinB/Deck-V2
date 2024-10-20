@@ -27,6 +27,7 @@ class AccountPage extends StatefulWidget {
 }
 
 class AccountPageState extends State<AccountPage> {
+  bool _isLoading = false;
   String name = '';
   final AuthService _authService = AuthService();
   final FlashcardService _flashcardService = FlashcardService();
@@ -56,7 +57,6 @@ class AccountPageState extends State<AccountPage> {
 
   void getCoverUrl() async {
     coverUrl = await AuthUtils().getCoverPhotoUrl();
-    setState(() { print(coverUrl);});
   }
 
   void _initUserDecks(User? user) async {
@@ -175,7 +175,6 @@ class AccountPageState extends State<AccountPage> {
                           if(result != null && result['updated'] == true) {
                             _updateAccountPage();
                            Provider.of<ProfileProvider>(context, listen: false).addListener(_updateAccountPage);
-                           setState(() { coverUrl = result['file']; });
                           }
                         },
                         buttonText: 'edit profile',
@@ -249,16 +248,22 @@ class AccountPageState extends State<AccountPage> {
                   toggledColor:
                   DeckColors.accentColor, // Left Icon Color when Toggled
                   onTap: () async {
+                    setState(() => _isLoading = true);
+                    await Future.delayed(const Duration(milliseconds: 300));
                     final authService = AuthService();
-                    authService.signOut();
+                    await authService.signOut();
                     GoogleSignIn _googleSignIn = GoogleSignIn();
                     if (await _googleSignIn.isSignedIn()) {
                       await _googleSignIn.signOut();
                     }
-                    Navigator.of(context).pushAndRemoveUntil(
-                      RouteGenerator.createRoute(const SignUpPage()),
-                          (Route<dynamic> route) => false,
-                    );
+
+                    if (mounted) {
+                      setState(() => _isLoading = false);
+                      Navigator.of(context).pushAndRemoveUntil(
+                        RouteGenerator.createRoute(const SignUpPage()),
+                            (Route<dynamic> route) => false,
+                      );
+                    }
                     // Navigator.of(context).pop()
                     // Navigator.of(context).push(
                     //   RouteGenerator.createRoute(const SignUpPage()),

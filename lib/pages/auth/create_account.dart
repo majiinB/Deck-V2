@@ -22,6 +22,7 @@ class CreateAccountPage extends StatefulWidget {
 }
 
 class _CreateAccountPageState extends State<CreateAccountPage> {
+  bool _isLoading = false;
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController = TextEditingController();
@@ -53,7 +54,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         color: DeckColors.white,
         fontSize: 24,
       ),
-      body: SingleChildScrollView(
+      body: _isLoading ? const Center(child: CircularProgressIndicator()) : SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.only(left: 30, right: 30),
           child: Column(
@@ -83,7 +84,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(top: 20),
+                padding: const EdgeInsets.only(top: 20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -107,7 +108,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(top: 20),
+                padding: const EdgeInsets.only(top: 20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -199,20 +200,18 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                 padding: const EdgeInsets.only(top: 30),
                 child: BuildButton(
                   onPressed: () async {
-
+                    setState(() => _isLoading = true);
                     if(!checkBox.isChecked){
-
                       ///display error
+                      setState(() => _isLoading = false);
                       showInformationDialog(context, "Error Signing Up","You haven't agreed to the Terms of Use and Privacy Policy. Please try again");
-
                       return;
                     }
 
                     if(passwordController.text != confirmPasswordController.text) {
-
+                      setState(() => _isLoading = false);
                       ///display error
                       showInformationDialog(context, "Error Signing Up","Passwords do not match! Please try again.");
-
                       return;
                     }
 
@@ -231,7 +230,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
 
                       final db = FirebaseFirestore.instance;
                       await db.collection("users").add(user);
-
+                      setState(() => _isLoading = false);
                       Navigator.of(context).push(
                         RouteGenerator.createRoute(const AuthGate()),
                       );
@@ -249,14 +248,13 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                       } else {
                         message = "Unknown Error! Please try again.";
                       }
-
+                      setState(() => _isLoading = false);
                       showInformationDialog(context, "Error creating your account!",message);
                     } catch (e) {
                       print(e.toString());
-
+                      setState(() => _isLoading = false);
                       showInformationDialog(context, "Error creating your account!", "Unknown Error! Please try again.");
                     }
-
                   },
                   buttonText: 'Join the Deck Party!',
                   height: 60,

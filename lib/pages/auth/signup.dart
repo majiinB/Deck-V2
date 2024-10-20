@@ -21,6 +21,8 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  bool _isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,7 +32,7 @@ class _SignUpPageState extends State<SignUpPage> {
         color: DeckColors.primaryColor,
         fontSize: 24,
       ),
-      body: Padding(
+      body: _isLoading ? const Center(child: CircularProgressIndicator()) : Padding(
         padding: const EdgeInsets.only(left: 30, right: 30),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center, // Center the content vertically
@@ -47,6 +49,7 @@ class _SignUpPageState extends State<SignUpPage> {
             const SizedBox(height: 30),
             BuildButton(
               onPressed: () async {
+                setState(() => _isLoading = true);
                 final authService = AuthService();
                 try {
                   final currentUser = await authService.signUpWithGoogle();
@@ -68,16 +71,21 @@ class _SignUpPageState extends State<SignUpPage> {
                   } else {
                     await FCMService().renewToken();
                   }
-
+                  if (mounted) {
+                    setState(() => _isLoading = false);
+                  }
                   Navigator.of(context).push(
                     RouteGenerator.createRoute(const AuthGate()),
                   );
                 } catch (e) {
                   print(e.toString());
-
+                  if (mounted) {
+                    setState(() => _isLoading = false);
+                    showInformationDialog(context, "Error signing up",
+                        "A problem occurred while signing up. Please try again.");
+                  }
                   /// Display error
-                  showInformationDialog(context, "Error signing up",
-                      "A problem occurred while signing up. Please try again.");
+
                 }
               },
               buttonText: 'Continue with Google',
