@@ -842,6 +842,7 @@ class BuildTextBoxState extends State<BuildTextBox> {
         hintText: widget.hintText,
         hintStyle: GoogleFonts.nunito(
           fontSize: 16,
+          fontStyle: FontStyle.italic,
           color: Colors.white,
         ),
         filled: true,
