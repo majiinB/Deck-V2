@@ -80,6 +80,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: DeckColors.backgroundColor,
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 100),
         child: DeckFAB(

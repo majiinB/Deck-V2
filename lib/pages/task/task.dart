@@ -67,6 +67,7 @@ class _TaskPageState extends State<TaskPage> {
     }
 
     return Scaffold(
+      backgroundColor: DeckColors.backgroundColor,
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 100),
         child: DeckFAB(

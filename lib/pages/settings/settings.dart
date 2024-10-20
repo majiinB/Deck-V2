@@ -23,7 +23,7 @@ class _SettingPageState extends State<SettingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: DeckColors.backgroundColor,
       appBar: const AuthBar(
         automaticallyImplyLeading: true,
         title: 'settings',

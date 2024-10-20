@@ -1,4 +1,3 @@
-
 import 'package:deck/pages/misc/colors.dart';
 import 'package:deck/pages/misc/deck_icons.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -31,6 +30,7 @@ class DeckBar extends StatelessWidget implements PreferredSizeWidget {
 
   final String title;
   final Color color;
+
   final double fontSize;
   final VoidCallback? onPressed;
   final Color? iconColor;
@@ -724,9 +724,8 @@ class BuildSettingsContainerState extends State<BuildSettingsContainer> {
                       style: GoogleFonts.nunito(
                         fontSize: 16,
                         fontWeight: FontWeight.w900,
-                        color: _isToggled
-                            ? (widget.textColor)
-                            : widget.textColor,
+                        color:
+                            _isToggled ? (widget.textColor) : widget.textColor,
                       ),
                     ),
                   ),
@@ -888,7 +887,7 @@ class BuildIconButton extends StatelessWidget {
   final VoidCallback onPressed;
   final IconData icon;
   final Color iconColor, backgroundColor;
-  final Color ? borderColor;
+  final Color? borderColor;
   final double containerWidth, borderWidth, containerHeight;
 
   const BuildIconButton({
@@ -909,13 +908,12 @@ class BuildIconButton extends StatelessWidget {
       width: containerWidth,
       height: containerHeight,
       decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(25),
-        border: Border.all(
-          color: borderColor ?? Colors.transparent,
-          width: borderWidth,
-        )
-      ),
+          color: backgroundColor,
+          borderRadius: BorderRadius.circular(25),
+          border: Border.all(
+            color: borderColor ?? Colors.transparent,
+            width: borderWidth,
+          )),
       child: IconButton(
         icon: Icon(icon, color: iconColor),
         onPressed: onPressed,
@@ -946,7 +944,8 @@ class CustomDropdown extends StatelessWidget {
   final IconData? leftIcon;
   final Color? leftIconColor;
 
-  const CustomDropdown({super.key,
+  const CustomDropdown({
+    super.key,
     required this.items,
     this.onChanged,
     this.validator,
@@ -962,7 +961,8 @@ class CustomDropdown extends StatelessWidget {
       decoration: InputDecoration(
         filled: true,
         fillColor: Colors.grey[200],
-        contentPadding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
+        contentPadding:
+            const EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
         prefixIcon: leftIcon != null
             ? Icon(
                 leftIcon,
@@ -1182,7 +1182,11 @@ class IfCollectionEmpty extends StatelessWidget {
   final String? ifCollectionEmptySubText;
   final double ifCollectionEmptyHeight;
 
-  const IfCollectionEmpty({super.key, required this.ifCollectionEmptyText, this.ifCollectionEmptySubText, required this.ifCollectionEmptyHeight});
+  const IfCollectionEmpty(
+      {super.key,
+      required this.ifCollectionEmptyText,
+      this.ifCollectionEmptySubText,
+      required this.ifCollectionEmptyHeight});
 
   @override
   Widget build(BuildContext context) {
@@ -1875,7 +1879,7 @@ class HomeTaskTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       borderRadius: BorderRadius.circular(15.0),
-      color: DeckColors.gray,
+      color: DeckColors.accentColor,
       child: InkWell(
         borderRadius: BorderRadius.circular(15.0),
         onTap: () {
@@ -1885,38 +1889,51 @@ class HomeTaskTile extends StatelessWidget {
         },
         child: Container(
           padding:
-              const EdgeInsets.only(left: 20.0, right: 20, top: 20, bottom: 20),
+              const EdgeInsets.only(left: 20.0, right: 20, top: 10, bottom: 10),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15.0),
           ),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            // Use Row to position the colored box and text side by side
+            crossAxisAlignment:
+                CrossAxisAlignment.start, // Aligns children vertically
             children: [
-              SizedBox(
-                width: 100,
-                child: Text(
-                  taskName,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    color: DeckColors.white,
-                  ),
-                ),
+              Container(
+                width: 10, // Set width for the colored box
+                height: 60, // Set height for the colored box
+                color: DeckColors.deckRed, // Set your desired color here
               ),
-              SizedBox(
-                width: 100,
-                child: Text(
-                  deadline,
-                  textAlign: TextAlign.end,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: DeckColors.white,
-                  ),
+              const SizedBox(
+                  width: 10), // Add some spacing between the box and text
+              Expanded(
+                // Use Expanded to fill available space
+                child: Column(
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start, // Aligns text to the left
+                  children: [
+                    Text(
+                      taskName,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontFamily: 'fraiche',
+                        fontSize: 24,
+                        fontWeight: FontWeight.w700,
+                        color: DeckColors.white,
+                      ),
+                    ),
+                    Text(
+                      deadline,
+                      textAlign: TextAlign.start,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: DeckColors.white,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -1984,7 +2001,7 @@ class HomeDeckTile extends StatelessWidget {
                           ? Image.network(
                               deckImageUrl!,
                               width: cardWidth,
-                              height: double.infinity,
+                              // height: double.infinity,
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) {
                                 return Container(
@@ -2010,27 +2027,35 @@ class HomeDeckTile extends StatelessWidget {
                       width: cardWidth,
                       child: Container(
                         padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              Colors.transparent,
-                              Colors.black.withOpacity(0.9),
-                            ],
-                          ),
-                          borderRadius: const BorderRadius.only(
+                        decoration: const BoxDecoration(
+                          color: DeckColors.accentColor,
+                          borderRadius: BorderRadius.only(
                             bottomLeft: Radius.circular(10),
                             bottomRight: Radius.circular(10),
                           ),
                         ),
+                        // decoration: BoxDecoration(
+                        //   gradient: LinearGradient(
+                        //     begin: Alignment.topCenter,
+                        //     end: Alignment.bottomCenter,
+                        //     colors: [
+                        //       Colors.transparent,
+                        //       Colors.black.withOpacity(0.9),
+                        //     ],
+                        //   ),
+                        //   borderRadius: const BorderRadius.only(
+                        //     bottomLeft: Radius.circular(10),
+                        //     bottomRight: Radius.circular(10),
+                        //   ),
+                        // ),
                         child: Text(
                           deckName,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
                             color: Colors.white,
-                            fontSize: 16,
+                            fontSize: 20,
+                            fontFamily: 'Fraiche',
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -2202,13 +2227,11 @@ void hideLoad(BuildContext context) {
   Navigator.of(context).pop();
 }
 
-
 /// ------------------------- S T A R T ----------------------------
 /// ------------ D E C K  I N T R O P A G E----------------------
 ///
 
-class DeckIntroPage extends StatelessWidget{
-
+class DeckIntroPage extends StatelessWidget {
   final String img;
   final String text;
 
@@ -2220,9 +2243,7 @@ class DeckIntroPage extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Image.asset(img,
-          fit: BoxFit.contain
-      ),
+      child: Image.asset(img, fit: BoxFit.contain),
     );
   }
 }
