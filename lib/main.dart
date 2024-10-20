@@ -66,8 +66,9 @@ class _myAppState extends State<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Deck',
-      theme: Provider.of<ThemeProvider>(context).themeData,
-      navigatorKey: navigatorKey,
+      // theme: Provider.of<ThemeProvider>(context).themeData,
+      // navigatorKey: navigatorKey,
+      theme: darkMode,
       home: const AuthGate(),
     );
   }
@@ -95,11 +96,15 @@ class _MainPageState extends State<MainPage> {
   ];
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if(Provider.of<TaskProvider>(context, listen: false).checkIfDeadlineIsToday()) {
-        NotificationService().showNotification(title: 'You have due tasks today!', body: 'Finish them!', payload: 'load');
+      if (Provider.of<TaskProvider>(context, listen: false)
+          .checkIfDeadlineIsToday()) {
+        NotificationService().showNotification(
+            title: 'You have due tasks today!',
+            body: 'Finish them!',
+            payload: 'load');
       }
     });
   }

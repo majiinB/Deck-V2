@@ -63,7 +63,7 @@ class _HomePageState extends State<HomePage> {
     _user?.reload();
     String? firstName = _user?.displayName?.split(" ").first ?? 'User';
     setState(() {
-      greeting = "hi, $firstName!";
+      greeting = "Hi, $firstName!";
     });
   }
 
@@ -76,6 +76,7 @@ class _HomePageState extends State<HomePage> {
         .toList();
 
     return Scaffold(
+      backgroundColor: DeckColors.backgroundColor,
       body: SafeArea(
           top: true,
           bottom: false,
@@ -90,74 +91,102 @@ class _HomePageState extends State<HomePage> {
                 textStyle: const TextStyle(
                   color: DeckColors.primaryColor,
                   fontFamily: 'Fraiche',
-                  fontSize: 56,
+                  fontSize: 48,
                 ),
                 isPinned: false,
                 max: 100,
                 min: 100,
                 hasIcon: false,
               ),
-              if (taskToday.isEmpty && _decks.isEmpty)
-                SliverToBoxAdapter(
-                    child: IfCollectionEmpty(
-                        ifCollectionEmptyText:
-                            "Start Creating Your\nTask and Flashcards!",
-                        ifCollectionEmptySubText:
-                            "No content is currently\navailable",
-                        ifCollectionEmptyHeight:
-                            MediaQuery.of(context).size.height * 0.7))
-              else if (taskToday.isEmpty && _decks.isNotEmpty)
-                SliverToBoxAdapter(
-                    child: IfCollectionEmpty(
-                        ifCollectionEmptyText: "No Task(s) Available Today",
-                        ifCollectionEmptyHeight:
-                            MediaQuery.of(context).size.height * 0.5))
-              else if (taskToday.isNotEmpty)
-                SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                      childCount: _tasks.length, (context, index) {
-                    DateTime deadline = DateTime(
-                        _tasks[index].deadline.year,
-                        _tasks[index].deadline.month,
-                        _tasks[index].deadline.day);
-                    DateTime notifyRange = DateTime(DateTime.now().year,
-                            DateTime.now().month, DateTime.now().day)
-                        .add(const Duration(days: 1));
-                    DateTime today = DateTime(DateTime.now().year,
-                        DateTime.now().month, DateTime.now().day);
-                    if (!_tasks[index].isDone &&
-                        deadline.isBefore(notifyRange) &&
-                        deadline.isAtSameMomentAs(today)) {
-                      return LayoutBuilder(
-                          builder: (context, BoxConstraints constraints) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 10),
-                          child: HomeTaskTile(
-                            taskName: _tasks[index].title,
-                            deadline:
-                                _tasks[index].deadline.toString().split(" ")[0],
-                            onPressed: () {
-                              print('YOU TOUCHED THE TASK!');
-                              Navigator.push(
-                                context,
-                                RouteGenerator.createRoute(ViewTaskPage(
-                                    task: _tasks[index], isEditable: false)),
-                              );
-                            },
-                          ),
-                        );
-                      });
-                    } else {
-                      return const SizedBox();
-                    }
-                  }),
+              const DeckSliverHeader(
+                backgroundColor: Colors.transparent,
+                headerTitle: "Let's be productive today as well!",
+                textStyle: TextStyle(
+                  color: DeckColors.white,
+                  fontWeight: FontWeight.w300,
+                  fontSize: 16,
                 ),
+                isPinned: false,
+                max: 50,
+                min: 50,
+                hasIcon: false,
+              ),
+              if (taskToday.isEmpty)
+                // SliverToBoxAdapter(
+                //     child: IfCollectionEmpty(
+                //         ifCollectionEmptyText: "No Task(s) Available Today",
+                //         ifCollectionEmptyHeight:
+                //             MediaQuery.of(context).size.height * 0.3))
+                const DeckSliverHeader(
+                  backgroundColor: Colors.transparent,
+                  headerTitle: "Upcoming Deadlines",
+                  textStyle: TextStyle(
+                    color: DeckColors.primaryColor,
+                    fontFamily: 'Fraiche',
+                    fontSize: 24,
+                  ),
+                  isPinned: false,
+                  max: 50,
+                  min: 50,
+                  hasIcon: false,
+                )
+              else if (taskToday.isNotEmpty)
+                const DeckSliverHeader(
+                  backgroundColor: Colors.transparent,
+                  headerTitle: "Upcoming Deadlines",
+                  textStyle: TextStyle(
+                    color: DeckColors.primaryColor,
+                    fontFamily: 'Fraiche',
+                    fontSize: 24,
+                  ),
+                  isPinned: false,
+                  max: 50,
+                  min: 50,
+                  hasIcon: false,
+                ),
+              SliverList(
+                delegate: SliverChildBuilderDelegate(childCount: _tasks.length,
+                    (context, index) {
+                  DateTime deadline = DateTime(_tasks[index].deadline.year,
+                      _tasks[index].deadline.month, _tasks[index].deadline.day);
+                  DateTime notifyRange = DateTime(DateTime.now().year,
+                          DateTime.now().month, DateTime.now().day)
+                      .add(const Duration(days: 1));
+                  DateTime today = DateTime(DateTime.now().year,
+                      DateTime.now().month, DateTime.now().day);
+                  if (!_tasks[index].isDone &&
+                      deadline.isBefore(notifyRange) &&
+                      deadline.isAtSameMomentAs(today)) {
+                    return LayoutBuilder(
+                        builder: (context, BoxConstraints constraints) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: HomeTaskTile(
+                          taskName: _tasks[index].title,
+                          deadline:
+                              _tasks[index].deadline.toString().split(" ")[0],
+                          onPressed: () {
+                            print('YOU TOUCHED THE TASK!');
+                            Navigator.push(
+                              context,
+                              RouteGenerator.createRoute(ViewTaskPage(
+                                  task: _tasks[index], isEditable: false)),
+                            );
+                          },
+                        ),
+                      );
+                    });
+                  } else {
+                    return const SizedBox();
+                  }
+                }),
+              ),
               if ((taskToday.isNotEmpty || _decks.isNotEmpty))
                 const DeckSliverHeader(
                   backgroundColor: Colors.transparent,
-                  headerTitle: "Recently Added",
+                  headerTitle: "Continue Learning",
                   textStyle: TextStyle(
-                    color: DeckColors.white,
+                    color: DeckColors.primaryColor,
                     fontFamily: 'Fraiche',
                     fontSize: 24,
                   ),
