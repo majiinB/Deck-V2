@@ -68,7 +68,6 @@ class EditProfileState extends State<EditProfile> {
     print('photoUrl: $photoUrl');
     await _updateProfilePhoto(user, uniqueFileName);
 
-    Provider.of<ProfileProvider>(context, listen: false).updateProfile();
     String message = 'Updated user information!';
     if(user?.email != emailController.text) {
       message = "Updated user information! Please check your new email in order to change.";
