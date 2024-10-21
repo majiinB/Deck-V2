@@ -328,6 +328,10 @@ class _EditTaskPageState extends State<EditTaskPage> {
                                       }
                                       setState(() => isLoading = false);
                                       StatusResult status = checkStatus();
+                                      if(status.isDone){
+                                        Provider.of<TaskProvider>(context, listen: false).setTaskDone(widget.task);
+                                      }
+
                                       Provider.of<TaskProvider>(context, listen: false).editTask(widget.task, {
                                         'title': _titleController.text,
                                         'description': _descriptionController.text,
