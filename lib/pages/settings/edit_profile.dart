@@ -151,7 +151,8 @@ class EditProfileState extends State<EditProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const DeckBar(
+      appBar: const AuthBar(
+        automaticallyImplyLeading: true,
         title: 'Edit Account Information',
         color: DeckColors.white,
         fontSize: 24,
@@ -169,7 +170,7 @@ class EditProfileState extends State<EditProfile> {
                 //   top: 150,
                 //   left: 10,
             Center(
-            child: Padding(padding: const EdgeInsets.only(top: 50),
+            child: Padding(padding: const EdgeInsets.only(top: 40),
                   child: BuildProfileImage(photoUrl),
                   ),
             ),
@@ -355,7 +356,7 @@ class EditProfileState extends State<EditProfile> {
                 const SizedBox()
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 40, left: 16, right: 16),
+              padding: const EdgeInsets.only(top: 40, left: 15, right: 15),
               child: BuildButton(
                 onPressed: () {
                   print(
@@ -392,7 +393,7 @@ class EditProfileState extends State<EditProfile> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
+              padding: const EdgeInsets.only(top: 10, left: 15, right: 15),
               child: BuildButton(
                 onPressed: () {
                   print("cancel button clicked"); //line to test if working ung onPressedLogic XD

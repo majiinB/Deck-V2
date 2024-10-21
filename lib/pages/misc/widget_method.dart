@@ -1391,9 +1391,9 @@ class CustomExpansionTileState extends State<CustomExpansionTile> {
             title: Text(
               'Instructions ',
               style: GoogleFonts.nunito(
-                color: DeckColors.white,
+                color: DeckColors.primaryColor,
                 fontSize: 16,
-                fontWeight: FontWeight.w900,
+                fontWeight: FontWeight.w700,
               ),
             ),
             trailing: Icon(customIcon
@@ -1417,8 +1417,8 @@ class CustomExpansionTileState extends State<CustomExpansionTile> {
             children: <Widget>[
               ListTile(
                 title: Text(
-                  '1. Provide information in the "Enter Description" text field to '
-                  'guide AI in generating content for your flashcards.',
+                  '1. Use the "Enter Subject," and "Enter Topic" fields to assist AI in '
+                  'generating a more specific and relevant set of flashcards.',
                   style: GoogleFonts.nunito(
                     color: DeckColors.white,
                     fontSize: 16,
@@ -1427,8 +1427,19 @@ class CustomExpansionTileState extends State<CustomExpansionTile> {
               ),
               ListTile(
                 title: Text(
-                  '2. Next, use the "Enter Subject" and "Enter Topic" fields to assist AI in '
-                  'generating a more specific and relevant set of flashcards.',
+                  '2. Next, provide information in the "Enter Description" text field to '
+                      'guide AI in generating content for your flashcards.',
+                  style: GoogleFonts.nunito(
+                    color: DeckColors.white,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+              ListTile(
+                title: Text(
+                  'Enter Subject: Specify the subject Area (e.g. English)'
+                      '\nEnter Topic: State the specific topic (e.g. Verb)'
+                      '\nEnter Description: Provide details about what you want to cover (e.g. Focus on verbs, their types, and usage)',
                   style: GoogleFonts.nunito(
                     color: DeckColors.white,
                     fontSize: 16,
