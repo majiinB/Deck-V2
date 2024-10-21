@@ -78,8 +78,30 @@ class TaskProvider extends ChangeNotifier {
     List<Task> fake = list;
     fake.sort((a, b) => a.deadline.compareTo(b.deadline));
 
-    DateTime result = fake.firstWhere((task) => !task.isDone && task.deadline.isAfter(now), orElse: () => Task('','','','',false,DateTime.now(),DateTime.now(),false,DateTime.now())).deadline;
+    DateTime result = fake.firstWhere((task) => !task.isDone && task.deadline.isAfter(now), orElse: () => Task('','','','','',false, false,DateTime.now(),DateTime.now(),false,DateTime.now())).deadline;
     return result;
+  }
+
+  static String getNameDate(DateTime date){
+    List<String> months = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+
+    String month = months[date.month - 1]; // Get the month name
+    String day = date.day.toString(); // Get the day
+    String year = date.year.toString(); // Get the year
+
+    return '$month $day, $year';
+  }
+
+  static int getPriorityIndex(String priority) {
+    switch(priority.toLowerCase()){
+      case "high": return 0;
+      case "medium": return 1;
+      case "low": return 2;
+      default: return -1;
+    }
   }
 }
 

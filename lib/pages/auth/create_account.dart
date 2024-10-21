@@ -25,23 +25,60 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   bool _isLoading = false;
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
   final DeckBox checkBox = DeckBox();
 
-  String getAdjective(){
-
+  String getAdjective() {
     List<String> adjective = [
-      'Long', 'Short', 'Thick', 'Thin', 'Curved', 'Straight', 'Hard', 'Soft', 'Smooth',
-      'Rough', 'Firm', 'Stiff', 'Limp', 'Engorged', 'Swollen', 'Massive',
-      'Turgid', 'Plump', 'Slender', 'Enlarged', 'Lengthy', 'Trim', 'Sturdy', 'Malleable',
-      'Elastic', 'Pulsating', 'Robust', 'Lithe', 'Luscious', 'Muscular', 'Rigid', 'Tender', 'Prominent', 'Noticeable',
-      'Substantial', 'Compact', 'Potent', 'Dominant', 'Stretched', 'Expansive', 'Defined', 'Well-endowed'
+      'Long',
+      'Short',
+      'Thick',
+      'Thin',
+      'Curved',
+      'Straight',
+      'Hard',
+      'Soft',
+      'Smooth',
+      'Rough',
+      'Firm',
+      'Stiff',
+      'Limp',
+      'Engorged',
+      'Swollen',
+      'Massive',
+      'Turgid',
+      'Plump',
+      'Slender',
+      'Enlarged',
+      'Lengthy',
+      'Trim',
+      'Sturdy',
+      'Malleable',
+      'Elastic',
+      'Pulsating',
+      'Robust',
+      'Lithe',
+      'Luscious',
+      'Muscular',
+      'Rigid',
+      'Tender',
+      'Prominent',
+      'Noticeable',
+      'Substantial',
+      'Compact',
+      'Potent',
+      'Dominant',
+      'Stretched',
+      'Expansive',
+      'Defined',
+      'Well-endowed'
     ];
 
     return "${adjective[Random().nextInt(adjective.length)]}_${getRandomNumber()}";
   }
 
-  int getRandomNumber(){
+  int getRandomNumber() {
     return 10000 + Random().nextInt(99999 + 1);
   }
 
@@ -390,7 +427,6 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     ],
     )
     )
-
     );
   }
 }

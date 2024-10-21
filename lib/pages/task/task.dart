@@ -40,68 +40,102 @@ class _TaskPageState extends State<TaskPage> {
       focusedDay = newFocusedDay;
     });
   }
-  //
-  // DateTime today = DateTime.now();
-  // DateTime selectedDay = DateTime.now();
-  // bool showAllTask = false;
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _getTasks();
-  // }
-  //
-  // void _toggleView() async {
-  //   setState(() {
-  //     showAllTask = !showAllTask;
-  //   });
-  // }
-  //
-  // void _getTasks() async {
-  //   await Provider.of<TaskProvider>(context, listen: false).loadTasks();
-  // }
-  //
-  // void _onDaySelected(DateTime day, DateTime focusedDay) {
-  //   setState(() {
-  //     today = day;
-  //     selectedDay = day; //para sa display ng text
-  //   });
-  // }
+
+  DateTime today = DateTime.now();
+  bool showAllTask = false;
+  @override
+  void initState() {
+    super.initState();
+    _getTasks();
+  }
+
+  void _getTasks() async {
+    await Provider.of<TaskProvider>(context, listen: false).loadTasks();
+  }
+
+  Widget _buildTaskList(List<Task> tasks, bool Function(Task) filter) {
+    final filteredTasks = tasks.where(filter).toList();
+    if(filteredTasks.isNotEmpty) {
+      return ListView.builder(
+        itemCount: filteredTasks.length,
+        itemBuilder: (context, index) {
+          Task task = filteredTasks[index]; // Access the Task model directly
+          // Check if the task should be displayed based on the conditions
+          return DeckTaskTile(
+            title: task.title,
+            deadline: TaskProvider.getNameDate(task.deadline),
+            priority: task.priority, // You can customize this if needed
+            progressStatus: 'to do',
+            onDelete: () {
+              final String deletedTitle = task.title;
+              showConfirmationDialog(
+                  context, "Delete Item",
+                  "Are you sure you want to delete '$deletedTitle'?", () {
+                Provider.of<TaskProvider>(context, listen: false).deleteTask(task.uid);
+              }, () {
+                setState(() {}); // You may need to handle state updates accordingly
+              });
+            },
+            enableRetrieve: false,
+            onTap: () {
+              print("Clicked task tile!");
+              print('Task: ${task.title}, IsDone: ${task.getIsDone}, IsActive: ${task.getIsActive}, Deadline: ${task.deadline}');
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ViewTaskPage(task: task, isEditable: true),
+                ),
+              );
+            },
+          );
+          // Return an empty widget if conditions are not met
+        },
+      );
+    } else {
+      return IfCollectionEmpty(
+        ifCollectionEmptyText: 'Seems like there aren’t any\n task for today, wanderer!',
+        ifCollectionEmptySubText:
+        'Now’s the perfect time to get ahead. Start\nadding new tasks and stay \non top of your game!',
+        ifCollectionEmptyHeight: MediaQuery.of(context).size.height/2,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    // final provider = Provider.of<TaskProvider>(context);
-    // final tasks = provider.getList;
-    //
-    // //check if there is task for the day
-    // bool isThereTaskForDay(DateTime selectedDay, bool isToDo) {
-    //   List<Task> tasksForSelectedDay =
-    //       tasks.where((task) => isSameDay(task.deadline, selectedDay)).toList();
-    //
-    //   if (isToDo) {
-    //     return tasksForSelectedDay.any((task) => !task.isDone);
-    //   } else {
-    //     return tasksForSelectedDay.any((task) => task.isDone);
-    //   }
-    // }
-    //
-    // List<Task> _eventLoader(DateTime day) {
-    //   return tasks
-    //       .where((task) => !task.isDone && isSameDay(task.deadline, day))
-    //       .toList();
-    // }
+    final provider = Provider.of<TaskProvider>(context);
+    final tasks = provider.getList;
+
+    //check if there is task for the day
+    bool isThereTaskForDay(DateTime selectedDay, bool isToDo) {
+      List<Task> tasksForSelectedDay =
+      tasks.where((task) => isSameDay(task.deadline, selectedDay)).toList();
+
+      if (isToDo) {
+        return tasksForSelectedDay.any((task) => !task.isDone);
+      } else {
+        return tasksForSelectedDay.any((task) => task.isDone);
+      }
+    }
+
+    List<Task> _eventLoader(DateTime day) {
+      return tasks
+          .where((task) => !task.isDone && isSameDay(task.deadline, day))
+          .toList();
+    }
     return Scaffold(
-      // floatingActionButton: Padding(
-      //   padding: const EdgeInsets.only(bottom: 100),
-      //   child: DeckFAB(
-      //     text: "Add Task",
-      //     fontSize: 12,
-      //     icon: Icons.add,
-      //     foregroundColor: DeckColors.primaryColor,
-      //     backgroundColor: DeckColors.gray,
-      //     onPressed: () { Navigator.push( context, MaterialPageRoute(builder: (context) => const AddTaskPage()),);
-      //     },
-      //   ),
-      // ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 100),
+        child: DeckFAB(
+          text: "Add Task",
+          fontSize: 12,
+          icon: Icons.add,
+          foregroundColor: DeckColors.primaryColor,
+          backgroundColor: DeckColors.gray,
+          onPressed: () { Navigator.push( context, MaterialPageRoute(builder: (context) => const AddTaskPage()),);
+          },
+        ),
+      ),
       body: SafeArea(
         top: true, bottom: false, left: true, right: true, minimum: const EdgeInsets.only(left: 20, right: 20),
         child: CustomScrollView(
@@ -123,40 +157,40 @@ class _TaskPageState extends State<TaskPage> {
             // ),
             SliverToBoxAdapter(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20.0),
-                    child: Row(
-                      children: [
-                         Icon(
-                          Icons.list,
-                          color: DeckColors.white,
-                          size: 32,
-                        ),
-                        const Spacer(),
-                        IconButton(
-                          icon: const Icon (Icons.add,
-                              color: DeckColors.white,
-                              size: 32),
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20.0),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.list,
+                            color: DeckColors.white,
+                            size: 32,
+                          ),
+                          const Spacer(),
+                          IconButton(
+                              icon: const Icon (Icons.add,
+                                  color: DeckColors.white,
+                                  size: 32),
                               onPressed: () { Navigator.push( context, MaterialPageRoute(builder: (context) => const AddTaskPage()),);}
 
-                        ),
-                        IconButton(
-                          icon:  Icon(
-                              isCalendarView ? Icons.list :  Icons.calendar_today,
-                              color: DeckColors.white,
-                              size: 32),
-                          onPressed: () {
-                            setState(() {
-                            isCalendarView = !isCalendarView;
-                            });
+                          ),
+                          IconButton(
+                            icon:  Icon(
+                                isCalendarView ? Icons.list :  Icons.calendar_today,
+                                color: DeckColors.white,
+                                size: 32),
+                            onPressed: () {
+                              setState(() {
+                                isCalendarView = !isCalendarView;
+                              });
                             },
-                        )
-                      ],
+                          )
+                        ],
+                      ),
                     ),
-                  ),
-                ]
+                  ]
               ),
             ),
             SliverToBoxAdapter(
@@ -165,7 +199,7 @@ class _TaskPageState extends State<TaskPage> {
                 children: [
                   Text(
                       DateFormat('yyyy').format(focusedDay),
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontFamily: 'Fraiche',
                           fontSize: 30,
                           color: DeckColors.primaryColor,
@@ -173,7 +207,7 @@ class _TaskPageState extends State<TaskPage> {
                   ),
                   Text(
                       DateFormat('MMMM dd').format(focusedDay),
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontFamily: 'Fraiche',
                           fontSize: 56,
                           color: DeckColors.primaryColor,
@@ -187,7 +221,7 @@ class _TaskPageState extends State<TaskPage> {
             if (isCalendarView) SliverList(
                 delegate: SliverChildListDelegate([
                   TableCalendar(
-                    //eventLoader: _eventLoader,
+                    eventLoader: _eventLoader,
                     focusedDay: focusedDay,
                     firstDay: DateTime.utc(2020, 1, 1),
                     lastDay: DateTime.utc(DateTime.now().year + 5, 1, 1),
@@ -239,16 +273,16 @@ class _TaskPageState extends State<TaskPage> {
                       titleTextFormatter: (date, locale) {
                         return DateFormat('yyyy MMMM dd').format(date);
                       },
-                      leftChevronIcon: Icon(Icons.arrow_back_ios_rounded,
+                      leftChevronIcon: const Icon(Icons.arrow_back_ios_rounded,
                           color: DeckColors.white),
-                      leftChevronMargin: EdgeInsets.only(right: 10),
-                      leftChevronPadding: EdgeInsets.all(10),
-                      rightChevronIcon: Icon(Icons.arrow_forward_ios_rounded,
+                      leftChevronMargin: const EdgeInsets.only(right: 10),
+                      leftChevronPadding: const EdgeInsets.all(10),
+                      rightChevronIcon: const Icon(Icons.arrow_forward_ios_rounded,
                           color: DeckColors.white),
-                      rightChevronPadding: EdgeInsets.all(10),
+                      rightChevronPadding: const EdgeInsets.all(10),
                       rightChevronMargin: EdgeInsets.zero,
                       formatButtonVisible: false,
-                      titleTextStyle: TextStyle(
+                      titleTextStyle: const TextStyle(
                         color: Colors.transparent,
                       ),
                     ),
@@ -280,15 +314,15 @@ class _TaskPageState extends State<TaskPage> {
                   )
                 ])
             ),
-            if(isCalendarView) SliverToBoxAdapter(
+            if(isCalendarView) const SliverToBoxAdapter(
               child: SizedBox(height: 30),
             ),
             /// calendar view, will show list of task
             if(isCalendarView) SliverToBoxAdapter(
               child: Container(
                 height: (MediaQuery.of(context).size.height/2),
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal:50),
-                decoration: BoxDecoration(
+                padding: const EdgeInsets.symmetric(vertical: 10, horizontal:50),
+                decoration: const BoxDecoration(
                   color: DeckColors.coverImageColorSettings,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(60),  // Rounded top-left corner
@@ -298,149 +332,12 @@ class _TaskPageState extends State<TaskPage> {
                 child: Padding(
                   padding: const EdgeInsets.only(top: 20),
                   child: BuildTabBar(
-                    titles: const ['To Do', 'In Progress', 'Completed'],
+                    titles: const ['To Do', 'Active', 'Done'],
                     length: 3,
                     tabContent: [
-                      /// To Do Tab
-                      SingleChildScrollView(
-                        padding: EdgeInsets.only(top: 20),
-                        child:
-                        ListView.builder(
-                          shrinkWrap:  true, // Allow the ListView to wrap its content
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: 10 /*tasks.length*/,
-                          itemBuilder: (context, index) {
-                            return DeckTaskTile(
-                              title: 'a high priority task',
-                              deadline: 'March 18, 2024 || 10:00 AM',
-                              priority: 'medium',
-                              progressStatus: 'to do',
-                              // title: tasks[index]['title'],
-                              // deadline: tasks[index]['deadline'],
-                              // priority: tasks[index]['priority'],
-                              // progressStatus: tasks[index]['progressStatus'],
-                              onDelete: () {
-                                // final String deletedTitle = tasks[index].title;
-                                // showConfirmationDialog(
-                                //   context, "Delete Item",
-                                //   "Are you sure you want to delete '$deletedTitle'?",() {
-                                //     Provider.of<TaskProvider>(context,listen: false).deleteTask(tasks[index].uid);},() { setState(() {}); },
-                                // );
-                              },
-                              enableRetrieve: false,
-                              onTap: () {
-                                print("Clicked task tile!");
-                                // Navigator.push(
-                                // context,
-                                // MaterialPageRoute(
-                                //   builder: (context) => ViewTaskPage(  task: tasks[index],  isEditable: true,)),
-                                // );
-                              },
-                            );
-                          },
-                        ),
-                      ),
-
-                      ///if TO DO tab does not contain a task
-                      // IfCollectionEmpty(
-                      //   ifCollectionEmptyText: 'Seems like there aren’t any\n task for today, wanderer!',
-                      //   ifCollectionEmptySubText:
-                      //   'Now’s the perfect time to get ahead. Start\nadding new tasks and stay \non top of your game!',
-                      // MediaQuery.of(context).size.height/2,
-                      // ),
-
-                      ///in progress tab
-                      // SingleChildScrollView(
-                      //   padding: EdgeInsets.only(top: 20),
-                      //   child:
-                      //   ListView.builder(
-                      //     shrinkWrap:  true, // Allow the ListView to wrap its content
-                      //     physics: const NeverScrollableScrollPhysics(),
-                      //     itemCount: 10 /*tasks.length*/,
-                      //     itemBuilder: (context, index) {
-                      //       return DeckTaskTile(
-                      //         title: 'a high priority task',
-                      //         deadline: 'March 18, 2024 || 10:00 AM',
-                      //         priority: 'medium',
-                      //         progressStatus: 'to do',
-                      //         // title: tasks[index]['title'],
-                      //         // deadline: tasks[index]['deadline'],
-                      //         // priority: tasks[index]['priority'],
-                      //         // progressStatus: tasks[index]['progressStatus'],
-                      //         onDelete: () {
-                      //           // final String deletedTitle = tasks[index].title;
-                      //           // showConfirmationDialog(
-                      //           //   context, "Delete Item",
-                      //           //   "Are you sure you want to delete '$deletedTitle'?",() {
-                      //           //     Provider.of<TaskProvider>(context,listen: false).deleteTask(tasks[index].uid);},() { setState(() {}); },
-                      //           // );
-                      //         },
-                      //         enableRetrieve: false,
-                      //         onTap: () {
-                      //           print("Clicked task tile!");
-                      //           // Navigator.push(
-                      //           // context,
-                      //           // MaterialPageRoute(
-                      //           //   builder: (context) => ViewTaskPage(  task: tasks[index],  isEditable: true,)),
-                      //           // );
-                      //         },
-                      //       );
-                      //     },
-                      //   ),
-                      // ),
-                      ///if IN PROGRESS tab does not contain a task
-                      IfCollectionEmpty(
-                        ifCollectionEmptyText: 'Seems like there aren’t any\n task for today, wanderer!',
-                        ifCollectionEmptySubText:
-                        'Now’s the perfect time to get ahead. Start\nadding new tasks and stay \non top of your game!',
-                        ifCollectionEmptyHeight: MediaQuery.of(context).size.height/2,
-                      ),
-
-                      /// Complete Tab
-                      SingleChildScrollView(
-                        padding: EdgeInsets.only(top: 20),
-                        child:
-                        ListView.builder(
-                          shrinkWrap:  true, // Allow the ListView to wrap its content
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: 10 /*tasks.length*/,
-                          itemBuilder: (context, index) {
-                            return DeckTaskTile(
-                              title: 'a high priority task',
-                              deadline: 'March 18, 2024 || 10:00 AM',
-                              priority: 'medium',
-                              progressStatus: 'to do',
-                              // title: tasks[index]['title'],
-                              // deadline: tasks[index]['deadline'],
-                              // priority: tasks[index]['priority'],
-                              // progressStatus: tasks[index]['progressStatus'],
-                              onDelete: () {
-                                // final String deletedTitle = tasks[index].title;
-                                // showConfirmationDialog(
-                                //   context, "Delete Item",
-                                //   "Are you sure you want to delete '$deletedTitle'?",() {
-                                //     Provider.of<TaskProvider>(context,listen: false).deleteTask(tasks[index].uid);},() { setState(() {}); },
-                                // );
-                              },
-                              enableRetrieve: false,
-                              onTap: () {
-                                print("Clicked task tile!");
-                                // Navigator.push(
-                                // context,
-                                // MaterialPageRoute(
-                                //   builder: (context) => ViewTaskPage(  task: tasks[index],  isEditable: true,)),
-                                // );
-                              },
-                            );
-                          },
-                        ),
-                      ),
-                      /// if Complete tab does not contain a task
-                      // IfCollectionEmpty(
-                      //   ifCollectionEmptyText: 'Seems like there aren’t any\n task for today, wanderer!',
-                      //   ifCollectionEmptySubText: 'Now’s the perfect time to get ahead. Start\nadding new tasks and stay \non top of your game!',
-                      //   ifCollectionEmptyHeight: MediaQuery.of(context).size.height/2,
-                      // )
+                      _buildTaskList(tasks, (task) => !task.getIsDone && !task.getIsActive && isSameDay(task.deadline, selectedDay)),
+                      _buildTaskList(tasks, (task) => task.getIsActive && !task.getIsDone && isSameDay(task.deadline, selectedDay)),
+                      _buildTaskList(tasks, (task) => task.getIsDone && !task.getIsActive && isSameDay(task.deadline, selectedDay)),
                       // if (isThereTaskForDay(today, false) || showAllTask)
                       //   ListView.builder(
                       //     shrinkWrap:
@@ -584,8 +481,8 @@ class _TaskPageState extends State<TaskPage> {
             else SliverToBoxAdapter(
               child: Container(
                 height: (MediaQuery.of(context).size.height/1.25),
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal:50),
-                decoration: BoxDecoration(
+                padding: const EdgeInsets.symmetric(vertical: 10, horizontal:50),
+                decoration: const BoxDecoration(
                   color: DeckColors.coverImageColorSettings,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(60),  // Rounded top-left corner
@@ -600,16 +497,16 @@ class _TaskPageState extends State<TaskPage> {
                     tabContent: [
                       /// To Do Tab
                       SingleChildScrollView(
-                        padding: EdgeInsets.only(top: 20),
+                        padding: const EdgeInsets.only(top: 20),
                         child:
                         ListView.builder(
                           shrinkWrap:  true, // Allow the ListView to wrap its content
                           physics: const NeverScrollableScrollPhysics(),
-                          itemCount: 10 /*tasks.length*/,
+                          itemCount: tasks.length,
                           itemBuilder: (context, index) {
                             return DeckTaskTile(
-                              title: 'a high priority task',
-                              deadline: 'March 18, 2024 || 10:00 AM',
+                              title: tasks[index].title,
+                              deadline: TaskProvider.getNameDate(tasks[index].deadline),
                               priority: 'medium',
                               progressStatus: 'to do',
                               // title: tasks[index]['title'],
@@ -617,21 +514,21 @@ class _TaskPageState extends State<TaskPage> {
                               // priority: tasks[index]['priority'],
                               // progressStatus: tasks[index]['progressStatus'],
                               onDelete: () {
-                                // final String deletedTitle = tasks[index].title;
-                                // showConfirmationDialog(
-                                //   context, "Delete Item",
-                                //   "Are you sure you want to delete '$deletedTitle'?",() {
-                                //     Provider.of<TaskProvider>(context,listen: false).deleteTask(tasks[index].uid);},() { setState(() {}); },
-                                // );
+                                final String deletedTitle = tasks[index].title;
+                                showConfirmationDialog(
+                                  context, "Delete Item",
+                                  "Are you sure you want to delete '$deletedTitle'?",() {
+                                  Provider.of<TaskProvider>(context,listen: false).deleteTask(tasks[index].uid);},() { setState(() {}); },
+                                );
                               },
                               enableRetrieve: false,
                               onTap: () {
                                 print("Clicked task tile!");
-                                // Navigator.push(
-                                // context,
-                                // MaterialPageRoute(
-                                //   builder: (context) => ViewTaskPage(  task: tasks[index],  isEditable: true,)),
-                                // );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ViewTaskPage(  task: tasks[index],  isEditable: true,)),
+                                );
                               },
                             );
                           },
@@ -639,12 +536,12 @@ class _TaskPageState extends State<TaskPage> {
                       ),
 
                       ///if TO DO tab does not contain a task
-                      // IfCollectionEmpty(
-                      //   ifCollectionEmptyText: 'Seems like there aren’t any\n task for today, wanderer!',
-                      //   ifCollectionEmptySubText:
-                      //   'Now’s the perfect time to get ahead. Start\nadding new tasks and stay \non top of your game!',
-                      // MediaQuery.of(context).size.height/2,
-                      // ),
+                      IfCollectionEmpty(
+                        ifCollectionEmptyText: 'Seems like there aren’t any\n task for today, wanderer!',
+                        ifCollectionEmptySubText:
+                        'Now’s the perfect time to get ahead. Start\nadding new tasks and stay \non top of your game!',
+                        ifCollectionEmptyHeight:MediaQuery.of(context).size.height/2,
+                      ),
 
                       ///in progress tab
                       // SingleChildScrollView(
@@ -695,7 +592,7 @@ class _TaskPageState extends State<TaskPage> {
 
                       /// Complete Tab
                       SingleChildScrollView(
-                        padding: EdgeInsets.only(top: 20),
+                        padding: const EdgeInsets.only(top: 20),
                         child:
                         ListView.builder(
                           shrinkWrap:  true, // Allow the ListView to wrap its content
@@ -878,10 +775,10 @@ class _TaskPageState extends State<TaskPage> {
                 ),
               ),
             )
-    // else
-    ],
-    ),
-    ),
+            // else
+          ],
+        ),
+      ),
     );
   }
 }

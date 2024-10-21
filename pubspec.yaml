@@ -114,6 +114,10 @@ flutter:
     - family: Fraiche
       fonts:
         - asset: fonts/Fraiche.ttf
+    
+    - family: DeckIcons2
+      fonts:
+        - asset: fonts/deckicons2.ttf
 
   # - family: Trajan Pro
   #     fonts:
