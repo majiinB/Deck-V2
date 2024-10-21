@@ -115,6 +115,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                   _starredCardCollection.add(newCard);
                 }
                 _filterFlashcards();
+                numberOfCards = _cardsCollection.length;
               });
             }
           },
