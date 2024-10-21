@@ -957,8 +957,8 @@ class BuildTextBoxState extends State<BuildTextBox> {
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10.0),
           borderSide: const BorderSide(
-            color: DeckColors.grayPopup,
-            width: 1.0,
+            color: Colors.white,
+            width: 2.0,
           ),
         ),
         focusedBorder: OutlineInputBorder(
@@ -1312,10 +1312,12 @@ class IfCollectionEmpty extends StatelessWidget {
   final String ifCollectionEmptyText;
   final String? ifCollectionEmptySubText;
   final double ifCollectionEmptyHeight;
+  final bool hasIcon;
 
   const IfCollectionEmpty(
       {super.key,
       required this.ifCollectionEmptyText,
+        this.hasIcon = true,
       this.ifCollectionEmptySubText,
       required this.ifCollectionEmptyHeight});
 
@@ -1337,7 +1339,7 @@ class IfCollectionEmpty extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(
+          if(hasIcon)SizedBox(
               width: MediaQuery.of(context).size.width / 2.5,
               height: 130,
               child: AspectRatio(
@@ -2152,8 +2154,8 @@ class HomeDeckTile extends StatelessWidget {
                           ? Image.network(
                               deckImageUrl!,
                               width: cardWidth,
-                              // height: double.infinity,
-                              fit: BoxFit.cover,
+                              height: double.infinity,
+                              fit: BoxFit.fill,
                               errorBuilder: (context, error, stackTrace) {
                                 return Container(
                                   color: DeckColors.gray,
