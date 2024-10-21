@@ -20,10 +20,8 @@ class TaskPage extends StatefulWidget {
 class _TaskPageState extends State<TaskPage> {
   /// bool variable to toggle view
   bool isCalendarView = true;
-
   ///selectedDay : actual day selected by the user, used for highlighting.
   DateTime selectedDay = DateTime.now();
-
   /// focusedDay : variable that tracks which day is currently in focus
   DateTime focusedDay = DateTime.now();
 
@@ -33,7 +31,6 @@ class _TaskPageState extends State<TaskPage> {
       isCalendarView = !isCalendarView;
     });
   }
-
   /// function to update whenever the user selects a new day on the calendar.
   /// DateTime day: This is the day that was selected by the user (from the calendar).
   /// DateTime focusedDay: This is the currently focused day.
@@ -60,10 +57,10 @@ class _TaskPageState extends State<TaskPage> {
     final filteredTasks = tasks.where(filter).toList();
     if(filteredTasks.isNotEmpty) {
       return ListView.builder(
-      itemCount: filteredTasks.length,
-      itemBuilder: (context, index) {
-        Task task = filteredTasks[index]; // Access the Task model directly
-        // Check if the task should be displayed based on the conditions
+        itemCount: filteredTasks.length,
+        itemBuilder: (context, index) {
+          Task task = filteredTasks[index]; // Access the Task model directly
+          // Check if the task should be displayed based on the conditions
           return DeckTaskTile(
             title: task.title,
             deadline: TaskProvider.getNameDate(task.deadline),
@@ -91,9 +88,9 @@ class _TaskPageState extends State<TaskPage> {
               );
             },
           );
-         // Return an empty widget if conditions are not met
-      },
-    );
+          // Return an empty widget if conditions are not met
+        },
+      );
     } else {
       return IfCollectionEmpty(
         ifCollectionEmptyText: 'Seems like there aren’t any\n task for today, wanderer!',
@@ -112,7 +109,7 @@ class _TaskPageState extends State<TaskPage> {
     //check if there is task for the day
     bool isThereTaskForDay(DateTime selectedDay, bool isToDo) {
       List<Task> tasksForSelectedDay =
-          tasks.where((task) => isSameDay(task.deadline, selectedDay)).toList();
+      tasks.where((task) => isSameDay(task.deadline, selectedDay)).toList();
 
       if (isToDo) {
         return tasksForSelectedDay.any((task) => !task.isDone);
@@ -140,11 +137,7 @@ class _TaskPageState extends State<TaskPage> {
         ),
       ),
       body: SafeArea(
-        top: true,
-        bottom: false,
-        left: true,
-        right: true,
-        minimum: const EdgeInsets.only(left: 20, right: 20),
+        top: true, bottom: false, left: true, right: true, minimum: const EdgeInsets.only(left: 20, right: 20),
         child: CustomScrollView(
           slivers: <Widget>[
             // DeckSliverHeader(
@@ -170,28 +163,22 @@ class _TaskPageState extends State<TaskPage> {
                       padding: const EdgeInsets.only(top: 20.0),
                       child: Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.list,
                             color: DeckColors.white,
                             size: 32,
                           ),
                           const Spacer(),
                           IconButton(
-                              icon: const Icon(Icons.add,
-                                  color: DeckColors.white, size: 32),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const AddTaskPage()),
-                                );
-                              }),
+                              icon: const Icon (Icons.add,
+                                  color: DeckColors.white,
+                                  size: 32),
+                              onPressed: () { Navigator.push( context, MaterialPageRoute(builder: (context) => const AddTaskPage()),);}
+
+                          ),
                           IconButton(
-                            icon: Icon(
-                                isCalendarView
-                                    ? Icons.list
-                                    : Icons.calendar_today,
+                            icon:  Icon(
+                                isCalendarView ? Icons.list :  Icons.calendar_today,
                                 color: DeckColors.white,
                                 size: 32),
                             onPressed: () {
@@ -203,24 +190,29 @@ class _TaskPageState extends State<TaskPage> {
                         ],
                       ),
                     ),
-                  ]),
+                  ]
+              ),
             ),
             SliverToBoxAdapter(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(DateFormat('yyyy').format(focusedDay),
-                      style: TextStyle(
+                  Text(
+                      DateFormat('yyyy').format(focusedDay),
+                      style: const TextStyle(
                           fontFamily: 'Fraiche',
                           fontSize: 30,
                           color: DeckColors.primaryColor,
-                          fontWeight: FontWeight.bold)),
-                  Text(DateFormat('MMMM dd').format(focusedDay),
-                      style: TextStyle(
+                          fontWeight: FontWeight.bold)
+                  ),
+                  Text(
+                      DateFormat('MMMM dd').format(focusedDay),
+                      style: const TextStyle(
                           fontFamily: 'Fraiche',
                           fontSize: 56,
                           color: DeckColors.primaryColor,
-                          fontWeight: FontWeight.bold)),
+                          fontWeight: FontWeight.bold)
+                  ),
                 ],
               ),
             ),
@@ -294,18 +286,17 @@ class _TaskPageState extends State<TaskPage> {
                         color: Colors.transparent,
                       ),
                     ),
-                    weekendTextStyle: const TextStyle(
-                      color: DeckColors.white,
-                      fontFamily: 'nunito',
-                      fontSize: 16,
-                    ),
-                    selectedDecoration: BoxDecoration(
-                      color: DeckColors.primaryColor,
-                      border: Border.all(
+                    daysOfWeekStyle: const DaysOfWeekStyle(
+                      weekdayStyle: TextStyle(
                         color: DeckColors.primaryColor,
-                        width: 2,
+                        fontSize: 20,
+                        fontFamily: 'Fraiche',
                       ),
-                      shape: BoxShape.circle,
+                      weekendStyle: TextStyle(
+                        color: DeckColors.white,
+                        fontSize: 20,
+                        fontFamily: 'Fraiche',
+                      ),
                     ),
                     calendarBuilders: CalendarBuilders(markerBuilder: (context, date, events) {
                       if (events.isNotEmpty) {
@@ -413,149 +404,76 @@ class _TaskPageState extends State<TaskPage> {
                       //     },
                       //   )
                       // else
-                        /// if Complete tab does not contain a task
-                        // IfCollectionEmpty(
-                        //   ifCollectionEmptyText: 'Seems like there aren’t any\n task for today, wanderer!',
-                        //   ifCollectionEmptySubText: 'Now’s the perfect time to get ahead. Start\nadding new tasks and stay \non top of your game!',
-                        //   ifCollectionEmptyHeight: MediaQuery.of(context).size.height/2,
-                        // )
-                        // if (isThereTaskForDay(today, false) || showAllTask)
-                        //   ListView.builder(
-                        //     shrinkWrap:
-                        //         true, // Allow the ListView to wrap its content
-                        //     physics: const NeverScrollableScrollPhysics(),
-                        //     itemCount: tasks.length,
-                        //     itemBuilder: (context, index) {
-                        //       if ((showAllTask && tasks[index].getIsDone) ||
-                        //           (tasks[index].getIsDone &&
-                        //               isSameDay(
-                        //                   tasks[index].deadline, selectedDay))) {
-                        //         return Padding(
-                        //           padding: const EdgeInsets.symmetric(vertical: 10),
-                        //           child: DeckTaskTile(
-                        //             title: tasks[index].title,
-                        //             deadline: tasks[index]
-                        //                 .deadline
-                        //                 .toString()
-                        //                 .split(" ")[0],
-                        //             isChecked: tasks[index].getIsDone,
-                        //             onChanged: (newValue) {
-                        //               setState(() {
-                        //                 tasks[index].setIsDone = newValue ?? false;
-                        //                 Provider.of<TaskProvider>(context,
-                        //                         listen: false)
-                        //                     .setTaskUndone(tasks[index]);
-                        //               });
-                        //             },
-                        //             onDelete: () {
-                        //               final String deletedTitle =
-                        //                   tasks[index].title;
-                        //               showConfirmationDialog(
-                        //                 context,
-                        //                 "Delete Item",
-                        //                 "Are you sure you want to delete '$deletedTitle'?",
-                        //                 () {
-                        //                   Provider.of<TaskProvider>(context,
-                        //                           listen: false)
-                        //                       .deleteTask(tasks[index].uid);
-                        //                 },
-                        //                 () {
-                        //                   setState(() {});
-                        //                 },
-                        //               );
-                        //             },
-                        //             enableRetrieve: false,
-                        //             onTap: () {
-                        //               print("Clicked task tile!");
-                        //               Navigator.push(
-                        //                 context,
-                        //                 MaterialPageRoute(
-                        //                     builder: (context) => ViewTaskPage(
-                        //                           task: tasks[index],
-                        //                           isEditable: true,
-                        //                         )),
-                        //               );
-                        //             },
-                        //           ),
-                        //         );
-                        //       } else {
-                        //         return const SizedBox(
-                        //             height: 0); // Placeholder for empty space
-                        //       }
-                        //     },
-                        //   )
-                        // else
 
-                        ///old codes here please delete if d na need
-                        //                if (isThereTaskForDay(today, true))
-                        //                  ListView.builder(
-                        //                   shrinkWrap:  true, // Allow the ListView to wrap its content
-                        //                   physics: const NeverScrollableScrollPhysics(),
-                        //                   itemCount: tasks.length,
-                        //                   itemBuilder: (context, index) {
-                        //                     if ((showAllTask && !tasks[index].getIsDone) || (!tasks[index].getIsDone && isSameDay(tasks[index].deadline, selectedDay))) {
-                        //                       return Padding(
-                        //                         padding: const EdgeInsets.symmetric(vertical: 10),
-                        //                         child: DeckTaskTile(
-                        //                           title:
-                        //                           , deadline:.
-                        //                           priority: ,
-                        //                           progressStatus:.
-                        //                           onDelete,
-                        //                           onRetrieve:,
-                        //                           onTap: ,
-                        //                           enableRetrieve:
-                        //                         ),
-                        // DeckTaskTile(
-                        //   title: tasks[index].title,
-                        //   deadline: tasks[index]
-                        //       .deadline
-                        //       .toString()
-                        //       .split(" ")[0],
-                        //   isChecked: tasks[index].getIsDone,
-                        //   onChanged: (newValue) {
-                        //     setState(() {
-                        //       tasks[index].setIsDone = newValue ?? false;
-                        //       Provider.of<TaskProvider>(context,
-                        //               listen: false)
-                        //           .setTaskDone(tasks[index]);
-                        //     });
-                        //   },
-                        //   onDelete: () {
-                        //     final String deletedTitle =
-                        //         tasks[index].title;
-                        //     showConfirmationDialog(
-                        //       context,
-                        //       "Delete Item",
-                        //       "Are you sure you want to delete '$deletedTitle'?",
-                        //       () {
-                        //         Provider.of<TaskProvider>(context,
-                        //                 listen: false)
-                        //             .deleteTask(tasks[index].uid);
-                        //       },
-                        //       () { setState(() {}); },
-                        //     );
-                        //   },
-                        //   enableRetrieve: false,
-                        //   onTap: () {
-                        //     // print("Clicked task tile!");
-                        //     Navigator.push(
-                        //       context,
-                        //       MaterialPageRoute(
-                        //           builder: (context) => ViewTaskPage(  task: tasks[index],  isEditable: true,)),
-                        //     );
-                        //   },
-                        // ),
-                        //                       );
-                        //                     } else { ///
-                        //                       return const SizedBox( height:  0); // do not remove. tasks will not show up.
-                        //                     }
-                        //                   },
-                        //                  )
-                        //             else ///show this if there are no task
-                        ///
-                      ],
-                    ),
+                      ///old codes here please delete if d na need
+                      //                if (isThereTaskForDay(today, true))
+                      //                  ListView.builder(
+                      //                   shrinkWrap:  true, // Allow the ListView to wrap its content
+                      //                   physics: const NeverScrollableScrollPhysics(),
+                      //                   itemCount: tasks.length,
+                      //                   itemBuilder: (context, index) {
+                      //                     if ((showAllTask && !tasks[index].getIsDone) || (!tasks[index].getIsDone && isSameDay(tasks[index].deadline, selectedDay))) {
+                      //                       return Padding(
+                      //                         padding: const EdgeInsets.symmetric(vertical: 10),
+                      //                         child: DeckTaskTile(
+                      //                           title:
+                      //                           , deadline:.
+                      //                           priority: ,
+                      //                           progressStatus:.
+                      //                           onDelete,
+                      //                           onRetrieve:,
+                      //                           onTap: ,
+                      //                           enableRetrieve:
+                      //                         ),
+                      // DeckTaskTile(
+                      //   title: tasks[index].title,
+                      //   deadline: tasks[index]
+                      //       .deadline
+                      //       .toString()
+                      //       .split(" ")[0],
+                      //   isChecked: tasks[index].getIsDone,
+                      //   onChanged: (newValue) {
+                      //     setState(() {
+                      //       tasks[index].setIsDone = newValue ?? false;
+                      //       Provider.of<TaskProvider>(context,
+                      //               listen: false)
+                      //           .setTaskDone(tasks[index]);
+                      //     });
+                      //   },
+                      //   onDelete: () {
+                      //     final String deletedTitle =
+                      //         tasks[index].title;
+                      //     showConfirmationDialog(
+                      //       context,
+                      //       "Delete Item",
+                      //       "Are you sure you want to delete '$deletedTitle'?",
+                      //       () {
+                      //         Provider.of<TaskProvider>(context,
+                      //                 listen: false)
+                      //             .deleteTask(tasks[index].uid);
+                      //       },
+                      //       () { setState(() {}); },
+                      //     );
+                      //   },
+                      //   enableRetrieve: false,
+                      //   onTap: () {
+                      //     // print("Clicked task tile!");
+                      //     Navigator.push(
+                      //       context,
+                      //       MaterialPageRoute(
+                      //           builder: (context) => ViewTaskPage(  task: tasks[index],  isEditable: true,)),
+                      //     );
+                      //   },
+                      // ),
+                      //                       );
+                      //                     } else { ///
+                      //                       return const SizedBox( height:  0); // do not remove. tasks will not show up.
+                      //                     }
+                      //                   },
+                      //                  )
+                      //             else ///show this if there are no task
+                      ///
+                    ],
                   ),
                 ),
               ),
@@ -600,21 +518,23 @@ class _TaskPageState extends State<TaskPage> {
                                 showConfirmationDialog(
                                   context, "Delete Item",
                                   "Are you sure you want to delete '$deletedTitle'?",() {
-                                    Provider.of<TaskProvider>(context,listen: false).deleteTask(tasks[index].uid);},() { setState(() {}); },
+                                  Provider.of<TaskProvider>(context,listen: false).deleteTask(tasks[index].uid);},() { setState(() {}); },
                                 );
                               },
                               enableRetrieve: false,
                               onTap: () {
                                 print("Clicked task tile!");
                                 Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => ViewTaskPage(  task: tasks[index],  isEditable: true,)),
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ViewTaskPage(  task: tasks[index],  isEditable: true,)),
                                 );
                               },
                             );
                           },
                         ),
+                      ),
+
                       ///if TO DO tab does not contain a task
                       IfCollectionEmpty(
                         ifCollectionEmptyText: 'Seems like there aren’t any\n task for today, wanderer!',
@@ -623,54 +543,53 @@ class _TaskPageState extends State<TaskPage> {
                         ifCollectionEmptyHeight:MediaQuery.of(context).size.height/2,
                       ),
 
-                        ///in progress tab
-                        // SingleChildScrollView(
-                        //   padding: EdgeInsets.only(top: 20),
-                        //   child:
-                        //   ListView.builder(
-                        //     shrinkWrap:  true, // Allow the ListView to wrap its content
-                        //     physics: const NeverScrollableScrollPhysics(),
-                        //     itemCount: 10 /*tasks.length*/,
-                        //     itemBuilder: (context, index) {
-                        //       return DeckTaskTile(
-                        //         title: 'a high priority task',
-                        //         deadline: 'March 18, 2024 || 10:00 AM',
-                        //         priority: 'medium',
-                        //         progressStatus: 'to do',
-                        //         // title: tasks[index]['title'],
-                        //         // deadline: tasks[index]['deadline'],
-                        //         // priority: tasks[index]['priority'],
-                        //         // progressStatus: tasks[index]['progressStatus'],
-                        //         onDelete: () {
-                        //           // final String deletedTitle = tasks[index].title;
-                        //           // showConfirmationDialog(
-                        //           //   context, "Delete Item",
-                        //           //   "Are you sure you want to delete '$deletedTitle'?",() {
-                        //           //     Provider.of<TaskProvider>(context,listen: false).deleteTask(tasks[index].uid);},() { setState(() {}); },
-                        //           // );
-                        //         },
-                        //         enableRetrieve: false,
-                        //         onTap: () {
-                        //           print("Clicked task tile!");
-                        //           // Navigator.push(
-                        //           // context,
-                        //           // MaterialPageRoute(
-                        //           //   builder: (context) => ViewTaskPage(  task: tasks[index],  isEditable: true,)),
-                        //           // );
-                        //         },
-                        //       );
-                        //     },
-                        //   ),
-                        // ),
-                        ///if IN PROGRESS tab does not contain a task
-                        IfCollectionEmpty(
-                          ifCollectionEmptyText:
-                              'Seems like there aren’t any\n task for today, wanderer!',
-                          ifCollectionEmptySubText:
-                              'Now’s the perfect time to get ahead. Start\nadding new tasks and stay \non top of your game!',
-                          ifCollectionEmptyHeight:
-                              MediaQuery.of(context).size.height / 2,
-                        ),
+                      ///in progress tab
+                      // SingleChildScrollView(
+                      //   padding: EdgeInsets.only(top: 20),
+                      //   child:
+                      //   ListView.builder(
+                      //     shrinkWrap:  true, // Allow the ListView to wrap its content
+                      //     physics: const NeverScrollableScrollPhysics(),
+                      //     itemCount: 10 /*tasks.length*/,
+                      //     itemBuilder: (context, index) {
+                      //       return DeckTaskTile(
+                      //         title: 'a high priority task',
+                      //         deadline: 'March 18, 2024 || 10:00 AM',
+                      //         priority: 'medium',
+                      //         progressStatus: 'to do',
+                      //         // title: tasks[index]['title'],
+                      //         // deadline: tasks[index]['deadline'],
+                      //         // priority: tasks[index]['priority'],
+                      //         // progressStatus: tasks[index]['progressStatus'],
+                      //         onDelete: () {
+                      //           // final String deletedTitle = tasks[index].title;
+                      //           // showConfirmationDialog(
+                      //           //   context, "Delete Item",
+                      //           //   "Are you sure you want to delete '$deletedTitle'?",() {
+                      //           //     Provider.of<TaskProvider>(context,listen: false).deleteTask(tasks[index].uid);},() { setState(() {}); },
+                      //           // );
+                      //         },
+                      //         enableRetrieve: false,
+                      //         onTap: () {
+                      //           print("Clicked task tile!");
+                      //           // Navigator.push(
+                      //           // context,
+                      //           // MaterialPageRoute(
+                      //           //   builder: (context) => ViewTaskPage(  task: tasks[index],  isEditable: true,)),
+                      //           // );
+                      //         },
+                      //       );
+                      //     },
+                      //   ),
+                      // ),
+                      ///if IN PROGRESS tab does not contain a task
+                      IfCollectionEmpty(
+                        ifCollectionEmptyText: 'Seems like there aren’t any\n task for today, wanderer!',
+                        ifCollectionEmptySubText:
+                        'Now’s the perfect time to get ahead. Start\nadding new tasks and stay \non top of your game!',
+                        ifCollectionEmptyHeight: MediaQuery.of(context).size.height/2,
+                      ),
+
                       /// Complete Tab
                       SingleChildScrollView(
                         padding: const EdgeInsets.only(top: 20),
@@ -709,153 +628,153 @@ class _TaskPageState extends State<TaskPage> {
                             );
                           },
                         ),
+                      ),
+                      /// if Complete tab does not contain a task
+                      // IfCollectionEmpty(
+                      //   ifCollectionEmptyText: 'Seems like there aren’t any\n task for today, wanderer!',
+                      //   ifCollectionEmptySubText: 'Now’s the perfect time to get ahead. Start\nadding new tasks and stay \non top of your game!',
+                      //   ifCollectionEmptyHeight: MediaQuery.of(context).size.height/2,
+                      // )
+                      // if (isThereTaskForDay(today, false) || showAllTask)
+                      //   ListView.builder(
+                      //     shrinkWrap:
+                      //         true, // Allow the ListView to wrap its content
+                      //     physics: const NeverScrollableScrollPhysics(),
+                      //     itemCount: tasks.length,
+                      //     itemBuilder: (context, index) {
+                      //       if ((showAllTask && tasks[index].getIsDone) ||
+                      //           (tasks[index].getIsDone &&
+                      //               isSameDay(
+                      //                   tasks[index].deadline, selectedDay))) {
+                      //         return Padding(
+                      //           padding: const EdgeInsets.symmetric(vertical: 10),
+                      //           child: DeckTaskTile(
+                      //             title: tasks[index].title,
+                      //             deadline: tasks[index]
+                      //                 .deadline
+                      //                 .toString()
+                      //                 .split(" ")[0],
+                      //             isChecked: tasks[index].getIsDone,
+                      //             onChanged: (newValue) {
+                      //               setState(() {
+                      //                 tasks[index].setIsDone = newValue ?? false;
+                      //                 Provider.of<TaskProvider>(context,
+                      //                         listen: false)
+                      //                     .setTaskUndone(tasks[index]);
+                      //               });
+                      //             },
+                      //             onDelete: () {
+                      //               final String deletedTitle =
+                      //                   tasks[index].title;
+                      //               showConfirmationDialog(
+                      //                 context,
+                      //                 "Delete Item",
+                      //                 "Are you sure you want to delete '$deletedTitle'?",
+                      //                 () {
+                      //                   Provider.of<TaskProvider>(context,
+                      //                           listen: false)
+                      //                       .deleteTask(tasks[index].uid);
+                      //                 },
+                      //                 () {
+                      //                   setState(() {});
+                      //                 },
+                      //               );
+                      //             },
+                      //             enableRetrieve: false,
+                      //             onTap: () {
+                      //               print("Clicked task tile!");
+                      //               Navigator.push(
+                      //                 context,
+                      //                 MaterialPageRoute(
+                      //                     builder: (context) => ViewTaskPage(
+                      //                           task: tasks[index],
+                      //                           isEditable: true,
+                      //                         )),
+                      //               );
+                      //             },
+                      //           ),
+                      //         );
+                      //       } else {
+                      //         return const SizedBox(
+                      //             height: 0); // Placeholder for empty space
+                      //       }
+                      //     },
+                      //   )
+                      // else
 
-                        /// if Complete tab does not contain a task
-                        // IfCollectionEmpty(
-                        //   ifCollectionEmptyText: 'Seems like there aren’t any\n task for today, wanderer!',
-                        //   ifCollectionEmptySubText: 'Now’s the perfect time to get ahead. Start\nadding new tasks and stay \non top of your game!',
-                        //   ifCollectionEmptyHeight: MediaQuery.of(context).size.height/2,
-                        // )
-                        // if (isThereTaskForDay(today, false) || showAllTask)
-                        //   ListView.builder(
-                        //     shrinkWrap:
-                        //         true, // Allow the ListView to wrap its content
-                        //     physics: const NeverScrollableScrollPhysics(),
-                        //     itemCount: tasks.length,
-                        //     itemBuilder: (context, index) {
-                        //       if ((showAllTask && tasks[index].getIsDone) ||
-                        //           (tasks[index].getIsDone &&
-                        //               isSameDay(
-                        //                   tasks[index].deadline, selectedDay))) {
-                        //         return Padding(
-                        //           padding: const EdgeInsets.symmetric(vertical: 10),
-                        //           child: DeckTaskTile(
-                        //             title: tasks[index].title,
-                        //             deadline: tasks[index]
-                        //                 .deadline
-                        //                 .toString()
-                        //                 .split(" ")[0],
-                        //             isChecked: tasks[index].getIsDone,
-                        //             onChanged: (newValue) {
-                        //               setState(() {
-                        //                 tasks[index].setIsDone = newValue ?? false;
-                        //                 Provider.of<TaskProvider>(context,
-                        //                         listen: false)
-                        //                     .setTaskUndone(tasks[index]);
-                        //               });
-                        //             },
-                        //             onDelete: () {
-                        //               final String deletedTitle =
-                        //                   tasks[index].title;
-                        //               showConfirmationDialog(
-                        //                 context,
-                        //                 "Delete Item",
-                        //                 "Are you sure you want to delete '$deletedTitle'?",
-                        //                 () {
-                        //                   Provider.of<TaskProvider>(context,
-                        //                           listen: false)
-                        //                       .deleteTask(tasks[index].uid);
-                        //                 },
-                        //                 () {
-                        //                   setState(() {});
-                        //                 },
-                        //               );
-                        //             },
-                        //             enableRetrieve: false,
-                        //             onTap: () {
-                        //               print("Clicked task tile!");
-                        //               Navigator.push(
-                        //                 context,
-                        //                 MaterialPageRoute(
-                        //                     builder: (context) => ViewTaskPage(
-                        //                           task: tasks[index],
-                        //                           isEditable: true,
-                        //                         )),
-                        //               );
-                        //             },
-                        //           ),
-                        //         );
-                        //       } else {
-                        //         return const SizedBox(
-                        //             height: 0); // Placeholder for empty space
-                        //       }
-                        //     },
-                        //   )
-                        // else
-
-                        ///old codes here please delete if d na need
-                        //                if (isThereTaskForDay(today, true))
-                        //                  ListView.builder(
-                        //                   shrinkWrap:  true, // Allow the ListView to wrap its content
-                        //                   physics: const NeverScrollableScrollPhysics(),
-                        //                   itemCount: tasks.length,
-                        //                   itemBuilder: (context, index) {
-                        //                     if ((showAllTask && !tasks[index].getIsDone) || (!tasks[index].getIsDone && isSameDay(tasks[index].deadline, selectedDay))) {
-                        //                       return Padding(
-                        //                         padding: const EdgeInsets.symmetric(vertical: 10),
-                        //                         child: DeckTaskTile(
-                        //                           title:
-                        //                           , deadline:.
-                        //                           priority: ,
-                        //                           progressStatus:.
-                        //                           onDelete,
-                        //                           onRetrieve:,
-                        //                           onTap: ,
-                        //                           enableRetrieve:
-                        //                         ),
-                        // DeckTaskTile(
-                        //   title: tasks[index].title,
-                        //   deadline: tasks[index]
-                        //       .deadline
-                        //       .toString()
-                        //       .split(" ")[0],
-                        //   isChecked: tasks[index].getIsDone,
-                        //   onChanged: (newValue) {
-                        //     setState(() {
-                        //       tasks[index].setIsDone = newValue ?? false;
-                        //       Provider.of<TaskProvider>(context,
-                        //               listen: false)
-                        //           .setTaskDone(tasks[index]);
-                        //     });
-                        //   },
-                        //   onDelete: () {
-                        //     final String deletedTitle =
-                        //         tasks[index].title;
-                        //     showConfirmationDialog(
-                        //       context,
-                        //       "Delete Item",
-                        //       "Are you sure you want to delete '$deletedTitle'?",
-                        //       () {
-                        //         Provider.of<TaskProvider>(context,
-                        //                 listen: false)
-                        //             .deleteTask(tasks[index].uid);
-                        //       },
-                        //       () { setState(() {}); },
-                        //     );
-                        //   },
-                        //   enableRetrieve: false,
-                        //   onTap: () {
-                        //     // print("Clicked task tile!");
-                        //     Navigator.push(
-                        //       context,
-                        //       MaterialPageRoute(
-                        //           builder: (context) => ViewTaskPage(  task: tasks[index],  isEditable: true,)),
-                        //     );
-                        //   },
-                        // ),
-                        //                       );
-                        //                     } else { ///
-                        //                       return const SizedBox( height:  0); // do not remove. tasks will not show up.
-                        //                     }
-                        //                   },
-                        //                  )
-                        //             else ///show this if there are no task
-                        ///
-                      ],
-                    ),
+                      ///old codes here please delete if d na need
+                      //                if (isThereTaskForDay(today, true))
+                      //                  ListView.builder(
+                      //                   shrinkWrap:  true, // Allow the ListView to wrap its content
+                      //                   physics: const NeverScrollableScrollPhysics(),
+                      //                   itemCount: tasks.length,
+                      //                   itemBuilder: (context, index) {
+                      //                     if ((showAllTask && !tasks[index].getIsDone) || (!tasks[index].getIsDone && isSameDay(tasks[index].deadline, selectedDay))) {
+                      //                       return Padding(
+                      //                         padding: const EdgeInsets.symmetric(vertical: 10),
+                      //                         child: DeckTaskTile(
+                      //                           title:
+                      //                           , deadline:.
+                      //                           priority: ,
+                      //                           progressStatus:.
+                      //                           onDelete,
+                      //                           onRetrieve:,
+                      //                           onTap: ,
+                      //                           enableRetrieve:
+                      //                         ),
+                      // DeckTaskTile(
+                      //   title: tasks[index].title,
+                      //   deadline: tasks[index]
+                      //       .deadline
+                      //       .toString()
+                      //       .split(" ")[0],
+                      //   isChecked: tasks[index].getIsDone,
+                      //   onChanged: (newValue) {
+                      //     setState(() {
+                      //       tasks[index].setIsDone = newValue ?? false;
+                      //       Provider.of<TaskProvider>(context,
+                      //               listen: false)
+                      //           .setTaskDone(tasks[index]);
+                      //     });
+                      //   },
+                      //   onDelete: () {
+                      //     final String deletedTitle =
+                      //         tasks[index].title;
+                      //     showConfirmationDialog(
+                      //       context,
+                      //       "Delete Item",
+                      //       "Are you sure you want to delete '$deletedTitle'?",
+                      //       () {
+                      //         Provider.of<TaskProvider>(context,
+                      //                 listen: false)
+                      //             .deleteTask(tasks[index].uid);
+                      //       },
+                      //       () { setState(() {}); },
+                      //     );
+                      //   },
+                      //   enableRetrieve: false,
+                      //   onTap: () {
+                      //     // print("Clicked task tile!");
+                      //     Navigator.push(
+                      //       context,
+                      //       MaterialPageRoute(
+                      //           builder: (context) => ViewTaskPage(  task: tasks[index],  isEditable: true,)),
+                      //     );
+                      //   },
+                      // ),
+                      //                       );
+                      //                     } else { ///
+                      //                       return const SizedBox( height:  0); // do not remove. tasks will not show up.
+                      //                     }
+                      //                   },
+                      //                  )
+                      //             else ///show this if there are no task
+                      ///
+                    ],
                   ),
                 ),
-              )
+              ),
+            )
             // else
           ],
         ),
