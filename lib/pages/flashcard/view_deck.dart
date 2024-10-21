@@ -134,13 +134,14 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                   Container(
                     height: 150,
                     width: double.infinity,
-                    child: const BuildCoverImage(
+                    child: BuildCoverImage(
                     // Conditionally pass CoverPhotofile based on coverPhoto value
-                    // coverPhotoFile: coverPhoto != 'no_photo' ? Image.file(File(coverPhoto)) : null,
+                    imageUrl: widget.deck.coverPhoto ?? "no_image",
                     borderRadiusContainer: 0,
                     borderRadiusImage: 0,
-                                    ),
+                    isHeader: true,
                   ),
+              ),
                   /*Container(
                     height: 150,
                     width: double.infinity,
