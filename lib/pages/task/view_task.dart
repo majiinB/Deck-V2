@@ -33,13 +33,13 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
     deadline = TaskProvider.getNameDate(_task.deadline);
     _descriptionController = TextEditingController(text: widget.task.description.toString());
     _dateController = TextEditingController(text: widget.task.deadline.toString().split(" ")[0]);
-    _selectedStatus = determineStatusIndex();
+    _selectedStatus = determineStatusIndex(widget.task);
   }
 
-  int determineStatusIndex(){
-    if(!widget.task.getIsDone && !widget.task.getIsActive) {
+  int determineStatusIndex(Task task){
+    if(!task.getIsDone && !task.getIsActive) {
       return 0;
-    } else if(!widget.task.getIsDone && widget.task.getIsActive) {return 1;}
+    } else if(!task.getIsDone && task.getIsActive) {return 1;}
     else {return 2;}
   }
 
@@ -64,6 +64,7 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
       deadline = TaskProvider.getNameDate(_task.deadline);
       _descriptionController.text = _task.description;
       _dateController.text = _task.deadline.toString().split(" ")[0];
+      _selectedStatus = determineStatusIndex(updatedTask);
     });
   }
 
@@ -104,30 +105,32 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                     image: AssetImage('assets/images/AddDeck_Header.png'),
                     fit: BoxFit.cover,
                   ),
-                 Row(
-                   children: [Padding(
-                     padding: const EdgeInsets.only(left: 30.0),
-                     child: IconButton(
-                         icon: const Icon(
-                             DeckIcons2.pencil,
-                             color: DeckColors.white,
-                             size: 40),
-                         onPressed: () async {
-                           final updatedTask = await Navigator.push(
-                             context,
-                             MaterialPageRoute(builder: (context) => EditTaskPage(task: _task)),
-                           );
-                           if (updatedTask != null) {
-                             _updateTask(updatedTask);
-                             await Provider.of<TaskProvider>(context,listen: false).loadTasks();
-                             print(updatedTask.priority);
-                             print(_priorityIndex);
-                             setState((){_priorityIndex = TaskProvider.getPriorityIndex(updatedTask.priority);});
-                             print(_priorityIndex);
-                           }
-                         })
-                     ,
-                   ),] ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 30.0),
+                    child: IconButton(
+                      icon: const Icon(
+                        Icons.list,
+                        color: DeckColors.white,
+                        size: 24),
+                      onPressed: () async {
+                          final updatedTask = await Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => EditTaskPage(task: _task)),
+                          );
+                          if (updatedTask != null) {
+                            _updateTask(updatedTask);
+                            await Provider.of<TaskProvider>(context,listen: false).loadTasks();
+                            print(updatedTask.priority);
+                            print(_selectedStatus);
+                            setState((){
+                              _priorityIndex = TaskProvider.getPriorityIndex(updatedTask.priority);
+                              _selectedStatus = determineStatusIndex(updatedTask);
+                            });
+                            print(_selectedStatus);
+                          }
+                        })
+                      ,
+                    ),
                   // const Divider(
                   //   color: DeckColors.white,
                   //   thickness: 2,
@@ -231,6 +234,11 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                           buttonColors: const [ Colors.blue,  Colors.blue, Colors.blue],
                           isClickable: false,
                           initialSelectedIndex: _selectedStatus,
+                          onChange: (label, index) {
+                            setState((){
+                              _selectedStatus = index;
+                            });
+                          }
                         ),
                         Padding(
                           padding: const EdgeInsets.only(top: 50),

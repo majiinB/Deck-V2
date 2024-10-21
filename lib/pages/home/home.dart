@@ -228,7 +228,7 @@ class _HomePageState extends State<HomePage> {
                 )
               else if (taskToday.isNotEmpty)
                 SliverList(
-                delegate: SliverChildBuilderDelegate(childCount: _tasks.length.clamp(0, 3),
+                delegate: SliverChildBuilderDelegate(childCount: _tasks.length.clamp(0, 5),
                     (context, index) {
                   DateTime deadline = DateTime(_tasks[index].deadline.year,
                       _tasks[index].deadline.month, _tasks[index].deadline.day);
