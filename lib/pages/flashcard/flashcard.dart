@@ -7,6 +7,7 @@ import 'package:deck/pages/flashcard/add_deck.dart';
 import 'package:deck/pages/flashcard/view_deck.dart';
 import 'package:deck/pages/misc/colors.dart';
 import 'package:deck/pages/misc/deck_icons.dart';
+import 'package:deck/pages/misc/deck_icons2.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:deck/pages/misc/widget_method.dart';
@@ -120,20 +121,19 @@ class _FlashcardPageState extends State<FlashcardPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-             Padding(
+            Padding(
               padding: const EdgeInsets.only(top: 20.0),
               child: Row(
                 children: [
                   const Icon(
-                    DeckIcons.flashcard,
+                    DeckIcons2.hat,
                     color: DeckColors.white,
                     size: 32,
                   ),
                   const Spacer(),
                   IconButton(
-                    icon: const Icon (Icons.add,
-                    color: DeckColors.white,
-                    size: 32),
+                    icon: const Icon(Icons.add,
+                        color: DeckColors.white, size: 32),
                     onPressed: () async {
                       if (_user != null) {
                         try {
@@ -152,10 +152,8 @@ class _FlashcardPageState extends State<FlashcardPage> {
                     },
                   ),
                   IconButton(
-                    icon: const Icon(
-                    Icons.search_rounded,
-                    color: DeckColors.white,
-                    size: 32),
+                    icon: const Icon(Icons.search_rounded,
+                        color: DeckColors.white, size: 32),
                     onPressed: () {
                       setState(() {
                         _isSearchBoxVisible = !_isSearchBoxVisible;
@@ -186,7 +184,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
                   width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      color: DeckColors.gray),
+                      color: DeckColors.grayPopup),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -244,15 +242,15 @@ class _FlashcardPageState extends State<FlashcardPage> {
               ),
             if (_decks.isNotEmpty)
               if (_isSearchBoxVisible)
-              Padding(
-                padding: const EdgeInsets.only(top: 20.0),
-                child: BuildTextBox(
-                  controller: _searchController,
-                  hintText: 'Search Decks',
-                  showPassword: false,
-                  rightIcon: Icons.search,
+                Padding(
+                  padding: const EdgeInsets.only(top: 20.0),
+                  child: BuildTextBox(
+                    controller: _searchController,
+                    hintText: 'Search Decks',
+                    showPassword: false,
+                    rightIcon: Icons.search,
+                  ),
                 ),
-              ),
             if (_decks.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(top: 10.0),
