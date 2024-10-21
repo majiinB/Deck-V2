@@ -29,7 +29,7 @@ class _AddFlashcardPageState extends State<AddFlashcardPage> {
           color: DeckColors.white,
           fontSize: 24,
         ),*/
-        body: SingleChildScrollView(
+        body: _isLoading ? const Center(child: CircularProgressIndicator()) : SingleChildScrollView(
           child: Column(crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Image(
@@ -113,6 +113,7 @@ class _AddFlashcardPageState extends State<AddFlashcardPage> {
                           "Add Flash Card",
                           "Are you sure you want to add this flash card on your deck?",
                               () async {
+                                setState(() => _isLoading = true);
                                 try {
                                   if (_descriptionOrAnswerController.text.isNotEmpty &&
                                       _questionOrTermController.text.isNotEmpty) {
@@ -121,13 +122,15 @@ class _AddFlashcardPageState extends State<AddFlashcardPage> {
                                       _descriptionOrAnswerController.text.toString(),
                                     );
                                     if (card != null) {
-                                      await Future.delayed(Duration(milliseconds: 300));
+                                      await Future.delayed(const Duration(milliseconds: 300));
+                                      setState(() => _isLoading = false);
                                       Navigator.pop(context, card);
                                       showInformationDialog(context, "Card Added Successfully", "You can now view this card in you deck");
                                     }
                                   } else {
                                     //Navigator.of(context).pop(); // Close the confirmation dialog
-                                    await Future.delayed(Duration(milliseconds: 300)); // Ensure the dialog is fully closed
+                                    await Future.delayed(const Duration(milliseconds: 300)); // Ensure the dialog is fully closed
+                                    setState(() => _isLoading = false);
                                     showInformationDialog(
                                         context,
                                         "Input Error",
@@ -157,6 +160,7 @@ class _AddFlashcardPageState extends State<AddFlashcardPage> {
                                   }
                                 } catch (e) {
                                   print('add card error: $e');
+                                  setState(() => _isLoading = false);
                                   showInformationDialog(
                                       context,
                                       "An error occured" ,
