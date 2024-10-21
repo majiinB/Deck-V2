@@ -28,7 +28,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
   List<Cards> _starredCardCollection = [];
   List<Cards> _filteredCardsCollection = [];
   List<Cards> _filteredStarredCardCollection = [];
-  int numberOfCards = 10;
+  int numberOfCards = 0;
   final TextEditingController _searchController = TextEditingController();
 
   @override
@@ -341,6 +341,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                             _cardsCollection.removeWhere((card) => card.cardId == removedCard.cardId);
                                             _filteredStarredCardCollection.removeWhere((card) => card.cardId == removedCard.cardId);
                                             _starredCardCollection.removeWhere((card) => card.cardId == removedCard.cardId);
+                                            numberOfCards = _cardsCollection.length;
                                           });
                                           showConfirmationDialog(
                                             context,
@@ -363,6 +364,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                     _starredCardCollection.add(removedCard);
                                                     FlashcardUtils().sortByQuestion(_starredCardCollection);
                                                   }
+                                                  numberOfCards = _cardsCollection.length;
                                                 });
                                               }
       
@@ -379,6 +381,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                   _starredCardCollection.add(removedCard);
                                                   FlashcardUtils().sortByQuestion(_starredCardCollection);
                                                 }
+                                                numberOfCards = _cardsCollection.length;
                                               });
                                             },
                                           );
@@ -469,6 +472,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                             _filteredCardsCollection.removeWhere((card) => card.cardId == removedCard.cardId);
                                             _filteredStarredCardCollection.removeAt(index);
                                             _starredCardCollection.removeWhere((card) => card.cardId == removedCard.cardId);
+                                            numberOfCards = _cardsCollection.length;
                                           });
                                           showConfirmationDialog(
                                             context,
@@ -489,6 +493,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                   FlashcardUtils().sortByQuestion(_filteredStarredCardCollection);
                                                   _starredCardCollection.add(removedCard);
                                                   FlashcardUtils().sortByQuestion(_starredCardCollection);
+                                                  numberOfCards = _cardsCollection.length;
                                                 });
                                               }
                                             },
@@ -502,6 +507,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                 FlashcardUtils().sortByQuestion(_filteredStarredCardCollection);
                                                 _starredCardCollection.add(removedCard);
                                                 FlashcardUtils().sortByQuestion(_starredCardCollection);
+                                                numberOfCards = _cardsCollection.length;
                                               });
                                             },
                                           );
