@@ -253,9 +253,9 @@ class _AddTaskPageState extends State<AddTaskPage> {
                                   "description" : _descriptionController.text,
                                   "priority": _selectedPriority,
                                   "is_done": false,
+                                  "is_active": false,
                                   "set_date": DateTime.now(),
                                   "end_date": DateTime.parse(_dateController.text).add(const Duration(hours: 23, minutes: 59, seconds: 59)),
-                                  "progress_status": "to do",
                                   "is_deleted": false,
                                   "done_date": DateTime.now(),
                                 };

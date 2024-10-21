@@ -492,56 +492,14 @@ class _TaskPageState extends State<TaskPage> {
                 child: Padding(
                   padding: const EdgeInsets.only(top: 20),
                   child: BuildTabBar(
-                    titles: const ['To Do', 'In Progress', 'Completed'],
+                    titles: const ['To Do', 'Active', 'Done'],
                     length: 3,
                     tabContent: [
-                      /// To Do Tab
-                      SingleChildScrollView(
-                        padding: const EdgeInsets.only(top: 20),
-                        child:
-                        ListView.builder(
-                          shrinkWrap:  true, // Allow the ListView to wrap its content
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: tasks.length,
-                          itemBuilder: (context, index) {
-                            return DeckTaskTile(
-                              title: tasks[index].title,
-                              deadline: TaskProvider.getNameDate(tasks[index].deadline),
-                              priority: 'medium',
-                              progressStatus: 'to do',
-                              // title: tasks[index]['title'],
-                              // deadline: tasks[index]['deadline'],
-                              // priority: tasks[index]['priority'],
-                              // progressStatus: tasks[index]['progressStatus'],
-                              onDelete: () {
-                                final String deletedTitle = tasks[index].title;
-                                showConfirmationDialog(
-                                  context, "Delete Item",
-                                  "Are you sure you want to delete '$deletedTitle'?",() {
-                                  Provider.of<TaskProvider>(context,listen: false).deleteTask(tasks[index].uid);},() { setState(() {}); },
-                                );
-                              },
-                              enableRetrieve: false,
-                              onTap: () {
-                                print("Clicked task tile!");
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ViewTaskPage(  task: tasks[index],  isEditable: true,)),
-                                );
-                              },
-                            );
-                          },
-                        ),
-                      ),
+                      _buildTaskList(tasks, (task) => !task.getIsDone && !task.getIsActive),
+                      _buildTaskList(tasks, (task) => task.getIsActive && !task.getIsDone),
+                      _buildTaskList(tasks, (task) => task.getIsDone && !task.getIsActive)
 
                       ///if TO DO tab does not contain a task
-                      IfCollectionEmpty(
-                        ifCollectionEmptyText: 'Seems like there aren’t any\n task for today, wanderer!',
-                        ifCollectionEmptySubText:
-                        'Now’s the perfect time to get ahead. Start\nadding new tasks and stay \non top of your game!',
-                        ifCollectionEmptyHeight:MediaQuery.of(context).size.height/2,
-                      ),
 
                       ///in progress tab
                       // SingleChildScrollView(
@@ -583,52 +541,6 @@ class _TaskPageState extends State<TaskPage> {
                       //   ),
                       // ),
                       ///if IN PROGRESS tab does not contain a task
-                      IfCollectionEmpty(
-                        ifCollectionEmptyText: 'Seems like there aren’t any\n task for today, wanderer!',
-                        ifCollectionEmptySubText:
-                        'Now’s the perfect time to get ahead. Start\nadding new tasks and stay \non top of your game!',
-                        ifCollectionEmptyHeight: MediaQuery.of(context).size.height/2,
-                      ),
-
-                      /// Complete Tab
-                      SingleChildScrollView(
-                        padding: const EdgeInsets.only(top: 20),
-                        child:
-                        ListView.builder(
-                          shrinkWrap:  true, // Allow the ListView to wrap its content
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: 10 /*tasks.length*/,
-                          itemBuilder: (context, index) {
-                            return DeckTaskTile(
-                              title: 'a high priority task',
-                              deadline: 'March 18, 2024 - 10:00 AM',
-                              priority: 'medium',
-                              progressStatus: 'to do',
-                              // title: tasks[index]['title'],
-                              // deadline: tasks[index]['deadline'],
-                              // priority: tasks[index]['priority'],
-                              // progressStatus: tasks[index]['progressStatus'],
-                              onDelete: () {
-                                // final String deletedTitle = tasks[index].title;
-                                // showConfirmationDialog(
-                                //   context, "Delete Item",
-                                //   "Are you sure you want to delete '$deletedTitle'?",() {
-                                //     Provider.of<TaskProvider>(context,listen: false).deleteTask(tasks[index].uid);},() { setState(() {}); },
-                                // );
-                              },
-                              enableRetrieve: false,
-                              onTap: () {
-                                print("Clicked task tile!");
-                                // Navigator.push(
-                                // context,
-                                // MaterialPageRoute(
-                                //   builder: (context) => ViewTaskPage(  task: tasks[index],  isEditable: true,)),
-                                // );
-                              },
-                            );
-                          },
-                        ),
-                      ),
                       /// if Complete tab does not contain a task
                       // IfCollectionEmpty(
                       //   ifCollectionEmptyText: 'Seems like there aren’t any\n task for today, wanderer!',

@@ -98,12 +98,12 @@ class _HomePageState extends State<HomePage> {
               //   min: 100,
               //   hasIcon: false,
               // ),
-              SliverToBoxAdapter(
+              const SliverToBoxAdapter(
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(top: 20.0),
+                        padding: EdgeInsets.only(top: 20.0),
                         child: Row(
                           children: [
                             Icon(
@@ -123,13 +123,13 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     Text(
                         greeting,
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontFamily: 'Fraiche',
                             fontSize: 60,
                             color: DeckColors.primaryColor,
                             fontWeight: FontWeight.bold)
                     ),
-                    Text(
+                    const Text(
                         'Let\'s be productive today as well!',
                         style: TextStyle(
                             fontFamily: 'Nunito',
@@ -141,7 +141,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
 
-              SliverToBoxAdapter(
+              const SliverToBoxAdapter(
                 child: SizedBox(height: 30,),
               ),
               // const DeckSliverHeader(
@@ -157,7 +157,7 @@ class _HomePageState extends State<HomePage> {
               //   min: 50,
               //   hasIcon: false,
               // ),
-              SliverToBoxAdapter(
+              const SliverToBoxAdapter(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -172,7 +172,7 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
-              SliverToBoxAdapter(
+              const SliverToBoxAdapter(
                 child: SizedBox(height: 30,),
               ),
               // const DeckSliverHeader(
@@ -192,8 +192,8 @@ class _HomePageState extends State<HomePage> {
               if(taskToday.isEmpty)
                 SliverToBoxAdapter(
                   child: Container(
-                    padding: EdgeInsets.all(30),
-                    decoration: BoxDecoration(
+                    padding: const EdgeInsets.all(30),
+                    decoration: const BoxDecoration(
                       color: DeckColors.coverImageColorSettings,
                         borderRadius: BorderRadius.all(Radius.circular(40)),
                     ),
@@ -208,7 +208,7 @@ class _HomePageState extends State<HomePage> {
                 )
               else if (taskToday.isNotEmpty)
                 SliverList(
-                delegate: SliverChildBuilderDelegate(childCount:5/* _tasks.length*/,
+                delegate: SliverChildBuilderDelegate(childCount: _tasks.length,
                     (context, index) {
                   DateTime deadline = DateTime(_tasks[index].deadline.year,
                       _tasks[index].deadline.month, _tasks[index].deadline.day);
@@ -225,9 +225,9 @@ class _HomePageState extends State<HomePage> {
                       LayoutBuilder(
                         builder: (context, BoxConstraints constraints) {
                       return  DeckTaskTile(
-                        title: 'a high priority task',
-                        deadline: 'March 18, 2024 || 10:00 AM',
-                        priority: 'medium',
+                        title: _tasks[index].title,
+                        deadline: TaskProvider.getNameDate(_tasks[index].deadline),
+                        priority: _tasks[index].priority,
                         progressStatus: 'to do',
                         // title: tasks[index]['title'],
                         // deadline: _tasks[index].deadline.toString().split(" ")[0],
@@ -248,10 +248,10 @@ class _HomePageState extends State<HomePage> {
                   }
                 }),
               ),
-              SliverToBoxAdapter(
+              const SliverToBoxAdapter(
                 child: SizedBox(height: 30,),
               ),
-              SliverToBoxAdapter(
+              const SliverToBoxAdapter(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -280,14 +280,14 @@ class _HomePageState extends State<HomePage> {
               //   min: 50,
               //   hasIcon: false,
               // ),
-              SliverToBoxAdapter(
+              const SliverToBoxAdapter(
                 child: SizedBox(height: 30,),
               ),
               if (_decks.isEmpty)
                 SliverToBoxAdapter(
                     child: Container(
                       padding: EdgeInsets.all(30),
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: DeckColors.coverImageColorSettings,
                         borderRadius: BorderRadius.all(Radius.circular(40)),
                       ),
