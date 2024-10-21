@@ -85,81 +85,50 @@ class _HomePageState extends State<HomePage> {
           minimum: const EdgeInsets.only(left: 20, right: 20),
           child: CustomScrollView(
             slivers: <Widget>[
-              // DeckSliverHeader(
-              //   backgroundColor: Colors.transparent,
-              //   headerTitle: greeting,
-              //   textStyle: const TextStyle(
-              //     color: DeckColors.primaryColor,
-              //     fontFamily: 'Fraiche',
-              //     fontSize: 48,
-              //   ),
-              //   isPinned: false,
-              //   max: 100,
-              //   min: 100,
-              //   hasIcon: false,
-              // ),
-              // const DeckSliverHeader(
-              //   backgroundColor: Colors.transparent,
-              //   headerTitle: "Let's be productive today as well!",
-              //   textStyle: TextStyle(
-              //     color: DeckColors.white,
-              //     fontWeight: FontWeight.w300,
-              //     fontSize: 16,
-              //   ),
-              //   isPinned: false,
-              //   max: 50,
-              //   min: 50,
-              //   hasIcon: false,
-              // ),
-              SliverToBoxAdapter(
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20.0),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.list,
-                              color: DeckColors.white,
-                              size: 32,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ]
+              DeckSliverHeader(
+                backgroundColor: Colors.transparent,
+                headerTitle: greeting,
+                textStyle: const TextStyle(
+                  color: DeckColors.primaryColor,
+                  fontFamily: 'Fraiche',
+                  fontSize: 48,
                 ),
+                isPinned: false,
+                max: 100,
+                min: 100,
+                hasIcon: false,
               ),
-              SliverToBoxAdapter(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                        greeting,
-                        style: TextStyle(
-                            fontFamily: 'Fraiche',
-                            fontSize: 30,
-                            color: DeckColors.primaryColor,
-                            fontWeight: FontWeight.bold)
-                    ),
-                    Text(
-                        'Let\'s be productive today as well!',
-                        style: TextStyle(
-                            fontFamily: 'Fraiche',
-                            fontSize: 20,
-                            color: DeckColors.primaryColor,
-                            fontWeight: FontWeight.bold)
-                    ),
-                  ],
+              const DeckSliverHeader(
+                backgroundColor: Colors.transparent,
+                headerTitle: "Let's be productive today as well!",
+                textStyle: TextStyle(
+                  color: DeckColors.white,
+                  fontWeight: FontWeight.w300,
+                  fontSize: 16,
                 ),
+                isPinned: false,
+                max: 50,
+                min: 50,
+                hasIcon: false,
               ),
-
               if (taskToday.isEmpty)
-                IfCollectionEmpty(
-                  ifCollectionEmptyText: 'Seems like there aren’t any\n task for today, wanderer!',
-                  ifCollectionEmptySubText:
-                  'Now’s the perfect time to get ahead. Start\nadding new tasks and stay \non top of your game!',
-                  ifCollectionEmptyHeight: MediaQuery.of(context).size.height/2,
+                // SliverToBoxAdapter(
+                //     child: IfCollectionEmpty(
+                //         ifCollectionEmptyText: "No Task(s) Available Today",
+                //         ifCollectionEmptyHeight:
+                //             MediaQuery.of(context).size.height * 0.3))
+                const DeckSliverHeader(
+                  backgroundColor: Colors.transparent,
+                  headerTitle: "Upcoming Deadlines",
+                  textStyle: TextStyle(
+                    color: DeckColors.primaryColor,
+                    fontFamily: 'Fraiche',
+                    fontSize: 24,
+                  ),
+                  isPinned: false,
+                  max: 50,
+                  min: 50,
+                  hasIcon: false,
                 )
               else if (taskToday.isNotEmpty)
                 const DeckSliverHeader(

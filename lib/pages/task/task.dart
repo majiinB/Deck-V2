@@ -341,7 +341,7 @@ class _TaskPageState extends State<TaskPage> {
                         ),
                       ),
 
-                      //if TO DO tab does not contain a task
+                      ///if TO DO tab does not contain a task
                       // IfCollectionEmpty(
                       //   ifCollectionEmptyText: 'Seems like there aren’t any\n task for today, wanderer!',
                       //   ifCollectionEmptySubText:
@@ -349,7 +349,7 @@ class _TaskPageState extends State<TaskPage> {
                       // MediaQuery.of(context).size.height/2,
                       // ),
 
-                      //in progress tab
+                      ///in progress tab
                       // SingleChildScrollView(
                       //   padding: EdgeInsets.only(top: 20),
                       //   child:
