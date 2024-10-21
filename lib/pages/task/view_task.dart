@@ -33,13 +33,13 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
     deadline = TaskProvider.getNameDate(_task.deadline);
     _descriptionController = TextEditingController(text: widget.task.description.toString());
     _dateController = TextEditingController(text: widget.task.deadline.toString().split(" ")[0]);
-    _selectedStatus = determineStatusIndex();
+    _selectedStatus = determineStatusIndex(widget.task);
   }
 
-  int determineStatusIndex(){
-    if(!widget.task.getIsDone && !widget.task.getIsActive) {
+  int determineStatusIndex(Task task){
+    if(!task.getIsDone && !task.getIsActive) {
       return 0;
-    } else if(!widget.task.getIsDone && widget.task.getIsActive) {return 1;}
+    } else if(!task.getIsDone && task.getIsActive) {return 1;}
     else {return 2;}
   }
 
@@ -64,6 +64,7 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
       deadline = TaskProvider.getNameDate(_task.deadline);
       _descriptionController.text = _task.description;
       _dateController.text = _task.deadline.toString().split(" ")[0];
+      _selectedStatus = determineStatusIndex(updatedTask);
     });
   }
 
@@ -120,12 +121,12 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                             _updateTask(updatedTask);
                             await Provider.of<TaskProvider>(context,listen: false).loadTasks();
                             print(updatedTask.priority);
-                            print(_priorityIndex);
+                            print(_selectedStatus);
                             setState((){
                               _priorityIndex = TaskProvider.getPriorityIndex(updatedTask.priority);
-                              _selectedStatus = determineStatusIndex();
+                              _selectedStatus = determineStatusIndex(updatedTask);
                             });
-                            print(_priorityIndex);
+                            print(_selectedStatus);
                           }
                         })
                       ,
