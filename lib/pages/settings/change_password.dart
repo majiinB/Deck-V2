@@ -45,15 +45,27 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
               padding: const EdgeInsets.only(top: 70),
               child: Container(
                 width: MediaQuery.of(context).size.width,
-                height: 500,
+                height: 580,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15.0),
                   color: DeckColors.gray,
                 ),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(top: 30, left: 20, right: 20),
+                      padding: const EdgeInsets.only(top: 30.0, left: 15, right: 15),
+                      child: Text(
+                        'Old Password',
+                        style: GoogleFonts.nunito(
+                          color: DeckColors.primaryColor,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10, left: 15, right: 15),
                       child: BuildTextBox(
                         hintText: 'Enter Old Password',
                         showPassword: true,
@@ -61,7 +73,18 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                      padding: const EdgeInsets.only(top: 20.0, left: 15, right: 15),
+                      child: Text(
+                        'New Password',
+                        style: GoogleFonts.nunito(
+                          color: DeckColors.primaryColor,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10, left: 15, right: 15),
                       child: BuildTextBox(
                         hintText: 'Enter New Password',
                         showPassword: true,
@@ -69,7 +92,18 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                      padding: const EdgeInsets.only(top: 20.0, left: 15, right: 15),
+                      child: Text(
+                        'Confirm New Password',
+                        style: GoogleFonts.nunito(
+                          color: DeckColors.primaryColor,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10, left: 15, right: 15),
                       child: BuildTextBox(
                         hintText: 'Confirm New Password',
                         showPassword: true,

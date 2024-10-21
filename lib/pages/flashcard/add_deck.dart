@@ -74,6 +74,17 @@ class _AddDeckPageState extends State<AddDeckPage> {
                           ),
                         ),
                       ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 10.0),
+                        child: Text(
+                          'Deck Title',
+                          style: GoogleFonts.nunito(
+                            color: DeckColors.primaryColor,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
                       BuildTextBox(
                             controller: _deckTitleController,
                             hintText: 'Enter Deck Title'
@@ -85,6 +96,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                       style: GoogleFonts.nunito(
                         color: DeckColors.primaryColor,
                         fontSize: 16,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   ),
@@ -212,7 +224,8 @@ class _AddDeckPageState extends State<AddDeckPage> {
                             'AI Generated',
                             style: GoogleFonts.nunito(
                               color: DeckColors.primaryColor,
-                              fontSize: 16
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
                             ),
                           ),
                           Spacer(),
@@ -245,20 +258,59 @@ class _AddDeckPageState extends State<AddDeckPage> {
                   if (_isToggled) const CustomExpansionTile(),
                   if (_isToggled)
                     Padding(
-                      padding: const EdgeInsets.only(top: 20),
-                      child: BuildTextBox(hintText: 'Enter Subject', controller: _subjectController,),
+                      padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
+                      child: Text(
+                        'Subject',
+                        style: GoogleFonts.nunito(
+                          color: DeckColors.primaryColor,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                     ),
+                      if (_isToggled)
+                    BuildTextBox(hintText: 'Enter Subject (e.g. Computer Science)', controller: _subjectController,),
                   if (_isToggled)
                     Padding(
-                      padding: const EdgeInsets.only(top: 20),
-                      child: BuildTextBox(hintText: 'Enter Topic', controller: _topicController,),
+                      padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
+                      child: Text(
+                        'Topic',
+                        style: GoogleFonts.nunito(
+                          color: DeckColors.primaryColor,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                     ),
+                      if (_isToggled)
+                    BuildTextBox(hintText: 'Enter A Topic (e.g. OOP)', controller: _topicController,),
                   if (_isToggled)
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 20),
-                      child: BuildTextBox(
-                          hintText: 'Enter Description', isMultiLine: true, controller: _descriptionController,),
+                      padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
+                      child: Text(
+                        'Description',
+                        style: GoogleFonts.nunito(
+                          color: DeckColors.primaryColor,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                     ),
+                      if (_isToggled)
+                    BuildTextBox(
+                        hintText: 'Describe the flashcards you want to create. \n(e.g. basic OOP.....)', isMultiLine: true, controller: _descriptionController,),
+                      if (_isToggled)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
+                          child: Text(
+                            'Attach File',
+                            style: GoogleFonts.nunito(
+                              color: DeckColors.primaryColor,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
                   if (_isToggled)
                     Row(
                       children: [
@@ -329,11 +381,20 @@ class _AddDeckPageState extends State<AddDeckPage> {
                         ),
                       ],
                     ),
+                      if (_isToggled)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
+                          child: Text(
+                            'Amount of Flashcards',
+                            style: GoogleFonts.nunito(
+                              color: DeckColors.primaryColor,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
                   if (_isToggled)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20),
-                      child: BuildTextBox(hintText: 'Enter Number Of FlashCards', controller: _numCardsController),
-                    ),
+                    BuildTextBox(hintText: 'Enter amount of flashcards to create', controller: _numCardsController),
                   Padding(
                     padding: const EdgeInsets.only(top: 35),
                     child: BuildButton(

@@ -69,13 +69,35 @@ class _AddFlashcardPageState extends State<AddFlashcardPage> {
                   ),*/
                   Padding(
                     padding: const EdgeInsets.only(top: 20.0),
+                    child: Text(
+                      'Terminology',
+                      style: GoogleFonts.nunito(
+                        color: DeckColors.primaryColor,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10.0),
                     child: BuildTextBox(
                         controller: _questionOrTermController,
                         hintText: 'Enter Terminology'
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    padding: const EdgeInsets.only(top: 10.0),
+                    child: Text(
+                      'Description',
+                      style: GoogleFonts.nunito(
+                        color: DeckColors.primaryColor,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10),
                     child: BuildTextBox(
                             controller: _descriptionOrAnswerController,
                             hintText: 'Enter Description',
