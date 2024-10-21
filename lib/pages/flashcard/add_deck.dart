@@ -49,7 +49,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
           color: DeckColors.white,
           fontSize: 24,
         ),*/
-        body: SingleChildScrollView(
+        body: _isLoading ? const Center(child: CircularProgressIndicator()) : SingleChildScrollView(
             // padding: const EdgeInsets.all(20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -403,11 +403,13 @@ class _AddDeckPageState extends State<AddDeckPage> {
                         showConfirmationDialog(context, "Generate Deck",
                             "Are you sure you want to generate deck?",
                         () async{
+                          setState(() => _isLoading = true);
                           if(_isToggled){
                             // START OF AI
                             // Check if there is a title
                             if(_deckTitleController.text.trim().isEmpty && _numCardsController.text.trim().isNotEmpty){
                               await Future.delayed(const Duration(milliseconds: 300));
+                              setState(() => _isLoading = false);
                               showInformationDialog(context, "Error adding Deck", "Your deck requires a title");
                               return;
                             }
@@ -415,14 +417,15 @@ class _AddDeckPageState extends State<AddDeckPage> {
                             //Check if the number of cards to be generate was given
                             if(_numCardsController.text.trim().isEmpty){
                               await Future.delayed(const Duration(milliseconds: 300));
+                              setState(() => _isLoading = false);
                               showInformationDialog(context, "Error adding Deck", "The AI needs to know how many cards to generate");
-
                               return;
                             }else{
                               int? numberOfCards = int.tryParse(_numCardsController.text);
                               // Check if the number of cards is valid
                               if (numberOfCards == null || (numberOfCards < 0 && numberOfCards > 20)) {
                                 await Future.delayed(const Duration(milliseconds: 300));
+                                setState(() => _isLoading = false);
                                 showInformationDialog(context,"Error adding Deck", "Please enter a valid integer ranging from 2-20");
                                 return;
                               }
@@ -444,6 +447,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                                   deckTitle
                               )){
                                 await Future.delayed(const Duration(milliseconds: 300));
+                                setState(() => _isLoading = false);
                                 showInformationDialog(context, "Title Already Exist", 'You already have a deck named $deckTitle');
                                 return;
                               }
@@ -498,6 +502,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                                   print(flashCardDataList);
                                   print(e);
                                   await Future.delayed(const Duration(milliseconds: 300));
+                                  setState(() => _isLoading = false);
                                   showInformationDialog(context, "Unknown Error Occurred",
                                       'An unknown error has occurred while generating your deck. Please try again.');
                                   return;
@@ -514,14 +519,15 @@ class _AddDeckPageState extends State<AddDeckPage> {
                                       pdfFileExtension: '.pdf',
                                       numberOfQuestions: int.tryParse(_numCardsController.text) ?? 0
                                   );
-                                  print(flashCardDataList);
                                 }on ApiException catch(e){
+                                  setState(() => _isLoading = false);
                                   showInformationDialog(context, "Error while creating Deck!", e.message.toString());
                                   return;
                                 }catch(e){
                                   print(flashCardDataList);
                                   print(e);
                                   await Future.delayed(const Duration(milliseconds: 300));
+                                  setState(() => _isLoading = false);
                                   showInformationDialog(context, "Unknown Error Occurred",
                                       'An unknown error has occurred while generating your deck. Please try again.');
                                   return;
@@ -530,6 +536,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
 
                               if (flashCardDataList.isEmpty) {
                                 await Future.delayed(const Duration(milliseconds: 300));
+                                setState(() => _isLoading = false);
                                 showInformationDialog(
                                     context,
                                     "AI Did Not Give A Response!",
@@ -565,6 +572,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                                     Navigator.pop(context, newDeck);
                                     widget.decks.add(newDeck);
 
+                                    setState(() => _isLoading = false);
                                     await Navigator.push(
                                       context,
                                       MaterialPageRoute(builder: (context) => ViewDeckPage(deck: newDeck)),
@@ -572,6 +580,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                                   }
                                 }else{
                                   await Future.delayed(const Duration(milliseconds: 300)); // Ensure the dialog is fully closed
+                                  setState(() => _isLoading = false);
                                   showInformationDialog(
                                       context,
                                       'Input Error',
@@ -603,6 +612,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                             } catch (e) {
                               // Handle any errors that occur during sendData
                               print('Error: $e');
+                              setState(() => _isLoading = false);
                               showInformationDialog(
                                   context,
                                   "An error occured",
@@ -613,6 +623,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                             // Check if title is empty
                             if(_deckTitleController.text.trim().isEmpty) {
                               await Future.delayed(const Duration(milliseconds: 300));
+                              setState(() => _isLoading = false);
                               showInformationDialog(context, "Error adding Deck", "Your deck requires a title");
                               return;
                             }
@@ -630,6 +641,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                                 deckTitle
                             )){
                               await Future.delayed(const Duration(milliseconds: 300));
+                              setState(() => _isLoading = false);
                               showInformationDialog(context, "Error adding Deck!", 'You already have a deck named $deckTitle');
                               return;
                             }
@@ -647,7 +659,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                               Navigator.pop(context, newDeck);
 
                               widget.decks.add(newDeck);
-
+                              setState(() => _isLoading = false);
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(builder: (context) => ViewDeckPage(deck: newDeck)),
@@ -655,6 +667,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                             }else{
                               // Tell user if the deck is null because deck was not added
                               await Future.delayed(const Duration(milliseconds: 300));
+                              setState(() => _isLoading = false);
                               showInformationDialog(context, "Error adding Deck", "Deck was not added please try again");
                               return;
                             }
