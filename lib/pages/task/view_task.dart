@@ -1,5 +1,6 @@
 import 'package:deck/backend/models/task.dart';
 import 'package:deck/backend/task/task_provider.dart';
+import 'package:deck/pages/misc/deck_icons2.dart';
 import 'package:flutter/material.dart';
 import 'package:deck/pages/misc/colors.dart';
 import 'package:deck/pages/misc/widget_method.dart';
@@ -94,47 +95,49 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
           bottom: false,
           left: true,
           right: true,
-          minimum: const EdgeInsets.only(left: 20, right: 20),
+          minimum: const EdgeInsets.only(left: 0, right: 0),
           child:  SingleChildScrollView(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Image(
                     image: AssetImage('assets/images/AddDeck_Header.png'),
                     fit: BoxFit.cover,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 10.0),
-                    child: IconButton(
-                      icon: const Icon(
-                        Icons.list,
-                        color: DeckColors.white,
-                        size: 24),
-                      onPressed: () async {
-                          final updatedTask = await Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => EditTaskPage(task: _task)),
-                          );
-                          if (updatedTask != null) {
-                            _updateTask(updatedTask);
-                            await Provider.of<TaskProvider>(context,listen: false).loadTasks();
-                            print(updatedTask.priority);
-                            print(_priorityIndex);
-                            setState((){_priorityIndex = TaskProvider.getPriorityIndex(updatedTask.priority);});
-                            print(_priorityIndex);
-                          }
-                        })
-                      ,
-                    ),
+                 Row(
+                   children: [Padding(
+                     padding: const EdgeInsets.only(left: 30.0),
+                     child: IconButton(
+                         icon: const Icon(
+                             DeckIcons2.pencil,
+                             color: DeckColors.white,
+                             size: 40),
+                         onPressed: () async {
+                           final updatedTask = await Navigator.push(
+                             context,
+                             MaterialPageRoute(builder: (context) => EditTaskPage(task: _task)),
+                           );
+                           if (updatedTask != null) {
+                             _updateTask(updatedTask);
+                             await Provider.of<TaskProvider>(context,listen: false).loadTasks();
+                             print(updatedTask.priority);
+                             print(_priorityIndex);
+                             setState((){_priorityIndex = TaskProvider.getPriorityIndex(updatedTask.priority);});
+                             print(_priorityIndex);
+                           }
+                         })
+                     ,
+                   ),] ),
                   // const Divider(
                   //   color: DeckColors.white,
                   //   thickness: 2,
                   // ),
                   Padding(
-                    padding: const EdgeInsets.all(20.0),
+                    padding: const EdgeInsets.only(left:40.0,right:40.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Padding(padding: const EdgeInsets.only(top: 10),
+                        Padding(padding: const EdgeInsets.only(top: 0),
                           child:
                           Text( title, // title of task
 
@@ -230,19 +233,19 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                           initialSelectedIndex: _selectedStatus,
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(top: 20),
+                          padding: const EdgeInsets.only(top: 50),
                           child:
                           BuildButton(
                             buttonText: "Back",
                             height: 50,
                             width: MediaQuery.of(context).size.width,
                             radius: 10,
-                            backgroundColor: DeckColors.white,
-                            textColor: DeckColors.primaryColor,
+                            backgroundColor: Colors.transparent,
+                            textColor: DeckColors.white,
                             size: 16,
                             fontSize: 16,
-                            borderWidth: 0,
-                            borderColor: Colors.transparent,
+                            borderWidth: 2,
+                            borderColor: DeckColors.white,
                             onPressed: () {
                               print("Back button clicked");
                               Navigator.pop(context);

@@ -381,15 +381,18 @@ class EditProfileState extends State<EditProfile> {
                   Padding(
                     padding:
                         const EdgeInsets.only(top: 10.0, left: 15, right: 15),
-                    child: Text(
-                      'Email',
-                      style: GoogleFonts.nunito(
+                    child:!AuthService()
+                        .getCurrentUser()!
+                        .providerData[0]
+                        .providerId
+                        .contains('google.com')
+                        ?  Text( 'Email', style: GoogleFonts.nunito(
                         color: DeckColors.primaryColor,
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
+                      )
+                    )
+                        : const SizedBox()),
                   Padding(
                       padding:
                           const EdgeInsets.only(top: 10, left: 15, right: 15),

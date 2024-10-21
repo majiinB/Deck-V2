@@ -330,6 +330,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     borderColor: Colors.transparent,
     ),
     ),
+
     const Padding(
     padding: EdgeInsets.only(top: 20, left: 30, right: 30),
     child: Row(
@@ -344,7 +345,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     Padding(
     padding: EdgeInsets.symmetric(horizontal: 16.0),
     child: Text(
-    'or continue',
+        'or continue with',
     style: TextStyle(
     fontSize: 16,
     color: DeckColors.white
