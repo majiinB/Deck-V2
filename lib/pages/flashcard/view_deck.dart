@@ -28,6 +28,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
   List<Cards> _starredCardCollection = [];
   List<Cards> _filteredCardsCollection = [];
   List<Cards> _filteredStarredCardCollection = [];
+  int numberOfCards = 10;
   final TextEditingController _searchController = TextEditingController();
 
   @override
@@ -54,6 +55,9 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
       FlashcardUtils().sortByQuestion(_filteredCardsCollection);
       _filteredStarredCardCollection = List.from(starredCards);
       FlashcardUtils().sortByQuestion(_filteredStarredCardCollection);
+
+      // Update numberOfCards
+      numberOfCards = _cardsCollection.length;
     });
   }
 
@@ -275,7 +279,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                   ),
                     Padding(padding: EdgeInsets.only(top: 10),
                       child: Text(
-                        '10 cards',
+                        '$numberOfCards cards',
                         overflow: TextOverflow.visible,
                         style: GoogleFonts.nunito(
                         fontSize: 16,
