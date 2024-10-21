@@ -107,6 +107,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                         coverPhotoFile: coverPhoto != 'no_photo' ? Image.file(File(coverPhoto)) : null,
                         borderRadiusContainer: 10,
                         borderRadiusImage: 10,
+                        isHeader: false,
                       ),
                       Positioned(
                           top: 140,
