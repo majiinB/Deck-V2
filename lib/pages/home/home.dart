@@ -1,6 +1,7 @@
 import 'package:deck/backend/models/task.dart';
 import 'package:deck/pages/flashcard/view_deck.dart';
 import 'package:deck/pages/misc/colors.dart';
+import 'package:deck/pages/misc/deck_icons2.dart';
 import 'package:deck/pages/misc/widget_method.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -107,7 +108,7 @@ class _HomePageState extends State<HomePage> {
                         child: Row(
                           children: [
                             Icon(
-                              Icons.list,
+                             DeckIcons2.hat,
                               color: DeckColors.white,
                               size: 32,
                             ),

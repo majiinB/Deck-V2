@@ -303,7 +303,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
                               size: 16,
                               fontSize: 16,
                               borderWidth: 2,
-                              borderColor: DeckColors.white,
+                              borderColor: Colors.transparent,
                               onPressed: () {
                                 showConfirmationDialog(
                                     context,
@@ -350,16 +350,16 @@ class _EditTaskPageState extends State<EditTaskPage> {
                           padding: const EdgeInsets.only(top: 20),
                           child:
                           BuildButton(
-                            buttonText: "",
+                            buttonText: "Cancel",
                             height: 50,
                             width: MediaQuery.of(context).size.width,
                             radius: 10,
-                            backgroundColor: DeckColors.white,
-                            textColor: DeckColors.primaryColor,
+                            backgroundColor:  Colors.transparent,
+                            textColor: DeckColors.white,
                             size: 16,
                             fontSize: 16,
-                            borderWidth: 0,
-                            borderColor: Colors.transparent,
+                            borderWidth: 2,
+                            borderColor: DeckColors.white,
                             onPressed: () {
                               print("Cancel button clicked");
                               Navigator.pop(context);

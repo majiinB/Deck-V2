@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:deck/pages/task/view_task.dart';
 import 'package:deck/pages/task/add_task.dart';
-
+import 'package:deck/pages/misc/deck_icons2.dart';
 import '../../backend/models/task.dart';
 //sample
 
@@ -61,32 +61,35 @@ class _TaskPageState extends State<TaskPage> {
         itemBuilder: (context, index) {
           Task task = filteredTasks[index]; // Access the Task model directly
           // Check if the task should be displayed based on the conditions
-          return DeckTaskTile(
-            title: task.title,
-            deadline: TaskProvider.getNameDate(task.deadline),
-            priority: task.priority, // You can customize this if needed
-            progressStatus: 'to do',
-            onDelete: () {
-              final String deletedTitle = task.title;
-              showConfirmationDialog(
-                  context, "Delete Item",
-                  "Are you sure you want to delete '$deletedTitle'?", () {
-                Provider.of<TaskProvider>(context, listen: false).deleteTask(task.uid);
-              }, () {
-                setState(() {}); // You may need to handle state updates accordingly
-              });
-            },
-            enableRetrieve: false,
-            onTap: () {
-              print("Clicked task tile!");
-              print('Task: ${task.title}, IsDone: ${task.getIsDone}, IsActive: ${task.getIsActive}, Deadline: ${task.deadline}');
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ViewTaskPage(task: task, isEditable: true),
-                ),
-              );
-            },
+          return Padding(
+            padding: EdgeInsets.only(top:5),
+            child: DeckTaskTile(
+              title: task.title,
+              deadline: TaskProvider.getNameDate(task.deadline),
+              priority: task.priority, // You can customize this if needed
+              progressStatus: 'to do',
+              onDelete: () {
+                final String deletedTitle = task.title;
+                showConfirmationDialog(
+                    context, "Delete Item",
+                    "Are you sure you want to delete '$deletedTitle'?", () {
+                  Provider.of<TaskProvider>(context, listen: false).deleteTask(task.uid);
+                }, () {
+                  setState(() {}); // You may need to handle state updates accordingly
+                });
+              },
+              enableRetrieve: false,
+              onTap: () {
+                print("Clicked task tile!");
+                print('Task: ${task.title}, IsDone: ${task.getIsDone}, IsActive: ${task.getIsActive}, Deadline: ${task.deadline}');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ViewTaskPage(task: task, isEditable: true),
+                  ),
+                );
+              },
+            ),
           );
           // Return an empty widget if conditions are not met
         },
@@ -124,18 +127,19 @@ class _TaskPageState extends State<TaskPage> {
           .toList();
     }
     return Scaffold(
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 100),
-        child: DeckFAB(
-          text: "Add Task",
-          fontSize: 12,
-          icon: Icons.add,
-          foregroundColor: DeckColors.primaryColor,
-          backgroundColor: DeckColors.gray,
-          onPressed: () { Navigator.push( context, MaterialPageRoute(builder: (context) => const AddTaskPage()),);
-          },
-        ),
-      ),
+      // floatingActionButton: Padding(
+      //   padding: const EdgeInsets.only(bottom: 100),
+      //   child:
+        // DeckFAB(
+        //   text: "Add Task",
+        //   fontSize: 12,
+        //   icon: Icons.add,
+        //   foregroundColor: DeckColors.primaryColor,
+        //   backgroundColor: DeckColors.gray,
+        //   onPressed: () { Navigator.push( context, MaterialPageRoute(builder: (context) => const AddTaskPage()),);
+        //   },
+        // ),
+      // ),
       body: SafeArea(
         top: true, bottom: false, left: true, right: true, minimum: const EdgeInsets.only(left: 20, right: 20),
         child: CustomScrollView(
@@ -164,7 +168,7 @@ class _TaskPageState extends State<TaskPage> {
                       child: Row(
                         children: [
                           const Icon(
-                            Icons.list,
+                            DeckIcons2.hat,
                             color: DeckColors.white,
                             size: 32,
                           ),
@@ -271,7 +275,7 @@ class _TaskPageState extends State<TaskPage> {
                     ),
                     headerStyle: HeaderStyle(
                       titleTextFormatter: (date, locale) {
-                        return DateFormat('yyyy MMMM dd').format(date);
+                        return DateFormat('MMMM').format(date);
                       },
                       leftChevronIcon: const Icon(Icons.arrow_back_ios_rounded,
                           color: DeckColors.white),
@@ -283,7 +287,9 @@ class _TaskPageState extends State<TaskPage> {
                       rightChevronMargin: EdgeInsets.zero,
                       formatButtonVisible: false,
                       titleTextStyle: const TextStyle(
-                        color: Colors.transparent,
+                        color: DeckColors.white,
+                        fontSize: 20,
+                        fontFamily: 'Fraiche',
                       ),
                     ),
                     daysOfWeekStyle: const DaysOfWeekStyle(

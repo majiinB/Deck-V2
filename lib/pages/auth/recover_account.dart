@@ -14,62 +14,77 @@ class RecoverAccountPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AuthBar(
-        automaticallyImplyLeading: true,
-        title: 'recover account',
-        color: DeckColors.white,
-        fontSize: 24,
-      ),
+      // appBar: const AuthBar(
+      //   automaticallyImplyLeading: true,
+      //   title: 'recover account',
+      //   color: DeckColors.white,
+      //   fontSize: 24,
+      // ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.only(left: 30, right: 30),
-          child: Column(
-            children: [
-              const Padding(
-                padding: EdgeInsets.only(top: 30),
-                child: Text(
-                    'Please enter the email address associated with your account. '
-                        'We will send you instructions on how to reset your password.',
-                  textAlign: TextAlign.justify,
+        child: Column(
+          children: [
+            Image(
+              image: const AssetImage('assets/images/AddDeck_Header.png'),
+              width: MediaQuery.of(context).size.width,
+              fit: BoxFit.cover,
+            ),
+            SizedBox(
+              width:MediaQuery.of(context).size.width,
+              child:  const Padding(padding: EdgeInsets.only(top: 20, left: 30, right: 30),
+                child:
+                Text('Forgot Password',
                   style: TextStyle(
-                    fontFamily: 'nunito',
-                    fontSize: 16
+                    fontFamily: 'Fraiche',
+                    color: DeckColors.primaryColor,
+                    fontSize: 52,
+                    fontWeight: FontWeight.w900,
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 30),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Enter Email',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    BuildTextBox(
-                      hintText: 'Enter Email Address',
-                      showPassword: false,
-                      leftIcon: DeckIcons.account,
-                      controller: emailController,
-                    ),
-                  ],
+              ),),
+            const Padding(
+              padding: const EdgeInsets.only(top: 20, left: 30, right: 30),
+              child: Text(
+                'Enter your email address below, and we\'ll send you a link to reset your password. Follow the instructions in the email to regain access to your account.',
+                textAlign: TextAlign.justify,
+                style: TextStyle(
+                    fontFamily: 'nunito',
+                    fontSize: 20
                 ),
               ),
-              const SizedBox(
-                height: 60,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 20, left: 30, right: 30),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Enter Email',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  BuildTextBox(
+                    hintText: 'Enter Email Address',
+                    showPassword: false,
+                    leftIcon: DeckIcons.account,
+                    controller: emailController,
+                  ),
+                ],
               ),
-              BuildButton(
+            ),
+
+            Padding(
+              padding: const EdgeInsets.only(top: 20, left: 30, right: 30),
+              child:BuildButton(
                 onPressed: () async {
                   try {
                     await AuthService().sendResetPass(emailController.text).then((_) => {
-                    showInformationDialog(context, "Success!", "Please check your email to verify."),
-                    Navigator.of(context).pop(RouteGenerator.createRoute(const LoginPage()),)
+                      showInformationDialog(context, "Success!", "Please check your email to verify."),
+                      Navigator.of(context).pop(RouteGenerator.createRoute(const LoginPage()),)
                     });
                   } on FirebaseAuthException catch (e) {
                     print(e.toString());
@@ -97,8 +112,32 @@ class RecoverAccountPage extends StatelessWidget {
                 borderWidth: 0,
                 borderColor: Colors.transparent,
               ),
-            ],
-          ),
+            ),
+            const SizedBox(
+              height: 60,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 20, left: 30, right: 30),
+              child:
+              BuildButton(
+                buttonText: "Cancel",
+                height: 60,
+                width: MediaQuery.of(context).size.width,
+                radius: 10,
+                backgroundColor: Colors.transparent,
+                textColor: DeckColors.white,
+                size: 16,
+                fontSize: 20,
+                borderWidth: 2,
+                borderColor:  DeckColors.white,
+                onPressed: () {
+                  print("Cancel button clicked");
+                  Navigator.pop(context);
+                },
+              ),
+
+            )
+          ],
         ),
       ),
     );
