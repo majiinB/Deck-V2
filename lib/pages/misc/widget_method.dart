@@ -941,7 +941,7 @@ class BuildTextBoxState extends State<BuildTextBox> {
           borderRadius: BorderRadius.circular(10.0),
           borderSide: const BorderSide(
             color: Colors.white,
-            width: 1.0,
+            width: 2.0,
           ),
         ),
         focusedBorder: OutlineInputBorder(

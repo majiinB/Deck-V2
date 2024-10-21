@@ -32,13 +32,14 @@ class _SignUpPageState extends State<SignUpPage> {
       //   color: DeckColors.primaryColor,
       //   fontSize: 24,
       // ),
-      body: _isLoading ? SingleChildScrollView(
-        child: CircularProgressIndicator()) :
-      Column(
+      body: _isLoading ? const Center(
+        child:CircularProgressIndicator()) :
+    SingleChildScrollView(child:
+    Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Image(
-            image: AssetImage('assets/images/startDeck.png'),
+            image: const AssetImage('assets/images/startDeck.png'),
             width: MediaQuery.of(context).size.width,
             fit: BoxFit.fitWidth,
           ),
@@ -129,7 +130,7 @@ class _SignUpPageState extends State<SignUpPage> {
           ),
         ],
       ),
-
+    )
 
     );
   }
