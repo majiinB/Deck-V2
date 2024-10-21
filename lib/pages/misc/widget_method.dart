@@ -155,7 +155,6 @@ class RouteGenerator {
 
 ///############################################################
 
-
 ///
 ///
 /// ------------------------ S T A R T -------------------------
@@ -173,7 +172,6 @@ class BuildButton extends StatelessWidget {
   final String? svg;
   final Color? iconColor;
   final double? paddingIconText, size, svgHeight;
-
 
   const BuildButton({
     super.key,
@@ -251,7 +249,7 @@ class BuildButton extends StatelessWidget {
 
 class RadioButtonGroup extends StatefulWidget {
   final List<String> buttonLabels; // List of button labels
-  final List<Color> buttonColors ; // List of button colors
+  final List<Color> buttonColors; // List of button colors
   final bool isClickable; // whether the buttons can be clicked by user or not
   final int initialSelectedIndex;
   final Function(String label, int index)? onChange;
@@ -277,6 +275,7 @@ class _RadioButtonGroupState extends State<RadioButtonGroup> {
     super.initState();
     _selectedIndex = widget.initialSelectedIndex;
   }
+
   void _onButtonPressed(int index) {
     if (widget.isClickable) {
       setState(() {
@@ -297,19 +296,22 @@ class _RadioButtonGroupState extends State<RadioButtonGroup> {
       _selectedIndex = widget.initialSelectedIndex; // Update the selected index
     }
   }
+
   Color _getBackgroundColor(int index) {
     if (_selectedIndex == index) {
       return widget.buttonColors[index]; // Assign color
     }
     return Colors.transparent; // Default
   }
+
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: List.generate(widget.buttonLabels.length, (index) {
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 5.0), // Space between buttons
+          padding: const EdgeInsets.symmetric(
+              horizontal: 5.0), // Space between buttons
           child: BuildButton(
             onPressed: () => _onButtonPressed(index),
             buttonText: widget.buttonLabels[index],
@@ -320,7 +322,7 @@ class _RadioButtonGroupState extends State<RadioButtonGroup> {
             textColor: DeckColors.white,
             fontSize: 12,
             borderWidth: 2,
-            borderColor: DeckColors.white,
+            borderColor: DeckColors.grayPopup,
           ),
         );
       }),
@@ -397,7 +399,9 @@ class BuildCoverImageState extends State<BuildCoverImage> {
         height: double.infinity,
         fit: BoxFit.cover,
         errorBuilder: (context, error, stackTrace) {
-          return widget.isHeader ? _buildHeaderFallback() : _buildSelectionFallback();
+          return widget.isHeader
+              ? _buildHeaderFallback()
+              : _buildSelectionFallback();
         },
       );
     } else {
@@ -425,7 +429,6 @@ class BuildCoverImageState extends State<BuildCoverImage> {
     );
   }
 }
-
 
 class BuildCoverImageUrl extends StatelessWidget {
   final String? imageUrl;
@@ -954,7 +957,7 @@ class BuildTextBoxState extends State<BuildTextBox> {
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10.0),
           borderSide: const BorderSide(
-            color: Colors.white,
+            color: DeckColors.grayPopup,
             width: 1.0,
           ),
         ),
@@ -972,7 +975,7 @@ class BuildTextBoxState extends State<BuildTextBox> {
           color: Colors.white,
         ),
         filled: true,
-        fillColor: DeckColors.backgroundColor,
+        fillColor: DeckColors.grayTask,
         contentPadding:
             const EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
         prefixIcon: widget.leftIcon != null
@@ -1442,7 +1445,7 @@ class CustomExpansionTileState extends State<CustomExpansionTile> {
               ListTile(
                 title: Text(
                   '2. Next, provide information in the "Enter Description" text field to '
-                      'guide AI in generating content for your flashcards.',
+                  'guide AI in generating content for your flashcards.',
                   style: GoogleFonts.nunito(
                     color: DeckColors.white,
                     fontSize: 16,
@@ -1452,8 +1455,8 @@ class CustomExpansionTileState extends State<CustomExpansionTile> {
               ListTile(
                 title: Text(
                   'Enter Subject: Specify the subject Area (e.g. English)'
-                      '\nEnter Topic: State the specific topic (e.g. Verb)'
-                      '\nEnter Description: Provide details about what you want to cover (e.g. Focus on verbs, their types, and usage)',
+                  '\nEnter Topic: State the specific topic (e.g. Verb)'
+                  '\nEnter Description: Provide details about what you want to cover (e.g. Focus on verbs, their types, and usage)',
                   style: GoogleFonts.nunito(
                     color: DeckColors.white,
                     fontSize: 16,
@@ -1531,7 +1534,7 @@ class BuildDeckContainer extends StatefulWidget {
 }
 
 class BuildDeckContainerState extends State<BuildDeckContainer> {
-  Color _containerColor = DeckColors.gray;
+  Color _containerColor = DeckColors.grayPopup;
   final String defaultImageUrl =
       "https://firebasestorage.googleapis.com/v0/b/deck-f429c.appspot.com/o/deckCovers%2Fdefault%2FdeckDefault.png?alt=media&token=2b0faebd-9691-4c37-8049-dc30289460c2";
 
@@ -1784,7 +1787,7 @@ class BuildContainerOfFlashCards extends StatefulWidget {
 
 class BuildContainerOfFlashCardsState extends State<BuildContainerOfFlashCards>
     with SingleTickerProviderStateMixin {
-  Color _containerColor = DeckColors.gray;
+  Color _containerColor = DeckColors.grayPopup;
 
   @override
   Widget build(BuildContext context) {
@@ -2255,7 +2258,7 @@ class DeckTaskTile extends StatefulWidget {
 }
 
 class DeckTaskTileState extends State<DeckTaskTile> {
-  Color _containerColor = DeckColors.gray; // Default color
+  Color _containerColor = DeckColors.grayTask; // Default color
 
   @override
   void initState() {
@@ -2291,8 +2294,6 @@ class DeckTaskTileState extends State<DeckTaskTile> {
     }
   }
 
-
-
   void _onProgressChange(String value) {
     setState(() {
       widget.progressStatus = value; // Update the progress status
@@ -2325,7 +2326,8 @@ class DeckTaskTileState extends State<DeckTaskTile> {
           child: Stack(
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15.0),
                   color: _containerColor,
@@ -2383,7 +2385,6 @@ class DeckTaskTileState extends State<DeckTaskTile> {
     );
   }
 }
-
 
 // class DeckTaskTile extends StatefulWidget {
 //   final String title;

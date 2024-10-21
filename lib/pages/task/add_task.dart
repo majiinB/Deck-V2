@@ -56,13 +56,13 @@ class _AddTaskPageState extends State<AddTaskPage> {
               ),
             ),
             colorScheme: Theme.of(context).colorScheme.copyWith(
-              // Title, selected date and day selection background (dark and light mode)
-              surface: DeckColors.backgroundColor,
-              primary: DeckColors.primaryColor,
-              // Title, selected date and month/year picker color (dark and light mode)
-              onSurface: DeckColors.white,
-              onPrimary: DeckColors.white,
-            ),
+                  // Title, selected date and day selection background (dark and light mode)
+                  surface: DeckColors.backgroundColor,
+                  primary: DeckColors.primaryColor,
+                  // Title, selected date and month/year picker color (dark and light mode)
+                  onSurface: DeckColors.white,
+                  onPrimary: DeckColors.white,
+                ),
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
                 textStyle: const TextStyle(
@@ -147,11 +147,36 @@ class _AddTaskPageState extends State<AddTaskPage> {
                             ),
                           ),
                         ),
-                        BuildTextBox(
-                          controller: _titleController,
-                          hintText: "Enter Task Title",
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 20, bottom: 10),
+                      child: Text(
+                        'Title',
+                        style: TextStyle(
+                          fontFamily: 'Nunito',
+                          color: DeckColors.primaryColor,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w900,
                         ),
-
+                      ),
+                    ),
+                    BuildTextBox(
+                      controller: _titleController,
+                      hintText: "Enter Task Title",
+                    ),
+                    Padding(
+                        padding: EdgeInsets.only(top: 20, bottom: 10),
+                        child: Text(
+                          'Due Date',
+                          style: TextStyle(
+                            fontFamily: 'Nunito',
+                            color: DeckColors.primaryColor,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        )),
+      
                         const Padding(
                             padding: EdgeInsets.only(top: 20,bottom: 10),
                             child:
@@ -288,15 +313,37 @@ class _AddTaskPageState extends State<AddTaskPage> {
                                 Navigator.pop(context);
                               },
                             ),
-
-                        ),
-                      ],
+                            /// stop loading
+                            hideLoad(context);
+                            Provider.of<TaskProvider>(context, listen: false)
+                                .addTask(data);
+                            Navigator.pop(context);
+                          }),
                     ),
-                  ),
-                ]
-            ),
-          )
-      ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 20),
+                      child: BuildButton(
+                        buttonText: "Cancel",
+                        height: 50,
+                        width: MediaQuery.of(context).size.width,
+                        radius: 10,
+                        backgroundColor: DeckColors.white,
+                        textColor: DeckColors.primaryColor,
+                        size: 16,
+                        fontSize: 16,
+                        borderWidth: 0,
+                        borderColor: Colors.transparent,
+                        onPressed: () {
+                          print("Cancel button clicked");
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ]),
+          )),
     );
   }
 }

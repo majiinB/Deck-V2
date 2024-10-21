@@ -43,7 +43,8 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
   void _initUserDecks(User? user) async {
     if (user != null) {
       String userId = user.uid;
-      List<Deck> decks = await _flashcardService.getDeletedDecksByUserId(userId);
+      List<Deck> decks =
+          await _flashcardService.getDeletedDecksByUserId(userId);
       Map<String, int> deckCardCount = {};
       for (Deck deck in decks) {
         int count = await deck.getCardCount();
@@ -61,7 +62,8 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
     setState(() {
       _searchQuery = _searchController.text;
       _filteredDecks = _decks
-          .where((deck) => deck.title.toLowerCase().contains(_searchQuery.toLowerCase()))
+          .where((deck) =>
+              deck.title.toLowerCase().contains(_searchQuery.toLowerCase()))
           .toList();
     });
   }
@@ -86,10 +88,10 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: DeckColors.backgroundColor,
       appBar: const AuthBar(
         automaticallyImplyLeading: true,
         title: 'Recently Deleted',
@@ -97,7 +99,8 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
         fontSize: 24,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.only(top: 30, left: 20, right: 20, bottom: 20),
+        padding:
+            const EdgeInsets.only(top: 30, left: 20, right: 20, bottom: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -119,12 +122,12 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
                           context,
                           "Retrieve All Items",
                           "Are you sure you want to retrieve all items? Once retrieved, they will return to the deck page.",
-                              () async {
+                          () async {
                             for (int i = _decks.length - 1; i >= 0; i--) {
                               await _retrieveDeck(_decks[i], i);
                             }
                           },
-                              () {
+                          () {
                             // when user clicks no
                             // add logic here
                           },
@@ -150,12 +153,12 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
                             context,
                             "Delete All Items",
                             "Are you sure you want to delete all items? Once deleted, they cannot be retrieved. Proceed with caution.",
-                                () async {
+                            () async {
                               for (int i = _decks.length - 1; i >= 0; i--) {
                                 _deleteDeck(_decks[i], i);
                               }
                             },
-                                () {
+                            () {
                               // when user clicks no
                               // add logic here
                             },
@@ -176,61 +179,70 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
                 ],
               ),
             ),
-            if(_filteredDecks.isEmpty) IfCollectionEmpty(ifCollectionEmptyText: "Nothing in Trash",
+            if (_filteredDecks.isEmpty)
+              IfCollectionEmpty(
+                  ifCollectionEmptyText: "Nothing in Trash",
                   ifCollectionEmptySubText: "Deleted Items go here",
-                  ifCollectionEmptyHeight: MediaQuery.of(context).size.height*0.7),
-
-            if(_filteredDecks.isNotEmpty) Padding(
-              padding: const EdgeInsets.only(top: 20),
-              child: ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: _filteredDecks.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 6.0),
-                    child: BuildListOfDecks(
-                      deckImageUrl: _filteredDecks[index].coverPhoto.toString(),
-                      titleText: _filteredDecks[index].title.toString(),
-                      numberText: "${_deckCardCount[_filteredDecks[index].deckId]} Card(s)",
-                      onDelete: () {
-                        String deletedTitle = _filteredDecks[index].title.toString();
-                        Deck removedDeck = _filteredDecks[index];
-                        showConfirmationDialog(
-                          context,
-                          "Delete Item",
-                          "Are you sure you want to delete '$deletedTitle'?",
-                              () async {
-                            await _deleteDeck(removedDeck, _decks.indexOf(removedDeck));
-                          },
-                              () {
-                            // when user clicks no
-                            // add logic here
-                          },
-                        );
-                      },
-                      onRetrieve: () {
-                        final String retrievedTitle = _filteredDecks[index].title.toString();
-                        Deck retrievedDeck = _filteredDecks[index];
-                        showConfirmationDialog(
-                          context,
-                          "Retrieve Item",
-                          "Are you sure you want to retrieve '$retrievedTitle'?",
-                              () async {
-                            await _retrieveDeck(retrievedDeck, _decks.indexOf(retrievedDeck));
-                          },
-                              () {
-                            // when user clicks no
-                            // add logic here
-                          },
-                        );
-                      },
-                      enableSwipeToRetrieve: true,
-                    ),
-                  );
-                },
+                  ifCollectionEmptyHeight:
+                      MediaQuery.of(context).size.height * 0.7),
+            if (_filteredDecks.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: _filteredDecks.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 6.0),
+                      child: BuildListOfDecks(
+                        deckImageUrl:
+                            _filteredDecks[index].coverPhoto.toString(),
+                        titleText: _filteredDecks[index].title.toString(),
+                        numberText:
+                            "${_deckCardCount[_filteredDecks[index].deckId]} Card(s)",
+                        onDelete: () {
+                          String deletedTitle =
+                              _filteredDecks[index].title.toString();
+                          Deck removedDeck = _filteredDecks[index];
+                          showConfirmationDialog(
+                            context,
+                            "Delete Item",
+                            "Are you sure you want to delete '$deletedTitle'?",
+                            () async {
+                              await _deleteDeck(
+                                  removedDeck, _decks.indexOf(removedDeck));
+                            },
+                            () {
+                              // when user clicks no
+                              // add logic here
+                            },
+                          );
+                        },
+                        onRetrieve: () {
+                          final String retrievedTitle =
+                              _filteredDecks[index].title.toString();
+                          Deck retrievedDeck = _filteredDecks[index];
+                          showConfirmationDialog(
+                            context,
+                            "Retrieve Item",
+                            "Are you sure you want to retrieve '$retrievedTitle'?",
+                            () async {
+                              await _retrieveDeck(
+                                  retrievedDeck, _decks.indexOf(retrievedDeck));
+                            },
+                            () {
+                              // when user clicks no
+                              // add logic here
+                            },
+                          );
+                        },
+                        enableSwipeToRetrieve: true,
+                      ),
+                    );
+                  },
+                ),
               ),
-            ),
           ],
         ),
       ),
