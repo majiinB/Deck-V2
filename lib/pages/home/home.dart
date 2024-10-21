@@ -71,6 +71,25 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final provider = Provider.of<TaskProvider>(context);
     final _tasks = provider.getList;
+    _tasks.sort((a, b) {
+      // Define your priority order
+      int getPriorityIndex(String priority) {
+        switch (priority) {
+          case 'High':
+            return 0;
+          case 'Medium':
+            return 1;
+          case 'Low':
+            return 2;
+          default:
+            return 3; // Fallback if the priority is not recognized
+        }
+      }
+
+      // Compare priorities (High -> Low)
+      return getPriorityIndex(a.priority).compareTo(getPriorityIndex(b.priority));
+    });
+
     List<Task> taskToday = _tasks
         .where((task) => isSameDay(task.deadline, selectedDay) && !task.isDone)
         .toList();
@@ -208,7 +227,7 @@ class _HomePageState extends State<HomePage> {
                 )
               else if (taskToday.isNotEmpty)
                 SliverList(
-                delegate: SliverChildBuilderDelegate(childCount: _tasks.length,
+                delegate: SliverChildBuilderDelegate(childCount: _tasks.length.clamp(0, 3),
                     (context, index) {
                   DateTime deadline = DateTime(_tasks[index].deadline.year,
                       _tasks[index].deadline.month, _tasks[index].deadline.day);
