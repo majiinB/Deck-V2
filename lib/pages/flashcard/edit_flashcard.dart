@@ -64,7 +64,7 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
             });
           },
         ),*/
-        body: SingleChildScrollView(
+        body: _isLoading ? const Center(child: CircularProgressIndicator()) : SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -197,24 +197,28 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
                                       return;
                                     }
                                     if (widget.card.question.toString().trim() != _questionOrTermController.text.toString().trim()) {
+                                      setState(() => _isLoading = true);
                                       await widget.card.updateQuestion(
                                         _questionOrTermController.text.toString().trim(),
                                         widget.deck.deckId,
                                       );
                                     }
                                     if (widget.card.answer.toString() != _descriptionOrAnswerController.text.toString()) {
+                                      setState(() => _isLoading = true);
                                       await widget.card.updateAnswer(
                                         _descriptionOrAnswerController.text.toString().trim(),
                                         widget.deck.deckId,
                                       );
                                     }
                                     await Future.delayed(const Duration(milliseconds: 300));
+                                    setState(() => _isLoading = false);
                                     showInformationDialog(context, "Changed flash card information!", "Successfully changed flash card information.");
                                     setState(() {
                                       buttonsEnabled = !buttonsEnabled;
                                     });
                                   } catch (e) {
                                     print('Error saving changes $e');
+                                    setState(() => _isLoading = false);
                                     showInformationDialog(context, "Unknown Error Occurred",
                                         'An unknown error has occurred while editing flash card. Please try again.');
                                   }
