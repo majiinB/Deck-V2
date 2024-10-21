@@ -270,7 +270,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                       ),
                     ),
                       if (_isToggled)
-                    BuildTextBox(hintText: 'Enter Subject (e.g. Computer Science)', controller: _subjectController,),
+                    BuildTextBox(hintText: 'Enter Subject (e.g. English)', controller: _subjectController,),
                   if (_isToggled)
                     Padding(
                       padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
@@ -284,7 +284,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                       ),
                     ),
                       if (_isToggled)
-                    BuildTextBox(hintText: 'Enter A Topic (e.g. OOP)', controller: _topicController,),
+                    BuildTextBox(hintText: 'Enter A Topic (e.g. Verb)', controller: _topicController,),
                   if (_isToggled)
                     Padding(
                       padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
@@ -299,7 +299,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                     ),
                       if (_isToggled)
                     BuildTextBox(
-                        hintText: 'Describe the flashcards you want to create. \n(e.g. basic OOP.....)', isMultiLine: true, controller: _descriptionController,),
+                        hintText: 'Describe the flashcards you want to create. \n(e.g. Focus on Verbs.....)', isMultiLine: true, controller: _descriptionController,),
                       if (_isToggled)
                         Padding(
                           padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),

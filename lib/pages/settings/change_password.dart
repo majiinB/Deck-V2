@@ -22,14 +22,14 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const AuthBar(
-        automaticallyImplyLeading: false,
-        title: 'sign up',
-        color: DeckColors.primaryColor,
+        automaticallyImplyLeading: true,
+        title: 'Change Password',
+        color: DeckColors.white,
         fontSize: 24,
       ),
       body: SingleChildScrollView(
         padding:
-            const EdgeInsets.only(top: 50, left: 20, right: 20, bottom: 20),
+            const EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -42,7 +42,7 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 70),
+              padding: const EdgeInsets.only(top: 50),
               child: Container(
                 width: MediaQuery.of(context).size.width,
                 height: 580,
@@ -192,7 +192,7 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
                         backgroundColor: DeckColors.primaryColor,
                         textColor: DeckColors.white,
                         radius: 10.0,
-                        borderColor: Colors.amber,
+                        borderColor: DeckColors.primaryColor,
                         fontSize: 16,
                         borderWidth: 0,
                       ),
@@ -213,7 +213,7 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
                         backgroundColor: DeckColors.white,
                         textColor: DeckColors.primaryColor,
                         radius: 10.0,
-                        borderColor: Colors.amber,
+                        borderColor: DeckColors.white,
                         fontSize: 16,
                         borderWidth: 0,
                       ),

@@ -51,7 +51,7 @@ class _PlayMyDeckPageState extends State<PlayMyDeckPage> {
                   height: 35,
                   width: 170,
                   radius: 20,
-                  backgroundColor: Colors.red,
+                  backgroundColor: DeckColors.deckRed,
                   textColor: DeckColors.white,
                   fontSize: 16,
                   borderWidth: 1,

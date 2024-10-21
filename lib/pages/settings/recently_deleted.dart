@@ -93,7 +93,7 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
       appBar: const AuthBar(
         automaticallyImplyLeading: true,
         title: 'Recently Deleted',
-        color: DeckColors.primaryColor,
+        color: DeckColors.white,
         fontSize: 24,
       ),
       body: SingleChildScrollView(
