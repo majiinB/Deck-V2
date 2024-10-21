@@ -16,23 +16,52 @@ class ViewTaskPage extends StatefulWidget {
 }
 
 class _ViewTaskPageState extends State<ViewTaskPage> {
+  late int _selectedStatus;
   //initial values
   late final TextEditingController _dateController;
+  late final TextEditingController _descriptionController;
   late Task _task;
   late String title,description,deadline;
+  late int _priorityIndex;
   @override
   void initState() {
     super.initState();
-    title = 'a high priority Task Title Number';
-    deadline = 'March 19, 2024';
-    description = 'This is a sample description of a high priority task title.';
     _task = widget.task;
+    title = _task.title;
+    _priorityIndex = TaskProvider.getPriorityIndex(_task.priority);
+    deadline = TaskProvider.getNameDate(_task.deadline);
+    _descriptionController = TextEditingController(text: widget.task.description.toString());
     _dateController = TextEditingController(text: widget.task.deadline.toString().split(" ")[0]);
+    _selectedStatus = determineStatusIndex();
+  }
+
+  int determineStatusIndex(){
+    if(!widget.task.getIsDone && !widget.task.getIsActive) {
+      return 0;
+    } else if(!widget.task.getIsDone && widget.task.getIsActive) {return 1;}
+    else {return 2;}
+  }
+
+  StatusResult checkStatus() {
+    switch (_selectedStatus) {
+      case 0:
+        return StatusResult(false, false); // Not active, not completed
+      case 1:
+        return StatusResult(false, true);   // Active and completed
+      case 2:
+        return StatusResult(true, false);   // Not active, but completed
+      default:
+        return StatusResult(false, false);  // Default case
+    }
   }
 
   void _updateTask(Task updatedTask) {
     setState(() {
       _task = updatedTask;
+      title = _task.title;
+      _priorityIndex = TaskProvider.getPriorityIndex(_task.priority);
+      deadline = TaskProvider.getNameDate(_task.deadline);
+      _descriptionController.text = _task.description;
       _dateController.text = _task.deadline.toString().split(" ")[0];
     });
   }
@@ -80,8 +109,19 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                         Icons.list,
                         color: DeckColors.white,
                         size: 24),
-                      onPressed: () {
-                        //put navigator to edit taks page here
+                      onPressed: () async {
+                          final updatedTask = await Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => EditTaskPage(task: _task)),
+                          );
+                          if (updatedTask != null) {
+                            _updateTask(updatedTask);
+                            await Provider.of<TaskProvider>(context,listen: false).loadTasks();
+                            print(updatedTask.priority);
+                            print(_priorityIndex);
+                            setState((){_priorityIndex = TaskProvider.getPriorityIndex(updatedTask.priority);});
+                            print(_priorityIndex);
+                          }
                         })
                       ,
                     ),
@@ -94,11 +134,11 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Padding(padding: EdgeInsets.only(top: 10),
+                        Padding(padding: const EdgeInsets.only(top: 10),
                           child:
                           Text( title, // title of task
 
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontFamily: 'Fraiche',
                               color: DeckColors.primaryColor,
                               fontSize: 52,
@@ -107,7 +147,7 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                           ),
                         ),
 
-                        Padding(
+                        const Padding(
                             padding: EdgeInsets.only(top: 20,bottom: 10),
                             child:
                             Text(
@@ -121,7 +161,7 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                             )
                         ),
                         BuildTextBox(
-                          hintText: "Enter Due Date",
+                          hintText: deadline,
                           isReadOnly: true,
                           rightIcon: Icons.calendar_today_outlined,
                         ),
@@ -139,7 +179,7 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                             )
                         ),
                         BuildTextBox(
-                          initialValue: description,
+                          controller: _descriptionController,
                           hintText: "Enter Task Description",
                           showPassword: false,
                           isMultiLine: true,
@@ -160,13 +200,37 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                             )
                         ),
                         RadioButtonGroup(
-                          buttonLabels: ['High', 'Medium', 'Low'],
-                          buttonColors: [Colors.red, Colors.yellow, Colors.blue],
+                          buttonLabels: const ['High', 'Medium', 'Low'],
+                          buttonColors: const [Colors.red, Colors.yellow, Colors.blue],
                           isClickable: false,
-                          initialSelectedIndex:1,
+                          initialSelectedIndex: _priorityIndex,
+                          onChange: (label, index) {
+                            setState(() {
+                              _priorityIndex = index; // Update _priorityIndex when user interacts with it
+                            });
+                          },
+                        ),
+                        const Padding(
+                            padding: EdgeInsets.only(top: 20,bottom: 10),
+                            child:
+                            Text(
+                              'Task Status',
+                              style: TextStyle(
+                                fontFamily: 'Nunito',
+                                color: DeckColors.primaryColor,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            )
+                        ),
+                        RadioButtonGroup(
+                          buttonLabels: const ['To Do', 'Active', 'Done'],
+                          buttonColors: const [ Colors.blue,  Colors.blue, Colors.blue],
+                          isClickable: false,
+                          initialSelectedIndex: _selectedStatus,
                         ),
                         Padding(
-                          padding: EdgeInsets.only(top: 20),
+                          padding: const EdgeInsets.only(top: 20),
                           child:
                           BuildButton(
                             buttonText: "Back",

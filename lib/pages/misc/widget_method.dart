@@ -252,16 +252,17 @@ class RadioButtonGroup extends StatefulWidget {
   final List<Color> buttonColors; // List of button colors
   final bool isClickable; // whether the buttons can be clicked by user or not
   final int initialSelectedIndex;
+  final Function(String label, int index)? onChange;
 
   const RadioButtonGroup({
-    Key? key,
+    super.key,
     this.initialSelectedIndex = 0,
     required this.buttonLabels,
     required this.buttonColors,
     this.isClickable = true,
+    this.onChange
   })  : assert(buttonLabels.length == buttonColors.length,
-            'Each button must have a corresponding color'),
-        super(key: key);
+  'Each button must have a corresponding color');
   //use assert statement to prevent crashes and bugs
   @override
   _RadioButtonGroupState createState() => _RadioButtonGroupState();
@@ -280,6 +281,19 @@ class _RadioButtonGroupState extends State<RadioButtonGroup> {
       setState(() {
         _selectedIndex = index; // Update the selected index
       });
+
+      // Trigger the onChange callback, passing the selected label and index
+      if (widget.onChange != null) {
+        widget.onChange!(widget.buttonLabels[index], index);
+      }
+    }
+  }
+  @override
+  void didUpdateWidget(RadioButtonGroup oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Check if the initialSelectedIndex has changed
+    if (oldWidget.initialSelectedIndex != widget.initialSelectedIndex) {
+      _selectedIndex = widget.initialSelectedIndex; // Update the selected index
     }
   }
 
@@ -302,11 +316,11 @@ class _RadioButtonGroupState extends State<RadioButtonGroup> {
             onPressed: () => _onButtonPressed(index),
             buttonText: widget.buttonLabels[index],
             height: 50,
-            width: 130,
+            width: 80,
             radius: 10,
             backgroundColor: _getBackgroundColor(index),
             textColor: DeckColors.white,
-            fontSize: 16,
+            fontSize: 12,
             borderWidth: 2,
             borderColor: DeckColors.grayPopup,
           ),
@@ -1335,7 +1349,7 @@ class IfCollectionEmpty extends StatelessWidget {
               )),
           Text(
             ifCollectionEmptyText,
-            style: TextStyle(
+            style: const TextStyle(
               fontFamily: 'Fraiche',
               fontSize: 30,
               color: DeckColors.white,
@@ -1724,7 +1738,7 @@ class BuildTabBar extends StatelessWidget {
             title,
             overflow: TextOverflow.ellipsis,
             style: GoogleFonts.nunito(
-              fontSize: 16,
+              fontSize: 12,
               fontWeight: FontWeight.w900,
             ),
           ),

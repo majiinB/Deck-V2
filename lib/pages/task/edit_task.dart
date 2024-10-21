@@ -19,9 +19,18 @@ class EditTaskPage extends StatefulWidget {
   State<EditTaskPage> createState() => _EditTaskPageState();
 }
 
-class _EditTaskPageState extends State<EditTaskPage> {
+class StatusResult {
+  final bool isDone;
+  final bool isActive;
 
+  StatusResult(this.isDone, this.isActive);
+}
+
+class _EditTaskPageState extends State<EditTaskPage> {
+  bool isLoading = false;
   //initial values
+  late String _selectedPriority;
+  late int _selectedStatus;
   late final TextEditingController _titleController;
   late final TextEditingController _descriptionController;
   late final TextEditingController _dateController;
@@ -30,9 +39,31 @@ class _EditTaskPageState extends State<EditTaskPage> {
     super.initState();
 
     _dateController =
-        TextEditingController(text: widget.task.deadline.toString().split(" ")[0]);
+        TextEditingController(text: widget.task.deadline.toIso8601String().split("T")[0]);
     _titleController = TextEditingController(text: widget.task.title);
     _descriptionController = TextEditingController(text: widget.task.description.toString());
+    _selectedPriority = widget.task.priority;
+    _selectedStatus = determineStatusIndex();
+  }
+
+  int determineStatusIndex(){
+    if(!widget.task.getIsDone && !widget.task.getIsActive) {
+      return 0;
+    } else if(!widget.task.getIsDone && widget.task.getIsActive) {return 1;}
+      else {return 2;}
+  }
+
+  StatusResult checkStatus() {
+    switch (_selectedStatus) {
+      case 0:
+        return StatusResult(false, false); // Not active, not completed
+      case 1:
+        return StatusResult(false, true);   // Active and completed
+      case 2:
+        return StatusResult(true, false);   // Not active, but completed
+      default:
+        return StatusResult(false, false);  // Default case
+    }
   }
 
   Future<DateTime?> _getDeadline() async {
@@ -131,7 +162,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
         left: true,
         right: true,
         minimum: const EdgeInsets.only(left: 20, right: 20),
-          child:  SingleChildScrollView(
+          child: isLoading ? const Center(child: CircularProgressIndicator()) : SingleChildScrollView(
             child: Column(
                 children: [
                   const Image(
@@ -159,7 +190,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
                           ),
                         ),
 
-                        Padding(
+                        const Padding(
                           padding: EdgeInsets.only(top: 20,bottom: 10),
                           child: Text(
                             'Title',
@@ -176,7 +207,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
                           hintText: "Enter Task Title",
                         ),
 
-                        Padding(
+                        const Padding(
                             padding: EdgeInsets.only(top: 20,bottom: 10),
                             child:
                             Text(
@@ -229,12 +260,38 @@ class _EditTaskPageState extends State<EditTaskPage> {
                             )
                         ),
                         RadioButtonGroup(
-                          buttonLabels: ['High', 'Medium', 'Low'],
-                          buttonColors: [Colors.red, Colors.yellow, Colors.blue],
+                          buttonLabels: const ['High', 'Medium', 'Low'],
+                          buttonColors: const [Colors.red, Colors.yellow, Colors.blue],
                           isClickable: true,
+                          initialSelectedIndex: TaskProvider.getPriorityIndex(_selectedPriority),
+                          onChange: (label, index) {
+                            _selectedPriority = label;
+                          },
+                        ),
+                        const Padding(
+                            padding: EdgeInsets.only(top: 20,bottom: 10),
+                            child:
+                            Text(
+                              'Task Status',
+                              style: TextStyle(
+                                fontFamily: 'Nunito',
+                                color: DeckColors.primaryColor,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            )
+                        ),
+                        RadioButtonGroup(
+                          buttonLabels: const ['To Do', 'Active', 'Done'],
+                          buttonColors: const [ Colors.blue,  Colors.blue, Colors.blue],
+                          isClickable: true,
+                          initialSelectedIndex: _selectedStatus,
+                          onChange: (label, index) {
+                            _selectedStatus = index;
+                          },
                         ),
                         Padding(
-                          padding: EdgeInsets.only(top: 20),
+                          padding: const EdgeInsets.only(top: 20),
                           child:
                           BuildButton(
                               buttonText: "Save",
@@ -253,8 +310,10 @@ class _EditTaskPageState extends State<EditTaskPage> {
                                     "Save Task Information",
                                     "Are you sure you want to change this task's information?",
                                         () async{
+                                      setState(() => isLoading = true);
                                       if(_dateController.text.isEmpty || _titleController.text.isEmpty || _descriptionController.text.isEmpty){
                                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Fill all the text fields before saving!')));
+                                        setState(() => isLoading = false);
                                         return;
                                       }
 
@@ -263,14 +322,19 @@ class _EditTaskPageState extends State<EditTaskPage> {
                                       if(storedDeadline != date) {
                                         if (date.isBefore(DateTime.now())) {
                                           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('You cannot set the deadline in the past!')));
+                                          setState(() => isLoading = false);
                                           return;
                                         }
                                       }
-
+                                      setState(() => isLoading = false);
+                                      StatusResult status = checkStatus();
                                       Provider.of<TaskProvider>(context, listen: false).editTask(widget.task, {
                                         'title': _titleController.text,
                                         'description': _descriptionController.text,
-                                        'deadline': DateTime.parse(_dateController.text).add(const Duration(hours: 23, minutes: 59, seconds: 59)),
+                                        'priority': _selectedPriority,
+                                        'is_done': status.isDone,
+                                        'is_active': status.isActive,
+                                        'end_date': Timestamp.fromDate(DateTime.parse(_dateController.text).add(const Duration(hours: 23, minutes: 59, seconds: 59))),
                                       }).then((_) {
                                         Navigator.pop(context, TaskService().getTaskById(widget.task.uid));
                                       });
@@ -283,7 +347,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
                               }),
                           ),
                         Padding(
-                          padding: EdgeInsets.only(top: 20),
+                          padding: const EdgeInsets.only(top: 20),
                           child:
                           BuildButton(
                             buttonText: "",

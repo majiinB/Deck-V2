@@ -14,13 +14,15 @@ class TaskService {
         String uid = doc.id;
         String title = doc['title'];
         String description = doc['description'];
+        String priority = doc['priority'];
         String userId = doc['user_id'];
         bool isDone = doc['is_done'];
+        bool isActive = doc['is_active'];
         DateTime setDate = doc['set_date'].toDate();
         DateTime endDate = doc['end_date'].toDate();
         bool isDeleted = doc['is_deleted'];
         DateTime doneDate = doc['done_date'].toDate();
-        list.add(Task(uid, title, description, userId, isDone, setDate, endDate, isDeleted, doneDate));
+        list.add(Task(uid, title, description, priority, userId, isDone, isActive, setDate, endDate, isDeleted, doneDate));
       }
     } catch (e) {
       print(e);
@@ -37,8 +39,10 @@ class TaskService {
         task.uid,
         data['title'],
         data['description'],
+        data['priority'],
         data['user_id'],
         data['is_done'],
+        data['is_active'],
         data['set_date'].toDate(),
         data['end_date'].toDate(),
         data['is_deleted'],
@@ -64,8 +68,10 @@ class TaskService {
       doc.id,
       taskData['title'],
       taskData['description'],
+      taskData['priority'],
       taskData['user_id'],
       taskData['is_done'],
+      taskData['is_active'],
       taskData['set_date'],
       taskData['end_date'],
       taskData['is_deleted'],
@@ -82,8 +88,10 @@ class TaskService {
       id,
       data['title'],
       data['description'],
+      data['priority'],
       data['user_id'],
       data['is_done'],
+      data['is_active'],
       data['set_date'].toDate(),
       data['end_date'].toDate(),
       data['is_deleted'],
