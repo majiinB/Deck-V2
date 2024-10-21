@@ -84,7 +84,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: DeckColors.backgroundColor,
-      floatingActionButton: Padding(
+      /*floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 100),
         child: DeckFAB(
           text: "Add Deck",
@@ -109,7 +109,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
             }
           },
         ),
-      ),
+      ),*/
       /*appBar: const DeckBar(
         title: 'flash card',
         color: DeckColors.white,

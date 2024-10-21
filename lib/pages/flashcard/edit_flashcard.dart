@@ -96,7 +96,7 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Padding(padding: EdgeInsets.only(bottom: 20),
+                    const Padding(padding: EdgeInsets.only(bottom: 10),
                       child: Text(
                         'Edit A Flashcard',
                         style: TextStyle(
@@ -124,6 +124,17 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
                     ),*/
                     Padding(
                       padding: const EdgeInsets.only(top: 20.0),
+                      child: Text(
+                        'Title',
+                        style: GoogleFonts.nunito(
+                          color: DeckColors.primaryColor,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10.0),
                       child: Opacity(
                         opacity: buttonsEnabled ? 1.0 : 0.7, // Set opacity based on button state
                         child: IgnorePointer(
@@ -136,7 +147,18 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      padding: const EdgeInsets.only(top: 10.0),
+                      child: Text(
+                        'Description',
+                        style: GoogleFonts.nunito(
+                          color: DeckColors.primaryColor,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
                       child: Opacity(
                         opacity: buttonsEnabled ? 1.0 : 0.7, // Set opacity based on button state
                         child: IgnorePointer(
