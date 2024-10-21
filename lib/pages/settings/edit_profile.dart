@@ -23,12 +23,13 @@ class EditProfile extends StatefulWidget {
 }
 
 class EditProfileState extends State<EditProfile> {
+  bool _isLoading = false;
   final TextEditingController firstNameController = TextEditingController(text: AuthUtils().getFirstName());
   final TextEditingController lastNameController = TextEditingController(text: AuthUtils().getLastName());
   final TextEditingController emailController = TextEditingController(text: AuthUtils().getEmail());
 
-  XFile? pfpFile, coverFile;
-  late Image? photoUrl, coverUrl;
+  XFile? pfpFile;
+  late Image? photoUrl;
 
   @override
   void initState() {
@@ -38,11 +39,8 @@ class EditProfileState extends State<EditProfile> {
 
   void getUrls() async {
     photoUrl = null;
-    coverUrl = null;
-    coverUrl = await AuthUtils().getCoverPhotoUrl();
     setState(() {
       photoUrl = AuthUtils().getPhoto();
-      print(coverUrl);
     });
   }
 
@@ -52,7 +50,6 @@ class EditProfileState extends State<EditProfile> {
     String? lastName = userName?.removeLast();
     String newName = getNewName();
     String uniqueFileName = '${AuthService().getCurrentUser()?.uid}-${DateTime.now().millisecondsSinceEpoch}';
-    String coverUrlString = coverUrl.toString();
 
     if(firstNameController.text.isEmpty || lastNameController.text.isEmpty || emailController.text.isEmpty){
       ///display error
@@ -69,18 +66,12 @@ class EditProfileState extends State<EditProfile> {
     }
     print('pfpFile: $pfpFile');
     print('photoUrl: $photoUrl');
-    print('coverFile: $coverFile');
-    print('coverUrl: $coverUrl');
-    print('coverUrlString: $coverUrlString');
     await _updateProfilePhoto(user, uniqueFileName);
-    await _updateCoverPhoto(user, uniqueFileName, context, coverUrlString);
 
-    Provider.of<ProfileProvider>(context, listen: false).updateProfile();
     String message = 'Updated user information!';
     if(user?.email != emailController.text) {
       message = "Updated user information! Please check your new email in order to change.";
     }
-    showInformationDialog(context, "Sucessfully updated information", message);
 
     if(user?.email != emailController.text) {
       AuthService().signOut();
@@ -89,7 +80,9 @@ class EditProfileState extends State<EditProfile> {
             (Route<dynamic> route) => false);
       return;
     }
-    Navigator.pop(context, {'updated': true, 'file': coverUrl});
+    setState(() => _isLoading = false);
+    Navigator.pop(context, {'updated': true});
+    showInformationDialog(context, "Successfully updated information", message);
   }
 
   String getNewName() {
@@ -120,18 +113,16 @@ class EditProfileState extends State<EditProfile> {
     } on FirebaseAuthException catch (e){
       String message = '';
       if(e.code == 'invalid-email'){
-        message = 'Invalid email format! Plewase try again.';
+        message = 'Invalid email format! Please try again.';
       } else {
         message = e.toString();
       }
       print(e);
       showInformationDialog(context, "Error changing information", message);
-
       return false;
     } catch (e){
       print(e);
       showInformationDialog(context, "Error changing information", e.toString());
-
       return false;
     }
 
@@ -156,42 +147,6 @@ class EditProfileState extends State<EditProfile> {
     setState(() {});
   }
 
-  Future<void> _updateCoverPhoto(User? user, String uniqueFileName, BuildContext context, String coverPhotoUrl) async {
-    if (coverPhotoUrl != Image.asset('assets/images/Deck-Logo.png').toString()) {
-      Reference refRoot = FirebaseStorage.instance.ref();
-      Reference refDirCoverImg = refRoot.child('userCovers/${user?.uid}');
-      Reference refCoverUpload = refDirCoverImg.child(uniqueFileName);
-
-      bool coverExists = await ProfileUtils().doesFileExist(refCoverUpload);
-      print(coverExists);
-      if (!coverExists && coverFile != null) {
-        await refCoverUpload.putFile(File(coverFile!.path));
-        String photoCover = await refCoverUpload.getDownloadURL();
-        print(photoCover);
-
-        final db = FirebaseFirestore.instance;
-        var querySnapshot = await db.collection('users').where('email', isEqualTo: AuthUtils().getEmail()).limit(1).get();
-        if (querySnapshot.docs.isNotEmpty) {
-          var doc = querySnapshot.docs.first;
-          String docId = doc.id;
-          print(docId);
-          await db.collection('users').doc(docId).update({'cover_photo': photoCover});
-        }
-      }
-    } else if (coverPhotoUrl == Image.asset('assets/images/Deck-Logo.png').toString()) {
-      final db = FirebaseFirestore.instance;
-      var querySnapshot = await db.collection('users').where('email', isEqualTo: AuthUtils().getEmail()).limit(1).get();
-
-      if (querySnapshot.docs.isNotEmpty) {
-        var doc = querySnapshot.docs.first;
-        String docId = doc.id;
-
-        await db.collection('users').doc(docId).update({'cover_photo': ''});
-      }
-    }
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -200,7 +155,7 @@ class EditProfileState extends State<EditProfile> {
         color: DeckColors.white,
         fontSize: 24,
       ),
-      body: SingleChildScrollView(
+      body: _isLoading ? const Center(child: CircularProgressIndicator()) : SingleChildScrollView(
         padding: const EdgeInsets.only(bottom: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -377,9 +332,11 @@ class EditProfileState extends State<EditProfile> {
                     "Are you sure you want to change your account information?",
                     () async {
                       try {
+                        setState(() => _isLoading = true);
                         await updateAccountInformation(context);
                       } catch (e){
                         print(e);
+                        setState(() => _isLoading = false);
                         showInformationDialog(context, "Error changing information", e.toString());
                       }
                     } ,

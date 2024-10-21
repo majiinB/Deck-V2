@@ -9,13 +9,14 @@ import '../../backend/models/deck.dart';
 
 class AddFlashcardPage extends StatefulWidget {
   Deck deck;
-  AddFlashcardPage({Key? key, required this.deck}) : super(key: key);
+  AddFlashcardPage({super.key, required this.deck});
 
   @override
   _AddFlashcardPageState createState() => _AddFlashcardPageState();
 }
 
 class _AddFlashcardPageState extends State<AddFlashcardPage> {
+  bool _isLoading = false;
   final TextEditingController _descriptionOrAnswerController = TextEditingController();
   final TextEditingController _questionOrTermController = TextEditingController();
   

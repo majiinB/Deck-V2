@@ -1,4 +1,3 @@
-
 import 'package:deck/backend/auth/auth_service.dart';
 import 'package:deck/backend/auth/auth_utils.dart';
 import 'package:deck/pages/auth/signup.dart';
@@ -27,6 +26,7 @@ class AccountPage extends StatefulWidget {
 }
 
 class AccountPageState extends State<AccountPage> {
+  bool _isLoading = false;
   String name = '';
   final AuthService _authService = AuthService();
   final FlashcardService _flashcardService = FlashcardService();
@@ -43,7 +43,10 @@ class AccountPageState extends State<AccountPage> {
     FlashcardUtils.updateSettingsNeeded.addListener(_updateAccountPage);
     _user = _authService.getCurrentUser();
     _initUserDecks(_user);
-    Provider.of<ProfileProvider>(context, listen: false).addListener(_updateAccountPage);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<ProfileProvider>(context, listen: false)
+          .addListener(_updateAccountPage);
+    });
   }
 
   @override
@@ -54,13 +57,16 @@ class AccountPageState extends State<AccountPage> {
 
   void getCoverUrl() async {
     coverUrl = await AuthUtils().getCoverPhotoUrl();
-    setState(() { print(coverUrl);});
+    setState(() {
+      print(coverUrl);
+    });
   }
 
   void _initUserDecks(User? user) async {
     if (user != null) {
       String userId = user.uid;
-      List<Deck> decks = await _flashcardService.getDecksByUserId(userId); // Call method to fetch decks
+      List<Deck> decks = await _flashcardService
+          .getDecksByUserId(userId); // Call method to fetch decks
       Map<String, int> deckCardCount = {};
       for (Deck deckCount in decks) {
         int count = await deckCount.getCardCount();
@@ -87,6 +93,7 @@ class AccountPageState extends State<AccountPage> {
     return SafeArea(
       bottom: false,
       child: Scaffold(
+        backgroundColor: DeckColors.backgroundColor,
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -129,94 +136,96 @@ class AccountPageState extends State<AccountPage> {
                     top: 150,
                     child: */
               Padding(
-                      padding: const EdgeInsets.only(top: 50),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Center(
-                            child:
-                              BuildProfileImage(AuthUtils().getPhoto()),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 5, left: 8.0),
-                            child: Text(
-                              AuthUtils().getDisplayName() ?? "Guest",
-                              style: const TextStyle(
-                                fontFamily: 'Fraiche',
-                                fontSize: 24,
-                                fontWeight: FontWeight.w900,
-                                color: DeckColors.primaryColor,
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: Text(
-                              AuthUtils().getEmail() ?? "guest@guest.com",
-                              style: GoogleFonts.nunito(
-                                fontSize: 16,
-                                color: DeckColors.white,
-                              ),
-                            ),
-                          ),
-                        ],
+                padding: const EdgeInsets.only(top: 50),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Center(
+                      child: BuildProfileImage(AuthUtils().getPhoto()),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5, left: 8.0),
+                      child: Text(
+                        AuthUtils().getDisplayName() ?? "Guest",
+                        style: const TextStyle(
+                          fontFamily: 'Fraiche',
+                          fontSize: 24,
+                          fontWeight: FontWeight.w900,
+                          color: DeckColors.primaryColor,
+                        ),
                       ),
                     ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 12, right: 7.0),
-                    child: Center(
-                      child: BuildButton(
-                        onPressed: () async {
-                          final result = await Navigator.of(context).push(
-                            RouteGenerator.createRoute(const EditProfile()),
-                          );
-                          if(result != null && result['updated'] == true) {
-                            _updateAccountPage();
-                           Provider.of<ProfileProvider>(context, listen: false).addListener(_updateAccountPage);
-                           setState(() { coverUrl = result['file']; });
-                          }
-                        },
-                        buttonText: 'edit profile',
-                        height: 40,
-                        width: 140,
-                        backgroundColor: DeckColors.white,
-                        textColor: DeckColors.backgroundColor,
-                        radius: 20.0,
-                        fontSize: 16,
-                        borderWidth: 0,
-                        borderColor: Colors.transparent,
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: Text(
+                        AuthUtils().getEmail() ?? "guest@guest.com",
+                        style: GoogleFonts.nunito(
+                          fontSize: 16,
+                          color: DeckColors.white,
+                        ),
                       ),
                     ),
-                  ),
+                  ],
+                ),
+              ),
               Padding(
-                  padding: const EdgeInsets.only(top:50, left: 15, right: 15),
-                  child: !AuthService()
-                      .getCurrentUser()!
-                      .providerData[0]
-                      .providerId
-                      .contains('google.com')
-                      ? BuildSettingsContainer(
-                    selectedIcon: DeckIcons.lock,
-                    nameOfTheContainer: 'Change Password',
-                    showArrow: true,
-                    showSwitch: false,
-                    containerColor:
-                    DeckColors.accentColor, // Container Color
-                    selectedColor:
-                    DeckColors.primaryColor, // Left Icon Color
-                    textColor: Colors.white, // Text Color
-                    toggledColor: DeckColors
-                        .accentColor, // Left Icon Color when Toggled
-                    onTap: () {
-                      Navigator.of(context).push(
-                        RouteGenerator.createRoute(
-                            const ChangePasswordPage()),
+                padding: const EdgeInsets.only(top: 12, right: 7.0),
+                child: Center(
+                  child: BuildButton(
+                    onPressed: () async {
+                      final result = await Navigator.of(context).push(
+                        RouteGenerator.createRoute(const EditProfile()),
                       );
+                      if (result != null && result['updated'] == true) {
+                        _updateAccountPage();
+                        Provider.of<ProfileProvider>(context, listen: false)
+                            .addListener(_updateAccountPage);
+                        setState(() {
+                          coverUrl = result['file'];
+                        });
+                      }
                     },
-                  )
+                    buttonText: 'edit profile',
+                    height: 40,
+                    width: 140,
+                    backgroundColor: DeckColors.white,
+                    textColor: DeckColors.backgroundColor,
+                    radius: 20.0,
+                    fontSize: 16,
+                    borderWidth: 0,
+                    borderColor: Colors.transparent,
+                  ),
+                ),
+              ),
+              Padding(
+                  padding: const EdgeInsets.only(top: 50, left: 15, right: 15),
+                  child: !AuthService()
+                          .getCurrentUser()!
+                          .providerData[0]
+                          .providerId
+                          .contains('google.com')
+                      ? BuildSettingsContainer(
+                          selectedIcon: DeckIcons.lock,
+                          nameOfTheContainer: 'Change Password',
+                          showArrow: true,
+                          showSwitch: false,
+                          containerColor:
+                              DeckColors.accentColor, // Container Color
+                          selectedColor:
+                              DeckColors.primaryColor, // Left Icon Color
+                          textColor: Colors.white, // Text Color
+                          toggledColor: DeckColors
+                              .accentColor, // Left Icon Color when Toggled
+                          onTap: () {
+                            Navigator.of(context).push(
+                              RouteGenerator.createRoute(
+                                  const ChangePasswordPage()),
+                            );
+                          },
+                        )
                       : const SizedBox()),
               Padding(
-                padding: const EdgeInsets.only(top:8, left: 15, right: 15),
+                padding: const EdgeInsets.only(top: 8, left: 15, right: 15),
                 child: BuildSettingsContainer(
                   selectedIcon: DeckIcons.trash_bin,
                   nameOfTheContainer: 'Recently Deleted',
@@ -226,7 +235,7 @@ class AccountPageState extends State<AccountPage> {
                   selectedColor: DeckColors.primaryColor, // Left Icon Color
                   textColor: Colors.white, // Text Color
                   toggledColor:
-                  DeckColors.accentColor, // Left Icon Color when Toggled
+                      DeckColors.accentColor, // Left Icon Color when Toggled
                   onTap: () {
                     Navigator.of(context).push(
                       RouteGenerator.createRoute(const RecentlyDeletedPage()),
@@ -235,7 +244,7 @@ class AccountPageState extends State<AccountPage> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(top:8, left: 15, right: 15),
+                padding: const EdgeInsets.only(top: 8, left: 15, right: 15),
                 child: BuildSettingsContainer(
                   selectedIcon: DeckIcons.logout,
                   nameOfTheContainer: 'Log Out',
@@ -245,18 +254,23 @@ class AccountPageState extends State<AccountPage> {
                   selectedColor: DeckColors.primaryColor, // Left Icon Color
                   textColor: Colors.white, // Text Color
                   toggledColor:
-                  DeckColors.accentColor, // Left Icon Color when Toggled
+                      DeckColors.accentColor, // Left Icon Color when Toggled
                   onTap: () async {
+                    setState(() => _isLoading = true);
+                    await Future.delayed(const Duration(milliseconds: 300));
                     final authService = AuthService();
-                    authService.signOut();
+                    await authService.signOut();
                     GoogleSignIn _googleSignIn = GoogleSignIn();
                     if (await _googleSignIn.isSignedIn()) {
                       await _googleSignIn.signOut();
                     }
-                    Navigator.of(context).pushAndRemoveUntil(
-                      RouteGenerator.createRoute(const SignUpPage()),
-                          (Route<dynamic> route) => false,
-                    );
+                    if (mounted) {
+                      setState(() => _isLoading = false);
+                      Navigator.of(context).pushAndRemoveUntil(
+                        RouteGenerator.createRoute(const SignUpPage()),
+                            (Route<dynamic> route) => false,
+                      );
+                    }
                     // Navigator.of(context).pop()
                     // Navigator.of(context).push(
                     //   RouteGenerator.createRoute(const SignUpPage()),
@@ -266,7 +280,6 @@ class AccountPageState extends State<AccountPage> {
                   },
                 ),
               ),
-
             ],
           ),
         ),

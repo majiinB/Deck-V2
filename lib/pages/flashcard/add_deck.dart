@@ -30,6 +30,7 @@ class AddDeckPage extends StatefulWidget {
 }
 
 class _AddDeckPageState extends State<AddDeckPage> {
+  bool _isLoading = false;
   bool _isToggled = false;
   String coverPhoto = "no_photo";
   final TextEditingController _deckTitleController = TextEditingController();
@@ -353,6 +354,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                             if(_numCardsController.text.trim().isEmpty){
                               await Future.delayed(const Duration(milliseconds: 300));
                               showInformationDialog(context, "Error adding Deck", "The AI needs to know how many cards to generate");
+
                               return;
                             }else{
                               int? numberOfCards = int.tryParse(_numCardsController.text);

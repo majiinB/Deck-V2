@@ -14,16 +14,17 @@ class EditFlashcardPage extends StatefulWidget {
   final Cards card;
 
   const EditFlashcardPage({
-    Key? key,
+    super.key,
     required this.deck,
     required this.card,
-  }) : super(key: key);
+  });
 
   @override
   _EditFlashcardPageState createState() => _EditFlashcardPageState();
 }
 
 class _EditFlashcardPageState extends State<EditFlashcardPage> {
+  bool _isLoading = false;
   bool buttonsEnabled = false; // Flag to track button state
   late final TextEditingController _descriptionOrAnswerController;
   late final TextEditingController _questionOrTermController;

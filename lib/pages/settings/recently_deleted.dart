@@ -192,7 +192,7 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
                     child: BuildListOfDecks(
                       deckImageUrl: _filteredDecks[index].coverPhoto.toString(),
                       titleText: _filteredDecks[index].title.toString(),
-                      numberText: _deckCardCount[_filteredDecks[index].deckId].toString() + " Card(s)",
+                      numberText: "${_deckCardCount[_filteredDecks[index].deckId]} Card(s)",
                       onDelete: () {
                         String deletedTitle = _filteredDecks[index].title.toString();
                         Deck removedDeck = _filteredDecks[index];
