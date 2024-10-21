@@ -2194,34 +2194,6 @@ class DeckTaskTileState extends State<DeckTaskTile> {
                 ),
                 child: Row(
                   children: [
-                    PopupMenuButton<String>(
-                      onSelected: _onProgressChange,
-                      itemBuilder: (BuildContext context) {
-                        return [
-                          PopupMenuItem(
-                            value: 'to do',
-                            child: Text('To do'),
-                          ),
-                          PopupMenuItem(
-                            value: 'in progress',
-                            child: Text('In Progress'),
-                          ),
-                          PopupMenuItem(
-                            value: 'completed',
-                            child: Text('Completed'),
-                          ),
-                        ];
-                      },
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            _getProgressIcon(),
-                            color: _updatePriorityColor(),
-                          ),
-                        ],
-                      ),
-                    ),
                     SizedBox(width: 15),
                     Expanded(
                       child: Column(
@@ -2229,7 +2201,7 @@ class DeckTaskTileState extends State<DeckTaskTile> {
                         children: [
                           Text(
                             widget.title,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontFamily: 'Fraiche',
                               fontSize: 20,
                               color: DeckColors.white,
