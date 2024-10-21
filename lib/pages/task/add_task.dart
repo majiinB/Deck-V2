@@ -16,6 +16,8 @@ class AddTaskPage extends StatefulWidget {
 }
 
 class _AddTaskPageState extends State<AddTaskPage> {
+  bool isLoading = false;
+  late String _selectedPriority = "High";
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
@@ -106,7 +108,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
           left: true,
           right: true,
           minimum: const EdgeInsets.only(left: 20, right: 20),
-          child: SingleChildScrollView(
+          child: isLoading ? const Center(child: CircularProgressIndicator()) : SingleChildScrollView(
             child: Column(
                 children: [
                   const Image(
@@ -133,7 +135,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                             ),
                           ),
                         ),
-                        Padding(
+                        const Padding(
                           padding: EdgeInsets.only(top: 20,bottom: 10),
                           child: Text(
                             'Title',
@@ -150,7 +152,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                           hintText: "Enter Task Title",
                         ),
 
-                        Padding(
+                        const Padding(
                             padding: EdgeInsets.only(top: 20,bottom: 10),
                             child:
                             Text(
@@ -203,12 +205,15 @@ class _AddTaskPageState extends State<AddTaskPage> {
                             )
                         ),
                         RadioButtonGroup(
-                          buttonLabels: ['High', 'Medium', 'Low'],
-                          buttonColors: [Colors.red, Colors.yellow, Colors.blue],
+                          buttonLabels: const ['High', 'Medium', 'Low'],
+                          buttonColors: const [Colors.red, Colors.yellow, Colors.blue],
                           isClickable: true,
+                          onChange: (label, index) {
+                            _selectedPriority = label;
+                          },
                         ),
                         Padding(
-                            padding: EdgeInsets.only(top: 20),
+                            padding: const EdgeInsets.only(top: 20),
                             child:
                             BuildButton(
                                 buttonText: "Save",
@@ -223,10 +228,11 @@ class _AddTaskPageState extends State<AddTaskPage> {
                                 borderColor: DeckColors.white,
                                 onPressed: () async {
                                   ///loading dialog
-                                  showLoad(context);
+                                  setState(() => isLoading = true);
+                                  await Future.delayed(const Duration(milliseconds: 300));
                                   if(_dateController.text.isEmpty || _titleController.text.isEmpty || _descriptionController.text.isEmpty){
                                     /// stop loading
-                                    hideLoad(context);
+                                    setState(() => isLoading = false);
                                     ///display error
                                     showInformationDialog(context, "Error adding task","A Text field is blank! Please fill all the text fields and try again.");
                                     return;
@@ -235,7 +241,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                                   print(DateTime.now());
                                   if(DateTime.parse(_dateController.text).add(const Duration(hours: 23, minutes: 59, seconds: 59)).isBefore(DateTime.now())){
                                     /// stop loading
-                                    hideLoad(context);
+                                    setState(() => isLoading = false);
                                     ///display error
                                     showInformationDialog(context, "Error adding task"," Past deadlines aren't allowed. Please try again.");
 
@@ -245,14 +251,18 @@ class _AddTaskPageState extends State<AddTaskPage> {
                                     "user_id": AuthService().getCurrentUser()?.uid,
                                     "title": _titleController.text,
                                     "description" : _descriptionController.text,
+                                    "priority": _selectedPriority,
+                                    "is_done": false,
                                     "set_date": DateTime.now(),
                                     "end_date": DateTime.parse(_dateController.text).add(const Duration(hours: 23, minutes: 59, seconds: 59)),
-                                    "is_done": false,
+                                    "progress_status": "to do",
                                     "is_deleted": false,
                                     "done_date": DateTime.now(),
                                   };
                                   /// stop loading
-                                  hideLoad(context);
+                                  if(mounted) {
+                                    setState(() => isLoading = false);
+                                  }
                                   Provider.of<TaskProvider>(context, listen: false).addTask(data);
                                   Navigator.pop(context);
                                 }
@@ -260,7 +270,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
 
                         ),
                         Padding(
-                            padding: EdgeInsets.only(top: 20),
+                            padding: const EdgeInsets.only(top: 20),
                             child:
                             BuildButton(
                               buttonText: "Cancel",
