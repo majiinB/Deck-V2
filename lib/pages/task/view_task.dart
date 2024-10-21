@@ -119,7 +119,10 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                             await Provider.of<TaskProvider>(context,listen: false).loadTasks();
                             print(updatedTask.priority);
                             print(_priorityIndex);
-                            setState((){_priorityIndex = TaskProvider.getPriorityIndex(updatedTask.priority);});
+                            setState((){
+                              _priorityIndex = TaskProvider.getPriorityIndex(updatedTask.priority);
+                              _selectedStatus = determineStatusIndex();
+                            });
                             print(_priorityIndex);
                           }
                         })
@@ -228,6 +231,11 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                           buttonColors: const [ Colors.blue,  Colors.blue, Colors.blue],
                           isClickable: false,
                           initialSelectedIndex: _selectedStatus,
+                          onChange: (label, index) {
+                            setState((){
+                              _selectedStatus = index;
+                            });
+                          }
                         ),
                         Padding(
                           padding: const EdgeInsets.only(top: 20),
