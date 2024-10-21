@@ -49,7 +49,7 @@ class _PlayMyDeckPageState extends State<PlayMyDeckPage> {
                   },
                   buttonText: 'Stop Playing',
                   height: 35,
-                  width: 140,
+                  width: 170,
                   radius: 20,
                   backgroundColor: Colors.red,
                   textColor: DeckColors.white,
@@ -57,7 +57,7 @@ class _PlayMyDeckPageState extends State<PlayMyDeckPage> {
                   borderWidth: 1,
                   borderColor: DeckColors.accentColor,
                   icon: Icons.play_arrow_rounded,
-                  paddingIconText: 2,
+                  paddingIconText: 3,
                   iconColor: DeckColors.white,),
               ),
               Padding(
@@ -213,7 +213,7 @@ class _PlayMyDeckPageState extends State<PlayMyDeckPage> {
                 padding: const EdgeInsets.only(top: 10, bottom: 8.0, left: 5, right: 5),
                 child: Container(
                   width: MediaQuery.of(context).size.width,
-                  height: 1,
+                  height: 2,
                   color: DeckColors.white,
                 ),
               ),
