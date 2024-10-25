@@ -1,4 +1,6 @@
-![Header Cover](https://firebasestorage.googleapis.com/v0/b/deck-f429c.appspot.com/o/image_2024-10-25_214738368.png?alt=media&token=4efd82e3-b592-4335-8d96-72b330806330)
+<p align="center">
+  <img src="https://firebasestorage.googleapis.com/v0/b/deck-f429c.appspot.com/o/image_2024-10-25_214738368.png?alt=media&token=4efd82e3-b592-4335-8d96-72b330806330" alt="Header Cover" style="width: 100%; height: auto;">
+</p>
 # 📚 Deck 2.0
 
 **Deck** is a productivity application designed to enhance your learning and task management experience. With Deck, you can create custom flashcards, generate flashcards automatically using **Gemini AI 🤖**, and efficiently manage your tasks. It's the perfect tool for students, professionals, and anyone looking to boost their productivity.  
