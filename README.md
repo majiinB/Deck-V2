@@ -39,7 +39,7 @@
    ```  
 
 3. **Set up the backend API**  
-   - The backend API for Deck is hosted in the [Deck-API repository](<[https://github.com/majiinB/Deck_API-Gateway.git]>). Refer to that repository for further setup instructions.  
+   - The backend API for Deck is hosted in the [Deck-API repository](<https://github.com/majiinB/Deck_API-Gateway.git>). Refer to that repository for further setup instructions.  
 
 4. **Run the Flutter app**  
    ```bash  
