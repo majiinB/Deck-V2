@@ -109,7 +109,7 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                     padding: const EdgeInsets.only(left: 30.0),
                     child: IconButton(
                       icon: const Icon(
-                        Icons.list,
+                        DeckIcons2.pencil,
                         color: DeckColors.white,
                         size: 24),
                       onPressed: () async {

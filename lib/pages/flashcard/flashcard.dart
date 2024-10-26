@@ -223,10 +223,20 @@ class _FlashcardPageState extends State<FlashcardPage> {
                 ),
               ),
             if (_decks.isEmpty)
-              IfCollectionEmpty(
-                  ifCollectionEmptyText: 'No Deck(s) Available',
-                  ifCollectionEmptyHeight:
-                      MediaQuery.of(context).size.height * 0.7),
+              Container(
+                padding: EdgeInsets.all(30),
+                decoration: const BoxDecoration(
+                  color: DeckColors.coverImageColorSettings,
+                  borderRadius: BorderRadius.all(Radius.circular(40)),
+                ),
+                child: IfCollectionEmpty(
+                  hasIcon: true,
+                  ifCollectionEmptyText: 'No Recent Decks Yet!',
+                  ifCollectionEmptySubText:
+                  'Now’s the perfect time to get ahead. Create your own Deck now to keep learning.',
+                  ifCollectionEmptyHeight: MediaQuery.of(context).size.height/5,
+                ),
+              ),
             if (_decks.isNotEmpty)
               const Padding(
                 padding: EdgeInsets.only(top: 20.0),
