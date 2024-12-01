@@ -111,7 +111,3 @@ If you have any questions or suggestions, feel free to [open an issue](#) or con
 ---
 
 Thank you for using Deck! We hope it helps you achieve your productivity goals! 🎉  
-
----
-
-Let me know if you need any more adjustments or if there's anything else you'd like to add!
