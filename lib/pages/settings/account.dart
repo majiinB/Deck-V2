@@ -17,6 +17,9 @@ import '../../backend/flashcard/flashcard_service.dart';
 import '../../backend/flashcard/flashcard_utils.dart';
 import '../../backend/models/deck.dart';
 import '../../backend/profile/profile_provider.dart';
+import '../misc/custom widgets/buttons/custom_buttons.dart';
+import '../misc/custom widgets/images/profile_image.dart';
+import '../misc/custom widgets/tiles/settings_container.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({super.key});

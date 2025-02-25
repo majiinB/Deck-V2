@@ -13,6 +13,14 @@ import 'package:deck/pages/misc/widget_method.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../backend/models/deck.dart';
+import '../misc/custom widgets/buttons/custom_buttons.dart';
+import '../misc/custom widgets/buttons/floating_action_button.dart';
+import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
+import '../misc/custom widgets/functions/if_collection_empty.dart';
+import '../misc/custom widgets/functions/tab_bar.dart';
+import '../misc/custom widgets/images/cover_image.dart';
+import '../misc/custom widgets/textboxes/textboxes.dart';
+import '../misc/custom widgets/tiles/container_of_flashcard.dart';
 
 class ViewDeckPage extends StatefulWidget {
   final Deck deck;

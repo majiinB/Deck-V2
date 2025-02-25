@@ -11,6 +11,9 @@ import '../../backend/auth/auth_service.dart';
 import '../../backend/flashcard/flashcard_service.dart';
 import '../../backend/models/deck.dart';
 import '../../backend/task/task_provider.dart';
+import '../misc/custom widgets/functions/if_collection_empty.dart';
+import '../misc/custom widgets/tiles/custom_home_deck_tile.dart';
+import '../misc/custom widgets/tiles/deck_task_tile.dart';
 import '../task/view_task.dart';
 
 class HomePage extends StatefulWidget {

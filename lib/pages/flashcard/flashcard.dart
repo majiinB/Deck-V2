@@ -14,6 +14,11 @@ import 'package:deck/pages/misc/widget_method.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../backend/flashcard/flashcard_utils.dart';
+import '../misc/custom widgets/buttons/custom_buttons.dart';
+import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
+import '../misc/custom widgets/functions/if_collection_empty.dart';
+import '../misc/custom widgets/textboxes/textboxes.dart';
+import '../misc/custom widgets/tiles/deck_container.dart';
 
 class FlashcardPage extends StatefulWidget {
   const FlashcardPage({super.key});

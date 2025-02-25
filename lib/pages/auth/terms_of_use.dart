@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import '../misc/colors.dart';
+import '../misc/custom widgets/appbar/auth_bar.dart';
 import '../misc/widget_method.dart';
 
 class TermsOfUsePage extends StatelessWidget {

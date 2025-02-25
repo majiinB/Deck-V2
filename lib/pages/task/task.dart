@@ -9,6 +9,10 @@ import 'package:deck/pages/task/view_task.dart';
 import 'package:deck/pages/task/add_task.dart';
 import 'package:deck/pages/misc/deck_icons2.dart';
 import '../../backend/models/task.dart';
+import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
+import '../misc/custom widgets/functions/if_collection_empty.dart';
+import '../misc/custom widgets/functions/tab_bar.dart';
+import '../misc/custom widgets/tiles/deck_task_tile.dart';
 //sample
 
 class TaskPage extends StatefulWidget {

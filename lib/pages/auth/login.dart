@@ -11,6 +11,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../backend/auth/auth_service.dart';
+import '../misc/custom widgets/buttons/custom_buttons.dart';
+import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
+import '../misc/custom widgets/textboxes/textboxes.dart';
 
 /// The LoginPage widget allows users to log in with email/password or via Google.
 /// It includes input fields for email and password, and buttons for login

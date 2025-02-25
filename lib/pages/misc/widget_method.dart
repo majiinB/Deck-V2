@@ -7,14 +7,16 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:msh_checkbox/msh_checkbox.dart';
 import 'package:provider/provider.dart';
 import '../theme/theme_provider.dart';
+import '../misc/custom widgets/buttons/custom_buttons.dart';
+import 'custom widgets/buttons/icon_button.dart';
 
-///updated methods as of 05/11/24 1:34AM
+///updated methods as of 02/25/25 2:52 pm
 ///
 ///
 /// ----------------------- S T A R T -------------------------
 /// ---------------------- A P P B A R ------------------------
 
-///
+/*///
 ///
 /// DeckBar is an AppBar with the font Nunito (used in typical routes)
 class DeckBar extends StatelessWidget implements PreferredSizeWidget {
@@ -75,8 +77,9 @@ class DeckBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
-}
+}*/
 
+/*
 ///
 ///
 /// AuthBar is an AppBar with the font Fraiche (used in auth and main routes)
@@ -115,6 +118,7 @@ class AuthBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Size get preferredSize => AppBar().preferredSize;
 }
+*/
 
 /// ------------------------- E N D ---------------------------
 /// ---------------------- A P P B A R ------------------------
@@ -160,6 +164,7 @@ class RouteGenerator {
 /// ------------------------ S T A R T -------------------------
 /// ------------------ D E C K  B U T T O N --------------------
 
+/*
 ///
 ///
 /// DeckButton is the main button of Deck used for all routes
@@ -244,7 +249,9 @@ class BuildButton extends StatelessWidget {
     );
   }
 }
+*/
 
+/*
 /// this will make the buttons act like a radio button. ir manages the state of the selected button.
 
 class RadioButtonGroup extends StatefulWidget {
@@ -329,6 +336,7 @@ class _RadioButtonGroupState extends State<RadioButtonGroup> {
     );
   }
 }
+*/
 
 /// -------------------------- E N D ---------------------------
 /// ------------------ D E C K  B U T T O N --------------------
@@ -340,7 +348,7 @@ class _RadioButtonGroupState extends State<RadioButtonGroup> {
 /// ------------------------ S T A R T -------------------------
 /// ---------------------- A C C O U N T -----------------------
 
-///
+/*///
 ///
 /// BuildCoverImage is a method for Cover Photo
 class BuildCoverImage extends StatefulWidget {
@@ -468,8 +476,9 @@ class BuildCoverImageUrl extends StatelessWidget {
       ),
     );
   }
-}
+}*/
 
+/*
 ///
 ///
 /// BuildProfileImage is a method for Profile Photo
@@ -502,8 +511,9 @@ class BuildProfileImageState extends State<BuildProfileImage> {
     );
   }
 }
+*/
 
-///
+/*///
 ///
 ///SwipeToDeleteAndRetrieve is to delete and retrieve Decks
 class SwipeToDeleteAndRetrieve extends StatelessWidget {
@@ -567,8 +577,9 @@ class SwipeToDeleteAndRetrieve extends StatelessWidget {
       child: child,
     );
   }
-}
+}*/
 
+/*
 ///
 ///
 ///BuidListOfDecks is a method for Container of Decks but only for design
@@ -675,7 +686,9 @@ class BuildListOfDecksState extends State<BuildListOfDecks> {
     );
   }
 }
+*/
 
+/*
 ///
 ///
 ///ShowConfirmationDialog is a method for Confirm Dialog
@@ -758,6 +771,7 @@ void showInformationDialog(BuildContext context, String title, String message) {
     },
   );
 }
+*/
 
 /// -------------------------- E N D ---------------------------
 /// ---------------------- A C C O U N T -----------------------
@@ -769,6 +783,7 @@ void showInformationDialog(BuildContext context, String title, String message) {
 /// ----------------------- S T A R T --------------------------
 /// -------------------- S E T T I N G S -----------------------
 
+/*
 // Container for a function in settings
 class BuildSettingsContainer extends StatefulWidget {
   final IconData selectedIcon;
@@ -888,6 +903,7 @@ class BuildSettingsContainerState extends State<BuildSettingsContainer> {
     );
   }
 }
+*/
 
 ///
 ///
@@ -905,6 +921,7 @@ class BuildSettingsContainerState extends State<BuildSettingsContainer> {
 
 ///############################################################
 
+/*
 ///
 ///
 /// ----------------------- S T A R T --------------------------
@@ -1006,6 +1023,7 @@ class BuildTextBoxState extends State<BuildTextBox> {
 
 /// ------------------------- E N D ----------------------------
 /// ------------ C H A N G E  P A S S W O R D ------------------
+*/
 
 ///############################################################
 
@@ -1013,6 +1031,7 @@ class BuildTextBoxState extends State<BuildTextBox> {
 ///
 /// ----------------------- S T A R T --------------------------
 /// --------------- E D I T  P R O F I L E ---------------------
+/*
 //icon button
 class BuildIconButton extends StatelessWidget {
   final VoidCallback onPressed;
@@ -1053,13 +1072,14 @@ class BuildIconButton extends StatelessWidget {
     );
   }
 }
+*/
 
 /// ------------------------- E N D ----------------------------
 /// --------------- E D I T  P R O F I L E ---------------------
 
 ///############################################################
 
-///
+/*///
 ///
 /// ----------------------- S T A R T --------------------------
 /// -------------- D R O P D O W N  M E N U --------------------
@@ -1145,7 +1165,7 @@ class CustomDropdown extends StatelessWidget {
 }
 
 /// ------------------------ E N D -----------------------------
-/// -------------- D R O P D O W N  M E N U --------------------
+/// -------------- D R O P D O W N  M E N U --------------------*/
 
 ///############################################################
 
@@ -1154,7 +1174,7 @@ class CustomDropdown extends StatelessWidget {
 /// ---------------------- S T A R T ---------------------------
 /// ------------------- C H E C K B O X ------------------------
 
-///
+/*///
 ///
 ///Checkbox Widget
 class DeckBox extends StatefulWidget {
@@ -1191,7 +1211,7 @@ class DeckBoxState extends State<DeckBox> {
 }
 
 /// ------------------------ E N D -----------------------------
-/// ------------------- C H E C K B O X ------------------------
+/// ------------------- C H E C K B O X ------------------------*/
 
 ///############################################################
 
@@ -1200,7 +1220,7 @@ class DeckBoxState extends State<DeckBox> {
 /// ---------------------- S T A R T ---------------------------
 /// --------------- B O T T O M  S H E E T ---------------------
 
-///
+/*///
 ///
 /// Bottom Sheet
 class BuildContentOfBottomSheet extends StatelessWidget {
@@ -1237,7 +1257,7 @@ class BuildContentOfBottomSheet extends StatelessWidget {
 }
 
 /// ------------------------ E N D -----------------------------
-/// --------------- B O T T O M  S H E E T ---------------------
+/// --------------- B O T T O M  S H E E T ---------------------*/
 
 ///############################################################
 
@@ -1246,6 +1266,7 @@ class BuildContentOfBottomSheet extends StatelessWidget {
 /// ---------------------- S T A R T ---------------------------
 /// --------------- B O T T O M  S H E E T ---------------------
 
+/*
 ///
 ///
 ///Floating Action Button
@@ -1297,6 +1318,7 @@ class DeckFAB extends StatelessWidget {
     );
   }
 }
+*/
 
 /// ------------------------ E N D -----------------------------
 /// --------------- B O T T O M  S H E E T ---------------------
@@ -1308,7 +1330,7 @@ class DeckFAB extends StatelessWidget {
 /// ---------------------- S T A R T ---------------------------
 /// --------------- B O T T O M  S H E E T ---------------------
 
-class IfCollectionEmpty extends StatelessWidget {
+/*class IfCollectionEmpty extends StatelessWidget {
   final String ifCollectionEmptyText;
   final String? ifCollectionEmptySubText;
   final double ifCollectionEmptyHeight;
@@ -1375,7 +1397,7 @@ class IfCollectionEmpty extends StatelessWidget {
           ),
     );
   }
-}
+}*/
 
 /// ------------------------ E N D -----------------------------
 /// --------------- B O T T O M  S H E E T ---------------------
@@ -1387,6 +1409,7 @@ class IfCollectionEmpty extends StatelessWidget {
 /// ---------------------- S T A R T ---------------------------
 /// --------------- B O T T O M  S H E E T ---------------------
 
+/*
 class CustomExpansionTile extends StatefulWidget {
   const CustomExpansionTile({super.key});
 
@@ -1501,6 +1524,7 @@ class CustomExpansionTileState extends State<CustomExpansionTile> {
     );
   }
 }
+*/
 
 /// ------------------------ E N D -----------------------------
 /// --------------- B O T T O M  S H E E T ---------------------
@@ -1512,6 +1536,7 @@ class CustomExpansionTileState extends State<CustomExpansionTile> {
 /// ---------------------- S T A R T ---------------------------
 /// --------------- B O T T O M  S H E E T ---------------------
 
+/*
 /// THIS METHOD IS FOR THE DECKS CONTAINER IN THE FLASHCARD PAGE
 class BuildDeckContainer extends StatefulWidget {
   final String? deckCoverPhotoUrl;
@@ -1664,6 +1689,7 @@ class BuildDeckContainerState extends State<BuildDeckContainer> {
     );
   }
 }
+*/
 
 /// ------------------------ E N D -----------------------------
 /// --------------- B O T T O M  S H E E T ---------------------
@@ -1675,6 +1701,7 @@ class BuildDeckContainerState extends State<BuildDeckContainer> {
 /// ---------------------- S T A R T ---------------------------
 /// --------------- B O T T O M  S H E E T ---------------------
 
+/*
 class BuildTabBar extends StatelessWidget {
   final List<String> titles;
   final int length;
@@ -1749,6 +1776,7 @@ class BuildTabBar extends StatelessWidget {
     );
   }
 }
+*/
 
 /// ------------------------ E N D -----------------------------
 /// --------------- B O T T O M  S H E E T ---------------------
@@ -1760,6 +1788,7 @@ class BuildTabBar extends StatelessWidget {
 /// ---------------------- S T A R T ---------------------------
 /// --------------- B O T T O M  S H E E T ---------------------
 
+/*
 class BuildContainerOfFlashCards extends StatefulWidget {
   final VoidCallback onDelete;
   final VoidCallback? onRetrieve, onTap;
@@ -1889,6 +1918,7 @@ class BuildContainerOfFlashCardsState extends State<BuildContainerOfFlashCards>
     );
   }
 }
+*/
 
 /// ------------------------ E N D -----------------------------
 /// --------------- B O T T O M  S H E E T ---------------------
@@ -1896,6 +1926,7 @@ class BuildContainerOfFlashCardsState extends State<BuildContainerOfFlashCards>
 ///#############################################################
 
 ///LEILA PART AFAIK
+/*
 /// ----------------------- S T A R T ---------------------------
 /// ------------ D E C K  S L I V E R H E A D E R ---------------
 
@@ -2004,10 +2035,11 @@ class DeckDelegate extends SliverPersistentHeaderDelegate {
 
 /// ------------------------ E N D -----------------------------
 /// ------------ D E C K  S L I V E R H E A D E R --------------
+*/
 
 ///############################################################
 
-///
+/*///
 /// ----------------------- S T A R T --------------------------
 /// ------------ T A S K  T I L E  I N  H O M E-----------------
 
@@ -2098,10 +2130,11 @@ class HomeTaskTile extends StatelessWidget {
 }
 
 /// ------------------------ E N D -----------------------------
-/// ------------ T A S K  T I L E  I N  H O M E-----------------
+/// ------------ T A S K  T I L E  I N  H O M E-----------------*/
 
 ///############################################################
 
+/*
 ///
 /// ----------------------- S T A R T --------------------------
 /// ------------ D E C K  T I L E  I N  H O M E-----------------
@@ -2227,13 +2260,13 @@ class HomeDeckTile extends StatelessWidget {
 
 /// ------------------------- E N D ----------------------------
 /// ------------ D E C K  T I L E  I N  H O M E-----------------
+*/
 
 ///############################################################
 
-///
+/*///
 /// ------------ D E C K  T A S K T I L E ----------------------
 /// a custom widget that is used in the task page
-
 class DeckTaskTile extends StatefulWidget {
   final String title;
   final String deadline;
@@ -2243,7 +2276,7 @@ class DeckTaskTile extends StatefulWidget {
   final VoidCallback? onRetrieve, onTap;
   final bool enableRetrieve;
 
-  /*const*/ DeckTaskTile({
+  *//*const*//* DeckTaskTile({
     super.key,
     required this.title,
     required this.deadline,
@@ -2386,7 +2419,7 @@ class DeckTaskTileState extends State<DeckTaskTile> {
       ),
     );
   }
-}
+}*/
 
 // class DeckTaskTile extends StatefulWidget {
 //   final String title;
@@ -2510,6 +2543,7 @@ class DeckTaskTileState extends State<DeckTaskTile> {
 /// ------------------------- E N D ----------------------------
 /// ------------ D E C K  T A S K T I L E ----------------------
 
+/*
 ///
 /// M E T H O D  T O  C A L L  L O A D I N G
 ///
@@ -2534,12 +2568,13 @@ void showLoad(BuildContext context) {
 void hideLoad(BuildContext context) {
   Navigator.of(context).pop();
 }
+*/
 
 /// ------------------------- S T A R T ----------------------------
 /// ------------ D E C K  I N T R O P A G E----------------------
 ///
 
-class DeckIntroPage extends StatelessWidget {
+/*class DeckIntroPage extends StatelessWidget {
   final String img;
   final String text;
 
@@ -2554,14 +2589,7 @@ class DeckIntroPage extends StatelessWidget {
       child: Image.asset(img, fit: BoxFit.contain),
     );
   }
-}
-
-
-
-
-
-
-
+}*/
 ///
 /// ------------------------- E N D ----------------------------
 /// ------------ D E C K  I N T R O P A G E----------------------

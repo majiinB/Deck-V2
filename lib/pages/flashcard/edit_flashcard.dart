@@ -8,6 +8,9 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../backend/models/deck.dart';
 import '../../backend/models/card.dart';
+import '../misc/custom widgets/buttons/custom_buttons.dart';
+import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
+import '../misc/custom widgets/textboxes/textboxes.dart';
 
 class EditFlashcardPage extends StatefulWidget {
   final Deck deck;

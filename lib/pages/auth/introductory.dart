@@ -1,8 +1,10 @@
 import 'package:deck/pages/misc/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import '../misc/custom widgets/functions/intro_page.dart';
 import '../misc/widget_method.dart';
 import 'package:deck/pages/auth/signup.dart';
+import '../misc/custom widgets/buttons/custom_buttons.dart';
 
 class IntroductoryPage extends StatefulWidget{
   const IntroductoryPage({super.key});
