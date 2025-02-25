@@ -11,6 +11,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 
+import '../misc/custom widgets/appbar/auth_bar.dart';
+import '../misc/custom widgets/tiles/settings_container.dart';
+
 class SettingPage extends StatefulWidget {
   const SettingPage({Key? key});
 

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../misc/colors.dart';
+import '../misc/custom widgets/appbar/auth_bar.dart';
 import '../misc/widget_method.dart';
 
 class PrivacyPolicyPage extends StatelessWidget {

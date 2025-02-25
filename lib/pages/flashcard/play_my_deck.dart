@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:deck/pages/misc/widget_method.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../backend/models/deck.dart';
+import '../misc/custom widgets/buttons/custom_buttons.dart';
 
 class PlayMyDeckPage extends StatefulWidget {
   final List cards;

@@ -15,6 +15,13 @@ import 'package:provider/provider.dart';
 import '../../backend/profile/profile_provider.dart';
 import '../../backend/profile/profile_utils.dart';
 import '../auth/signup.dart';
+import '../misc/custom widgets/appbar/auth_bar.dart';
+import '../misc/custom widgets/buttons/custom_buttons.dart';
+import '../misc/custom widgets/buttons/icon_button.dart';
+import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
+import '../misc/custom widgets/images/profile_image.dart';
+import '../misc/custom widgets/textboxes/textboxes.dart';
+import '../misc/custom widgets/tiles/bottom_sheet.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile({super.key});

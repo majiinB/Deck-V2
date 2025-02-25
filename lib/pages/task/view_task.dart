@@ -7,6 +7,10 @@ import 'package:deck/pages/misc/widget_method.dart';
 import 'package:deck/pages/task/edit_task.dart';
 import 'package:provider/provider.dart';
 
+import '../misc/custom widgets/buttons/custom_buttons.dart';
+import '../misc/custom widgets/buttons/radio_button_group.dart';
+import '../misc/custom widgets/textboxes/textboxes.dart';
+
 class ViewTaskPage extends StatefulWidget {
   final Task task;
   final bool isEditable;

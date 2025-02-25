@@ -10,6 +10,7 @@ import 'package:deck/pages/misc/widget_method.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../backend/auth/auth_service.dart';
+import '../misc/custom widgets/buttons/custom_buttons.dart';
 
 /// The SignUpPage widget allows users to sign up for the application.
 /// It provides options to sign up using Google or email.

@@ -6,6 +6,10 @@ import 'package:deck/pages/misc/widget_method.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../misc/custom widgets/buttons/custom_buttons.dart';
+import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
+import '../misc/custom widgets/textboxes/textboxes.dart';
+
 class RecoverAccountPage extends StatelessWidget {
   RecoverAccountPage({super.key});
 

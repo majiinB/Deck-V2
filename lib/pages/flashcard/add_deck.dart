@@ -15,6 +15,13 @@ import 'package:deck/pages/misc/widget_method.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../backend/models/deck.dart';
+import '../misc/custom widgets/buttons/custom_buttons.dart';
+import '../misc/custom widgets/buttons/icon_button.dart';
+import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
+import '../misc/custom widgets/images/cover_image.dart';
+import '../misc/custom widgets/textboxes/textboxes.dart';
+import '../misc/custom widgets/tiles/bottom_sheet.dart';
+import '../misc/custom widgets/tiles/expansion_tile.dart';
 
 class AddDeckPage extends StatefulWidget {
   final List<Deck> decks;

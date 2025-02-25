@@ -7,6 +7,12 @@ import 'package:flutter/material.dart';
 import '../../backend/auth/auth_service.dart';
 import '../../backend/flashcard/flashcard_service.dart';
 import '../../backend/models/deck.dart';
+import '../misc/custom widgets/appbar/auth_bar.dart';
+import '../misc/custom widgets/buttons/custom_buttons.dart';
+import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
+import '../misc/custom widgets/functions/if_collection_empty.dart';
+import '../misc/custom widgets/textboxes/textboxes.dart';
+import '../misc/custom widgets/tiles/list_of_decks.dart';
 
 class RecentlyDeletedPage extends StatefulWidget {
   const RecentlyDeletedPage({super.key});

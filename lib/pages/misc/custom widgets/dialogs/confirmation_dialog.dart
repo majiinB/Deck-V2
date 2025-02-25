@@ -1,0 +1,91 @@
+import 'package:deck/pages/misc/colors.dart';
+import 'package:deck/pages/misc/deck_icons.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:msh_checkbox/msh_checkbox.dart';
+import 'package:provider/provider.dart';
+
+///
+///
+///ShowConfirmationDialog is a method for Confirm Dialog
+class ShowConfirmationDialog extends StatelessWidget {
+  final String title;
+  final String text;
+  final VoidCallback onConfirm;
+  final VoidCallback onCancel;
+
+  const ShowConfirmationDialog({
+    super.key,
+    required this.title,
+    required this.text,
+    required this.onConfirm,
+    required this.onCancel,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(title),
+      content: Text(text),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () {
+            onCancel();
+            Navigator.of(context).pop();
+          },
+          child: const Text("No", style: TextStyle(color: Colors.red)),
+        ),
+        TextButton(
+          onPressed: () {
+            onConfirm();
+            Navigator.of(context).pop();
+          },
+          child: const Text("Yes", style: TextStyle(color: Colors.green)),
+        ),
+      ],
+    );
+  }
+}
+
+//Used to show the Dialog Box
+void showConfirmationDialog(BuildContext context, String title, String text,
+    VoidCallback onConfirm, VoidCallback onCancel) {
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return ShowConfirmationDialog(
+        title: title,
+        text: text,
+        onConfirm: onConfirm,
+        onCancel: onCancel,
+      );
+    },
+  );
+}
+
+///
+
+// Method to show an informational dialog
+void showInformationDialog(BuildContext context, String title, String message) {
+  showDialog(
+    context: context,
+    barrierDismissible: false, // Prevent dismissal by tapping outside
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text(title),
+        content: Text(message),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(); // Dismiss the dialog
+            },
+            child: const Text("OK", style: TextStyle(color: Colors.blue)),
+          ),
+        ],
+      );
+    },
+  );
+}
