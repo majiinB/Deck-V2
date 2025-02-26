@@ -36,7 +36,6 @@ dependencies:
   cupertino_icons: ^1.0.6
   flutter_svg: ^2.0.10+1
   curved_labeled_navigation_bar: ^2.0.2
-  google_fonts: ^6.2.1
   dropdown_button2: ^2.3.9
   msh_checkbox: ^2.0.1
   flutter_slidable: ^2.0.0
@@ -114,7 +113,71 @@ flutter:
     - family: Fraiche
       fonts:
         - asset: fonts/Fraiche.ttf
-    
+
+    - family: Nunito-Black
+      fonts:
+        - asset: fonts/nunito/Nunito-Black.ttf
+
+    - family: Nunito-BlackItalic
+      fonts:
+        - asset: fonts/nunito/Nunito-BlackItalic.ttf
+
+    - family: Nunito-Bold
+      fonts:
+        - asset: fonts/nunito/Nunito-Bold.ttf
+
+    - family: Nunito-BoldItalic
+      fonts:
+        - asset: fonts/nunito/Nunito-BoldItalic.ttf
+
+    - family: Nunito-ExtraBold
+      fonts:
+        - asset: fonts/nunito/Nunito-ExtraBold.ttf
+
+    - family: Nunito-ExtraBoldItalic
+      fonts:
+        - asset: fonts/nunito/Nunito-ExtraBoldItalic.ttf
+
+    - family: Nunito-ExtraLight
+      fonts:
+        - asset: fonts/nunito/Nunito-ExtraLight.ttf
+
+    - family: Nunito-ExtraLightItalic
+      fonts:
+        - asset: fonts/nunito/Nunito-ExtraLightItalic.ttf
+
+    - family: Nunito-Italic
+      fonts:
+        - asset: fonts/nunito/Nunito-Italic.ttf
+
+    - family: Nunito-Light
+      fonts:
+        - asset: fonts/nunito/Nunito-Light.ttf
+
+    - family: Nunito-LightItalic
+      fonts:
+        - asset: fonts/nunito/Nunito-LightItalic.ttf
+
+    - family: Nunito-Medium
+      fonts:
+        - asset: fonts/nunito/Nunito-Medium.ttf
+
+    - family: Nunito-MediumItalic
+      fonts:
+        - asset: fonts/nunito/Nunito-MediumItalic.ttf
+
+    - family: Nunito-Regular
+      fonts:
+        - asset: fonts/nunito/Nunito-Regular.ttf
+
+    - family: Nunito-SemiBold
+      fonts:
+        - asset: fonts/nunito/Nunito-SemiBold.ttf
+
+    - family: Nunito-SemiBoldItalic
+      fonts:
+        - asset: fonts/nunito/Nunito-SemiBoldItalic.ttf
+
     - family: DeckIcons2
       fonts:
         - asset: fonts/deckicons2.ttf

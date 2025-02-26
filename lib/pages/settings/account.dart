@@ -7,7 +7,7 @@ import 'package:deck/pages/settings/recently_deleted.dart';
 import 'package:deck/pages/settings/settings.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+// import 'package:google_fonts/google_fonts.dart';
 import 'package:deck/pages/misc/colors.dart';
 import 'package:deck/pages/misc/deck_icons.dart';
 import 'package:deck/pages/misc/widget_method.dart';
@@ -162,7 +162,8 @@ class AccountPageState extends State<AccountPage> {
                       padding: const EdgeInsets.only(left: 8.0),
                       child: Text(
                         AuthUtils().getEmail() ?? "guest@guest.com",
-                        style: GoogleFonts.nunito(
+                        style: const TextStyle(
+                          fontFamily: 'Nunito-Regular',
                           fontSize: 16,
                           color: DeckColors.white,
                         ),

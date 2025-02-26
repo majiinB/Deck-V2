@@ -3,7 +3,7 @@ import 'package:deck/pages/misc/deck_icons.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_fonts/google_fonts.dart';
+// import 'package:google_fonts/google_fonts.dart';
 import 'package:msh_checkbox/msh_checkbox.dart';
 import 'package:provider/provider.dart';
 // import '../theme/theme_provider.dart';
@@ -51,7 +51,8 @@ class BuildTextBoxState extends State<BuildTextBox> {
       onTap: widget.onTap,
       controller: widget.controller,
       initialValue: widget.initialValue,
-      style: GoogleFonts.nunito(
+      style: const TextStyle(
+        fontFamily: 'Nunito-Regular',
         color: Colors.white,
         fontSize: 16,
       ),
@@ -73,7 +74,8 @@ class BuildTextBoxState extends State<BuildTextBox> {
           ),
         ),
         hintText: widget.hintText,
-        hintStyle: GoogleFonts.nunito(
+        hintStyle: const TextStyle(
+          fontFamily: 'Nunito-Regular',
           fontSize: 16,
           fontStyle: FontStyle.italic,
           color: Colors.white,

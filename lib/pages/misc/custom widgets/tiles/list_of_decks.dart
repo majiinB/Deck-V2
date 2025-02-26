@@ -3,7 +3,7 @@ import 'package:deck/pages/misc/deck_icons.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_fonts/google_fonts.dart';
+// import 'package:google_fonts/google_fonts.dart';
 import 'package:msh_checkbox/msh_checkbox.dart';
 import 'package:provider/provider.dart';
 
@@ -83,9 +83,9 @@ class BuildListOfDecksState extends State<BuildListOfDecks> {
                   children: [
                     Text(
                       widget.titleText,
-                      style: GoogleFonts.nunito(
+                      style: const TextStyle(
+                        fontFamily: 'Nunito-Bold',
                         fontSize: 16,
-                        fontWeight: FontWeight.w700,
                         color: DeckColors.white,
                       ),
                     ),
@@ -101,7 +101,8 @@ class BuildListOfDecksState extends State<BuildListOfDecks> {
                         child: Text(
                           widget.numberText,
                           textAlign: TextAlign.center,
-                          style: GoogleFonts.nunito(
+                          style: const TextStyle(
+                            fontFamily: 'Nunito-Regular',
                             fontSize: 16,
                             color: DeckColors.white,
                           ),

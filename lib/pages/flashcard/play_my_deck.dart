@@ -2,7 +2,7 @@ import 'package:deck/pages/misc/colors.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 import 'package:deck/pages/misc/widget_method.dart';
-import 'package:google_fonts/google_fonts.dart';
+// import 'package:google_fonts/google_fonts.dart';
 import '../../backend/models/deck.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
 
@@ -197,10 +197,10 @@ class _PlayMyDeckPageState extends State<PlayMyDeckPage> {
                           fontSize: 24,
                           fontWeight: FontWeight.w900,
                         )
-                            : GoogleFonts.nunito(
+                            : TextStyle(
+                          fontFamily: 'Nunito-Bold',
                           color: textColor,
                           fontSize: 24,
-                          fontWeight: FontWeight.w500,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -221,7 +221,8 @@ class _PlayMyDeckPageState extends State<PlayMyDeckPage> {
               // Description text
               Text(
                 description,
-                style: GoogleFonts.nunito(
+                style: const TextStyle(
+                  fontFamily: 'Nunito-Regular',
                   color: DeckColors.white,
                   fontSize: 16,
                   fontStyle: FontStyle.italic,

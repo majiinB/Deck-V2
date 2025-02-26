@@ -51,7 +51,7 @@ class RecoverAccountPage extends StatelessWidget {
                 'Enter your email address below, and we\'ll send you a link to reset your password. Follow the instructions in the email to regain access to your account.',
                 textAlign: TextAlign.justify,
                 style: TextStyle(
-                    fontFamily: 'nunito',
+                    fontFamily: 'Nunito-Regular',
                     fontSize: 20
                 ),
               ),
@@ -64,8 +64,8 @@ class RecoverAccountPage extends StatelessWidget {
                   const Text(
                     'Enter Email',
                     style: TextStyle(
+                      fontFamily: 'Nunito-Black',
                       fontSize: 16,
-                      fontWeight: FontWeight.w900,
                     ),
                   ),
                   const SizedBox(

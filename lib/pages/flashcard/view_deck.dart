@@ -10,7 +10,7 @@ import 'package:deck/pages/misc/deck_icons.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:deck/pages/misc/widget_method.dart';
-import 'package:google_fonts/google_fonts.dart';
+// import 'package:google_fonts/google_fonts.dart';
 
 import '../../backend/models/deck.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
@@ -299,7 +299,8 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                       child: Text(
                         '$numberOfCards cards',
                         overflow: TextOverflow.visible,
-                        style: GoogleFonts.nunito(
+                        style: const TextStyle(
+                          fontFamily: 'Nunito-Regular',
                           fontSize: 16,
                           color: DeckColors.white,
                         ),

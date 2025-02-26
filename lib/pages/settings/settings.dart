@@ -7,7 +7,7 @@ import 'package:deck/pages/settings/change_password.dart';
 import 'package:deck/pages/settings/recently_deleted.dart';
 import 'package:deck/pages/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+// import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 

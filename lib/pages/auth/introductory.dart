@@ -56,6 +56,7 @@ class _IntroductoryPageState extends State<IntroductoryPage> {
                         );
                       },
                       child: const Text("Done", style: TextStyle(
+                        fontFamily: 'Nunito-Regular',
                         fontSize: 16,
                         color: DeckColors.primaryColor,
                       )
@@ -64,6 +65,7 @@ class _IntroductoryPageState extends State<IntroductoryPage> {
                   : GestureDetector(
                       onTap:(){},
                       child: const Text("Next", style: TextStyle(
+                        fontFamily: 'Nunito-Regular',
                         fontSize: 16,
                         color: DeckColors.white,
                       )

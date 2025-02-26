@@ -8,7 +8,7 @@ import 'package:deck/pages/misc/deck_icons.dart';
 import 'package:deck/pages/misc/widget_method.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+// import 'package:google_fonts/google_fonts.dart';
 
 import '../../backend/auth/auth_service.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
@@ -84,9 +84,8 @@ class _LoginPageState extends State<LoginPage> {
                         const Text(
                           'Email',
                           style: TextStyle(
-                            fontFamily: 'Nunito',
+                            fontFamily: 'Nunito-Black',
                             fontSize: 16,
-                            fontWeight: FontWeight.w900,
                           ),
                         ),
                         const SizedBox(
@@ -111,8 +110,8 @@ class _LoginPageState extends State<LoginPage> {
                         const Text(
                           'Password',
                           style: TextStyle(
+                            fontFamily: 'Nunito-Black',
                             fontSize: 16,
-                            fontWeight: FontWeight.w900,
                           ),
                         ),
                         const SizedBox(height: 10),
@@ -139,14 +138,14 @@ class _LoginPageState extends State<LoginPage> {
                       },
                       borderRadius: BorderRadius.circular(8),
                       splashColor: DeckColors.primaryColor.withOpacity(0.5),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(
                             vertical: 4, horizontal: 6),
                         child: Text(
                           'Forgot Password?',
-                          style: GoogleFonts.nunito(
+                          style: TextStyle(
+                            fontFamily: 'Nunito-Regular',
                             fontSize: 16,
-                            fontWeight: FontWeight.w400,
                             color: DeckColors.white,
                           ),
                         ),
@@ -237,6 +236,7 @@ class _LoginPageState extends State<LoginPage> {
                           child: Text(
                             'or continue with',
                             style: TextStyle(
+                              fontFamily: 'Nunito-Regular',
                                 fontSize: 16,
                                 color: DeckColors.white
                             ),

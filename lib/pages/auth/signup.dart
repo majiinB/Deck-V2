@@ -7,7 +7,7 @@ import 'package:deck/pages/misc/colors.dart';
 import 'package:deck/pages/misc/deck_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:deck/pages/misc/widget_method.dart';
-import 'package:google_fonts/google_fonts.dart';
+// import 'package:google_fonts/google_fonts.dart';
 
 import '../../backend/auth/auth_service.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
@@ -63,12 +63,12 @@ class _SignUpPageState extends State<SignUpPage> {
           SizedBox(
               width:  MediaQuery.of(context).size.width,
               child: const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15) ,
+                padding: EdgeInsets.symmetric(horizontal: 25, vertical: 15) ,
                 child:  Text(
-                  'Let\'s begin your journey to a more \norganized and productive life with Deck.',
+                  'Let\'s begin your journey to a more organized and productive life with Deck.',
                   style: TextStyle(
                     color: DeckColors.white,
-                    fontFamily: 'Nunito',
+                    fontFamily: 'Nunito-Regular',
                     fontSize: 24,
                   ),
                 ),
@@ -92,7 +92,7 @@ class _SignUpPageState extends State<SignUpPage> {
               borderWidth: 0,
               borderColor: Colors.transparent,
               icon: DeckIcons.account,
-              iconColor: DeckColors.white,
+              iconColor: DeckColors.backgroundColor,
               size: 24,
             ),
           ),
@@ -103,7 +103,7 @@ class _SignUpPageState extends State<SignUpPage> {
               children: [
                 const Text(
                   'Have an Account? ',
-                  style: TextStyle(fontSize: 16.0),
+                  style: TextStyle(fontSize: 16.0, fontFamily: 'NUnito-Regular'),
                 ),
                 InkWell(
                   onTap: () {
@@ -113,14 +113,14 @@ class _SignUpPageState extends State<SignUpPage> {
                   },
                   borderRadius: BorderRadius.circular(8),
                   splashColor: DeckColors.primaryColor.withOpacity(0.5),
-                  child: Padding(
+                  child: const Padding(
                     padding:
-                    const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
+                    EdgeInsets.symmetric(vertical: 4, horizontal: 6),
                     child: Text(
                       'Log In',
-                      style: GoogleFonts.nunito(
+                      style: TextStyle(
+                        fontFamily: 'Nunito-Black',
                         fontSize: 16,
-                        fontWeight: FontWeight.w900,
                         color: DeckColors.white,
                       ),
                     ),

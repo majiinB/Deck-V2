@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:deck/backend/auth/auth_gate.dart';
 import 'package:deck/backend/auth/auth_service.dart';
 import 'package:deck/backend/fcm/fcm_service.dart';
+import 'package:deck/backend/models/deck.dart';
 import 'package:deck/pages/auth/privacy_policy.dart';
 import 'package:deck/pages/auth/terms_of_use.dart';
 import 'package:deck/pages/misc/colors.dart';
@@ -12,7 +13,7 @@ import 'package:deck/pages/misc/widget_method.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:google_fonts/google_fonts.dart';
+// import 'package:google_fonts/google_fonts.dart';
 
 import '../misc/custom widgets/buttons/custom_buttons.dart';
 import '../misc/custom widgets/checkbox/checkbox.dart';
@@ -134,9 +135,8 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     const Text(
     'Email',
     style: TextStyle(
-    fontFamily: 'Nunito',
+    fontFamily: 'Nunito-Black',
     fontSize: 16,
-    fontWeight: FontWeight.w900,
     ),
     ),
     const SizedBox(
@@ -159,8 +159,8 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     const Text(
     'Create New Password',
     style: TextStyle(
+      fontFamily: 'Nunito-Black',
     fontSize: 16,
-    fontWeight: FontWeight.w900,
     ),
     ),
     const SizedBox(
@@ -183,8 +183,8 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     const Text(
     'Confirm New Password',
     style: TextStyle(
+      fontFamily: 'Nunito-Black',
     fontSize: 16,
-    fontWeight: FontWeight.w900,
     ),
     ),
     const SizedBox(
@@ -213,7 +213,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     ),
     const Text(
     "I accept Deck's",
-    style: TextStyle(fontSize: 16.0),
+    style: TextStyle(fontSize: 16.0, fontFamily: 'Nunito-Regular',),
     ),
     InkWell(
     onTap: () {
@@ -223,14 +223,14 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     },
     borderRadius: BorderRadius.circular(8),
     splashColor: DeckColors.primaryColor.withOpacity(0.5),
-    child: Padding(
-    padding: const EdgeInsets.symmetric(
+    child: const Padding(
+    padding: EdgeInsets.symmetric(
     vertical: 0, horizontal: 6), // Color of the InkWell
     child: Text(
     'Terms of Use',
-    style: GoogleFonts.nunito(
+    style: TextStyle(
+      fontFamily: 'Nunito-Black',
     fontSize: 16,
-    fontWeight: FontWeight.w900,
     color: DeckColors.white,
     ),
     ),
@@ -238,7 +238,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     ),
     const Text(
     "and",
-    style: TextStyle(fontSize: 16.0),
+    style: TextStyle(fontSize: 16.0, fontFamily: 'Nunito-Regular',),
     ),
     InkWell(
     onTap: () {
@@ -248,14 +248,14 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     },
     borderRadius: BorderRadius.circular(8),
     splashColor: DeckColors.primaryColor.withOpacity(0.5),
-    child: Padding(
-    padding: const EdgeInsets.symmetric(
+    child: const Padding(
+    padding: EdgeInsets.symmetric(
     vertical: 0, horizontal: 6), // Color of the InkWell
     child: Text(
     'Privacy Policy',
-    style: GoogleFonts.nunito(
+    style: TextStyle(
+      fontFamily: 'Nunito-Black',
     fontSize: 16,
-    fontWeight: FontWeight.w900,
     color: DeckColors.white,
     ),
     ),
@@ -352,6 +352,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     child: Text(
         'or continue with',
     style: TextStyle(
+      fontFamily: 'Nunito-Regular',
     fontSize: 16,
     color: DeckColors.white
     ),

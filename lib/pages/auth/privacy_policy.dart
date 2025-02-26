@@ -60,9 +60,8 @@ class PrivacyPolicyPage extends StatelessWidget {
                     textAlign: TextAlign.justify,
 
                     style: TextStyle(
-                      fontFamily: 'nunito',
+                      fontFamily: 'Nunito-Regular',
                       fontSize: 16,
-                      fontWeight: FontWeight.normal,
                       color: DeckColors.white,
                     ),
                   ),
@@ -72,19 +71,18 @@ class PrivacyPolicyPage extends StatelessWidget {
                   const Text.rich(
                     TextSpan(
                       style: TextStyle(
-                        fontFamily: 'nunito',
+                        fontFamily: 'Nunito-Regular',
                         fontSize: 16,
-                        fontWeight: FontWeight.normal,
                         color: DeckColors.white,
                       ),
                       children: [
                         TextSpan(
                           text: '1. Information We Collect\n\n',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: TextStyle(fontFamily: 'Nunito-ExtraBold'),
                         ),
                         TextSpan(
                           text: 'a. Information You Provide: ',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: TextStyle(fontFamily: 'Nunito-ExtraBold'),
                         ),
                         TextSpan(
                           text: 'When you register an account with Deck, we collect certain personal '
@@ -92,7 +90,7 @@ class PrivacyPolicyPage extends StatelessWidget {
                         ),
                         TextSpan(
                           text: 'b. Usage Information: ',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: TextStyle(fontFamily: 'Nunito-ExtraBold'),
                         ),
                         TextSpan(
                           text: 'We collect information about your interactions with the App, '
@@ -100,7 +98,7 @@ class PrivacyPolicyPage extends StatelessWidget {
                         ),
                         TextSpan(
                           text: 'c. Device Information: ',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: TextStyle(fontFamily: 'Nunito-ExtraBold'),
                         ),
                         TextSpan(
                           text: 'We collect information about the device you use to access the App, '
@@ -109,7 +107,7 @@ class PrivacyPolicyPage extends StatelessWidget {
                         ),
                         TextSpan(
                           text: '2. How We Use Your Information\n\n',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: TextStyle(fontFamily: 'Nunito-ExtraBold'),
                         ),
                         TextSpan(
                           text: 'We use the information we collect to provide and improve the App, '
@@ -118,7 +116,7 @@ class PrivacyPolicyPage extends StatelessWidget {
                         ),
                         TextSpan(
                           text: '3. Sharing Your Information\n\n',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: TextStyle(fontFamily: 'Nunito-ExtraBold'),
                         ),
                         TextSpan(
                           text: 'We may share your personal information with third-party service '
@@ -128,7 +126,7 @@ class PrivacyPolicyPage extends StatelessWidget {
                         ),
                         TextSpan(
                           text: '4. Data Retention\n\n',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: TextStyle(fontFamily: 'Nunito-ExtraBold'),
                         ),
                         TextSpan(
                           text: 'We will retain your personal information for as long as necessary to '
@@ -137,7 +135,7 @@ class PrivacyPolicyPage extends StatelessWidget {
                         ),
                         TextSpan(
                           text: '5. Security\n\n',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: TextStyle(fontFamily: 'Nunito-ExtraBold'),
                         ),
                         TextSpan(
                           text: 'We take reasonable measures to protect the security of your '
@@ -146,7 +144,7 @@ class PrivacyPolicyPage extends StatelessWidget {
                         ),
                         TextSpan(
                           text: '6. Children\'s Privacy\n\n',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: TextStyle(fontFamily: 'Nunito-ExtraBold'),
                         ),
                         TextSpan(
                           text: 'Deck is not directed to children under the age of 13, and we do '
@@ -157,7 +155,7 @@ class PrivacyPolicyPage extends StatelessWidget {
                         ),
                         TextSpan(
                           text: '7. Changes to Privacy Policy\n\n',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: TextStyle(fontFamily: 'Nunito-ExtraBold'),
                         ),
                         TextSpan(
                           text: 'We reserve the right to modify this Privacy Policy at a'
@@ -167,7 +165,7 @@ class PrivacyPolicyPage extends StatelessWidget {
                         ),
                         TextSpan(
                           text: '8. Contact Us\n\n',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: TextStyle(fontFamily: 'Nunito-ExtraBold'),
                         ),
                         TextSpan(
                           text: 'If you have any questions or concerns about this Privacy '
@@ -185,9 +183,8 @@ class PrivacyPolicyPage extends StatelessWidget {
                       "Thank you for using Deck!",
                       textAlign: TextAlign.justify,
                       style: TextStyle(
-                        fontFamily: 'nunito',
+                        fontFamily: 'Nunito-Regular',
                         fontSize: 16,
-                        fontWeight: FontWeight.normal,
                         color: DeckColors.white,
                       )
                   ),
