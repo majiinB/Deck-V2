@@ -245,17 +245,17 @@ class _TaskPageState extends State<TaskPage> {
                           shape: BoxShape.rectangle),
                       defaultTextStyle: const TextStyle(
                         color: DeckColors.white,
-                        fontFamily: 'nunito',
+                        fontFamily: 'Nunito-Regular',
                         fontSize: 16,
                       ),
                       weekNumberTextStyle: const TextStyle(
                         color: DeckColors.white,
-                        fontFamily: 'nunito',
+                        fontFamily: 'Nunito-Regular',
                         fontSize: 16,
                       ),
                       weekendTextStyle: const TextStyle(
                         color: DeckColors.white,
-                        fontFamily: 'nunito',
+                        fontFamily: 'Nunito-Regular',
                         fontSize: 16,
                       ),
                       selectedDecoration: BoxDecoration(
@@ -273,7 +273,7 @@ class _TaskPageState extends State<TaskPage> {
                       outsideDaysVisible: true,
                       outsideTextStyle: const TextStyle(
                         color: DeckColors.white,
-                        fontFamily: 'nunito',
+                        fontFamily: 'Nunito-Regular',
                         fontSize: 16,
                       ),
                     ),

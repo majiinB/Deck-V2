@@ -55,7 +55,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                 fontSize: 20,
               ),
               bodyLarge: TextStyle(
-                fontFamily: 'nunito',
+                fontFamily: 'Nunito-Regular',
                 fontSize: 16,
               ),
             ),
@@ -144,10 +144,9 @@ class _AddTaskPageState extends State<AddTaskPage> {
                           child: Text(
                             'Title',
                             style: TextStyle(
-                              fontFamily: 'Nunito',
+                              fontFamily: 'Nunito-Bold',
                               color: DeckColors.primaryColor,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w900,
+                              fontSize: 16,
                             ),
                           ),
                         ),
@@ -162,10 +161,9 @@ class _AddTaskPageState extends State<AddTaskPage> {
                             Text(
                               'Due Date',
                               style: TextStyle(
-                                fontFamily: 'Nunito',
+                                fontFamily: 'Nunito-Bold',
                                 color: DeckColors.primaryColor,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w900,
+                                fontSize: 16,
                               ),
                             )
                         ),
@@ -182,10 +180,9 @@ class _AddTaskPageState extends State<AddTaskPage> {
                             Text(
                               'Description',
                               style: TextStyle(
-                                fontFamily: 'Nunito',
+                                fontFamily: 'Nunito-Bold',
                                 color: DeckColors.primaryColor,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w900,
+                                fontSize: 16,
                               ),
                             )
                         ),
@@ -201,10 +198,9 @@ class _AddTaskPageState extends State<AddTaskPage> {
                             Text(
                               'Priority',
                               style: TextStyle(
-                                fontFamily: 'Nunito',
+                                fontFamily: 'Nunito-Bold',
                                 color: DeckColors.primaryColor,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w900,
+                                fontSize: 16,
                               ),
                             )
                         ),

@@ -12,7 +12,7 @@ import 'package:deck/pages/misc/deck_icons.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:deck/pages/misc/widget_method.dart';
-import 'package:google_fonts/google_fonts.dart';
+// import 'package:google_fonts/google_fonts.dart';
 
 import '../../backend/models/deck.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
@@ -81,14 +81,14 @@ class _AddDeckPageState extends State<AddDeckPage> {
                           ),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 10.0),
+                      const Padding(
+                        padding: EdgeInsets.only(bottom: 10.0),
                         child: Text(
                           'Deck Title',
-                          style: GoogleFonts.nunito(
+                          style: TextStyle(
+                            fontFamily: 'Nunito-Bold',
                             color: DeckColors.primaryColor,
                             fontSize: 16,
-                            fontWeight: FontWeight.w700,
                           ),
                         ),
                       ),
@@ -96,14 +96,14 @@ class _AddDeckPageState extends State<AddDeckPage> {
                             controller: _deckTitleController,
                             hintText: 'Enter Deck Title'
                         ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10),
                     child: Text(
                       'Deck Cover Photo (Optional)',
-                      style: GoogleFonts.nunito(
+                      style: TextStyle(
+                        fontFamily: 'Nunito-Bold',
                         color: DeckColors.primaryColor,
                         fontSize: 16,
-                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   ),
@@ -228,12 +228,12 @@ class _AddDeckPageState extends State<AddDeckPage> {
                       padding: const EdgeInsets.only(top: 10),
                       child: Row(
                         children: [
-                          Text(
+                          const Text(
                             'AI Generated',
-                            style: GoogleFonts.nunito(
+                            style: TextStyle(
+                              fontFamily: 'Nunito-Bold',
                               color: DeckColors.primaryColor,
                               fontSize: 16,
-                              fontWeight: FontWeight.w700,
                             ),
                           ),
                           Spacer(),
@@ -252,11 +252,12 @@ class _AddDeckPageState extends State<AddDeckPage> {
                           ),
                         ],
                       )),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 10.0),
+                  const Padding(
+                    padding: EdgeInsets.only(bottom: 10.0),
                     child: Text(
                       'Use AI to generate flashcards',
-                      style: GoogleFonts.nunito(
+                      style: TextStyle(
+                        fontFamily: 'Nunito-Bold',
                         color: DeckColors.white,
                         fontSize: 16,
                         fontStyle: FontStyle.italic
@@ -265,42 +266,42 @@ class _AddDeckPageState extends State<AddDeckPage> {
                   ),
                   if (_isToggled) const CustomExpansionTile(),
                   if (_isToggled)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
+                    const Padding(
+                      padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
                       child: Text(
                         'Subject',
-                        style: GoogleFonts.nunito(
+                        style: TextStyle(
+                          fontFamily: 'Nunito-Bold',
                           color: DeckColors.primaryColor,
                           fontSize: 16,
-                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),
                       if (_isToggled)
                     BuildTextBox(hintText: 'Enter Subject (e.g. English)', controller: _subjectController,),
                   if (_isToggled)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
+                    const Padding(
+                      padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
                       child: Text(
                         'Topic',
-                        style: GoogleFonts.nunito(
+                        style: TextStyle(
+                          fontFamily: 'Nunito-Bold',
                           color: DeckColors.primaryColor,
                           fontSize: 16,
-                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),
                       if (_isToggled)
                     BuildTextBox(hintText: 'Enter A Topic (e.g. Verb)', controller: _topicController,),
                   if (_isToggled)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
+                    const Padding(
+                      padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
                       child: Text(
                         'Description',
-                        style: GoogleFonts.nunito(
+                        style: TextStyle(
+                          fontFamily: 'Nunito-Bold',
                           color: DeckColors.primaryColor,
                           fontSize: 16,
-                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),
@@ -308,14 +309,14 @@ class _AddDeckPageState extends State<AddDeckPage> {
                     BuildTextBox(
                         hintText: 'Describe the flashcards you want to create. \n(e.g. Focus on Verbs.....)', isMultiLine: true, controller: _descriptionController,),
                       if (_isToggled)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
+                        const Padding(
+                          padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
                           child: Text(
                             'Attach File',
-                            style: GoogleFonts.nunito(
+                            style: TextStyle(
+                              fontFamily: 'Nunito-Bold',
                               color: DeckColors.primaryColor,
                               fontSize: 16,
-                              fontWeight: FontWeight.w700,
                             ),
                           ),
                         ),
@@ -390,14 +391,14 @@ class _AddDeckPageState extends State<AddDeckPage> {
                       ],
                     ),
                       if (_isToggled)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
+                        const Padding(
+                          padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
                           child: Text(
                             'Amount of Flashcards',
-                            style: GoogleFonts.nunito(
+                            style: TextStyle(
+                              fontFamily: 'Nunito-Bold',
                               color: DeckColors.primaryColor,
                               fontSize: 16,
-                              fontWeight: FontWeight.w700,
                             ),
                           ),
                         ),

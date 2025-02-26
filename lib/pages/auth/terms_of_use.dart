@@ -74,9 +74,8 @@ class TermsOfUsePage extends StatelessWidget {
                        'these Terms, please do not access or use our Deck.',
                  textAlign: TextAlign.justify,
                  style: TextStyle(
-                       fontFamily: 'nunito',
+                       fontFamily: 'Nunito-Regular',
                        fontSize: 16,
-                       fontWeight: FontWeight.normal,
                        color: DeckColors.white,
                      ),
                    ),
@@ -86,19 +85,18 @@ class TermsOfUsePage extends StatelessWidget {
                const Text.rich(
                  TextSpan(
                    style: TextStyle(
-                     fontFamily: 'nunito',
+                     fontFamily: 'Nunito-Regular',
                      fontSize: 16,
-                     fontWeight: FontWeight.normal,
                      color: DeckColors.white,
                    ),
                    children: [
                      TextSpan(
                        text: '1. Your Use of Deck\n\n',
-                       style: TextStyle(fontWeight: FontWeight.bold),
+                       style: TextStyle(fontFamily: 'Nunito-ExtraBold'),
                      ),
                      TextSpan(
                        text: 'a. Eligibility: ',
-                       style: TextStyle(fontWeight: FontWeight.bold),
+                       style: TextStyle(fontFamily: 'Nunito-ExtraBold'),
                      ),
                      TextSpan(
                        text: 'You must be at least 13 years old to use Deck. '
@@ -106,7 +104,7 @@ class TermsOfUsePage extends StatelessWidget {
                      ),
                      TextSpan(
                        text: 'b. Accounts: ',
-                       style: TextStyle(fontWeight: FontWeight.bold),
+                       style: TextStyle(fontFamily: 'Nunito-ExtraBold'),
                      ),
                      TextSpan(
                        text: 'In order to access certain features of Deck, you may be required to '
@@ -116,7 +114,7 @@ class TermsOfUsePage extends StatelessWidget {
                      ),
                      TextSpan(
                        text: 'c. Use Restrictions: ',
-                       style: TextStyle(fontWeight: FontWeight.bold),
+                       style: TextStyle(fontFamily: 'Nunito-ExtraBold'),
                      ),
                      TextSpan(
                        text: 'You agree to use Deck only for its intended purposes and in '
@@ -125,7 +123,7 @@ class TermsOfUsePage extends StatelessWidget {
                      ),
                      TextSpan(
                        text: '2. Privacy Policy\n\n',
-                       style: TextStyle(fontWeight: FontWeight.bold),
+                       style: TextStyle(fontFamily: 'Nunito-ExtraBold'),
                      ),
                      TextSpan(
                        text: 'Your privacy is important to us. Our Privacy Policy explains how '
@@ -136,7 +134,7 @@ class TermsOfUsePage extends StatelessWidget {
                      ),
                      TextSpan(
                        text: '3. Intellectual Property\n\n',
-                       style: TextStyle(fontWeight: FontWeight.bold),
+                       style: TextStyle(fontFamily: 'Nunito-ExtraBold'),
                      ),
                      TextSpan(
                        text: 'Deck and its entire contents, features, and functionality '
@@ -148,7 +146,7 @@ class TermsOfUsePage extends StatelessWidget {
                      ),
                      TextSpan(
                        text: '4. Disclaimer\n\n',
-                       style: TextStyle(fontWeight: FontWeight.bold),
+                       style: TextStyle(fontFamily: 'Nunito-ExtraBold'),
                      ),
                      TextSpan(
                        text: 'Deck is provided as is and as available without any warranties '
@@ -158,7 +156,7 @@ class TermsOfUsePage extends StatelessWidget {
                      ),
                      TextSpan(
                        text: '5. Limitation of Liability\n\n',
-                       style: TextStyle(fontWeight: FontWeight.bold),
+                       style: TextStyle(fontFamily: 'Nunito-ExtraBold'),
                      ),
                      TextSpan(
                        text: 'In no event shall Deck, its affiliates, or their respective officers, '
@@ -169,7 +167,7 @@ class TermsOfUsePage extends StatelessWidget {
                      ),
                      TextSpan(
                        text: '6. Governing Law\n\n',
-                       style: TextStyle(fontWeight: FontWeight.bold),
+                       style: TextStyle(fontFamily: 'Nunito-ExtraBold'),
                      ),
                      TextSpan(
                        text: 'These Terms are governed by and construed in accordance with the laws of '
@@ -177,7 +175,7 @@ class TermsOfUsePage extends StatelessWidget {
                      ),
                      TextSpan(
                        text: '7. Changes to Terms\n\n',
-                       style: TextStyle(fontWeight: FontWeight.bold),
+                       style: TextStyle(fontFamily: 'Nunito-ExtraBold'),
                      ),
                      TextSpan(
                        text: 'We reserve the right, at our sole discretion, to modify or replace'

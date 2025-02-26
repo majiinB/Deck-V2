@@ -11,7 +11,7 @@ import 'package:deck/pages/misc/deck_icons2.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:deck/pages/misc/widget_method.dart';
-import 'package:google_fonts/google_fonts.dart';
+// import 'package:google_fonts/google_fonts.dart';
 
 import '../../backend/flashcard/flashcard_utils.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
@@ -196,10 +196,10 @@ class _FlashcardPageState extends State<FlashcardPage> {
                       Text(
                         _latestDeck!.title.toString(),
                         overflow: TextOverflow.visible,
-                        style: GoogleFonts.nunito(
+                        style: const TextStyle(
+                          fontFamily: 'Nunito-Bold',
                           color: DeckColors.white,
                           fontSize: 24,
-                          fontWeight: FontWeight.w800,
                         ),
                       ),
                       Padding(

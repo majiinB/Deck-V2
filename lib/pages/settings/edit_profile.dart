@@ -8,7 +8,7 @@ import 'package:deck/pages/misc/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+// import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
@@ -343,15 +343,15 @@ class EditProfileState extends State<EditProfile> {
                       ),
                     ],
                   ),
-                  Padding(
+                  const Padding(
                     padding:
-                        const EdgeInsets.only(top: 60.0, left: 15, right: 15),
+                        EdgeInsets.only(top: 60.0, left: 15, right: 15),
                     child: Text(
                       'First Name',
-                      style: GoogleFonts.nunito(
+                      style: TextStyle(
+                        fontFamily: 'Nunito-Bold',
                         color: DeckColors.primaryColor,
                         fontSize: 16,
-                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   ),
@@ -364,15 +364,15 @@ class EditProfileState extends State<EditProfile> {
                       controller: firstNameController,
                     ),
                   ),
-                  Padding(
+                  const Padding(
                     padding:
-                        const EdgeInsets.only(top: 10.0, left: 15, right: 15),
+                        EdgeInsets.only(top: 10.0, left: 15, right: 15),
                     child: Text(
                       'Last Name',
-                      style: GoogleFonts.nunito(
+                      style: TextStyle(
+                        fontFamily: 'Nunito-Bold',
                         color: DeckColors.primaryColor,
                         fontSize: 16,
-                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   ),
@@ -393,10 +393,10 @@ class EditProfileState extends State<EditProfile> {
                         .providerData[0]
                         .providerId
                         .contains('google.com')
-                        ?  Text( 'Email', style: GoogleFonts.nunito(
+                        ?  const Text( 'Email', style: TextStyle(
+                        fontFamily: 'Nunito-Bold',
                         color: DeckColors.primaryColor,
                         fontSize: 16,
-                        fontWeight: FontWeight.w700,
                       )
                     )
                         : const SizedBox()),

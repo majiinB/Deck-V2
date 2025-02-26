@@ -163,10 +163,9 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                             Text(
                               'Due Date',
                               style: TextStyle(
-                                fontFamily: 'Nunito',
+                                fontFamily: 'Nunito-Bold',
                                 color: DeckColors.primaryColor,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w900,
+                                fontSize: 16,
                               ),
                             )
                         ),
@@ -181,10 +180,9 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                             Text(
                               'Description',
                               style: TextStyle(
-                                fontFamily: 'Nunito',
+                                fontFamily: 'Nunito-Bold',
                                 color: DeckColors.primaryColor,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w900,
+                                fontSize: 16,
                               ),
                             )
                         ),
@@ -202,10 +200,9 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
 
                               'Priority',
                               style: TextStyle(
-                                fontFamily: 'Nunito',
+                                fontFamily: 'Nunito-Bold',
                                 color: DeckColors.primaryColor,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w900,
+                                fontSize: 16,
                               ),
                             )
                         ),
@@ -226,10 +223,9 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                             Text(
                               'Task Status',
                               style: TextStyle(
-                                fontFamily: 'Nunito',
+                                fontFamily: 'Nunito-Bold',
                                 color: DeckColors.primaryColor,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w900,
+                                fontSize: 16,
                               ),
                             )
                         ),

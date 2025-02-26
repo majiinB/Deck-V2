@@ -3,7 +3,7 @@ import 'package:deck/pages/misc/deck_icons.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_fonts/google_fonts.dart';
+// import 'package:google_fonts/google_fonts.dart';
 import 'package:msh_checkbox/msh_checkbox.dart';
 import 'package:provider/provider.dart';
 
@@ -83,9 +83,9 @@ class BuildContainerOfFlashCardsState extends State<BuildContainerOfFlashCards>
                     child: Text(
                       widget.titleOfFlashCard,
                       overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.nunito(
+                      style: const TextStyle(
+                        fontFamily: 'Nunito-Bold',
                         fontSize: 16,
-                        fontWeight: FontWeight.w900,
                         color: DeckColors.white,
                       ),
                     ),
@@ -127,7 +127,8 @@ class BuildContainerOfFlashCardsState extends State<BuildContainerOfFlashCards>
                   maxLines: 4,
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.justify,
-                  style: GoogleFonts.nunito(
+                  style: const TextStyle(
+                    fontFamily: 'Nunito-Regular',
                     fontSize: 16,
                     color: DeckColors.white,
                   ),

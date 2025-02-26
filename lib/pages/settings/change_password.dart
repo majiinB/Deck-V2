@@ -3,7 +3,7 @@ import 'package:deck/pages/misc/colors.dart';
 import 'package:deck/pages/misc/widget_method.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+// import 'package:google_fonts/google_fonts.dart';
 
 import '../misc/custom widgets/appbar/auth_bar.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
@@ -38,11 +38,11 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'Enter a new password below to change your password.',
-              style: GoogleFonts.nunito(
+              style: TextStyle(
+                fontFamily: 'Nunito-Regular',
                 fontSize: 16,
-                fontWeight: FontWeight.w500,
                 color: DeckColors.white,
               ),
             ),
@@ -58,14 +58,14 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 30.0, left: 15, right: 15),
+                    const Padding(
+                      padding: EdgeInsets.only(top: 30.0, left: 15, right: 15),
                       child: Text(
                         'Old Password',
-                        style: GoogleFonts.nunito(
+                        style: TextStyle(
+                          fontFamily: 'Nunito-Bold',
                           color: DeckColors.primaryColor,
                           fontSize: 16,
-                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),
@@ -77,14 +77,14 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
                         controller: oldPasswordController,
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20.0, left: 15, right: 15),
+                    const Padding(
+                      padding: EdgeInsets.only(top: 20.0, left: 15, right: 15),
                       child: Text(
                         'New Password',
-                        style: GoogleFonts.nunito(
+                        style: TextStyle(
+                          fontFamily: 'Nunito-Regular',
                           color: DeckColors.primaryColor,
                           fontSize: 16,
-                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),
@@ -96,14 +96,14 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
                         controller: newPasswordController,
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20.0, left: 15, right: 15),
+                    const Padding(
+                      padding: EdgeInsets.only(top: 20.0, left: 15, right: 15),
                       child: Text(
                         'Confirm New Password',
-                        style: GoogleFonts.nunito(
+                        style: TextStyle(
+                          fontFamily: 'Nunito-Bold',
                           color: DeckColors.primaryColor,
                           fontSize: 16,
-                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),

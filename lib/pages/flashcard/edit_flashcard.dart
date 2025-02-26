@@ -4,7 +4,7 @@ import 'package:deck/pages/misc/colors.dart';
 import 'package:deck/pages/misc/deck_icons.dart';
 import 'package:deck/pages/misc/widget_method.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
+// import 'package:google_fonts/google_fonts.dart';
 
 import '../../backend/models/deck.dart';
 import '../../backend/models/card.dart';
@@ -110,10 +110,11 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
                         ),
                       ),
                     ),
-                    Text(
+                    const Text(
                       'Click the pencil icon above to enable editing of the text fields below.',
                       textAlign: TextAlign.justify,
-                      style: GoogleFonts.nunito(
+                      style: TextStyle(
+                        fontFamily: 'Nunito-Regular',
                         fontSize: 16,
                         color: DeckColors.white,
                       ),
@@ -125,14 +126,14 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
                         height: 2,
                       ),
                     ),*/
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20.0),
+                    const Padding(
+                      padding: EdgeInsets.only(top: 20.0),
                       child: Text(
                         'Title',
-                        style: GoogleFonts.nunito(
+                        style: TextStyle(
+                          fontFamily: 'Nunito-Bold',
                           color: DeckColors.primaryColor,
                           fontSize: 16,
-                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),
@@ -149,14 +150,14 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10.0),
+                    const Padding(
+                      padding: EdgeInsets.only(top: 10.0),
                       child: Text(
                         'Description',
-                        style: GoogleFonts.nunito(
+                        style: TextStyle(
+                          fontFamily: 'Nunito-Bold',
                           color: DeckColors.primaryColor,
                           fontSize: 16,
-                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),

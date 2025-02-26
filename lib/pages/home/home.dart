@@ -155,10 +155,10 @@ class _HomePageState extends State<HomePage> {
                     const Text(
                         'Let\'s be productive today as well!',
                         style: TextStyle(
-                            fontFamily: 'Nunito',
+                            fontFamily: 'Nunito-Bold',
                             fontSize: 16,
                             color: DeckColors.white,
-                            fontWeight: FontWeight.bold)
+                            )
                     ),
                   ],
                 ),

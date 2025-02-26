@@ -3,7 +3,7 @@ import 'package:deck/pages/misc/deck_icons.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_fonts/google_fonts.dart';
+// import 'package:google_fonts/google_fonts.dart';
 import 'package:msh_checkbox/msh_checkbox.dart';
 import 'package:provider/provider.dart';
 
@@ -98,9 +98,9 @@ class BuildSettingsContainerState extends State<BuildSettingsContainer> {
                       _isToggled
                           ? (widget.alternateText ?? widget.nameOfTheContainer)
                           : widget.nameOfTheContainer,
-                      style: GoogleFonts.nunito(
+                      style: TextStyle(
+                        fontFamily: 'Nunito-Bold',
                         fontSize: 16,
-                        fontWeight: FontWeight.w900,
                         color:
                         _isToggled ? (widget.textColor) : widget.textColor,
                       ),

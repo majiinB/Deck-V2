@@ -3,7 +3,7 @@ import 'package:deck/pages/flashcard/view_deck.dart';
 import 'package:deck/pages/misc/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:deck/pages/misc/widget_method.dart';
-import 'package:google_fonts/google_fonts.dart';
+// import 'package:google_fonts/google_fonts.dart';
 import '../../backend/models/card.dart';
 import '../../backend/models/deck.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
@@ -55,10 +55,11 @@ class _AddFlashcardPageState extends State<AddFlashcardPage> {
                       ),
                     ),
                   ),
-                  Text(
+                  const Text(
                     'Simply fill in the text fields below to add flash card on your deck.',
                     textAlign: TextAlign.justify,
-                    style: GoogleFonts.nunito(
+                    style: TextStyle(
+                      fontFamily: 'Nunito-Regular',
                       fontSize: 16,
                       color: DeckColors.white,
                     ),
@@ -70,14 +71,14 @@ class _AddFlashcardPageState extends State<AddFlashcardPage> {
                       height: 1,
                     ),
                   ),*/
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20.0),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 20.0),
                     child: Text(
                       'Terminology',
-                      style: GoogleFonts.nunito(
+                      style: TextStyle(
+                        fontFamily: 'Nunito-Bold',
                         color: DeckColors.primaryColor,
                         fontSize: 16,
-                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   ),
@@ -88,14 +89,14 @@ class _AddFlashcardPageState extends State<AddFlashcardPage> {
                         hintText: 'Enter Terminology'
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10.0),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 10.0),
                     child: Text(
                       'Description',
-                      style: GoogleFonts.nunito(
+                      style: TextStyle(
+                        fontFamily: 'Nunito-Bold',
                         color: DeckColors.primaryColor,
                         fontSize: 16,
-                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   ),
