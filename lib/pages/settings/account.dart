@@ -152,8 +152,8 @@ class AccountPageState extends State<AccountPage> {
                       Padding(
                         padding: const EdgeInsets.only(left: 15.0, right: 8.0),
                         child: BuildProfileImage(AuthUtils().getPhoto(),
-                          width: 150,
-                          height: 150,),
+                          width: 170,
+                          height: 170,),
                       ),
                     Expanded(
                       child: Column(
@@ -413,7 +413,7 @@ class AccountPageState extends State<AccountPage> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 20, left: 15, right: 15, bottom: 100),
+                padding: const EdgeInsets.only(top: 20, left: 15, right: 15, bottom: 110),
                 child: BuildSettingsContainer(
                   selectedIcon: Icons.delete_forever_rounded,
                   nameOfTheContainer: 'Delete Account',

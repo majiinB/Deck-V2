@@ -268,9 +268,9 @@ class EditProfileState extends State<EditProfile> {
                 ),*/
                       Positioned(
                         top: 190,
-                        left: 110,
+                        right: 25,
                         child: Padding(
-                            padding: const EdgeInsets.only(left: 230),
+                            padding: const EdgeInsets.only(left: 0),
                             child: BuildIconButton(
                               containerWidth: 40,
                               containerHeight: 40,
@@ -456,8 +456,16 @@ class EditProfileState extends State<EditProfile> {
                       )
                           : const SizedBox()),
                   Padding(
+                    padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 25.0),
+                      child: Container(
+                        width: double.infinity,
+                        height: 1,
+                        color: DeckColors.primaryColor,
+                      ),
+                  ),
+                  Padding(
                     padding:
-                        const EdgeInsets.only(top: 40, left: 15, right: 15),
+                        const EdgeInsets.only(top: 30, left: 15, right: 15),
                     child: BuildButton(
                       onPressed: () {
                         print(
