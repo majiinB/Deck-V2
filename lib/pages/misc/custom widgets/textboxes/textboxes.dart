@@ -52,8 +52,8 @@ class BuildTextBoxState extends State<BuildTextBox> {
       controller: widget.controller,
       initialValue: widget.initialValue,
       style: const TextStyle(
-        fontFamily: 'Nunito-Regular',
-        color: Colors.white,
+        fontFamily: 'Nunito-Bold',
+        color: DeckColors.primaryColor,
         fontSize: 16,
       ),
       maxLines: widget.isMultiLine ? null : 1,
@@ -62,7 +62,7 @@ class BuildTextBoxState extends State<BuildTextBox> {
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10.0),
           borderSide: const BorderSide(
-            color: Colors.white,
+            color: DeckColors.primaryColor,
             width: 2.0,
           ),
         ),
@@ -75,23 +75,29 @@ class BuildTextBoxState extends State<BuildTextBox> {
         ),
         hintText: widget.hintText,
         hintStyle: const TextStyle(
-          fontFamily: 'Nunito-Regular',
+          fontFamily: 'Nunito-Italic',
           fontSize: 16,
-          fontStyle: FontStyle.italic,
-          color: Colors.white,
+          // fontStyle: FontStyle.italic,
+          color: DeckColors.primaryColor,
         ),
         filled: true,
-        fillColor: DeckColors.grayTask,
+        fillColor: DeckColors.white,
         contentPadding:
         const EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
         prefixIcon: widget.leftIcon != null
-            ? Icon(widget.leftIcon)
+            ? Icon(
+            widget.leftIcon,
+            color: DeckColors.primaryColor)
             : null, // Change to your desired left icon
         suffixIcon: widget.showPassword
             ? IconButton(
           icon: _obscureText
-              ? const Icon(Icons.visibility_off)
-              : const Icon(Icons.visibility),
+              ? const Icon(
+            Icons.visibility_off,
+            color: DeckColors.primaryColor,)
+              : const Icon(
+              Icons.visibility,
+              color: DeckColors.primaryColor,),
           onPressed: () {
             setState(() {
               _obscureText = !_obscureText;
@@ -100,7 +106,9 @@ class BuildTextBoxState extends State<BuildTextBox> {
         )
             : widget.rightIcon != null
             ? IconButton(
-          icon: Icon(widget.rightIcon),
+          icon: Icon(widget.rightIcon,
+          color: DeckColors.primaryColor,
+          ),
           onPressed: widget.onTap,
         )
             : null,

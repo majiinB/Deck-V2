@@ -14,8 +14,9 @@ import 'package:provider/provider.dart';
 /// BuildProfileImage is a method for Profile Photo
 class BuildProfileImage extends StatefulWidget {
   final Image? profilePhotoFile;
+  final double width, height;
 
-  const BuildProfileImage(this.profilePhotoFile, {super.key});
+  const BuildProfileImage(this.profilePhotoFile, {super.key, this.width = double.infinity, required this.height});
 
   @override
   BuildProfileImageState createState() => BuildProfileImageState();
@@ -26,17 +27,26 @@ class BuildProfileImageState extends State<BuildProfileImage> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: DeckColors.backgroundColor, width: 3.0),
-        shape: BoxShape.circle,
+        border: Border.all(color: DeckColors.primaryColor, width: 3.0),
+          borderRadius: BorderRadius.circular(20),
       ),
-      child: CircleAvatar(
-        backgroundColor: DeckColors.white,
-        backgroundImage: widget.profilePhotoFile?.image,
-        radius: 70,
-        child: widget.profilePhotoFile?.image == null
-            ? const Icon(DeckIcons.account,
-            size: 70, color: DeckColors.backgroundColor)
-            : null,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: Container(
+          width: widget.width,
+          height: widget.height,
+          color: DeckColors.white,
+        // backgroundImage: widget.profilePhotoFile?.image,
+        child: widget.profilePhotoFile?.image != null
+        ? Image(
+          image: widget.profilePhotoFile!.image,
+          fit: BoxFit.cover,
+        )
+          : const Icon(
+            DeckIcons.account,
+            size: 70, color:
+            DeckColors.backgroundColor)
+      ),
       ),
     );
   }

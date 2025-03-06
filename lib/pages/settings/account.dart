@@ -1,11 +1,16 @@
 import 'package:deck/backend/auth/auth_service.dart';
 import 'package:deck/backend/auth/auth_utils.dart';
+import 'package:deck/pages/auth/privacy_policy.dart';
 import 'package:deck/pages/auth/signup.dart';
+import 'package:deck/pages/auth/terms_of_use.dart';
 import 'package:deck/pages/settings/change_password.dart';
 import 'package:deck/pages/settings/edit_profile.dart';
 import 'package:deck/pages/settings/recently_deleted.dart';
 import 'package:deck/pages/settings/settings.dart';
+import 'package:deck/pages/settings/support%20and%20policies/report_a_problem.dart';
+import 'package:deck/pages/settings/support%20and%20policies/suggest_improvement.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 // import 'package:google_fonts/google_fonts.dart';
 import 'package:deck/pages/misc/colors.dart';
@@ -101,6 +106,7 @@ class AccountPageState extends State<AccountPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+
               /*Stack(
                 clipBehavior: Clip.none,
                 alignment: Alignment.centerLeft,
@@ -138,71 +144,91 @@ class AccountPageState extends State<AccountPage> {
                   Positioned(
                     top: 150,
                     child: */
-              Padding(
-                padding: const EdgeInsets.only(top: 50),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+             Padding(
+                padding: const EdgeInsets.only(top: 30),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Center(
-                      child: BuildProfileImage(AuthUtils().getPhoto()),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 5, left: 8.0),
-                      child: Text(
-                        AuthUtils().getDisplayName() ?? "Guest",
-                        style: const TextStyle(
-                          fontFamily: 'Fraiche',
-                          fontSize: 24,
-                          fontWeight: FontWeight.w900,
-                          color: DeckColors.primaryColor,
-                        ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15.0, right: 8.0),
+                        child: BuildProfileImage(AuthUtils().getPhoto(),
+                          width: 170,
+                          height: 170,),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 8.0),
-                      child: Text(
-                        AuthUtils().getEmail() ?? "guest@guest.com",
-                        style: const TextStyle(
-                          fontFamily: 'Nunito-Regular',
-                          fontSize: 16,
-                          color: DeckColors.white,
-                        ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8.0, right: 15.0,),
+                            child: Text(
+                              overflow: TextOverflow.visible,
+                              maxLines: 2,
+                              AuthUtils().getDisplayName() ?? "Guest",
+                              style: const TextStyle(
+                                fontFamily: 'Fraiche',
+                                fontSize: 24,
+                                fontWeight: FontWeight.w900,
+                                color: DeckColors.primaryColor,
+                                height: 1,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Text(
+                              overflow: TextOverflow.visible,
+                              maxLines: 2,
+                              AuthUtils().getEmail() ?? "guest@guest.com",
+                              style: const TextStyle(
+                                fontFamily: 'Nunito-Bold',
+                                fontSize: 16,
+                                color: DeckColors.primaryColor,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 12, right: 7.0),
+                            child: BuildButton(
+                              onPressed: () async {
+                                final result = await Navigator.of(context).push(
+                                  RouteGenerator.createRoute(const EditProfile()),
+                                );
+                                if (result != null && result['updated'] == true) {
+                                  _updateAccountPage();
+                                  Provider.of<ProfileProvider>(context, listen: false)
+                                      .addListener(_updateAccountPage);
+                                  setState(() {
+                                    coverUrl = result['file'];
+                                  });
+                                }
+                              },
+                              buttonText: 'edit profile',
+                              height: 40,
+                              width: 140,
+                              backgroundColor: DeckColors.primaryColor,
+                              textColor: DeckColors.white,
+                              radius: 20.0,
+                              fontSize: 16,
+                              borderWidth: 0,
+                              borderColor: Colors.transparent,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(top: 12, right: 7.0),
-                child: Center(
-                  child: BuildButton(
-                    onPressed: () async {
-                      final result = await Navigator.of(context).push(
-                        RouteGenerator.createRoute(const EditProfile()),
-                      );
-                      if (result != null && result['updated'] == true) {
-                        _updateAccountPage();
-                        Provider.of<ProfileProvider>(context, listen: false)
-                            .addListener(_updateAccountPage);
-                        setState(() {
-                          coverUrl = result['file'];
-                        });
-                      }
-                    },
-                    buttonText: 'edit profile',
-                    height: 40,
-                    width: 140,
-                    backgroundColor: DeckColors.white,
-                    textColor: DeckColors.backgroundColor,
-                    radius: 20.0,
-                    fontSize: 16,
-                    borderWidth: 0,
-                    borderColor: Colors.transparent,
-                  ),
+              const Padding(
+                padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 25.0),
+                child: Divider(
+                  height: 1,
+                  color: DeckColors.primaryColor,
                 ),
               ),
-              Padding(
-                  padding: const EdgeInsets.only(top: 50, left: 15, right: 15),
+              /*Padding(
+                  padding: const EdgeInsets.only(top: 20, left: 15, right: 15),
                   child: !AuthService()
                           .getCurrentUser()!
                           .providerData[0]
@@ -227,17 +253,18 @@ class AccountPageState extends State<AccountPage> {
                             );
                           },
                         )
-                      : const SizedBox()),
+                      : const SizedBox()),*/
+              ///RECENTLY DELETED
               Padding(
-                padding: const EdgeInsets.only(top: 8, left: 15, right: 15),
+                padding: const EdgeInsets.only(top: 20, left: 15, right: 15),
                 child: BuildSettingsContainer(
                   selectedIcon: DeckIcons.trash_bin,
-                  nameOfTheContainer: 'Recently Deleted',
+                  nameOfTheContainer: 'Recently Deleted Deck',
                   showArrow: true,
                   showSwitch: false,
-                  containerColor: DeckColors.accentColor, // Container Color
+                  containerColor: DeckColors.white, // Container Color
                   selectedColor: DeckColors.primaryColor, // Left Icon Color
-                  textColor: Colors.white, // Text Color
+                  textColor: DeckColors.primaryColor, // Text Color
                   toggledColor:
                       DeckColors.accentColor, // Left Icon Color when Toggled
                   onTap: () {
@@ -247,16 +274,122 @@ class AccountPageState extends State<AccountPage> {
                   },
                 ),
               ),
+              const Padding(
+                padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 25.0),
+                child: Divider(
+                  thickness: 1,
+                  color: DeckColors.primaryColor,
+                ),
+              ),
+              ///----- E N D -----
+
+              ///SUGGEST IMPROVEMENT
+              Padding(
+                padding: const EdgeInsets.only(top: 20, left: 15, right: 15),
+                child: BuildSettingsContainer(
+                  selectedIcon: Icons.self_improvement_rounded,
+                  nameOfTheContainer: 'Suggest Improvement',
+                  showArrow: true,
+                  showSwitch: false,
+                  containerColor: DeckColors.white, // Container Color
+                  selectedColor: DeckColors.primaryColor, // Left Icon Color
+                  textColor: DeckColors.primaryColor, // Text Color
+                  toggledColor:
+                  DeckColors.accentColor, // Left Icon Color when Toggled
+                  onTap: () {
+                    Navigator.of(context).push(
+                      RouteGenerator.createRoute(const SuggestImprovement()),
+                    );
+                  },
+                ),
+              ),
+              ///----- E N D -----
+
+              ///REPORT A PROBLEM
               Padding(
                 padding: const EdgeInsets.only(top: 8, left: 15, right: 15),
+                child: BuildSettingsContainer(
+                  selectedIcon: Icons.report_rounded,
+                  nameOfTheContainer: 'Report a Problem',
+                  showArrow: true,
+                  showSwitch: false,
+                  containerColor: DeckColors.white, // Container Color
+                  selectedColor: DeckColors.primaryColor, // Left Icon Color
+                  textColor: DeckColors.primaryColor, // Text Color
+                  toggledColor:
+                  DeckColors.accentColor, // Left Icon Color when Toggled
+                  onTap: () {
+                    Navigator.of(context).push(
+                      RouteGenerator.createRoute(const ReportAProblem()),
+                    );
+                  },
+                ),
+              ),
+              ///----- E N D -----
+
+              ///TERMS OF USE
+              Padding(
+                padding: const EdgeInsets.only(top: 8, left: 15, right: 15),
+                child: BuildSettingsContainer(
+                  selectedIcon: Icons.note_alt_rounded,
+                  nameOfTheContainer: 'Terms of Use',
+                  showArrow: true,
+                  showSwitch: false,
+                  containerColor: DeckColors.white, // Container Color
+                  selectedColor: DeckColors.primaryColor, // Left Icon Color
+                  textColor: DeckColors.primaryColor, // Text Color
+                  toggledColor:
+                  DeckColors.accentColor, // Left Icon Color when Toggled
+                  onTap: () {
+                    Navigator.of(context).push(
+                      RouteGenerator.createRoute(const TermsOfUsePage()),
+                    );
+                  },
+                ),
+              ),
+              ///----- E N D -----
+
+              ///PRIVACY POLICY
+              Padding(
+                padding: const EdgeInsets.only(top: 8, left: 15, right: 15),
+                child: BuildSettingsContainer(
+                  selectedIcon: Icons.privacy_tip_rounded,
+                  nameOfTheContainer: 'Privacy Policy',
+                  showArrow: true,
+                  showSwitch: false,
+                  containerColor: DeckColors.white, // Container Color
+                  selectedColor: DeckColors.primaryColor, // Left Icon Color
+                  textColor: DeckColors.primaryColor, // Text Color
+                  toggledColor:
+                  DeckColors.accentColor, // Left Icon Color when Toggled
+                  onTap: () {
+                    Navigator.of(context).push(
+                      RouteGenerator.createRoute(const PrivacyPolicyPage()),
+                    );
+                  },
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 25.0),
+                child: Divider(
+                  thickness: 1,
+                  color: DeckColors.primaryColor,
+                ),
+              ),
+              ///----- E N D -----
+
+              ///LOG OUT
+              Padding(
+                padding: const EdgeInsets.only(top: 20, left: 15, right: 15),
                 child: BuildSettingsContainer(
                   selectedIcon: DeckIcons.logout,
                   nameOfTheContainer: 'Log Out',
                   showArrow: false,
                   showSwitch: false,
-                  containerColor: DeckColors.accentColor, // Container Color
-                  selectedColor: DeckColors.primaryColor, // Left Icon Color
-                  textColor: Colors.white, // Text Color
+                  containerColor: DeckColors.primaryColor, // Container Color
+                  selectedColor: DeckColors.white, // Left Icon Color
+                  iconColor: DeckColors.white,
+                  textColor: DeckColors.white, // Text Color
                   toggledColor:
                       DeckColors.accentColor, // Left Icon Color when Toggled
                   onTap: () async {
@@ -284,6 +417,39 @@ class AccountPageState extends State<AccountPage> {
                   },
                 ),
               ),
+              const Padding(
+                padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 25.0),
+                child: Divider(
+                  thickness: 1,
+                  color: DeckColors.primaryColor,
+                ),
+              ),
+              ///----- E N D -----
+
+              ///DELETE ACCOUNT
+              Padding(
+                padding: const EdgeInsets.only(top: 20, left: 15, right: 15, bottom: 110),
+                child: BuildSettingsContainer(
+                  selectedIcon: Icons.delete_forever_rounded,
+                  nameOfTheContainer: 'Delete Account',
+                  showArrow: false,
+                  showSwitch: false,
+                  containerColor: DeckColors.deckRed, // Container Color
+                  borderColor: DeckColors.deckRed,
+                  selectedColor: DeckColors.primaryColor, // Left Icon Color
+                  textColor: DeckColors.white, // Text Color
+                  iconColor: DeckColors.white, //Color of the icon at the left
+                  iconArrowColor: DeckColors.white, //Color of the arrow icon at the right
+                  toggledColor:
+                  DeckColors.accentColor, // Left Icon Color when Toggled
+                  onTap: () {
+                    Navigator.of(context).push(
+                      RouteGenerator.createRoute(const RecentlyDeletedPage()),
+                    );
+                  },
+                ),
+              ),
+              ///----- E N D -----
             ],
           ),
         ),

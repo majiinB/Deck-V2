@@ -54,7 +54,7 @@ class IfCollectionEmpty extends StatelessWidget {
                 style: const TextStyle(
                   fontFamily: 'Fraiche',
                   fontSize: 30,
-                  color: DeckColors.white,
+                  color: DeckColors.primaryColor,
                   fontWeight: FontWeight.bold,
                 ),
                 textAlign: TextAlign.center,
@@ -65,7 +65,7 @@ class IfCollectionEmpty extends StatelessWidget {
                 style: const TextStyle(
                   fontFamily: 'Nunito-Regular',
                   fontSize: 14,
-                  color: Colors.white54,
+                  color: DeckColors.primaryColor,
                 ),
                 textAlign: TextAlign.center,
               ),
