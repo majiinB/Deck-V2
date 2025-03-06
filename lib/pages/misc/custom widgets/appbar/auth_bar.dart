@@ -30,6 +30,10 @@ class AuthBar extends StatelessWidget implements PreferredSizeWidget {
       padding: const EdgeInsets.symmetric(horizontal: 0),
       child: AppBar(
         automaticallyImplyLeading: automaticallyImplyLeading,
+        iconTheme: const IconThemeData(
+          color: DeckColors.primaryColor,
+        ),
+        backgroundColor: DeckColors.white,
         title: Text(
           title,
           style: TextStyle(

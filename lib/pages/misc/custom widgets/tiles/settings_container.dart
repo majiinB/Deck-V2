@@ -1,3 +1,4 @@
+import 'package:deck/backend/models/deck.dart';
 import 'package:deck/pages/misc/colors.dart';
 import 'package:deck/pages/misc/deck_icons.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -28,6 +29,9 @@ class BuildSettingsContainer extends StatefulWidget {
   final Color selectedColor;
   final Color textColor;
   final Color toggledColor;
+  final Color iconColor;
+  final Color iconArrowColor;
+  final Color borderColor;
   final ValueChanged<bool>? onToggleChanged;
 
   const BuildSettingsContainer({
@@ -44,6 +48,9 @@ class BuildSettingsContainer extends StatefulWidget {
     required this.textColor,
     required this.toggledColor,
     super.key,
+    this.iconArrowColor = DeckColors.primaryColor,
+    this.iconColor = DeckColors.primaryColor,
+    this.borderColor = DeckColors.primaryColor,
   });
 
   @override
@@ -64,7 +71,7 @@ class BuildSettingsContainerState extends State<BuildSettingsContainer> {
   Widget build(BuildContext context) {
     return Material(
       borderRadius: BorderRadius.circular(15.0),
-      color: _isToggled ? widget.toggledColor : widget.containerColor,
+      color: /*_isToggled ? widget.toggledColor : */widget.containerColor,
       child: InkWell(
         borderRadius: BorderRadius.circular(15.0),
         onTap: () {
@@ -76,6 +83,10 @@ class BuildSettingsContainerState extends State<BuildSettingsContainer> {
           padding: const EdgeInsets.all(20.0),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15.0),
+            border: Border.all(
+              color: widget.borderColor,
+              width: 2,
+            )
           ),
           height: 80,
           child: Row(
@@ -88,7 +99,7 @@ class BuildSettingsContainerState extends State<BuildSettingsContainer> {
                         ? (widget.alternateIcon ?? widget.selectedIcon)
                         : widget.selectedIcon,
                     color: _isToggled
-                        ? DeckColors.primaryColor
+                        ? widget.iconColor
                         : widget.selectedColor,
                     size: 30,
                   ),
@@ -123,9 +134,9 @@ class BuildSettingsContainerState extends State<BuildSettingsContainer> {
                   inactiveThumbColor: Colors.white,
                 ),
               if (widget.showArrow)
-                const Icon(
+                 Icon(
                   Icons.arrow_right,
-                  color: Colors.grey,
+                  color: widget.iconArrowColor,
                   size: 32,
                 ),
             ],

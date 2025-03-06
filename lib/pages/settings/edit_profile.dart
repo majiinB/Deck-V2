@@ -22,6 +22,8 @@ import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
 import '../misc/custom widgets/images/profile_image.dart';
 import '../misc/custom widgets/textboxes/textboxes.dart';
 import '../misc/custom widgets/tiles/bottom_sheet.dart';
+import '../misc/custom widgets/tiles/settings_container.dart';
+import 'change_password.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile({super.key});
@@ -177,8 +179,8 @@ class EditProfileState extends State<EditProfile> {
       backgroundColor: DeckColors.backgroundColor,
       appBar: const AuthBar(
         automaticallyImplyLeading: true,
-        title: 'Edit Account Information',
-        color: DeckColors.white,
+        title: 'Manage Account',
+        color: DeckColors.primaryColor,
         fontSize: 24,
       ),
       body: _isLoading
@@ -197,8 +199,8 @@ class EditProfileState extends State<EditProfile> {
                       //   left: 10,
                       Center(
                         child: Padding(
-                          padding: const EdgeInsets.only(top: 40),
-                          child: BuildProfileImage(photoUrl),
+                          padding: const EdgeInsets.only(top: 40, left: 15, right: 15),
+                          child: BuildProfileImage(photoUrl, height: 200,),
                         ),
                       ),
                       // ),
@@ -265,10 +267,10 @@ class EditProfileState extends State<EditProfile> {
                   ),
                 ),*/
                       Positioned(
-                        top: 160,
+                        top: 190,
                         left: 110,
                         child: Padding(
-                            padding: const EdgeInsets.only(left: 100),
+                            padding: const EdgeInsets.only(left: 230),
                             child: BuildIconButton(
                               containerWidth: 40,
                               containerHeight: 40,
@@ -335,9 +337,9 @@ class EditProfileState extends State<EditProfile> {
                                 );
                               },
                               icon: DeckIcons.pencil,
-                              iconColor: DeckColors.white,
-                              backgroundColor: DeckColors.accentColor,
-                              borderColor: DeckColors.backgroundColor,
+                              iconColor: DeckColors.primaryColor,
+                              backgroundColor: DeckColors.white,
+                              borderColor: DeckColors.primaryColor,
                               borderWidth: 3.0,
                             )),
                       ),
@@ -345,11 +347,11 @@ class EditProfileState extends State<EditProfile> {
                   ),
                   const Padding(
                     padding:
-                        EdgeInsets.only(top: 60.0, left: 15, right: 15),
+                        EdgeInsets.only(top: 40.0, left: 15, right: 15),
                     child: Text(
                       'First Name',
                       style: TextStyle(
-                        fontFamily: 'Nunito-Bold',
+                        fontFamily: 'Nunito-ExtraBold',
                         color: DeckColors.primaryColor,
                         fontSize: 16,
                       ),
@@ -370,7 +372,7 @@ class EditProfileState extends State<EditProfile> {
                     child: Text(
                       'Last Name',
                       style: TextStyle(
-                        fontFamily: 'Nunito-Bold',
+                        fontFamily: 'Nunito-ExtraBold',
                         color: DeckColors.primaryColor,
                         fontSize: 16,
                       ),
@@ -394,7 +396,7 @@ class EditProfileState extends State<EditProfile> {
                         .providerId
                         .contains('google.com')
                         ?  const Text( 'Email', style: TextStyle(
-                        fontFamily: 'Nunito-Bold',
+                        fontFamily: 'Nunito-ExtraBold',
                         color: DeckColors.primaryColor,
                         fontSize: 16,
                       )
@@ -413,6 +415,45 @@ class EditProfileState extends State<EditProfile> {
                               hintText: "Email",
                               controller: emailController,
                             )
+                          : const SizedBox()),
+                  const Padding(
+                    padding:
+                    EdgeInsets.only(top: 20.0, left: 15, right: 15),
+                    child: Text(
+                      'Change Password',
+                      style: TextStyle(
+                        fontFamily: 'Nunito-ExtraBold',
+                        color: DeckColors.primaryColor,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                      padding: const EdgeInsets.only(top: 10, left: 15, right: 15),
+                      child: !AuthService()
+                          .getCurrentUser()!
+                          .providerData[0]
+                          .providerId
+                          .contains('google.com')
+                          ? BuildSettingsContainer(
+                        selectedIcon: DeckIcons.lock,
+                        nameOfTheContainer: 'Change Password',
+                        showArrow: true,
+                        showSwitch: false,
+                        containerColor: DeckColors.primaryColor, // Container Color
+                        selectedColor: DeckColors.primaryColor, // Left Icon Color
+                        textColor: Colors.white, // Text Color
+                        iconColor: DeckColors.white,
+                        iconArrowColor: DeckColors.white,
+                        toggledColor: DeckColors
+                            .accentColor, // Left Icon Color when Toggled
+                        onTap: () {
+                          Navigator.of(context).push(
+                            RouteGenerator.createRoute(
+                                const ChangePasswordPage()),
+                          );
+                        },
+                      )
                           : const SizedBox()),
                   Padding(
                     padding:
@@ -443,7 +484,7 @@ class EditProfileState extends State<EditProfile> {
                         );
                       },
                       buttonText: 'Save Changes',
-                      height: 50.0,
+                      height: 65.0,
                       width: MediaQuery.of(context).size.width,
                       backgroundColor: DeckColors.primaryColor,
                       textColor: DeckColors.white,
@@ -453,7 +494,7 @@ class EditProfileState extends State<EditProfile> {
                       borderColor: Colors.transparent,
                     ),
                   ),
-                  Padding(
+                  /*Padding(
                     padding:
                         const EdgeInsets.only(top: 10, left: 15, right: 15),
                     child: BuildButton(
@@ -472,7 +513,7 @@ class EditProfileState extends State<EditProfile> {
                       borderWidth: 0,
                       borderColor: Colors.transparent,
                     ),
-                  ),
+                  ),*/
                 ],
               ),
             ),

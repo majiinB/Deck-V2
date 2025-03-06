@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
 class DeckColors {
-  static const Color primaryColor = Color(0xFF28DF99);
-  static const Color backgroundColor = Color(0xFF161A1B);
+  static const Color primaryColor = Color(0xFF12454C);
+  static const Color backgroundColor = Color(0xFFDEDEDE);
   static const Color accentColor = Color(0xFF2F3738);
   static const Color grayPopup = Color(0xFF272A2A);
   static const Color grayTask = Color(0xFF2F3738);
   static const Color gray = Color.fromARGB(255, 30, 30, 30);
   static const Color green = Color(0xFF123524);
-  static const Color white = Color(0xFFF3F3F3);
+  static const Color white = Color(0xFFFFFFFF);
   static const Color coverImageColorSettings = Color(0xFF4C4C4C);
   static const Color deckRed = Color(0xFFE54F3A);
   static const Color deckYellow = Color(0xFFFCAA2F);

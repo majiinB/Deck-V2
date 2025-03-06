@@ -52,8 +52,8 @@ class BuildTextBoxState extends State<BuildTextBox> {
       controller: widget.controller,
       initialValue: widget.initialValue,
       style: const TextStyle(
-        fontFamily: 'Nunito-Regular',
-        color: Colors.white,
+        fontFamily: 'Nunito-Bold',
+        color: DeckColors.primaryColor,
         fontSize: 16,
       ),
       maxLines: widget.isMultiLine ? null : 1,
@@ -62,7 +62,7 @@ class BuildTextBoxState extends State<BuildTextBox> {
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10.0),
           borderSide: const BorderSide(
-            color: Colors.white,
+            color: DeckColors.primaryColor,
             width: 2.0,
           ),
         ),
@@ -78,10 +78,10 @@ class BuildTextBoxState extends State<BuildTextBox> {
           fontFamily: 'Nunito-Regular',
           fontSize: 16,
           fontStyle: FontStyle.italic,
-          color: Colors.white,
+          color: DeckColors.primaryColor,
         ),
         filled: true,
-        fillColor: DeckColors.grayTask,
+        fillColor: DeckColors.white,
         contentPadding:
         const EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
         prefixIcon: widget.leftIcon != null
