@@ -110,16 +110,16 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 25.0),
+                    padding: const EdgeInsets.only(top: 30.0),
                     child: Container(
                       width: double.infinity,
-                      height: 1,
+                      height: 2,
                       color: DeckColors.primaryColor,
                     ),
                   ),
                   Padding(
                     padding:
-                        const EdgeInsets.only(top: 30),
+                        const EdgeInsets.only(top: 40),
                     child: BuildButton(
                       onPressed: () {
                         // ignore: avoid_print
