@@ -175,356 +175,401 @@ class EditProfileState extends State<EditProfile> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: DeckColors.backgroundColor,
-      appBar: const AuthBar(
-        automaticallyImplyLeading: true,
-        title: 'Manage Account',
-        color: DeckColors.primaryColor,
-        fontSize: 24,
-      ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              padding: const EdgeInsets.only(bottom: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      // BuildCoverImage(borderRadiusContainer: 0, borderRadiusImage: 0, coverPhotoFile: coverUrl,),
-                      // Positioned(
-                      //   top: 150,
-                      //   left: 10,
-                      Center(
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 40, left: 15, right: 15),
-                          child: BuildProfileImage(photoUrl, height: 200,),
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (bool didpop) async {
+        if (didpop) {
+          return;
+        }
+        final shouldPop = await showDialog<bool>(
+          context: context,
+          builder: (BuildContext context) {
+            return ShowConfirmationDialog(
+                title: 'Are you sure you want to go back?',
+                text: 'If you go back now, all unsaved progress will be lost. ',
+                onConfirm: () {
+                  Navigator.of(context).pop();
+                },
+                onCancel: () {
+            },
+            /*AlertDialog(
+              title: Text('Are you sure you want to exit?'),
+              content: Text('Doing so will lose all your progress'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(true);  // Confirm action
+                  },
+                  child: Text('Confirm'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(false);  // Cancel action
+                  },
+                  child: Text('Cancel'),
+                ),
+              ],
+            );*/
+        );
+      },
+    );
+
+        // Check the result of the dialog and decide whether to pop or not
+        if (shouldPop != null && shouldPop) {
+          Navigator.of(context).pop(true); // Allow exit
+        }
+      },
+      child: Scaffold(
+        backgroundColor: DeckColors.backgroundColor,
+        appBar: const AuthBar(
+          automaticallyImplyLeading: true,
+          title: 'Manage Account',
+          color: DeckColors.primaryColor,
+          fontSize: 24,
+        ),
+        body: _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : SingleChildScrollView(
+                padding: const EdgeInsets.only(bottom: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        // BuildCoverImage(borderRadiusContainer: 0, borderRadiusImage: 0, coverPhotoFile: coverUrl,),
+                        // Positioned(
+                        //   top: 150,
+                        //   left: 10,
+                        Center(
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 40, left: 15, right: 15),
+                            child: BuildProfileImage(photoUrl, height: 200,),
+                          ),
+                        ),
+                        // ),
+                        /* Positioned(
+                    top: 140,
+                    right: 10,
+                    child: BuildIconButton(
+                      containerWidth: 40,
+                      containerHeight: 40,
+                      onPressed: () {
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return ClipRRect(
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(30.0),
+                                topRight: Radius.circular(30.0),
+                              ),
+                              child: Container(
+                                height: 200,
+                                width: MediaQuery.of(context).size.width,
+                                color: DeckColors.gray,
+                                child: Column(children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 10),
+                                    child: BuildContentOfBottomSheet(
+                                      bottomSheetButtonText: 'Upload Cover Photo',
+                                      bottomSheetButtonIcon: Icons.image,
+                                      onPressed: () async {
+                                        ImagePicker imagePicker = ImagePicker();
+                                        XFile? file = await imagePicker.pickImage(source: ImageSource.gallery);
+                                        if(file == null) return;
+                                        setState(() {
+                                          coverUrl = Image.file(File(file!.path));
+                                          coverFile = file;
+                                          print(coverUrl);
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 10),
+                                    child: BuildContentOfBottomSheet(
+                                      bottomSheetButtonText: 'Remove Cover Photo',
+                                      bottomSheetButtonIcon: Icons.remove_circle,
+                                      onPressed: () {
+                                        setState(() {
+                                          coverUrl = Image.asset('assets/images/Deck-Logo.png');
+                                          coverFile = null;
+                                          print(coverUrl);
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                ]),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      icon: DeckIcons.pencil,
+                      iconColor: DeckColors.white,
+                      backgroundColor: DeckColors.accentColor,
+                    ),
+                  ),*/
+                        Positioned(
+                          top: 190,
+                          right: 25,
+                          child: Padding(
+                              padding: const EdgeInsets.only(left: 0),
+                              child: BuildIconButton(
+                                containerWidth: 40,
+                                containerHeight: 40,
+                                onPressed: () {
+                                  showModalBottomSheet(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return ClipRRect(
+                                        borderRadius: const BorderRadius.only(
+                                          topLeft: Radius.circular(30.0),
+                                          topRight: Radius.circular(30.0),
+                                        ),
+                                        child: Container(
+                                          height: 200,
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          color: DeckColors.gray,
+                                          child: Column(children: [
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.only(top: 10),
+                                              child: BuildContentOfBottomSheet(
+                                                bottomSheetButtonText:
+                                                    'Upload Profile Photo',
+                                                bottomSheetButtonIcon:
+                                                    Icons.image,
+                                                onPressed: () async {
+                                                  ImagePicker imagePicker =
+                                                      ImagePicker();
+                                                  XFile? file =
+                                                      await imagePicker.pickImage(
+                                                          source: ImageSource
+                                                              .gallery);
+                                                  if (file == null) return;
+                                                  setState(() {
+                                                    photoUrl = Image.file(
+                                                        File(file!.path));
+                                                    pfpFile = file;
+                                                  });
+                                                },
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.only(top: 10),
+                                              child: BuildContentOfBottomSheet(
+                                                bottomSheetButtonText:
+                                                    'Remove Profile Photo',
+                                                bottomSheetButtonIcon:
+                                                    Icons.remove_circle,
+                                                onPressed: () {
+                                                  setState(() {
+                                                    photoUrl = null;
+                                                    pfpFile = null;
+                                                    print(photoUrl);
+                                                  });
+                                                },
+                                              ),
+                                            ),
+                                          ]),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                                icon: DeckIcons.pencil,
+                                iconColor: DeckColors.primaryColor,
+                                backgroundColor: DeckColors.white,
+                                borderColor: DeckColors.primaryColor,
+                                borderWidth: 3.0,
+                              )),
+                        ),
+                      ],
+                    ),
+                    const Padding(
+                      padding:
+                          EdgeInsets.only(top: 40.0, left: 15, right: 15),
+                      child: Text(
+                        'First Name',
+                        style: TextStyle(
+                          fontFamily: 'Nunito-ExtraBold',
+                          color: DeckColors.primaryColor,
+                          fontSize: 16,
                         ),
                       ),
-                      // ),
-                      /* Positioned(
-                  top: 140,
-                  right: 10,
-                  child: BuildIconButton(
-                    containerWidth: 40,
-                    containerHeight: 40,
-                    onPressed: () {
-                      showModalBottomSheet(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return ClipRRect(
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(30.0),
-                              topRight: Radius.circular(30.0),
-                            ),
-                            child: Container(
-                              height: 200,
-                              width: MediaQuery.of(context).size.width,
-                              color: DeckColors.gray,
-                              child: Column(children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 10),
-                                  child: BuildContentOfBottomSheet(
-                                    bottomSheetButtonText: 'Upload Cover Photo',
-                                    bottomSheetButtonIcon: Icons.image,
-                                    onPressed: () async {
-                                      ImagePicker imagePicker = ImagePicker();
-                                      XFile? file = await imagePicker.pickImage(source: ImageSource.gallery);
-                                      if(file == null) return;
-                                      setState(() {
-                                        coverUrl = Image.file(File(file!.path));
-                                        coverFile = file;
-                                        print(coverUrl);
-                                      });
-                                    },
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 10),
-                                  child: BuildContentOfBottomSheet(
-                                    bottomSheetButtonText: 'Remove Cover Photo',
-                                    bottomSheetButtonIcon: Icons.remove_circle,
-                                    onPressed: () {
-                                      setState(() {
-                                        coverUrl = Image.asset('assets/images/Deck-Logo.png');
-                                        coverFile = null;
-                                        print(coverUrl);
-                                      });
-                                    },
-                                  ),
-                                ),
-                              ]),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                    icon: DeckIcons.pencil,
-                    iconColor: DeckColors.white,
-                    backgroundColor: DeckColors.accentColor,
-                  ),
-                ),*/
-                      Positioned(
-                        top: 190,
-                        right: 25,
-                        child: Padding(
-                            padding: const EdgeInsets.only(left: 0),
-                            child: BuildIconButton(
-                              containerWidth: 40,
-                              containerHeight: 40,
-                              onPressed: () {
-                                showModalBottomSheet(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return ClipRRect(
-                                      borderRadius: const BorderRadius.only(
-                                        topLeft: Radius.circular(30.0),
-                                        topRight: Radius.circular(30.0),
-                                      ),
-                                      child: Container(
-                                        height: 200,
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        color: DeckColors.gray,
-                                        child: Column(children: [
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(top: 10),
-                                            child: BuildContentOfBottomSheet(
-                                              bottomSheetButtonText:
-                                                  'Upload Profile Photo',
-                                              bottomSheetButtonIcon:
-                                                  Icons.image,
-                                              onPressed: () async {
-                                                ImagePicker imagePicker =
-                                                    ImagePicker();
-                                                XFile? file =
-                                                    await imagePicker.pickImage(
-                                                        source: ImageSource
-                                                            .gallery);
-                                                if (file == null) return;
-                                                setState(() {
-                                                  photoUrl = Image.file(
-                                                      File(file!.path));
-                                                  pfpFile = file;
-                                                });
-                                              },
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(top: 10),
-                                            child: BuildContentOfBottomSheet(
-                                              bottomSheetButtonText:
-                                                  'Remove Profile Photo',
-                                              bottomSheetButtonIcon:
-                                                  Icons.remove_circle,
-                                              onPressed: () {
-                                                setState(() {
-                                                  photoUrl = null;
-                                                  pfpFile = null;
-                                                  print(photoUrl);
-                                                });
-                                              },
-                                            ),
-                                          ),
-                                        ]),
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
-                              icon: DeckIcons.pencil,
-                              iconColor: DeckColors.primaryColor,
-                              backgroundColor: DeckColors.white,
-                              borderColor: DeckColors.primaryColor,
-                              borderWidth: 3.0,
-                            )),
-                      ),
-                    ],
-                  ),
-                  const Padding(
-                    padding:
-                        EdgeInsets.only(top: 40.0, left: 15, right: 15),
-                    child: Text(
-                      'First Name',
-                      style: TextStyle(
-                        fontFamily: 'Nunito-ExtraBold',
-                        color: DeckColors.primaryColor,
-                        fontSize: 16,
-                      ),
                     ),
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(top: 10, left: 15, right: 15),
-                    child: BuildTextBox(
-                      showPassword: false,
-                      hintText: "First Name",
-                      controller: firstNameController,
-                    ),
-                  ),
-                  const Padding(
-                    padding:
-                        EdgeInsets.only(top: 10.0, left: 15, right: 15),
-                    child: Text(
-                      'Last Name',
-                      style: TextStyle(
-                        fontFamily: 'Nunito-ExtraBold',
-                        color: DeckColors.primaryColor,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(top: 10, left: 15, right: 15),
-                    child: BuildTextBox(
-                      showPassword: false,
-                      hintText: "Last Name",
-                      controller: lastNameController,
-                    ),
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(top: 10.0, left: 15, right: 15),
-                    child:!AuthService()
-                        .getCurrentUser()!
-                        .providerData[0]
-                        .providerId
-                        .contains('google.com')
-                        ?  const Text( 'Email', style: TextStyle(
-                        fontFamily: 'Nunito-ExtraBold',
-                        color: DeckColors.primaryColor,
-                        fontSize: 16,
-                      )
-                    )
-                        : const SizedBox()),
-                  Padding(
+                    Padding(
                       padding:
                           const EdgeInsets.only(top: 10, left: 15, right: 15),
-                      child: !AuthService()
-                              .getCurrentUser()!
-                              .providerData[0]
-                              .providerId
-                              .contains('google.com')
-                          ? BuildTextBox(
-                              showPassword: false,
-                              hintText: "Email",
-                              controller: emailController,
-                            )
-                          : const SizedBox()),
-                  const Padding(
-                    padding:
-                    EdgeInsets.only(top: 20.0, left: 15, right: 15),
-                    child: Text(
-                      'Change Password',
-                      style: TextStyle(
-                        fontFamily: 'Nunito-ExtraBold',
-                        color: DeckColors.primaryColor,
-                        fontSize: 16,
+                      child: BuildTextBox(
+                        showPassword: false,
+                        hintText: "First Name",
+                        controller: firstNameController,
                       ),
                     ),
-                  ),
-                  Padding(
-                      padding: const EdgeInsets.only(top: 10, left: 15, right: 15),
-                      child: !AuthService()
+                    const Padding(
+                      padding:
+                          EdgeInsets.only(top: 10.0, left: 15, right: 15),
+                      child: Text(
+                        'Last Name',
+                        style: TextStyle(
+                          fontFamily: 'Nunito-ExtraBold',
+                          color: DeckColors.primaryColor,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(top: 10, left: 15, right: 15),
+                      child: BuildTextBox(
+                        showPassword: false,
+                        hintText: "Last Name",
+                        controller: lastNameController,
+                      ),
+                    ),
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(top: 10.0, left: 15, right: 15),
+                      child:!AuthService()
                           .getCurrentUser()!
                           .providerData[0]
                           .providerId
                           .contains('google.com')
-                          ? BuildSettingsContainer(
-                        selectedIcon: DeckIcons.lock,
-                        nameOfTheContainer: 'Change Password',
-                        showArrow: true,
-                        showSwitch: false,
-                        containerColor: DeckColors.primaryColor, // Container Color
-                        selectedColor: DeckColors.primaryColor, // Left Icon Color
-                        textColor: Colors.white, // Text Color
-                        iconColor: DeckColors.white,
-                        iconArrowColor: DeckColors.white,
-                        toggledColor: DeckColors
-                            .accentColor, // Left Icon Color when Toggled
-                        onTap: () {
-                          Navigator.of(context).push(
-                            RouteGenerator.createRoute(
-                                const ChangePasswordPage()),
-                          );
-                        },
+                          ?  const Text( 'Email', style: TextStyle(
+                          fontFamily: 'Nunito-ExtraBold',
+                          color: DeckColors.primaryColor,
+                          fontSize: 16,
+                        )
                       )
                           : const SizedBox()),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 25.0),
-                      child: Container(
-                        width: double.infinity,
-                        height: 1,
-                        color: DeckColors.primaryColor,
+                    Padding(
+                        padding:
+                            const EdgeInsets.only(top: 10, left: 15, right: 15),
+                        child: !AuthService()
+                                .getCurrentUser()!
+                                .providerData[0]
+                                .providerId
+                                .contains('google.com')
+                            ? BuildTextBox(
+                                showPassword: false,
+                                hintText: "Email",
+                                controller: emailController,
+                              )
+                            : const SizedBox()),
+                    const Padding(
+                      padding:
+                      EdgeInsets.only(top: 20.0, left: 15, right: 15),
+                      child: Text(
+                        'Change Password',
+                        style: TextStyle(
+                          fontFamily: 'Nunito-ExtraBold',
+                          color: DeckColors.primaryColor,
+                          fontSize: 16,
+                        ),
                       ),
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(top: 30, left: 15, right: 15),
-                    child: BuildButton(
-                      onPressed: () {
-                        print(
-                            "save button clicked"); //line to test if working ung onPressedLogic XD
-                        showConfirmationDialog(
-                          context,
-                          "Save Account Information",
-                          "Are you sure you want to change your account information?",
-                          () async {
-                            try {
-                              setState(() => _isLoading = true);
-                              await updateAccountInformation(context);
-                            } catch (e) {
-                              print(e);
-                              setState(() => _isLoading = false);
-                              showInformationDialog(context,
-                                  "Error changing information", e.toString());
-                            }
-                          },
-                          () {
-                            //when user clicks no
-                            //add logic here
-                          },
-                        );
-                      },
-                      buttonText: 'Save Changes',
-                      height: 65.0,
-                      width: MediaQuery.of(context).size.width,
-                      backgroundColor: DeckColors.primaryColor,
-                      textColor: DeckColors.white,
-                      radius: 10.0,
-                      fontSize: 16,
-                      borderWidth: 0,
-                      borderColor: Colors.transparent,
                     ),
-                  ),
-                  /*Padding(
-                    padding:
-                        const EdgeInsets.only(top: 10, left: 15, right: 15),
-                    child: BuildButton(
-                      onPressed: () {
-                        print(
-                            "cancel button clicked"); //line to test if working ung onPressedLogic XD
-                        Navigator.pop(context);
-                      },
-                      buttonText: 'Cancel',
-                      height: 50.0,
-                      width: MediaQuery.of(context).size.width,
-                      backgroundColor: DeckColors.white,
-                      textColor: DeckColors.primaryColor,
-                      radius: 10.0,
-                      fontSize: 16,
-                      borderWidth: 0,
-                      borderColor: Colors.transparent,
+                    Padding(
+                        padding: const EdgeInsets.only(top: 10, left: 15, right: 15),
+                        child: !AuthService()
+                            .getCurrentUser()!
+                            .providerData[0]
+                            .providerId
+                            .contains('google.com')
+                            ? BuildSettingsContainer(
+                          selectedIcon: DeckIcons.lock,
+                          nameOfTheContainer: 'Change Password',
+                          showArrow: true,
+                          showSwitch: false,
+                          containerColor: DeckColors.primaryColor, // Container Color
+                          selectedColor: DeckColors.primaryColor, // Left Icon Color
+                          textColor: Colors.white, // Text Color
+                          iconColor: DeckColors.white,
+                          iconArrowColor: DeckColors.white,
+                          toggledColor: DeckColors
+                              .accentColor, // Left Icon Color when Toggled
+                          onTap: () {
+                            Navigator.of(context).push(
+                              RouteGenerator.createRoute(
+                                  const ChangePasswordPage()),
+                            );
+                          },
+                        )
+                            : const SizedBox()),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 25.0),
+                        child: Container(
+                          width: double.infinity,
+                          height: 1,
+                          color: DeckColors.primaryColor,
+                        ),
                     ),
-                  ),*/
-                ],
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(top: 30, left: 15, right: 15),
+                      child: BuildButton(
+                        onPressed: () {
+                          print(
+                              "save button clicked"); //line to test if working ung onPressedLogic XD
+                          showConfirmationDialog(
+                            context,
+                            "Save Account Information",
+                            "Are you sure you want to change your account information?",
+                            () async {
+                              try {
+                                setState(() => _isLoading = true);
+                                await updateAccountInformation(context);
+                              } catch (e) {
+                                print(e);
+                                setState(() => _isLoading = false);
+                                showInformationDialog(context,
+                                    "Error changing information", e.toString());
+                              }
+                            },
+                            () {
+                              //when user clicks no
+                              //add logic here
+                            },
+                          );
+                        },
+                        buttonText: 'Save Changes',
+                        height: 65.0,
+                        width: MediaQuery.of(context).size.width,
+                        backgroundColor: DeckColors.primaryColor,
+                        textColor: DeckColors.white,
+                        radius: 10.0,
+                        fontSize: 16,
+                        borderWidth: 0,
+                        borderColor: Colors.transparent,
+                      ),
+                    ),
+                    /*Padding(
+                      padding:
+                          const EdgeInsets.only(top: 10, left: 15, right: 15),
+                      child: BuildButton(
+                        onPressed: () {
+                          print(
+                              "cancel button clicked"); //line to test if working ung onPressedLogic XD
+                          Navigator.pop(context);
+                        },
+                        buttonText: 'Cancel',
+                        height: 50.0,
+                        width: MediaQuery.of(context).size.width,
+                        backgroundColor: DeckColors.white,
+                        textColor: DeckColors.primaryColor,
+                        radius: 10.0,
+                        fontSize: 16,
+                        borderWidth: 0,
+                        borderColor: Colors.transparent,
+                      ),
+                    ),*/
+                  ],
+                ),
               ),
-            ),
+      ),
     );
   }
 }
