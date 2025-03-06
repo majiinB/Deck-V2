@@ -75,7 +75,7 @@ class BuildTextBoxState extends State<BuildTextBox> {
         ),
         hintText: widget.hintText,
         hintStyle: const TextStyle(
-          fontFamily: 'Nunito-Regular',
+          fontFamily: 'Nunito-Bold',
           fontSize: 16,
           fontStyle: FontStyle.italic,
           color: DeckColors.primaryColor,
@@ -85,13 +85,19 @@ class BuildTextBoxState extends State<BuildTextBox> {
         contentPadding:
         const EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
         prefixIcon: widget.leftIcon != null
-            ? Icon(widget.leftIcon)
+            ? Icon(
+            widget.leftIcon,
+            color: DeckColors.primaryColor)
             : null, // Change to your desired left icon
         suffixIcon: widget.showPassword
             ? IconButton(
           icon: _obscureText
-              ? const Icon(Icons.visibility_off)
-              : const Icon(Icons.visibility),
+              ? const Icon(
+            Icons.visibility_off,
+            color: DeckColors.primaryColor,)
+              : const Icon(
+              Icons.visibility,
+              color: DeckColors.primaryColor,),
           onPressed: () {
             setState(() {
               _obscureText = !_obscureText;
@@ -100,7 +106,9 @@ class BuildTextBoxState extends State<BuildTextBox> {
         )
             : widget.rightIcon != null
             ? IconButton(
-          icon: Icon(widget.rightIcon),
+          icon: Icon(widget.rightIcon,
+          color: DeckColors.primaryColor,
+          ),
           onPressed: widget.onTap,
         )
             : null,
