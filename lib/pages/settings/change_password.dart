@@ -109,11 +109,10 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
                       controller: newConfirmPasswordController,
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 30.0),
-                    child: Container(
-                      width: double.infinity,
-                      height: 2,
+                  const Padding(
+                    padding: EdgeInsets.only(top: 30.0),
+                    child: Divider(
+                      thickness: 1,
                       color: DeckColors.primaryColor,
                     ),
                   ),

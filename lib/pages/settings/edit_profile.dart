@@ -175,6 +175,7 @@ class EditProfileState extends State<EditProfile> {
 
   @override
   Widget build(BuildContext context) {
+    ///For dialog box to appear when user clicks the back button at the app bar or the device itself
     return PopScope(
       canPop: false,
       onPopInvoked: (bool didpop) async {
@@ -192,33 +193,15 @@ class EditProfileState extends State<EditProfile> {
                 },
                 onCancel: () {
             },
-            /*AlertDialog(
-              title: Text('Are you sure you want to exit?'),
-              content: Text('Doing so will lose all your progress'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(true);  // Confirm action
-                  },
-                  child: Text('Confirm'),
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(false);  // Cancel action
-                  },
-                  child: Text('Cancel'),
-                ),
-              ],
-            );*/
         );
       },
     );
-
-        // Check the result of the dialog and decide whether to pop or not
+        //Check the result of the dialog and decide whether to pop or not
         if (shouldPop != null && shouldPop) {
-          Navigator.of(context).pop(true); // Allow exit
+          Navigator.of(context).pop();
         }
       },
+      ///----- E N D -----
       child: Scaffold(
         backgroundColor: DeckColors.backgroundColor,
         appBar: const AuthBar(
@@ -460,50 +443,57 @@ class EditProfileState extends State<EditProfile> {
                                 controller: emailController,
                               )
                             : const SizedBox()),
-                    const Padding(
-                      padding:
-                      EdgeInsets.only(top: 20.0, left: 15, right: 15),
-                      child: Text(
-                        'Change Password',
-                        style: TextStyle(
-                          fontFamily: 'Nunito-ExtraBold',
-                          color: DeckColors.primaryColor,
-                          fontSize: 16,
+                    !AuthService()
+                        .getCurrentUser()!
+                        .providerData[0]
+                        .providerId
+                        .contains('google.com')
+                        ?
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Padding(
+                          padding:
+                          EdgeInsets.only(top: 20.0, left: 15, right: 15),
+                          child: Text(
+                            'Change Password',
+                            style: TextStyle(
+                              fontFamily: 'Nunito-ExtraBold',
+                              color: DeckColors.primaryColor,
+                              fontSize: 16,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                    Padding(
-                        padding: const EdgeInsets.only(top: 10, left: 15, right: 15),
-                        child: !AuthService()
-                            .getCurrentUser()!
-                            .providerData[0]
-                            .providerId
-                            .contains('google.com')
-                            ? BuildSettingsContainer(
-                          selectedIcon: DeckIcons.lock,
-                          nameOfTheContainer: 'Change Password',
-                          showArrow: true,
-                          showSwitch: false,
-                          containerColor: DeckColors.primaryColor, // Container Color
-                          selectedColor: DeckColors.primaryColor, // Left Icon Color
-                          textColor: Colors.white, // Text Color
-                          iconColor: DeckColors.white,
-                          iconArrowColor: DeckColors.white,
-                          toggledColor: DeckColors
-                              .accentColor, // Left Icon Color when Toggled
-                          onTap: () {
-                            Navigator.of(context).push(
-                              RouteGenerator.createRoute(
-                                  const ChangePasswordPage()),
-                            );
-                          },
-                        )
-                            : const SizedBox()),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 25.0),
-                        child: Container(
-                          width: double.infinity,
-                          height: 1,
+                        Padding(
+                            padding: const EdgeInsets.only(top: 10, left: 15, right: 15),
+                          child: BuildSettingsContainer(
+                            selectedIcon: DeckIcons.lock,
+                            nameOfTheContainer: 'Change Password',
+                            showArrow: true,
+                            showSwitch: false,
+                            containerColor: DeckColors.primaryColor, // Container Color
+                            selectedColor: DeckColors.primaryColor, // Left Icon Color
+                            textColor: Colors.white, // Text Color
+                            iconColor: DeckColors.white,
+                            iconArrowColor: DeckColors.white,
+                            toggledColor: DeckColors
+                                .accentColor, // Left Icon Color when Toggled
+                            onTap: () {
+                              Navigator.of(context).push(
+                                RouteGenerator.createRoute(
+                                    const ChangePasswordPage()),
+                              );
+                            },
+                          ),
+                        ),
+
+                      ],
+                    )
+                        : const SizedBox(),
+                    const Padding(
+                      padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 25.0),
+                        child: Divider(
+                          thickness: 1,
                           color: DeckColors.primaryColor,
                         ),
                     ),

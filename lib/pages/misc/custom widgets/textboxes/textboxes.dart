@@ -75,9 +75,9 @@ class BuildTextBoxState extends State<BuildTextBox> {
         ),
         hintText: widget.hintText,
         hintStyle: const TextStyle(
-          fontFamily: 'Nunito-Bold',
+          fontFamily: 'Nunito-Italic',
           fontSize: 16,
-          fontStyle: FontStyle.italic,
+          // fontStyle: FontStyle.italic,
           color: DeckColors.primaryColor,
         ),
         filled: true,

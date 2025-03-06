@@ -220,10 +220,9 @@ class AccountPageState extends State<AccountPage> {
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 25.0),
-                child: Container(
-                  width: double.infinity,
+              const Padding(
+                padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 25.0),
+                child: Divider(
                   height: 1,
                   color: DeckColors.primaryColor,
                 ),
@@ -255,6 +254,7 @@ class AccountPageState extends State<AccountPage> {
                           },
                         )
                       : const SizedBox()),*/
+              ///RECENTLY DELETED
               Padding(
                 padding: const EdgeInsets.only(top: 20, left: 15, right: 15),
                 child: BuildSettingsContainer(
@@ -274,14 +274,16 @@ class AccountPageState extends State<AccountPage> {
                   },
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 25.0),
-                child: Container(
-                  width: double.infinity,
-                  height: 1,
+              const Padding(
+                padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 25.0),
+                child: Divider(
+                  thickness: 1,
                   color: DeckColors.primaryColor,
                 ),
               ),
+              ///----- E N D -----
+
+              ///SUGGEST IMPROVEMENT
               Padding(
                 padding: const EdgeInsets.only(top: 20, left: 15, right: 15),
                 child: BuildSettingsContainer(
@@ -301,6 +303,9 @@ class AccountPageState extends State<AccountPage> {
                   },
                 ),
               ),
+              ///----- E N D -----
+
+              ///REPORT A PROBLEM
               Padding(
                 padding: const EdgeInsets.only(top: 8, left: 15, right: 15),
                 child: BuildSettingsContainer(
@@ -320,6 +325,9 @@ class AccountPageState extends State<AccountPage> {
                   },
                 ),
               ),
+              ///----- E N D -----
+
+              ///TERMS OF USE
               Padding(
                 padding: const EdgeInsets.only(top: 8, left: 15, right: 15),
                 child: BuildSettingsContainer(
@@ -339,6 +347,9 @@ class AccountPageState extends State<AccountPage> {
                   },
                 ),
               ),
+              ///----- E N D -----
+
+              ///PRIVACY POLICY
               Padding(
                 padding: const EdgeInsets.only(top: 8, left: 15, right: 15),
                 child: BuildSettingsContainer(
@@ -358,14 +369,16 @@ class AccountPageState extends State<AccountPage> {
                   },
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 25.0),
-                child: Container(
-                  width: double.infinity,
-                  height: 1,
+              const Padding(
+                padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 25.0),
+                child: Divider(
+                  thickness: 1,
                   color: DeckColors.primaryColor,
                 ),
               ),
+              ///----- E N D -----
+
+              ///LOG OUT
               Padding(
                 padding: const EdgeInsets.only(top: 20, left: 15, right: 15),
                 child: BuildSettingsContainer(
@@ -404,14 +417,16 @@ class AccountPageState extends State<AccountPage> {
                   },
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 25.0),
-                child: Container(
-                  width: double.infinity,
-                  height: 1,
+              const Padding(
+                padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 25.0),
+                child: Divider(
+                  thickness: 1,
                   color: DeckColors.primaryColor,
                 ),
               ),
+              ///----- E N D -----
+
+              ///DELETE ACCOUNT
               Padding(
                 padding: const EdgeInsets.only(top: 20, left: 15, right: 15, bottom: 110),
                 child: BuildSettingsContainer(
@@ -423,8 +438,8 @@ class AccountPageState extends State<AccountPage> {
                   borderColor: DeckColors.deckRed,
                   selectedColor: DeckColors.primaryColor, // Left Icon Color
                   textColor: DeckColors.white, // Text Color
-                  iconColor: DeckColors.white,
-                  iconArrowColor: DeckColors.white,
+                  iconColor: DeckColors.white, //Color of the icon at the left
+                  iconArrowColor: DeckColors.white, //Color of the arrow icon at the right
                   toggledColor:
                   DeckColors.accentColor, // Left Icon Color when Toggled
                   onTap: () {
@@ -434,6 +449,7 @@ class AccountPageState extends State<AccountPage> {
                   },
                 ),
               ),
+              ///----- E N D -----
             ],
           ),
         ),
