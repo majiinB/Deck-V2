@@ -15,13 +15,13 @@ import '../misc/custom widgets/functions/tab_bar.dart';
 import '../misc/custom widgets/tiles/deck_task_tile.dart';
 //sample
 
-class TaskPage extends StatefulWidget {
-  const TaskPage({super.key});
+class ViewTaskFolderPage extends StatefulWidget {
+  const ViewTaskFolderPage({super.key});
   @override
-  _TaskPageState createState() => _TaskPageState();
+  _ViewTaskFolderPageState createState() => _ViewTaskFolderPageState();
 }
 
-class _TaskPageState extends State<TaskPage> {
+class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
   /// bool variable to toggle view
   bool isCalendarView = true;
   ///selectedDay : actual day selected by the user, used for highlighting.
