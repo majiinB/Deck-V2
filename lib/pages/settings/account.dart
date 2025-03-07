@@ -256,7 +256,7 @@ class AccountPageState extends State<AccountPage> {
                       : const SizedBox()),*/
               ///RECENTLY DELETED
               Padding(
-                padding: const EdgeInsets.only(top: 20, left: 15, right: 15),
+                padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
                 child: BuildSettingsContainer(
                   selectedIcon: DeckIcons.trash_bin,
                   nameOfTheContainer: 'Recently Deleted Deck',
@@ -274,18 +274,18 @@ class AccountPageState extends State<AccountPage> {
                   },
                 ),
               ),
+              ///----- E N D -----
               const Padding(
-                padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 25.0),
+                padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 10.0),
                 child: Divider(
                   thickness: 1,
                   color: DeckColors.primaryColor,
                 ),
               ),
-              ///----- E N D -----
 
               ///SUGGEST IMPROVEMENT
               Padding(
-                padding: const EdgeInsets.only(top: 20, left: 15, right: 15),
+                padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
                 child: BuildSettingsContainer(
                   selectedIcon: Icons.self_improvement_rounded,
                   nameOfTheContainer: 'Suggest Improvement',
@@ -370,7 +370,7 @@ class AccountPageState extends State<AccountPage> {
                 ),
               ),
               const Padding(
-                padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 25.0),
+                padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 15.0),
                 child: Divider(
                   thickness: 1,
                   color: DeckColors.primaryColor,
@@ -380,7 +380,7 @@ class AccountPageState extends State<AccountPage> {
 
               ///LOG OUT
               Padding(
-                padding: const EdgeInsets.only(top: 20, left: 15, right: 15),
+                padding: const EdgeInsets.only(top: 10, left: 15, right: 15),
                 child: BuildSettingsContainer(
                   selectedIcon: DeckIcons.logout,
                   nameOfTheContainer: 'Log Out',
@@ -418,7 +418,7 @@ class AccountPageState extends State<AccountPage> {
                 ),
               ),
               const Padding(
-                padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 25.0),
+                padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 15.0),
                 child: Divider(
                   thickness: 1,
                   color: DeckColors.primaryColor,
@@ -428,7 +428,7 @@ class AccountPageState extends State<AccountPage> {
 
               ///DELETE ACCOUNT
               Padding(
-                padding: const EdgeInsets.only(top: 20, left: 15, right: 15, bottom: 110),
+                padding: const EdgeInsets.only(top: 10, left: 15, right: 15, bottom: 110),
                 child: BuildSettingsContainer(
                   selectedIcon: Icons.delete_forever_rounded,
                   nameOfTheContainer: 'Delete Account',
