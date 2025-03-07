@@ -10,13 +10,13 @@ import 'package:provider/provider.dart';
 ///
 ///
 ///ShowConfirmationDialog is a method for Confirm Dialog
-class ShowConfirmationDialog extends StatelessWidget {
+class CustomConfirmDialog extends StatelessWidget {
   final String title;
   final String text;
   final VoidCallback onConfirm;
   final VoidCallback onCancel;
 
-  const ShowConfirmationDialog({
+  const CustomConfirmDialog({
     super.key,
     required this.title,
     required this.text,
@@ -50,41 +50,17 @@ class ShowConfirmationDialog extends StatelessWidget {
 }
 
 //Used to show the Dialog Box
-void showConfirmationDialog(BuildContext context, String title, String text,
+void showConfirmDialog(BuildContext context, String title, String text,
     VoidCallback onConfirm, VoidCallback onCancel) {
   showDialog(
     context: context,
     barrierDismissible: false,
     builder: (BuildContext context) {
-      return ShowConfirmationDialog(
+      return CustomConfirmDialog(
         title: title,
         text: text,
         onConfirm: onConfirm,
         onCancel: onCancel,
-      );
-    },
-  );
-}
-
-///
-
-// Method to show an informational dialog
-void showInformationDialog(BuildContext context, String title, String message) {
-  showDialog(
-    context: context,
-    barrierDismissible: false, // Prevent dismissal by tapping outside
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text(title),
-        content: Text(message),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(); // Dismiss the dialog
-            },
-            child: const Text("OK", style: TextStyle(color: Colors.blue)),
-          ),
-        ],
       );
     },
   );
