@@ -4,7 +4,7 @@ import 'package:deck/pages/misc/deck_icons2.dart';
 import 'package:flutter/material.dart';
 import 'package:deck/pages/misc/colors.dart';
 import 'package:deck/pages/misc/widget_method.dart';
-import 'package:deck/pages/task/edit_task.dart';
+// import 'package:deck/pages/task/edit_task.dart';
 import 'package:provider/provider.dart';
 
 import '../misc/custom widgets/buttons/custom_buttons.dart';
@@ -47,18 +47,18 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
     else {return 2;}
   }
 
-  StatusResult checkStatus() {
-    switch (_selectedStatus) {
-      case 0:
-        return StatusResult(false, false); // Not active, not completed
-      case 1:
-        return StatusResult(false, true);   // Active and completed
-      case 2:
-        return StatusResult(true, false);   // Not active, but completed
-      default:
-        return StatusResult(false, false);  // Default case
-    }
-  }
+  // StatusResult checkStatus() {
+  //   switch (_selectedStatus) {
+  //     case 0:
+  //       return StatusResult(false, false); // Not active, not completed
+  //     case 1:
+  //       return StatusResult(false, true);   // Active and completed
+  //     case 2:
+  //       return StatusResult(true, false);   // Not active, but completed
+  //     default:
+  //       return StatusResult(false, false);  // Default case
+  //   }
+  // }
 
   void _updateTask(Task updatedTask) {
     setState(() {
@@ -117,21 +117,21 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                         color: DeckColors.white,
                         size: 24),
                       onPressed: () async {
-                          final updatedTask = await Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => EditTaskPage(task: _task)),
-                          );
-                          if (updatedTask != null) {
-                            _updateTask(updatedTask);
-                            await Provider.of<TaskProvider>(context,listen: false).loadTasks();
-                            print(updatedTask.priority);
-                            print(_selectedStatus);
-                            setState((){
-                              _priorityIndex = TaskProvider.getPriorityIndex(updatedTask.priority);
-                              _selectedStatus = determineStatusIndex(updatedTask);
-                            });
-                            print(_selectedStatus);
-                          }
+                          // final updatedTask = await Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(builder: (context) => EditTaskPage(task: _task)),
+                          // );
+                          // if (updatedTask != null) {
+                          //   _updateTask(updatedTask);
+                          //   await Provider.of<TaskProvider>(context,listen: false).loadTasks();
+                          //   print(updatedTask.priority);
+                          //   print(_selectedStatus);
+                          //   setState((){
+                          //     _priorityIndex = TaskProvider.getPriorityIndex(updatedTask.priority);
+                          //     _selectedStatus = determineStatusIndex(updatedTask);
+                          //   });
+                          //   print(_selectedStatus);
+                          // }
                         })
                       ,
                     ),

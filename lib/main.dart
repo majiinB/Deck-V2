@@ -6,7 +6,7 @@ import 'package:deck/pages/flashcard/flashcard.dart';
 import 'package:deck/pages/home/home.dart';
 import 'package:deck/pages/misc/deck_icons.dart';
 import 'package:deck/pages/settings/account.dart';
-import 'package:deck/pages/task/task.dart';
+import 'package:deck/pages/task/main_task.dart';
 import 'package:deck/pages/theme/theme_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';

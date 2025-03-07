@@ -1,20 +1,28 @@
 import 'package:flutter/material.dart';
 
 class DeckColors {
+  //used for text,tiles,buttons,outline
   static const Color primaryColor = Color(0xFF12454C);
-  static const Color backgroundColor = Color(0xFFDEDEDE);
-  static const Color accentColor = Color(0xFF2F3738);
-  static const Color grayPopup = Color(0xFF272A2A);
-  static const Color grayTask = Color(0xFF2F3738);
-  static const Color gray = Color.fromARGB(255, 30, 30, 30);
-  static const Color green = Color(0xFF123524);
+  static const Color accentColor = Color(0xFF28DF99);//mostly used for buttons
+  static const Color darkgreen = Color(0xFF00945B); //mostly used for texts in home page
+  static const Color softGreen = Color(0xFF99F3BD);
   static const Color white = Color(0xFFFFFFFF);
-  static const Color coverImageColorSettings = Color(0xFF4C4C4C);
+
+  //this is only used for background color
+  static const Color backgroundColor = Color(0xFFDEDEDE);
+
+  //grays often used for the tags, tabs, buttons in home page
+  static const Color softGray = Color(0xFFB5BFC1);  //buttons B5BFC1
+  static const Color  mutedGray= Color(0xFF97A0A1);  //tabs 97A0A1
+  static const Color deepGray= Color(0xFF516265);  //tags of task 516265
+
+
   static const Color deckRed = Color(0xFFE54F3A);
-  static const Color deckYellow = Color(0xFFFCAA2F);
+  static const Color deckYellow = Color(0xFFFAC55F);
   static const Color deckBlue = Color(0xFF317EFF);
 }
 
+//i have no idea what this is for eh may theme file tayo
 const lightColorScheme = ColorScheme(
   brightness: Brightness.light,
   primary: Colors.blue,
