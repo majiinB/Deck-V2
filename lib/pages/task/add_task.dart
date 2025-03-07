@@ -2,15 +2,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:deck/backend/auth/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:deck/pages/misc/colors.dart';
-import 'package:deck/pages/misc/widget_method.dart';
 import 'package:provider/provider.dart';
 
 import '../../backend/task/task_provider.dart';
 import '../../backend/task/task_service.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
 import '../misc/custom widgets/buttons/radio_button_group.dart';
-import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
-import '../misc/custom widgets/textboxes/textboxes.dart';
+import '../misc/custom widgets/dialogs/alert_dialog.dart';
+`import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
+`import '../misc/custom widgets/textboxes/textboxes.dart';
 
 class AddTaskPage extends StatefulWidget {
   const AddTaskPage({super.key});
@@ -234,7 +234,12 @@ class _AddTaskPageState extends State<AddTaskPage> {
                                   /// stop loading
                                   setState(() => isLoading = false);
                                   ///display error
-                                  showInformationDialog(context, "Error adding task","A Text field is blank! Please fill all the text fields and try again.");
+                                  showShowAlertDialog(
+                                    context,
+                                    "assets/images/Deck_Dialogue1.png",
+                                    "Uh oh. Something went wrong.",
+                                    "Error adding task! A text field is blank! Please fill all the text fields and try again.",
+                                  );
                                   return;
                                 }
                                 print(DateTime.parse(_dateController.text));
@@ -243,8 +248,12 @@ class _AddTaskPageState extends State<AddTaskPage> {
                                   /// stop loading
                                   setState(() => isLoading = false);
                                   ///display error
-                                  showInformationDialog(context, "Error adding task"," Past deadlines aren't allowed. Please try again.");
-
+                                  showShowAlertDialog(
+                                    context,
+                                    "assets/images/Deck_Dialogue1.png",
+                                    "Uh oh. Something went wrong.",
+                                    "Error adding task! Past deadlines aren't allowed. Please try again.",
+                                  );
                                   return;
                                 }
                                 Map<String, dynamic> data = {
