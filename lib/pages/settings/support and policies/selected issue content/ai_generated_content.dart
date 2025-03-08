@@ -68,7 +68,6 @@ class _AIGeneratedContentState extends State<AIGeneratedContent> {
             ),
           ),
           ///----- E N D ------
-
         ],
       ),
     );

@@ -10,7 +10,7 @@ class BugIssues extends StatefulWidget {
   _BugIssuesState createState() => _BugIssuesState();
 }
   class _BugIssuesState extends State<BugIssues>{
-  final bugDetailsController = TextEditingController();
+  final detailsController = TextEditingController();
 
     @override
     Widget build(BuildContext context){
@@ -36,7 +36,7 @@ class BugIssues extends StatefulWidget {
               child: BuildTextBox(
                 showPassword: false,
                 hintText: 'Enter additional details',
-                controller: bugDetailsController,
+                controller: detailsController,
                 isMultiLine: true,
               ),
             ),
