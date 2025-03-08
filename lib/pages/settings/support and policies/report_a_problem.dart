@@ -1,3 +1,4 @@
+import 'package:deck/pages/settings/support%20and%20policies/selected%20issue%20content/ai_generated_content.dart';
 import 'package:deck/pages/settings/support%20and%20policies/selected%20issue%20content/someone_deck_content.dart';
 import 'package:flutter/material.dart';
 
@@ -83,38 +84,42 @@ class _ReportAProblemState extends State<ReportAProblem> {
                   ),
 
             ///this handles the radio button
-            BuildRadioButton(
-              numberOfButtons: 4, //number of radio buttons
-              //radio button label
-              buttonLabels: const [
-                'Someone\'s Deck Content',
-                'AI- Generated Content',
-                'Bug Issues',
-                'Something Else',
-              ],
-              //subtexts for the radio button label
-              buttonSubtexts: const [
-                'Inappropriate, offensive, or misleading content in public decks.',
-                'Harmful, incorrect, or biased AI-generated quiz or flashcard content.',
-                'App crashes, broken features, or unexpected behavior.',
-                '', //null because there is no subtext for the 4th option
-              ],
-              textStyle:
-              const TextStyle(
-                  fontFamily: 'Fraiche',
-                  color: DeckColors.primaryColor,
-                  fontSize: 24),
-              subtextStyle:
-              const TextStyle(
-                  fontFamily: 'Nunito-Regular',
-                  color: DeckColors.primaryColor,
-                  fontSize: 16),
-                  activeColor: DeckColors.primaryColor, //active radio button color
-                  inactiveColor: DeckColors.primaryColor, //inactive radio button color
-                  onButtonSelected: radioButtonSelected,//for radio buttons behavior
+            Padding(
+              padding: const EdgeInsets.only(right: 15.0),
+              child: BuildRadioButton(
+                numberOfButtons: 4, //number of radio buttons
+                //radio button label
+                buttonLabels: const [
+                  'Someone\'s Deck Content',
+                  'AI-Generated Content',
+                  'Bug Issues',
+                  'Something Else',
+                ],
+                //subtexts for the radio button label
+                buttonSubtexts: const [
+                  'Inappropriate, offensive, or misleading content in public decks.',
+                  'Harmful, incorrect, or biased AI-generated quiz or flashcard content.',
+                  'App crashes, broken features, or unexpected behavior.',
+                  '', //null because there is no subtext for the 4th option
+                ],
+                textStyle:
+                const TextStyle(
+                    fontFamily: 'Fraiche',
+                    color: DeckColors.primaryColor,
+                    fontSize: 24),
+                subtextStyle:
+                const TextStyle(
+                    fontFamily: 'Nunito-Regular',
+                    color: DeckColors.primaryColor,
+                    fontSize: 16),
+                    activeColor: DeckColors.primaryColor, //active radio button color
+                    inactiveColor: DeckColors.primaryColor, //inactive radio button color
+                    onButtonSelected: radioButtonSelected,//for radio buttons behavior
+              ),
             ),
                   ///shows the content based on the selected radio
                   if (selectedRadio == 0) SomeoneDeckContent(), //Option 1: Someone's deck content
+                  if (selectedRadio == 1) AIGeneratedContent(), //Option 2: AI-Generated contet
 
                   ///--- E N D -----
 

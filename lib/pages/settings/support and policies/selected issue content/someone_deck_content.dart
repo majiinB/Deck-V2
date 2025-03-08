@@ -74,7 +74,7 @@ class _SomeoneDeckContentState extends State<SomeoneDeckContent> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Link of the content you\'reporting',
+            'Link of the content you\'re porting',
             style: TextStyle(
               fontFamily: 'Fraiche',
               fontSize: 24,
