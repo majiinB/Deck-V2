@@ -1,4 +1,5 @@
 import 'package:deck/pages/settings/support%20and%20policies/selected%20issue%20content/ai_generated_content.dart';
+import 'package:deck/pages/settings/support%20and%20policies/selected%20issue%20content/bug_issues.dart';
 import 'package:deck/pages/settings/support%20and%20policies/selected%20issue%20content/someone_deck_content.dart';
 import 'package:flutter/material.dart';
 
@@ -120,6 +121,7 @@ class _ReportAProblemState extends State<ReportAProblem> {
                   ///shows the content based on the selected radio
                   if (selectedRadio == 0) SomeoneDeckContent(), //Option 1: Someone's deck content
                   if (selectedRadio == 1) AIGeneratedContent(), //Option 2: AI-Generated contet
+                  if (selectedRadio == 2) BugIssues(), //Option 3: Bug Issues
 
                   ///--- E N D -----
 

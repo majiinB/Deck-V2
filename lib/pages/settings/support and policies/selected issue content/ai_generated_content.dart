@@ -31,6 +31,7 @@ class _AIGeneratedContentState extends State<AIGeneratedContent> {
           const Center(
             child: Padding(
               padding: EdgeInsets.only(top: 10),
+              ///This calls the screen shot images containers
               child: BuildScreenshotImage(
               ),
               ),
@@ -43,7 +44,6 @@ class _AIGeneratedContentState extends State<AIGeneratedContent> {
                 fontSize: 12,
                 height: 1,
               ),
-              textAlign: TextAlign.center,
             ),
           ),
           const Padding(
@@ -68,6 +68,7 @@ class _AIGeneratedContentState extends State<AIGeneratedContent> {
             ),
           ),
           ///----- E N D ------
+
         ],
       ),
     );
