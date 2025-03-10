@@ -44,14 +44,14 @@ class CustomExpansionTileState extends State<CustomExpansionTile> {
               });
             },
             tilePadding: const EdgeInsets.all(10),
-            backgroundColor: DeckColors.gray,
-            collapsedBackgroundColor: DeckColors.gray,
+            backgroundColor: DeckColors.primaryColor,
+            collapsedBackgroundColor: DeckColors.primaryColor,
             collapsedShape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
-              side: const BorderSide(color: DeckColors.gray),
+              side: const BorderSide(color: DeckColors.white),
             ),
             children: const <Widget>[
               ListTile(

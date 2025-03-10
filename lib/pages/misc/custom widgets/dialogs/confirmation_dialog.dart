@@ -4,6 +4,24 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 
+///custom dialog alerts. often used  for alerts na 1 button lng need tas walang cancel ganu
+///how to use this///
+
+///showConfirmDialog(
+/// context,
+/// "assets/images/imagename.png",
+///  "title",
+///  "message",
+///  "buttontext1"
+///    () {
+///    ACTION WHEN AFFIRMATIVE BUTTON IS CLICKED
+///    }
+///  "buttontext2" <-- OPTIONAL ONLY
+///  () {
+///    ACTION WHEN CACEL BUTTON IS CLICKED <-- OPTIONAL ONLY
+///  }
+///);
+
 class CustomConfirmDialog extends StatelessWidget {
   final String imagePath, title,message,button1,button2;
   final VoidCallback onConfirm,onCancel;

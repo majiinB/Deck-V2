@@ -3,14 +3,13 @@ import 'package:deck/backend/auth/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:deck/pages/misc/colors.dart';
 import 'package:provider/provider.dart';
-
 import '../../backend/task/task_provider.dart';
 import '../../backend/task/task_service.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
 import '../misc/custom widgets/buttons/radio_button_group.dart';
 import '../misc/custom widgets/dialogs/alert_dialog.dart';
-`import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
-`import '../misc/custom widgets/textboxes/textboxes.dart';
+import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
+import '../misc/custom widgets/textboxes/textboxes.dart';
 
 class AddTaskPage extends StatefulWidget {
   const AddTaskPage({super.key});
@@ -234,7 +233,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                                   /// stop loading
                                   setState(() => isLoading = false);
                                   ///display error
-                                  showShowAlertDialog(
+                                  showAlertDialog(
                                     context,
                                     "assets/images/Deck_Dialogue1.png",
                                     "Uh oh. Something went wrong.",
@@ -248,7 +247,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                                   /// stop loading
                                   setState(() => isLoading = false);
                                   ///display error
-                                  showShowAlertDialog(
+                                  showAlertDialog(
                                     context,
                                     "assets/images/Deck_Dialogue1.png",
                                     "Uh oh. Something went wrong.",

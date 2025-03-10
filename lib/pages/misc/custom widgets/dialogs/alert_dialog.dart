@@ -2,6 +2,19 @@ import 'package:flutter/material.dart';
 
 import '../../colors.dart';
 
+///custom dialog alerts. often used  for alerts na 1 button lng need tas walang cancel ganu
+///how to use this///
+
+///showAlertDialog(
+/// context,
+/// "assets/images/imagename.png",
+///  "title",
+///  "message",
+///  "buttontext" <-- OPTIONAL ONLY
+///    () {
+///    ACTION WHEN BUTTON  IS CLICKED <-- OPTIONAL ONLY
+///    }
+///);
 
 class CustomAlertDialog extends StatelessWidget {
   final String imagePath, title,message,button1 ;

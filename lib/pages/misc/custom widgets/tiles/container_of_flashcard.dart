@@ -40,7 +40,7 @@ class BuildContainerOfFlashCards extends StatefulWidget {
 
 class BuildContainerOfFlashCardsState extends State<BuildContainerOfFlashCards>
     with SingleTickerProviderStateMixin {
-  Color _containerColor = DeckColors.grayPopup;
+  Color _containerColor = DeckColors.accentColor;
 
   @override
   Widget build(BuildContext context) {
@@ -54,13 +54,13 @@ class BuildContainerOfFlashCardsState extends State<BuildContainerOfFlashCards>
       },
       onTapUp: (_) {
         setState(() {
-          _containerColor = DeckColors.gray;
+          _containerColor = DeckColors.white;
         });
         widget.onTap?.call();
       },
       onTapCancel: () {
         setState(() {
-          _containerColor = DeckColors.gray;
+          _containerColor = DeckColors.white;
         });
       },
       child: SwipeToDeleteAndRetrieve(

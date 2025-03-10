@@ -47,7 +47,7 @@ class BuildListOfDecksState extends State<BuildListOfDecks> {
         padding: const EdgeInsets.all(20.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15.0),
-          color: DeckColors.gray,
+          color: DeckColors.white,
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -96,7 +96,7 @@ class BuildListOfDecksState extends State<BuildListOfDecks> {
                         padding: const EdgeInsets.all(5.0),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(16.0),
-                          color: DeckColors.coverImageColorSettings,
+                          color: DeckColors.white,
                         ),
                         child: Text(
                           widget.numberText,

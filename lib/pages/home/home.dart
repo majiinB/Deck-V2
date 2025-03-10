@@ -217,7 +217,7 @@ class _HomePageState extends State<HomePage> {
                   child: Container(
                     padding: const EdgeInsets.all(30),
                     decoration: const BoxDecoration(
-                      color: DeckColors.coverImageColorSettings,
+                      color: DeckColors.white,
                         borderRadius: BorderRadius.all(Radius.circular(40)),
                     ),
                     child: IfCollectionEmpty(
@@ -311,7 +311,7 @@ class _HomePageState extends State<HomePage> {
                     child: Container(
                       padding: EdgeInsets.all(30),
                       decoration: const BoxDecoration(
-                        color: DeckColors.coverImageColorSettings,
+                        color: DeckColors.white,
                         borderRadius: BorderRadius.all(Radius.circular(40)),
                       ),
                       child: IfCollectionEmpty(
@@ -333,7 +333,7 @@ class _HomePageState extends State<HomePage> {
                         return HomeDeckTile(
                           deckName: _decks[index].title.toString(),
                           deckImageUrl: _decks[index].coverPhoto.toString(),
-                          deckColor: DeckColors.gray,
+                          deckColor: DeckColors.white,
                           cardWidth: cardWidth - 8,
                           onPressed: () {
                             print('frck tile clicked');

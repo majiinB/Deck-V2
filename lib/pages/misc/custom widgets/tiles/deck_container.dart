@@ -34,7 +34,7 @@ class BuildDeckContainer extends StatefulWidget {
 }
 
 class BuildDeckContainerState extends State<BuildDeckContainer> {
-  Color _containerColor = DeckColors.grayPopup;
+  Color _containerColor = DeckColors.accentColor;
   final String defaultImageUrl =
       "https://firebasestorage.googleapis.com/v0/b/deck-f429c.appspot.com/o/deckCovers%2Fdefault%2FdeckDefault.png?alt=media&token=2b0faebd-9691-4c37-8049-dc30289460c2";
 
@@ -48,13 +48,13 @@ class BuildDeckContainerState extends State<BuildDeckContainer> {
       },
       onTapUp: (_) {
         setState(() {
-          _containerColor = DeckColors.gray;
+          _containerColor = DeckColors.white;
         });
         widget.onTap();
       },
       onTapCancel: () {
         setState(() {
-          _containerColor = DeckColors.gray;
+          _containerColor = DeckColors.white;
         });
       },
       child: SwipeToDeleteAndRetrieve(
@@ -79,7 +79,7 @@ class BuildDeckContainerState extends State<BuildDeckContainer> {
                     color: (widget.deckCoverPhotoUrl != null &&
                         widget.deckCoverPhotoUrl != "no_image")
                         ? null
-                        : DeckColors.coverImageColorSettings,
+                        : DeckColors.white,
                     borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(15.0),
                       topRight: Radius.circular(15.0),
@@ -107,10 +107,10 @@ class BuildDeckContainerState extends State<BuildDeckContainer> {
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) {
                             return Container(
-                              color: DeckColors.coverImageColorSettings,
+                              color: DeckColors.white,
                               child: const Center(
                                 child: Icon(Icons.broken_image,
-                                    color: Colors.grey),
+                                    color: DeckColors.primaryColor),
                               ),
                             );
                           },
@@ -124,10 +124,10 @@ class BuildDeckContainerState extends State<BuildDeckContainer> {
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
                         return Container(
-                          color: DeckColors.coverImageColorSettings,
+                          color: DeckColors.white,
                           child: const Center(
                             child: Icon(Icons.image_not_supported,
-                                color: Colors.white),
+                                color: DeckColors.primaryColor),
                           ),
                         );
                       },

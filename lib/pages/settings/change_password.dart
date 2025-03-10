@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 
 import '../misc/custom widgets/appbar/auth_bar.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
+import '../misc/custom widgets/dialogs/alert_dialog.dart';
 import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
 import '../misc/custom widgets/textboxes/textboxes.dart';
 
@@ -121,10 +122,12 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
                         // ignore: avoid_print
                         print(
                             "save button clicked"); //line to test if working ung onPressedLogic XD
-                        showConfirmationDialog(
+                        showConfirmDialog(
                           context,
+                          "assets/images/Deck_Dialogue1.png",
                           "Change Password",
                           "Are you sure you want to change password?",
+                          "Change",
                           () async {
                             //when user clicks yes
                             //add logic here
@@ -141,19 +144,32 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
 
                               if(newPasswordController.text != newConfirmPasswordController.text){
                                 ///display error
-                                showInformationDialog(context, "Error changing password", "Passwords mismatch. Please try again.");
+                                showAlertDialog(
+                                  context,
+                                  "assets/images/Deck_Dialogue1.png",
+                                  "Uh oh. Something went wrong.",
+                                  "Error changing password! Passwords mismatch. Please try again.",
+                                );
                                 return;
                               } else if(newPasswordController.text == oldPasswordController.text || oldPasswordController.text == newConfirmPasswordController.text){
                                 ///display error
-                                showInformationDialog(context, "Error changing password", "You cannot set the same password as your new password. Please try again.");
+                                showAlertDialog(
+                                  context,
+                                  "assets/images/Deck_Dialogue1.png",
+                                  "Uh oh. Something went wrong.",
+                                  "Error changing password! You cannot set the same password as your new password. Please try again.",
+                                );
                                 return;
                               }
                               AuthService().resetPass(newPasswordController.text);
                               setState(() => _isLoading = false);
                               ///display error
-                              showInformationDialog(context, "Success","You have successfully changed your password.");
-
-                              Navigator.pop(context);
+                              showAlertDialog(
+                                context,
+                                "assets/images/Deck_Dialogue1.png",
+                                "Success",
+                                "You have successfully changed your password."
+                              );
                             } on FirebaseAuthException catch (e){
                               String message = '';
                               if(e.code == 'user-mismatch'){
@@ -174,18 +190,23 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
                               print(e.toString());
                               setState(() => _isLoading = false);
                               ///display error
-                              showInformationDialog(context, "Error changing password", message);
-
+                              showAlertDialog(
+                                context,
+                                "assets/images/Deck_Dialogue1.png",
+                                "Uh oh. Something went wrong.",
+                                "Error changing password! $message Please try again.",
+                              );
                             } catch (e) {
                               print(e.toString());
                               setState(() => _isLoading = false);
                               ///display error
-                              showInformationDialog(context, "Error changing password", "An Unknown error occured during the process. Please try again.");
+                              showAlertDialog(
+                                context,
+                                "assets/images/Deck_Dialogue1.png",
+                                "Uh oh. Something went wrong.",
+                                "Error changing password! An Unknown error occured during the process. Please try again.",
+                              );
                             }
-                          },
-                          () {
-                            //when user clicks no
-                            //nothing happens
                           },
                         );
                       },
