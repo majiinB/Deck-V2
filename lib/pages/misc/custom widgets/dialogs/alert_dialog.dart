@@ -56,7 +56,7 @@ class CustomAlertDialog extends StatelessWidget {
 }
 
 //Used to show the Dialog Box
-void showShowAlertDialog(
+void showAlertDialog(
     BuildContext context,
     String imagePath,
     String title,
