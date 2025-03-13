@@ -19,7 +19,7 @@ class FlashcardService{
 
       // Query the collection for documents with the provided user ID
       QuerySnapshot querySnapshot = await deckCollection
-          .where('user_id', isEqualTo: userId)
+          .where('owner_id', isEqualTo: userId)
           .where('is_deleted', isEqualTo: false)
           .orderBy('title') // Sort decks alphabetically based on title
           .get();
@@ -28,7 +28,7 @@ class FlashcardService{
       for (var doc in querySnapshot.docs) {
         // Extract data from the document
         String title = _flashcardUtils.capitalizeFirstLetterOfWords(doc['title']);
-        String userId = doc['user_id'];
+        String userId = doc['owner_id'];
         String coverPhoto = doc['cover_photo'];
         bool isDeleted = doc['is_deleted'];
         bool isPrivate = doc['is_private'];
@@ -47,6 +47,8 @@ class FlashcardService{
     }
     return decks;
   }
+
+
   Future<List<Deck>> getDeletedDecksByUserId(String userId) async {
     List<Deck> decks = [];
 
@@ -93,7 +95,7 @@ class FlashcardService{
 
       // Query the collection for documents with the provided user ID
       QuerySnapshot querySnapshot = await deckCollection
-          .where('user_id', isEqualTo: userId)
+          .where('owner_id', isEqualTo: userId)
           .where('is_deleted', isEqualTo: false)
           .orderBy('created_at', descending: true) // Sort by created_at timestamp, newest first
           .limit(6) // Limit the results to 6 decks
@@ -103,7 +105,7 @@ class FlashcardService{
       for (var doc in querySnapshot.docs) {
         // Extract data from the document
         String title = _flashcardUtils.capitalizeFirstLetterOfWords(doc['title']);
-        String userId = doc['user_id'];
+        String userId = doc['owner_id'];
         String coverPhoto = doc['cover_photo'];
         bool isDeleted = doc['is_deleted'];
         bool isPrivate = doc['is_private'];
@@ -133,12 +135,13 @@ class FlashcardService{
       DocumentSnapshot deckSnapshot = await deckCollection.doc(deckId).get();
 
       // Check if the document exists
+      print('deck snapshot exists ${deckSnapshot.exists}');
       if (deckSnapshot.exists) {
         // Extract the data from the document
         Map<String, dynamic> deckData = deckSnapshot.data() as Map<String, dynamic>;
 
         // Extract the fields
-        String deckUserId = deckData['user_id'];
+        String deckUserId = deckData['owner_id'];
         bool isDeleted = deckData['is_deleted'];
 
         // Check if the deck belongs to the user and is not deleted
@@ -250,6 +253,7 @@ class FlashcardService{
   }
   Future<String> uploadPdfFileToFirebase(String filePath, String userId) async {
     String fileUrl = "";
+    String fileDownloadUrl = "";
     File file = File(filePath);
     String uniqueFileName = DateTime.now().millisecondsSinceEpoch.toString();
     if (await file.exists()) {
@@ -262,6 +266,9 @@ class FlashcardService{
       try {
         await referenceFileToUpload.putFile(file);
         print('File Uploaded Successfully!');
+
+        fileDownloadUrl = await referenceFileToUpload.getDownloadURL();
+        print('Download URL: $fileDownloadUrl');
       } catch (e) {
         print('Error uploading file: $e');
       }

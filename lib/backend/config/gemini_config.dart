@@ -4,7 +4,7 @@ import 'package:google_generative_ai/google_generative_ai.dart';
 class GeminiConfig{
   late final String _apiKey;
   late final GenerativeModel _model;
-
+  
   GeminiConfig();
 
   Future<void> init() async{

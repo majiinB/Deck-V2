@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:deck/backend/config/firebase_remote_config.dart';
 import 'package:deck/backend/custom_exceptions/api_exception.dart';
 import 'package:deck/backend/flashcard/flashcard_ai_service.dart';
 import 'package:deck/backend/flashcard/flashcard_service.dart';
@@ -11,7 +10,6 @@ import 'package:deck/pages/misc/colors.dart';
 import 'package:deck/pages/misc/deck_icons.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:deck/pages/misc/widget_method.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../backend/models/deck.dart';
@@ -46,6 +44,8 @@ class _AddDeckPageState extends State<AddDeckPage> {
   final TextEditingController _topicController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _numCardsController = TextEditingController();
+  final FlashcardService _flashCardService = FlashcardService();
+  final FlashcardAiService _flashcardAiService = FlashcardAiService();
 
   @override
   Widget build(BuildContext context) {
@@ -154,7 +154,6 @@ class _AddDeckPageState extends State<AddDeckPage> {
                                                     setState(() {
                                                       coverPhoto = file.path ?? 'no_photo';
                                                     });
-                                                    print("Cover photo path: "+coverPhoto);
                                                   } else {
                                                     // User canceled the picker
                                                   }
@@ -164,28 +163,6 @@ class _AddDeckPageState extends State<AddDeckPage> {
                                                       context,
                                                       "Error in selecting files",
                                                       "There was an error in selecting the file. Please try again.");
-                                                  // showDialog(
-                                                  //   context: context,
-                                                  //   builder: (BuildContext context) {
-                                                  //     return AlertDialog(
-                                                  //       title: const Text('File Selection Error'),
-                                                  //       content: const Text('There was an error in selecting the file. Please try again.'),
-                                                  //       actions: <Widget>[
-                                                  //         TextButton(
-                                                  //           onPressed: () {
-                                                  //             Navigator.of(context).pop(); // Close the dialog
-                                                  //           },
-                                                  //           child: const Text(
-                                                  //             'Close',
-                                                  //             style: TextStyle(
-                                                  //               color: Colors.red,
-                                                  //             ),
-                                                  //           ),
-                                                  //         ),
-                                                  //       ],
-                                                  //     );
-                                                  //   },
-                                                  // );
                                                 }
                                               },
                                             ),
@@ -202,7 +179,6 @@ class _AddDeckPageState extends State<AddDeckPage> {
                                                 setState(() {
                                                   coverPhoto = "no_photo";
                                                 });
-                                                print(coverPhoto);
                                               },
                                             ),
                                           ),
@@ -341,31 +317,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                               } catch (e) {
                                 print('Error: $e');
                                 showInformationDialog(context, 'Error in selecting files!', 'There was an error in selecting the file. Please try again.');
-
-                                // showDialog(
-                                //   context: context,
-                                //   builder: (BuildContext context) {
-                                //     return AlertDialog(
-                                //       title: const Text('File Selection Error'),
-                                //       content: const Text('There was an error in selecting the file. Please try again.'),
-                                //       actions: <Widget>[
-                                //         TextButton(
-                                //           onPressed: () {
-                                //             Navigator.of(context).pop(); // Close the dialog
-                                //           },
-                                //           child: const Text(
-                                //             'Close',
-                                //             style: TextStyle(
-                                //               color: Colors.red,
-                                //             ),
-                                //           ),
-                                //         ),
-                                //       ],
-                                //     );
-                                //   },
-                                // );
                               }
-
                             },
                             buttonText: 'Upload PDF',
                             height: 50,
@@ -439,17 +391,14 @@ class _AddDeckPageState extends State<AddDeckPage> {
                             }
 
                             try {
-                              // Initialize
-                              FlashcardAiService _flashcardAiService = FlashcardAiService();
-                              FlashcardService _flashcardService = FlashcardService();
-                              List<Cardai> flashCardDataList = [];
+                              String retrievedDeckId = "";
                               String fileName = "";
 
                               // Clean input of spaces eg "Hello    World" => "Hello World"
                               String deckTitle = FlashcardUtils().cleanSpaces(_deckTitleController.text.toString().trim());
 
                               // Check if the title of the the flashcard exists in the database
-                              if(await _flashcardService.checkIfDeckWithTitleExists(
+                              if(await _flashCardService.checkIfDeckWithTitleExists(
                                   widget.userId,
                                   deckTitle
                               )){
@@ -461,52 +410,29 @@ class _AddDeckPageState extends State<AddDeckPage> {
 
                               // Check if conditions are met before uploading file
                               if (_pickedFileController.text.toString().trim().isNotEmpty) {
-                                fileName = await _flashcardService.uploadPdfFileToFirebase(_pickedFileController.text.toString().trim(), widget.userId.toString());
+                                fileName = await _flashCardService.uploadPdfFileToFirebase(_pickedFileController.text.toString().trim(), widget.userId.toString());
                               }
-
-                              //OPENAI
-                              // try{
-                              //   // sendData function
-                              //   Map<String, dynamic> runAndThreadId = await _flashcardAiService.sendData(
-                              //     id: widget.userId,
-                              //     subject: _subjectController.text.trim(),
-                              //     topic: _topicController.text.trim(),
-                              //     addDescription: _descriptionController.text.trim(),
-                              //     pdfFileName: fileName,
-                              //     numberOfQuestions: int.tryParse(_numCardsController.text) ?? 0,
-                              //   );
-                              //
-                              //   print(runAndThreadId); // For debug
-                              //
-                              //   // fetchData function
-                              //   flashCardDataList = await _flashcardAiService.fetchData(
-                              //     id: widget.userId,
-                              //     runID: runAndThreadId['run_id'],
-                              //     threadID: runAndThreadId['thread_id'],
-                              //   );
-                              //
-                              // }on ApiException catch(e){
-                              //   showInformationDialog(context, "Error while creating Deck!", e.message.toString()
-                              //   );
-                              //   return;
-                              // }catch(e){
-                              //   await Future.delayed(const Duration(milliseconds: 300));
-                              //   showInformationDialog(context, "Unknown Error Occurred",
-                              //       'An unknown error has occurred while generating your deck. Please try again.');
-                              //   return;
-                              // }
 
                               //GEMINI
                               if(fileName.isEmpty || fileName == ""){
                                 try{
-                                  flashCardDataList = await _flashcardAiService.promptGeminiInApp(
+                                  // Default cover photo in firebase
+                                  String uploadedPhotoUrl = 'https://firebasestorage.googleapis.com/v0/b/deck-f429c.appspot.com/o/deckCovers%2Fdefault%2FdeckDefault.png?alt=media&token=de6ac50d-13d0-411c-934e-fbeac5b9f6e0';
+
+                                  if(coverPhoto != 'no_photo'){
+                                    uploadedPhotoUrl = await _flashCardService.uploadImageToFirebase(coverPhoto, widget.userId.toString());
+                                  }
+                                  retrievedDeckId = await _flashcardAiService.sendAndRequestDataToGemini(
+                                      coverPhotoRef: uploadedPhotoUrl,
+                                      deckTitle: deckTitle,
+                                      id: widget.userId,
                                       subject: _subjectController.text.trim(),
                                       topic: _topicController.text.trim(),
                                       addDescription: _descriptionController.text.trim(),
                                       numberOfQuestions: int.tryParse(_numCardsController.text) ?? 0
                                   );
+
                                 }catch(e){
-                                  print(flashCardDataList);
                                   print(e);
                                   await Future.delayed(const Duration(milliseconds: 300));
                                   setState(() => _isLoading = false);
@@ -517,7 +443,8 @@ class _AddDeckPageState extends State<AddDeckPage> {
                               }else{
                                 try{
                                   //Send and retrieve ai
-                                  flashCardDataList = await _flashcardAiService.sendAndRequestDataToGemini(
+                                  retrievedDeckId = await _flashcardAiService.sendAndRequestDataToGemini(
+                                      deckTitle: deckTitle,
                                       id: widget.userId,
                                       subject: _subjectController.text.trim(),
                                       topic: _topicController.text.trim(),
@@ -531,7 +458,6 @@ class _AddDeckPageState extends State<AddDeckPage> {
                                   showInformationDialog(context, "Error while creating Deck!", e.message.toString());
                                   return;
                                 }catch(e){
-                                  print(flashCardDataList);
                                   print(e);
                                   await Future.delayed(const Duration(milliseconds: 300));
                                   setState(() => _isLoading = false);
@@ -541,7 +467,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                                 }
                               }
 
-                              if (flashCardDataList.isEmpty) {
+                              if (retrievedDeckId.isEmpty) {
                                 await Future.delayed(const Duration(milliseconds: 300));
                                 setState(() => _isLoading = false);
                                 showInformationDialog(
@@ -555,26 +481,13 @@ class _AddDeckPageState extends State<AddDeckPage> {
                                     '\nPlease check your input and try again' );
 
                               } else {
+                                FlashcardService _flashcardService = FlashcardService();
                                 // If sendData is successful, navigate to ViewDeckPage
                                 if(_deckTitleController.text.isNotEmpty){
-                                  FlashcardService _flashCardService = FlashcardService();
 
-                                  // Default cover photo in firebase
-                                  String uploadedPhotoUrl = 'https://firebasestorage.googleapis.com/v0/b/deck-f429c.appspot.com/o/deckCovers%2Fdefault%2FdeckDefault.png?alt=media&token=de6ac50d-13d0-411c-934e-fbeac5b9f6e0';
-
-                                  if(coverPhoto != 'no_photo'){
-                                    uploadedPhotoUrl = await _flashCardService.uploadImageToFirebase(coverPhoto, widget.userId.toString());
-                                  }
-
-                                  Deck? newDeck = await _flashCardService.addDeck(widget.userId, _deckTitleController.text.toString(), uploadedPhotoUrl);
+                                  Deck? newDeck = await _flashCardService.getDecksByUserIdAndDeckId(widget.userId, retrievedDeckId);
+                                  print(newDeck);
                                   if(newDeck != null){
-                                    //Loop through the list and transfer info from response to the deck
-                                    for(Cardai aiResponse in flashCardDataList){
-                                      newDeck.addQuestionToDeck(
-                                          aiResponse.question.toString(),
-                                          aiResponse.answer.toString()
-                                      );
-                                    }
 
                                     Navigator.pop(context, newDeck);
                                     widget.decks.add(newDeck);

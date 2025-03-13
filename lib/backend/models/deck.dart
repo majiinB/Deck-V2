@@ -64,7 +64,7 @@ class Deck{
       CollectionReference questionsCollection = _firestore
           .collection('decks')
           .doc(deckId)
-          .collection('questions');
+          .collection('flashcards');
 
       // Query the collection to get the documents
       QuerySnapshot querySnapshot = await questionsCollection
@@ -73,8 +73,8 @@ class Deck{
 
       // Iterate through the query snapshot to extract document data
       for (var doc in querySnapshot.docs) {
-        String question = (doc.data() as Map<String, dynamic>)['question'];
-        String answer = (doc.data() as Map<String, dynamic>)['answer'];
+        String question = (doc.data() as Map<String, dynamic>)['definition'];
+        String answer = (doc.data() as Map<String, dynamic>)['term'];
         bool isStarred = (doc.data() as Map<String, dynamic>)['is_starred'];
         bool isDeleted = (doc.data() as Map<String, dynamic>)['is_deleted'];
         String cardId = doc.id;

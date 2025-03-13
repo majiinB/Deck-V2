@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:deck/backend/config/firebase_remote_config.dart';
 import 'package:deck/backend/config/gemini_config.dart';
 import 'package:deck/backend/custom_exceptions/api_exception.dart';
 import 'package:deck/backend/flashcard/flashcard_utils.dart';
@@ -36,6 +35,9 @@ class FlashcardAiService {
     );
 
     final result = await model.generateContent([Content.text(prompt)]);
+    print(result.text); // If it has a `toJson` method, it will show its JSON representation
+    print(result.toString()); // Might give useful information
+
     Map<String, dynamic> jsonData = utils.extractGoogleAIJsonFromText(result.text);
 
     if (jsonData.isNotEmpty) {
@@ -55,7 +57,7 @@ class FlashcardAiService {
         return flashCards; // Return any flashcards created so far.
       }
     }else{
-      throw ApiException(400, 'Error: The AI did not respond please try again');
+      // throw ApiException(400, 'Error: The AI did not respond please try again');
     }
     return flashCards;
   }
@@ -67,7 +69,7 @@ class FlashcardAiService {
     bool toReturn = true;
     try{
       final response = await http.get(
-        Uri.parse('https://zdt8v319-3000.asse.devtunnels.ms/hi'), // API endpoint
+        Uri.parse('https://twcs3dkc-3000.asse.devtunnels.ms/v2/deck/hi'), // API endpoint
       );
 
       if(response.statusCode == 200){
@@ -103,13 +105,15 @@ class FlashcardAiService {
   /// - [IncompleteRequestBodyException], [NumberOfCardsException], [TextExtractionException],
   ///   [FileDeletionException], [NoInformationException], [MessageRouteException],
   ///   [InternalServerErrorException]: Specific exceptions based on different status codes.
-  Future<List<Cardai>> sendAndRequestDataToGemini({
+  Future<String> sendAndRequestDataToGemini({
+    required String deckTitle,
     required String id,              // Unique identifier for the API request.
     required String subject,         // Subject of the flashcards.
     required String topic,           // Topic within the subject.
     required String addDescription,  // Additional description or context.
-    required String pdfFileName,     // Name of the associated PDF file.
-    required String pdfFileExtension, // File extension of the PDF (e.g., '.pdf').
+    String pdfFileName = "none",     // Name of the associated PDF file.
+    String pdfFileExtension = "none", // File extension of the PDF (e.g., '.pdf').
+    String coverPhotoRef = "",
     required int numberOfQuestions,  // Number of questions to generate.
   }) async {
 
@@ -118,54 +122,52 @@ class FlashcardAiService {
       throw ApiException(500, 'Error: API unavailable');
     }
 
-    // Construct the request body in JSON format.
-    Map<String, dynamic> requestBody = {
-      'subject': subject,
-      'topic': topic,
-      'numberOfQuestions': numberOfQuestions,
-      'fileName': pdfFileName,
-      'addDescription': addDescription,
-      'fileExtension': pdfFileExtension
-    };
+    Map<String, dynamic> requestBody;
+
+    if(pdfFileName != "none" && pdfFileExtension != "none"){
+      // Construct the request body in JSON format.
+      requestBody = {
+        'deckTitle': deckTitle,
+        'coverPhotoRef': coverPhotoRef,
+        'subject': subject,
+        'topic': topic,
+        'numberOfQuestions': numberOfQuestions,
+        'fileName': pdfFileName,
+        'addDescription': addDescription,
+        'fileExtension': pdfFileExtension
+      };
+    }else{
+      // Construct the request body in JSON format.
+      requestBody = {
+        'deckTitle': deckTitle,
+        'coverPhotoRef': coverPhotoRef,
+        'subject': subject,
+        'topic': topic,
+        'numberOfQuestions': numberOfQuestions,
+        'addDescription': addDescription,
+      };
+    }
 
     // Send a POST request to the API with the request body and headers.
     final response = await http.post(
-      Uri.parse('https://zdt8v319-3000.asse.devtunnels.ms/prompt/v2/gemini/$id'), // API endpoint.
+      Uri.parse('https://twcs3dkc-3000.asse.devtunnels.ms/v2/deck/generate/$id'), // API endpoint.
       body: jsonEncode(requestBody), // JSON-encoded request body.
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8', // Specify content type as JSON.
+        'Origin': 'https://frontend.com'
       },
     );
-    print(response.statusCode); // Log the status code for debugging.
+    print("status code from method ${response.statusCode}"); // Log the status code for debugging.
 
     // Check if the response was successful (status code 200).
     if (response.statusCode == 200) {
-      List<Cardai> flashCards = []; // List to store flashcards.
 
       // Parse the response body as a JSON object.
       var jsonData = jsonDecode(response.body) as Map<String, dynamic>;
-      print(jsonData); // Log parsed data for debugging.
+      var data = jsonData['data'];
+      var deckId = data['deckId'];
 
-      // If the JSON data is non-empty, process it.
-      if (jsonData.isNotEmpty) {
-        try {
-          // Extract the list of questions from the JSON response.
-          List<dynamic> questionsList = jsonData['questions'];
-
-          // Create [Cardai] objects from the question-answer pairs.
-          for (var questionAnswerPair in questionsList) {
-            String question = questionAnswerPair['question'];
-            String answer = questionAnswerPair['answer'];
-            Cardai flashcard = Cardai(question: question, answer: answer);
-            flashCards.add(flashcard); // Add to the list.
-          }
-        } catch (e) {
-          print(e); // Log any errors during processing.
-          return flashCards; // Return any flashcards created so far.
-        }
-      }
-
-      return flashCards; // Return the generated flashcards.
+      return deckId; // Return the ID of generated deck.
 
     } else {
       // Handle errors based on status codes using a switch-case.
