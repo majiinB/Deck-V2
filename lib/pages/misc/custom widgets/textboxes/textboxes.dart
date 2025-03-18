@@ -21,6 +21,7 @@ class BuildTextBox extends StatefulWidget {
   final bool isMultiLine;
   final bool isReadOnly;
   final TextEditingController? controller;
+  final ValueChanged<String>? onChanged;
   final VoidCallback? onTap;
 
   const BuildTextBox({
@@ -34,6 +35,7 @@ class BuildTextBox extends StatefulWidget {
     this.onTap,
     this.isMultiLine = false,
     this.isReadOnly = false,
+    this.onChanged,
   });
 
   @override
@@ -113,6 +115,7 @@ class BuildTextBoxState extends State<BuildTextBox> {
         )
             : null,
       ),
+      onChanged: widget.onChanged,
       obscureText: widget.showPassword ? _obscureText : false,
     );
   }
