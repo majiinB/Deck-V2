@@ -26,6 +26,7 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: DeckColors.backgroundColor,
       appBar: const AuthBar(
         automaticallyImplyLeading: true,
@@ -38,7 +39,8 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
         children: [
           Expanded(
             child: SingleChildScrollView(
-                  padding: const EdgeInsets.only(top: 20),
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              padding: const EdgeInsets.only(top: 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
