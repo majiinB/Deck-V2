@@ -278,7 +278,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
                 itemCount: _filteredDecks.length,
                 itemBuilder: (context, index) {
                   return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 6.0),
+                    padding: const EdgeInsets.symmetric(vertical: 7.0),
                     child: BuildDeckContainer(
                       deckCoverPhotoUrl: _filteredDecks[index].coverPhoto,
                       titleOfDeck: _filteredDecks[index].title,
