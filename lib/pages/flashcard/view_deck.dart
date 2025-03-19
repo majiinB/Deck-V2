@@ -13,6 +13,7 @@ import 'package:deck/pages/misc/widget_method.dart';
 // import 'package:google_fonts/google_fonts.dart';
 
 import '../../backend/models/deck.dart';
+import '../misc/custom widgets/appbar/auth_bar.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
 import '../misc/custom widgets/buttons/floating_action_button.dart';
 import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
@@ -32,18 +33,22 @@ class ViewDeckPage extends StatefulWidget {
 
 class _ViewDeckPageState extends State<ViewDeckPage> {
   String coverPhoto = "no_photo";
+  String username = '';
+  String description = '';
   List<Cards> _cardsCollection = [];
   List<Cards> _starredCardCollection = [];
   List<Cards> _filteredCardsCollection = [];
   List<Cards> _filteredStarredCardCollection = [];
   int numberOfCards = 0;
   final TextEditingController _searchController = TextEditingController();
+  User? currentUser;
 
   @override
   void initState() {
     super.initState();
     _initDeckCards();
     _searchController.addListener(_filterFlashcards);
+    _getCurrentUser();
   }
 
   void _initDeckCards() async {
@@ -94,6 +99,13 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
     super.dispose();
   }
 
+  ///Retrieve the currently signed-in user from Firebase Authentication
+  void _getCurrentUser() {
+    setState(() {
+      currentUser = FirebaseAuth.instance.currentUser;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     double topPadding =
@@ -103,7 +115,14 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
 
     return SafeArea(
       child: Scaffold(
-        floatingActionButton: DeckFAB(
+        backgroundColor: DeckColors.backgroundColor,
+        appBar: const AuthBar(
+          automaticallyImplyLeading: true,
+          title: 'View Deck',
+          color: DeckColors.primaryColor,
+          fontSize: 24,
+        ),
+        /*floatingActionButton: DeckFAB(
           text: "Add FlashCard",
           fontSize: 12,
           icon: Icons.add,
@@ -128,11 +147,6 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
               });
             }
           },
-        ),
-        /*appBar: const DeckBar(
-          title: 'View Deck',
-          color: DeckColors.white,
-          fontSize: 24,
         ),*/
         body: SingleChildScrollView(
           //padding: const EdgeInsets.all(20),
@@ -188,102 +202,12 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                   ),
                 ),*/
               Padding(
-                padding: const EdgeInsets.only(left: 5, top: 20.0, right: 20),
-                child: Row(
-                  children: [
-                    IconButton(
-                      icon: const Icon(DeckIcons.back_arrow,
-                          color: DeckColors.white, size: 24),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                    Spacer(),
-                    BuildButton(
-                      onPressed: () async {
-                        var cards = await widget.deck.getCard();
-                        var starredCards = [];
-                        var noStarCard = [];
-                        var joinedCards = [];
-
-                        for (int i = 0; i < cards.length; i++) {
-                          if (cards[i].isStarred) {
-                            starredCards.add(cards[i]);
-                          } else {
-                            noStarCard.add(cards[i]);
-                          }
-                        }
-
-                        FlashcardUtils _flashcardUtils = FlashcardUtils();
-
-                        // Shuffle cards
-                        if (starredCards.isNotEmpty)
-                          _flashcardUtils.shuffleList(starredCards);
-                        if (noStarCard.isNotEmpty)
-                          _flashcardUtils.shuffleList(noStarCard);
-
-                        joinedCards = starredCards + noStarCard;
-
-                        if (joinedCards.isNotEmpty) {
-                          AuthService _authService = AuthService();
-                          User? user = _authService.getCurrentUser();
-                          if (user != null) {
-                            try {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => PlayMyDeckPage(
-                                          cards: joinedCards,
-                                          deck: widget.deck,
-                                        )),
-                              );
-
-                              FlashcardService _flashCardService =
-                                  FlashcardService();
-                              await _flashCardService.addDeckLogRecord(
-                                  deckId: widget.deck.deckId.toString(),
-                                  title: widget.deck.title.toString(),
-                                  userId: user.uid.toString(),
-                                  visitedAt: DateTime.now());
-                              FlashcardUtils.updateLatestReview.value = true;
-                            } catch (e) {
-                              print('View Deck Error: $e');
-
-                              ///display error
-                              showInformationDialog(
-                                  context,
-                                  "Error viewing deck",
-                                  "A problem occured while trying to view deck. Please try again.");
-                            }
-                          }
-                        } else {
-                          ///display error
-                          showInformationDialog(context, "Error viewing deck",
-                              "The deck has no card please add a card first before playing.");
-                        }
-                      },
-                      buttonText: 'Play My Deck',
-                      height: 35,
-                      width: 170,
-                      radius: 20,
-                      backgroundColor: DeckColors.primaryColor,
-                      textColor: DeckColors.white,
-                      fontSize: 16,
-                      borderWidth: 0,
-                      borderColor: Colors.transparent,
-                      icon: Icons.play_arrow_rounded,
-                      paddingIconText: 3,
-                      iconColor: DeckColors.white,
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
                 padding: const EdgeInsets.only(
                     top: 15, left: 20, right: 20, bottom: 20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    ///Start of deck title, made by who and description
                     Text(
                       widget.deck.title.toString(),
                       overflow: TextOverflow.visible,
@@ -291,19 +215,157 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                         fontFamily: 'Fraiche',
                         color: DeckColors.primaryColor,
                         fontSize: 32,
+                      ),
+                    ),
+                    Text(
+                      'By: $username',
+                      overflow: TextOverflow.visible,
+                      style: const TextStyle(
+                        fontFamily: 'Nunito-Bold',
+                        color: DeckColors.primaryColor,
+                        fontSize: 16,
                         fontWeight: FontWeight.w900,
                       ),
                     ),
+                    Text(
+                      '$description',
+                      overflow: TextOverflow.visible,
+                      style: const TextStyle(
+                        fontFamily: 'Nunito-Regular',
+                        color: DeckColors.primaryColor,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                    ///-------E N D ----------
                     Padding(
-                      padding: EdgeInsets.only(top: 10),
-                      child: Text(
-                        '$numberOfCards cards',
-                        overflow: TextOverflow.visible,
-                        style: const TextStyle(
-                          fontFamily: 'Nunito-Regular',
-                          fontSize: 16,
-                          color: DeckColors.white,
-                        ),
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Row(
+                        children: [
+                          Text(
+                            '$numberOfCards cards',
+                            overflow: TextOverflow.visible,
+                            style: const TextStyle(
+                              fontFamily: 'Nunito-Regular',
+                              fontSize: 16,
+                              color: DeckColors.primaryColor,
+                            ),
+                          ),
+                          Spacer(),
+                          ///this is used sana to check if the currently signed-in user's UID matches the deck owner's UID
+                          //if (currentUser?.uid == widget.deck.ownerUid)
+                          Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: BuildButton(
+                                onPressed: () async {
+                                  final newCard = await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => AddFlashcardPage(
+                                              deck: widget.deck,
+                                            )),
+                                  );
+                                  if (newCard != null) {
+                                    setState(() {
+                                      _cardsCollection.add(newCard);
+                                      if (newCard.isStarred) {
+                                        _starredCardCollection.add(newCard);
+                                      }
+                                      _filterFlashcards();
+                                      numberOfCards = _cardsCollection.length;
+                                    });
+                                  }
+                                },
+                                buttonText: 'Add',
+                                icon: Icons.add,
+                                paddingIconText: 3,
+                                iconColor: DeckColors.primaryColor,
+                                height: 35,
+                                width: 110,
+                                radius: 20,
+                                backgroundColor: DeckColors.deckYellow,
+                                textColor: DeckColors.primaryColor,
+                                fontSize: 16,
+                                borderWidth: 1,
+                                borderColor: DeckColors.primaryColor),
+                          ),
+                          BuildButton(
+                            onPressed: () async {
+                              var cards = await widget.deck.getCard();
+                              var starredCards = [];
+                              var noStarCard = [];
+                              var joinedCards = [];
+
+                              for (int i = 0; i < cards.length; i++) {
+                                if (cards[i].isStarred) {
+                                  starredCards.add(cards[i]);
+                                } else {
+                                  noStarCard.add(cards[i]);
+                                }
+                              }
+
+                              FlashcardUtils _flashcardUtils = FlashcardUtils();
+
+                              // Shuffle cards
+                              if (starredCards.isNotEmpty)
+                                _flashcardUtils.shuffleList(starredCards);
+                              if (noStarCard.isNotEmpty)
+                                _flashcardUtils.shuffleList(noStarCard);
+
+                              joinedCards = starredCards + noStarCard;
+
+                              if (joinedCards.isNotEmpty) {
+                                AuthService _authService = AuthService();
+                                User? user = _authService.getCurrentUser();
+                                if (user != null) {
+                                  try {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => PlayMyDeckPage(
+                                            cards: joinedCards,
+                                            deck: widget.deck,
+                                          )),
+                                    );
+
+                                    FlashcardService _flashCardService =
+                                    FlashcardService();
+                                    await _flashCardService.addDeckLogRecord(
+                                        deckId: widget.deck.deckId.toString(),
+                                        title: widget.deck.title.toString(),
+                                        userId: user.uid.toString(),
+                                        visitedAt: DateTime.now());
+                                    FlashcardUtils.updateLatestReview.value = true;
+                                  } catch (e) {
+                                    print('View Deck Error: $e');
+
+                                    ///display error
+                                    showInformationDialog(
+                                        context,
+                                        "Error viewing deck",
+                                        "A problem occured while trying to view deck. Please try again.");
+                                  }
+                                }
+                              } else {
+                                ///display error
+                                showInformationDialog(context, "Error viewing deck",
+                                    "The deck has no card please add a card first before playing.");
+                              }
+                            },
+                            buttonText: 'Learn',
+                            height: 35,
+                            width: 110,
+                            radius: 20,
+                            backgroundColor: DeckColors.primaryColor,
+                            textColor: DeckColors.white,
+                            fontSize: 16,
+                            borderWidth: 1,
+                            borderColor: DeckColors.primaryColor,
+                            icon: Icons.play_arrow_rounded,
+                            paddingIconText: 3,
+                            iconColor: DeckColors.white,
+                          ),
+                        ],
                       ),
                     ),
                     if (_cardsCollection.isNotEmpty ||
@@ -370,7 +432,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                 _filteredCardsCollection[index]
                                                     .answer,
                                             onDelete: () {
-                                              Cards removedCard =
+                                              /*Cards removedCard =
                                                   _filteredCardsCollection[
                                                       index];
                                               final String deletedTitle =
@@ -467,7 +529,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                         _cardsCollection.length;
                                                   });
                                                 },
-                                              );
+                                              );*/
                                             },
                                             enableSwipeToRetrieve: false,
                                             onTap: () {
@@ -539,6 +601,99 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                 }
                                               });
                                             },
+                                            trashOnPressed: () {
+                                              Cards removedCard =
+                                              _filteredStarredCardCollection[
+                                              index];
+                                              final String starredDeletedTitle =
+                                                  removedCard.question;
+                                              setState(() {
+                                                _cardsCollection.removeWhere(
+                                                        (card) =>
+                                                    card.cardId ==
+                                                        removedCard.cardId);
+                                                _filteredCardsCollection
+                                                    .removeWhere((card) =>
+                                                card.cardId ==
+                                                    removedCard.cardId);
+                                                _filteredStarredCardCollection
+                                                    .removeAt(index);
+                                                _starredCardCollection
+                                                    .removeWhere((card) =>
+                                                card.cardId ==
+                                                    removedCard.cardId);
+                                                numberOfCards =
+                                                    _cardsCollection.length;
+                                              });
+                                              showConfirmationDialog(
+                                                context,
+                                                "Delete Item",
+                                                "Are you sure you want to delete '$starredDeletedTitle'?",
+                                                    () async {
+                                                  try {
+                                                    await removedCard
+                                                        .updateDeleteStatus(
+                                                        true,
+                                                        widget.deck.deckId);
+                                                  } catch (e) {
+                                                    print(
+                                                        'View Deck Error: $e');
+                                                    showInformationDialog(
+                                                        context,
+                                                        'Card Deletion Unsuccessful',
+                                                        'An error occurred during the deletion process please try again');
+                                                    setState(() {
+                                                      _cardsCollection
+                                                          .add(removedCard);
+                                                      FlashcardUtils()
+                                                          .sortByQuestion(
+                                                          _cardsCollection);
+                                                      _filteredCardsCollection
+                                                          .add(removedCard);
+                                                      FlashcardUtils()
+                                                          .sortByQuestion(
+                                                          _filteredCardsCollection);
+                                                      _filteredStarredCardCollection
+                                                          .add(removedCard);
+                                                      FlashcardUtils()
+                                                          .sortByQuestion(
+                                                          _filteredStarredCardCollection);
+                                                      _starredCardCollection
+                                                          .add(removedCard);
+                                                      FlashcardUtils()
+                                                          .sortByQuestion(
+                                                          _starredCardCollection);
+                                                      numberOfCards =
+                                                          _cardsCollection
+                                                              .length;
+                                                    });
+                                                  }
+                                                },
+                                                    () {
+                                                  setState(() {
+                                                    _cardsCollection
+                                                        .add(removedCard);
+                                                    FlashcardUtils()
+                                                        .sortByQuestion(
+                                                        _cardsCollection);
+                                                    _filteredCardsCollection
+                                                        .add(removedCard);
+                                                    FlashcardUtils().sortByQuestion(
+                                                        _filteredCardsCollection);
+                                                    _filteredStarredCardCollection
+                                                        .add(removedCard);
+                                                    FlashcardUtils().sortByQuestion(
+                                                        _filteredStarredCardCollection);
+                                                    _starredCardCollection
+                                                        .add(removedCard);
+                                                    FlashcardUtils().sortByQuestion(
+                                                        _starredCardCollection);
+                                                    numberOfCards =
+                                                        _cardsCollection.length;
+                                                  });
+                                                },
+                                              );
+                                            },
                                           ),
                                         );
                                       },
@@ -596,7 +751,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                         index]
                                                     .answer,
                                             onDelete: () {
-                                              Cards removedCard =
+                                              /*Cards removedCard =
                                                   _filteredStarredCardCollection[
                                                       index];
                                               final String starredDeletedTitle =
@@ -686,7 +841,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                         _cardsCollection.length;
                                                   });
                                                 },
-                                              );
+                                              );*/
                                             },
                                             enableSwipeToRetrieve: false,
                                             onTap: () {
@@ -736,6 +891,99 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                 }
                                               });
                                             },
+                                            trashOnPressed: () {
+                                              Cards removedCard =
+                                              _filteredStarredCardCollection[
+                                              index];
+                                              final String starredDeletedTitle =
+                                                  removedCard.question;
+                                              setState(() {
+                                                _cardsCollection.removeWhere(
+                                                        (card) =>
+                                                    card.cardId ==
+                                                        removedCard.cardId);
+                                                _filteredCardsCollection
+                                                    .removeWhere((card) =>
+                                                card.cardId ==
+                                                    removedCard.cardId);
+                                                _filteredStarredCardCollection
+                                                    .removeAt(index);
+                                                _starredCardCollection
+                                                    .removeWhere((card) =>
+                                                card.cardId ==
+                                                    removedCard.cardId);
+                                                numberOfCards =
+                                                    _cardsCollection.length;
+                                              });
+                                              showConfirmationDialog(
+                                                context,
+                                                "Delete Item",
+                                                "Are you sure you want to delete '$starredDeletedTitle'?",
+                                                    () async {
+                                                  try {
+                                                    await removedCard
+                                                        .updateDeleteStatus(
+                                                        true,
+                                                        widget.deck.deckId);
+                                                  } catch (e) {
+                                                    print(
+                                                        'View Deck Error: $e');
+                                                    showInformationDialog(
+                                                        context,
+                                                        'Card Deletion Unsuccessful',
+                                                        'An error occurred during the deletion process please try again');
+                                                    setState(() {
+                                                      _cardsCollection
+                                                          .add(removedCard);
+                                                      FlashcardUtils()
+                                                          .sortByQuestion(
+                                                          _cardsCollection);
+                                                      _filteredCardsCollection
+                                                          .add(removedCard);
+                                                      FlashcardUtils()
+                                                          .sortByQuestion(
+                                                          _filteredCardsCollection);
+                                                      _filteredStarredCardCollection
+                                                          .add(removedCard);
+                                                      FlashcardUtils()
+                                                          .sortByQuestion(
+                                                          _filteredStarredCardCollection);
+                                                      _starredCardCollection
+                                                          .add(removedCard);
+                                                      FlashcardUtils()
+                                                          .sortByQuestion(
+                                                          _starredCardCollection);
+                                                      numberOfCards =
+                                                          _cardsCollection
+                                                              .length;
+                                                    });
+                                                  }
+                                                },
+                                                    () {
+                                                  setState(() {
+                                                    _cardsCollection
+                                                        .add(removedCard);
+                                                    FlashcardUtils()
+                                                        .sortByQuestion(
+                                                        _cardsCollection);
+                                                    _filteredCardsCollection
+                                                        .add(removedCard);
+                                                    FlashcardUtils().sortByQuestion(
+                                                        _filteredCardsCollection);
+                                                    _filteredStarredCardCollection
+                                                        .add(removedCard);
+                                                    FlashcardUtils().sortByQuestion(
+                                                        _filteredStarredCardCollection);
+                                                    _starredCardCollection
+                                                        .add(removedCard);
+                                                    FlashcardUtils().sortByQuestion(
+                                                        _starredCardCollection);
+                                                    numberOfCards =
+                                                        _cardsCollection.length;
+                                                  });
+                                                },
+                                              );
+                                          },
                                           ),
                                         );
                                       },

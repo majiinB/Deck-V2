@@ -1,4 +1,5 @@
 import 'package:deck/pages/misc/colors.dart';
+import 'package:deck/pages/misc/custom%20widgets/buttons/icon_button.dart';
 import 'package:deck/pages/misc/deck_icons.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,7 @@ class BuildContainerOfFlashCards extends StatefulWidget {
   bool isStarShaded;
   final VoidCallback onStarShaded;
   final VoidCallback onStarUnshaded;
+  final VoidCallback trashOnPressed;
 
   BuildContainerOfFlashCards({
     super.key,
@@ -31,6 +33,7 @@ class BuildContainerOfFlashCards extends StatefulWidget {
     required this.titleOfFlashCard,
     required this.contentOfFlashCard,
     this.onTap,
+    required this.trashOnPressed,
   });
 
   @override
@@ -40,7 +43,7 @@ class BuildContainerOfFlashCards extends StatefulWidget {
 
 class BuildContainerOfFlashCardsState extends State<BuildContainerOfFlashCards>
     with SingleTickerProviderStateMixin {
-  Color _containerColor = DeckColors.grayPopup;
+  Color _containerColor = DeckColors.white;
 
   @override
   Widget build(BuildContext context) {
@@ -48,94 +51,108 @@ class BuildContainerOfFlashCardsState extends State<BuildContainerOfFlashCards>
       onTapDown: (_) {
         setState(() {
           if (widget.onTap != null) {
-            _containerColor = Colors.grey.withOpacity(0.7);
+            _containerColor = Colors.white.withOpacity(0.1);
           }
         });
       },
       onTapUp: (_) {
         setState(() {
-          _containerColor = DeckColors.gray;
+          _containerColor = DeckColors.white;
         });
         widget.onTap?.call();
       },
       onTapCancel: () {
         setState(() {
-          _containerColor = DeckColors.gray;
+          _containerColor = DeckColors.white;
         });
       },
-      child: SwipeToDeleteAndRetrieve(
-        onDelete: widget.onDelete,
-        onRetrieve: widget.enableSwipeToRetrieve ? widget.onRetrieve : null,
-        enableRetrieve: widget.enableSwipeToRetrieve,
-        child: Container(
-          height: 200,
-          padding: const EdgeInsets.all(20.0),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15.0),
-            color: _containerColor,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      widget.titleOfFlashCard,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontFamily: 'Nunito-Bold',
-                        fontSize: 16,
-                        color: DeckColors.white,
-                      ),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        // Toggle the state of isStarShaded
-                        widget.isStarShaded = !widget.isStarShaded;
-                        if (widget.isStarShaded) {
-                          widget.onStarShaded();
-                        } else {
-                          widget.onStarUnshaded();
-                        }
-                      });
-                    },
-                    child: Icon(
-                      size: 24,
-                      widget.isStarShaded ? Icons.star : Icons.star_border,
-                      color: widget.isStarShaded
-                          ? DeckColors.primaryColor
-                          : DeckColors.primaryColor,
-                    ),
-                  ),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 10.0),
-                child: Container(
-                  color: DeckColors.white,
-                  width: MediaQuery.of(context).size.width,
-                  height: 1,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 20),
-                child: Text(
-                  widget.contentOfFlashCard,
-                  maxLines: 4,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.justify,
-                  style: const TextStyle(
-                    fontFamily: 'Nunito-Regular',
-                    fontSize: 16,
-                    color: DeckColors.white,
-                  ),
-                ),
+      child: Container(
+        height: 200,
+        padding: const EdgeInsets.all(20.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15.0),
+          color: _containerColor,
+            border: Border.all(
+              color: DeckColors.primaryColor,
+              width: 2.0,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                spreadRadius: 2,
+                blurRadius: 20,
+                offset: const Offset(0, 4),
               )
-            ],
-          ),
+            ]
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    widget.titleOfFlashCard,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontFamily: 'Nunito-Bold',
+                      fontSize: 16,
+                      color: DeckColors.primaryColor,
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      // Toggle the state of isStarShaded
+                      widget.isStarShaded = !widget.isStarShaded;
+                      if (widget.isStarShaded) {
+                        widget.onStarShaded();
+                      } else {
+                        widget.onStarUnshaded();
+                      }
+                    });
+                  },
+                  child: Icon(
+                    size: 24,
+                    widget.isStarShaded ? Icons.star : Icons.star_border,
+                    color: widget.isStarShaded
+                        ? DeckColors.deckYellow
+                        : DeckColors.deckYellow,
+                  ),
+                ),
+                BuildIconButton(
+                    onPressed: widget.trashOnPressed,
+                    icon: DeckIcons.trash_bin,
+                    iconColor: DeckColors.primaryColor,
+                    backgroundColor: DeckColors.white,
+                    containerWidth: 40,
+                    containerHeight: 40)
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 10.0),
+              child: Container(
+                color: DeckColors.primaryColor,
+                width: MediaQuery.of(context).size.width,
+                height: 2,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 20),
+              child: Text(
+                widget.contentOfFlashCard,
+                maxLines: 4,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.justify,
+                style: const TextStyle(
+                  fontFamily: 'Nunito-Regular',
+                  fontSize: 16,
+                  color: DeckColors.primaryColor,
+                ),
+              ),
+            )
+          ],
         ),
       ),
     );

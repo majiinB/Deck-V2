@@ -77,8 +77,6 @@ class _AddDeckPageState extends State<AddDeckPage> {
         coverPhoto != 'no_photo';
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -130,7 +128,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(20.0),
+                    padding: const EdgeInsets.all(15.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -140,8 +138,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                             style: TextStyle(
                               fontFamily: 'Fraiche',
                               color: DeckColors.primaryColor,
-                              fontSize: 32,
-                              fontWeight: FontWeight.w900,
+                              fontSize: 40,
                             ),
                           ),
                         ),
