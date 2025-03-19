@@ -17,12 +17,16 @@ class AuthBar extends StatelessWidget implements PreferredSizeWidget {
     required this.title,
     required this.color,
     required this.fontSize,
+    this.rightIcon,
     this.automaticallyImplyLeading = false,
+    this.onRightIconPressed,
   });
   final String title;
   final Color color;
   final double fontSize;
+  final IconData? rightIcon;
   final bool automaticallyImplyLeading;
+  final VoidCallback? onRightIconPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +47,12 @@ class AuthBar extends StatelessWidget implements PreferredSizeWidget {
           ),
         ),
         centerTitle: true,
+        actions: [
+          if(rightIcon != null)
+            IconButton(
+                onPressed: onRightIconPressed,
+                icon: Icon(rightIcon))
+        ],
       ),
     );
   }
