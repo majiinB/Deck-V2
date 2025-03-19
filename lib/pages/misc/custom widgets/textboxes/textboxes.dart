@@ -23,6 +23,7 @@ class BuildTextBox extends StatefulWidget {
   final TextEditingController? controller;
   final ValueChanged<String>? onChanged;
   final VoidCallback? onTap;
+  final int wordLimit;
 
   const BuildTextBox({
     super.key,
@@ -36,6 +37,7 @@ class BuildTextBox extends StatefulWidget {
     this.isMultiLine = false,
     this.isReadOnly = false,
     this.onChanged,
+    this.wordLimit = 0,
   });
 
   @override
@@ -44,12 +46,17 @@ class BuildTextBox extends StatefulWidget {
 
 class BuildTextBoxState extends State<BuildTextBox> {
   bool _obscureText = true;
+  bool _isReadOnly = false;
 
+  //used to count words
+  int countWords(String text) {
+    return text.trim().split(RegExp(r'\s+')).length;
+  }
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       autofocus: false,
-      readOnly: widget.isReadOnly,
+      readOnly: _isReadOnly,
       onTap: widget.onTap,
       controller: widget.controller,
       initialValue: widget.initialValue,
@@ -115,7 +122,47 @@ class BuildTextBoxState extends State<BuildTextBox> {
         )
             : null,
       ),
-      onChanged: widget.onChanged,
+      onChanged: (text) {
+
+        //check if wordLimit must be applied on certain textboxes
+        if (widget.wordLimit > 0) {
+          int wordCount = countWords(text);
+
+          //check if word count reaches or exceeds the word limit
+          if (wordCount >= widget.wordLimit) {
+            if (wordCount == widget.wordLimit) {
+              //show dialog when word count reaches the limit
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: Text('Word Limit Reached'),
+                    content: Text('You have reached the ${widget.wordLimit - 1}-word limit!'),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('OK'),
+                      ),
+                    ],
+                  );
+                },
+              );
+            }
+
+            //Block further input by truncating the text to the word limit
+            widget.controller?.text = text.substring(0, text.lastIndexOf(" "));
+            widget.controller?.selection = TextSelection.fromPosition(
+              TextPosition(offset: widget.controller!.text.length),
+            );
+
+            return; //Prevent further typing
+          }
+        }
+        //Allow to change texts if no limit or under the limit
+        widget.onChanged?.call(text);
+      },
       obscureText: widget.showPassword ? _obscureText : false,
     );
   }

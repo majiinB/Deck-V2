@@ -87,7 +87,6 @@ class EditProfileState extends State<EditProfile> {
     });
   }
 
-
 ///---- E N D ----
 
   Future<void> updateAccountInformation(BuildContext context) async {
