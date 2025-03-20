@@ -31,7 +31,6 @@ import 'package:deck/pages/misc/colors.dart';
 /// - onConfirm: Callback function for when the confirm button is pressed.
 /// - onCancel: (Optional) Callback function for when the cancel button is pressed.
 ///
-/// The dialog prevents dismissal by tapping outside (barrierDismissible: false).
 
 class CustomConfirmDialog extends StatelessWidget {
   final String imagePath, title,message,button1,button2;

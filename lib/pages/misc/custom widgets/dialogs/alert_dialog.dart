@@ -1,20 +1,31 @@
 import 'package:flutter/material.dart';
 
 import '../../colors.dart';
+/// CustomAlertDialog - A simple, reusable alert dialog for displaying messages.
+///
+/// This dialog is designed for cases where only one button is needed
+/// (e.g., "OK" or "Confirm") without a cancel option.
+///
+/// Usage:
+/// showAlertDialog(
+///   context,
+///   "assets/images/imagename.png",
+///   "Title",
+///   "Message",
+///   "ButtonText", // Optional
+///   () {
+///     // Action when the button is clicked (optional)
+///   }
+/// );
+///
+/// Parameters:
+/// - imagePath: The path of the image to display in the dialog.
+/// - title: The title of the alert.
+/// - message: The message content of the dialog.
+/// - button1: (Optional) The text for the button, default is "OK".
+/// - onConfirm: (Optional) Callback function for when the button is pressed.
+///
 
-///custom dialog alerts. often used  for alerts na 1 button lng need tas walang cancel ganu
-///how to use this///
-
-///showAlertDialog(
-/// context,
-/// "assets/images/imagename.png",
-///  "title",
-///  "message",
-///  "buttontext" <-- OPTIONAL ONLY
-///    () {
-///    ACTION WHEN BUTTON  IS CLICKED <-- OPTIONAL ONLY
-///    }
-///);
 
 class CustomAlertDialog extends StatelessWidget {
   final String imagePath, title,message,button1 ;
