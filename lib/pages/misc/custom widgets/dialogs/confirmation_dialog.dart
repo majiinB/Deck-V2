@@ -40,25 +40,28 @@ class CustomConfirmDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      shape: RoundedRectangleBorder(
+      backgroundColor: DeckColors.white ,
+        shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15.0),
       ),
-      contentPadding: const EdgeInsets.all(10) ,
+      contentPadding: const EdgeInsets.all(20) ,
       content:Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Image.asset(imagePath, width: 50),
+            Image.asset(imagePath, width: 190, fit: BoxFit.fill,
+            ),
             const SizedBox(height: 5),
             Text(
               title,
-              style: const TextStyle(fontSize: 15, fontFamily: 'Fraiche'),
+              style: const TextStyle(color: DeckColors.primaryColor , fontSize: 25, fontFamily: 'Fraiche'),
               textAlign: TextAlign.center,),
             const SizedBox(height: 5),
             Text(
               message,
-              style: const TextStyle(fontSize: 15, fontFamily: 'Nunito-Regular'),
+              style: const TextStyle(color: DeckColors.primaryColor, fontSize: 15, fontFamily: 'Nunito-Regular'),
               textAlign: TextAlign.center,),
             const SizedBox(height: 5),
+
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: DeckColors.primaryColor,
@@ -67,18 +70,34 @@ class CustomConfirmDialog extends StatelessWidget {
               onPressed: () {
                 onConfirm();
               },
-              child: Text(button1, style: const TextStyle(color: DeckColors.white)),
+              child: Text(button1, style: const TextStyle(fontSize: 15, fontFamily: 'Nunito-Bold', color: DeckColors.white)),
             ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: DeckColors.primaryColor,
-                minimumSize: const Size(double.infinity, 40),
+            OutlinedButton(
+              style: ButtonStyle(
+                  minimumSize: MaterialStateProperty.all(const Size(double.infinity, 40)),
+
+                  side: MaterialStateProperty.all(
+                    BorderSide(
+                        width: 2 ,
+                        color: DeckColors.primaryColor
+                    )
+                )
               ),
               onPressed: () {
                 onCancel();
               },
-              child: Text(button2, style: const TextStyle(color: DeckColors.primaryColor)),
+              child: Text(button2, style: const TextStyle(fontSize: 15, fontFamily: 'Nunito-Bold', color: DeckColors.primaryColor)),
             ),
+            // ElevatedButton(
+            //   style: ElevatedButton.styleFrom(
+            //     backgroundColor: DeckColors.white,
+            //     minimumSize: const Size(double.infinity, 40),
+            //   ),
+            //   onPressed: () {
+            //     onCancel();
+            //   },
+            //   child: Text(button2, style: const TextStyle(fontSize: 15, fontFamily: 'Nunito-Regular', color: DeckColors.primaryColor)),
+            // ),
           ]
       ),
     );
