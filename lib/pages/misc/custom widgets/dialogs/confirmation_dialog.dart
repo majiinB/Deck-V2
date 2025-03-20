@@ -1,24 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:deck/pages/misc/colors.dart';
 
-
-///custom dialog alerts. often used  for alerts na 1 button lng need tas walang cancel ganu
-///how to use this///
-
-///showConfirmDialog(
-/// context,
-/// "assets/images/imagename.png",
-///  "title",
-///  "message",
-///  "buttontext1"
-///    () {
-///    ACTION WHEN AFFIRMATIVE BUTTON IS CLICKED
-///    }
-///  "buttontext2" <-- OPTIONAL ONLY
-///  () {
-///    ACTION WHEN CACEL BUTTON IS CLICKED <-- OPTIONAL ONLY
-///  }
-///);
+/// CustomConfirmDialog - A reusable confirmation dialog for displaying alerts.
+///
+/// This dialog presents a message with an image, a title, and one or two buttons.
+/// It is often used when a confirmation action is needed with or without a cancel option.
+///
+/// Usage:
+/// showConfirmDialog(
+///   context,
+///   "assets/images/imagename.png",
+///   "Title",
+///   "Message",
+///   "Confirm",
+///   () {
+///     // Action when confirm button is clicked
+///   },
+///   "Cancel", // Optional
+///   () {
+///     // Action when cancel button is clicked (optional)
+///   }
+/// );
+///
+/// Parameters:
+/// - imagePath: The path of the image to display in the dialog.
+/// - title: The title of the alert.
+/// - message: The message content of the dialog.
+/// - button1: The text for the confirm button.
+/// - button2: (Optional) The text for the cancel button, default is "Cancel".
+/// - onConfirm: Callback function for when the confirm button is pressed.
+/// - onCancel: (Optional) Callback function for when the cancel button is pressed.
+///
+/// The dialog prevents dismissal by tapping outside (barrierDismissible: false).
 
 class CustomConfirmDialog extends StatelessWidget {
   final String imagePath, title,message,button1,button2;
