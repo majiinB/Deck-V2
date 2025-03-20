@@ -416,8 +416,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                     padding: const EdgeInsets.only(top: 20.0),
                                     child: ListView.builder(
                                       shrinkWrap: true,
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
+                                      physics: const NeverScrollableScrollPhysics(),
                                       itemCount:
                                           _filteredCardsCollection.length,
                                       itemBuilder: (context, index) {

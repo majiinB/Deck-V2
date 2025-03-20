@@ -122,6 +122,8 @@ class BuildTextBoxState extends State<BuildTextBox> {
         )
             : null,
       ),
+
+      ///FOR COUNTING WORD LIMIT AND DETECTING CHANGES
       onChanged: (text) {
 
         //check if wordLimit must be applied on certain textboxes
@@ -163,6 +165,7 @@ class BuildTextBoxState extends State<BuildTextBox> {
         //Allow to change texts if no limit or under the limit
         widget.onChanged?.call(text);
       },
+      ///------ E N D -----------
       obscureText: widget.showPassword ? _obscureText : false,
     );
   }

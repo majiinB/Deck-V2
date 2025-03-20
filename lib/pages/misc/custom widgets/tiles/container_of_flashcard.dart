@@ -142,7 +142,7 @@ class BuildContainerOfFlashCardsState extends State<BuildContainerOfFlashCards>
               padding: const EdgeInsets.only(top: 20),
               child: Text(
                 widget.contentOfFlashCard,
-                maxLines: 4,
+                maxLines: 3,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.justify,
                 style: const TextStyle(

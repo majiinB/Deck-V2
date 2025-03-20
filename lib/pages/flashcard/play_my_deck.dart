@@ -1,9 +1,12 @@
 import 'package:deck/pages/misc/colors.dart';
+import 'package:deck/pages/misc/custom%20widgets/appbar/learn_mode_bar.dart';
+import 'package:deck/pages/misc/custom%20widgets/dialogs/confirmation_dialog.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 import 'package:deck/pages/misc/widget_method.dart';
 // import 'package:google_fonts/google_fonts.dart';
 import '../../backend/models/deck.dart';
+import '../misc/custom widgets/appbar/auth_bar.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
 
 class PlayMyDeckPage extends StatefulWidget {
@@ -32,45 +35,39 @@ class _PlayMyDeckPageState extends State<PlayMyDeckPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        /*appBar: const DeckBar(
-          title: 'play my deck',
-          color: DeckColors.white,
+        backgroundColor: DeckColors.backgroundColor,
+        appBar: LearnModeBar(
+          title: 'Study Mode',
+          color: DeckColors.primaryColor,
           fontSize: 24,
-        ),*/
+          onButtonPressed: () {
+            showConfirmationDialog(
+                context,
+                'Stop Playing?',
+                'Are you sure you want to stop? You will exit the study mode.',
+                    () {
+                      Navigator.of(context).pop();
+                    },
+                    () { }
+            );
+          },
+
+        ),
         body: Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.only(top: 15.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10.0),
-                child: BuildButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  buttonText: 'Stop Playing',
-                  height: 35,
-                  width: 170,
-                  radius: 20,
-                  backgroundColor: DeckColors.deckRed,
-                  textColor: DeckColors.white,
-                  fontSize: 16,
-                  borderWidth: 1,
-                  borderColor: DeckColors.accentColor,
-                  icon: Icons.play_arrow_rounded,
-                  paddingIconText: 3,
-                  iconColor: DeckColors.white,),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 10, bottom: 30.0),
+                padding: const EdgeInsets.only(top: 10, bottom: 30.0, left: 15.0, right: 15.0),
                 child: Text(
                   widget.deck.title.toString(),
                   overflow: TextOverflow.visible,
                   style: const TextStyle(
                     fontFamily: 'Fraiche',
                     color: DeckColors.primaryColor,
-                    fontSize: 32,
-                    fontWeight: FontWeight.w900,
+                    fontSize: 40,
+                    height: 1.1
                   ),
                 ),
               ),
@@ -85,13 +82,13 @@ class _PlayMyDeckPageState extends State<PlayMyDeckPage> {
                   },
                   itemBuilder: (context, index) {
                     return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
                       child: FlipCard(
                         front: buildFlipCard(widget.cards[index].question,
                             DeckColors.primaryColor, 'Fraiche',
                             "Tap to see answer"),
                         back: buildFlipCard(widget.cards[index].answer,
-                            DeckColors.white, 'Nunito',
+                            DeckColors.primaryColor, 'Nunito',
                             "Tap to see description"),
                       ),
                     );
@@ -100,14 +97,14 @@ class _PlayMyDeckPageState extends State<PlayMyDeckPage> {
               ),
               Padding(
                 padding: const EdgeInsets.only(
-                    bottom: 40.0, top: 20.0, left: 25.0, right: 25.0),
+                    bottom: 20.0, top: 10.0, left: 15.0, right: 15.0),
                 child: Container(
                   height: 60,
                   decoration: BoxDecoration(
-                      color: DeckColors.primaryColor,
+                      color: DeckColors.white,
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
-                        color: DeckColors.accentColor,
+                        color: DeckColors.primaryColor,
                         width: 2,
                       )
                   ),
@@ -118,7 +115,7 @@ class _PlayMyDeckPageState extends State<PlayMyDeckPage> {
                       children: [
                         IconButton(
                           icon: const Icon(Icons.arrow_back_ios_new_rounded),
-                          color: DeckColors.accentColor,
+                          color: DeckColors.primaryColor,
                           onPressed: () {
                             if (currentIndex > 0) {
                               pageController.previousPage(
@@ -132,7 +129,7 @@ class _PlayMyDeckPageState extends State<PlayMyDeckPage> {
                           '${currentIndex + 1} / ${widget.cards.length}',
                           style: const TextStyle(
                             fontFamily: 'Fraiche',
-                            color: DeckColors.accentColor,
+                            color: DeckColors.primaryColor,
                             fontSize: 24,
                             fontWeight: FontWeight.w900,
                             letterSpacing: 2,
@@ -140,7 +137,7 @@ class _PlayMyDeckPageState extends State<PlayMyDeckPage> {
                         ),
                         IconButton(
                           icon: const Icon(Icons.arrow_forward_ios_rounded),
-                          color: DeckColors.accentColor,
+                          color: DeckColors.primaryColor,
                           onPressed: () {
                             if (currentIndex < widget.cards.length - 1) {
                               pageController.nextPage(
@@ -155,6 +152,11 @@ class _PlayMyDeckPageState extends State<PlayMyDeckPage> {
                   ),
                 ),
               ),
+              Image.asset(
+                'assets/images/Deck-Bottom-Image.png',
+                fit: BoxFit.fitWidth,
+                width: MediaQuery.of(context).size.width,
+              ),
             ],
           ),
         ),
@@ -166,11 +168,11 @@ class _PlayMyDeckPageState extends State<PlayMyDeckPage> {
     return Container(
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: DeckColors.accentColor,
+        color: DeckColors.white,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: DeckColors.white,
-          width: 1,
+          color: DeckColors.primaryColor,
+          width: 2,
         ),
       ),
       child: Padding(
@@ -215,7 +217,7 @@ class _PlayMyDeckPageState extends State<PlayMyDeckPage> {
                 child: Container(
                   width: MediaQuery.of(context).size.width,
                   height: 2,
-                  color: DeckColors.white,
+                  color: DeckColors.primaryColor,
                 ),
               ),
               // Description text
@@ -223,7 +225,7 @@ class _PlayMyDeckPageState extends State<PlayMyDeckPage> {
                 description,
                 style: const TextStyle(
                   fontFamily: 'Nunito-Regular',
-                  color: DeckColors.white,
+                  color: DeckColors.primaryColor,
                   fontSize: 16,
                   fontStyle: FontStyle.italic,
                 ),
