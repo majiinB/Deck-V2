@@ -18,7 +18,7 @@ class _QuizIdentificationState extends State<QuizIdentification> {
   String title = '';
   String question = '';
   final answerController = TextEditingController();
-  int currentQuestionIndex = 0; // To track the current question
+  int currentQuestionIndex = 0; //track the current question
   List<Map<String, String>> questions = [
     {
       'question': 'sino project manager ng group odyssey',
@@ -38,7 +38,7 @@ class _QuizIdentificationState extends State<QuizIdentification> {
     },
   ];
 
-  // Initialize the first question
+  //initialize the first question
   @override
   void initState() {
     super.initState();
@@ -55,7 +55,7 @@ class _QuizIdentificationState extends State<QuizIdentification> {
       print('Incorrect!');
     }
 
-    // Move to the next question if available
+    //Move to the next question
     if (currentQuestionIndex < questions.length - 1) {
       setState(() {
         currentQuestionIndex++;
@@ -63,7 +63,7 @@ class _QuizIdentificationState extends State<QuizIdentification> {
         answerController.clear();
       });
     } else {
-      // End of quiz, show the dialog
+      //end of quiz, show the dialog
       showDialog(
           context: context,
           builder: (context){
