@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:deck/backend/auth/auth_service.dart';
 import 'package:deck/backend/flashcard/flashcard_service.dart';
 import 'package:deck/backend/models/deck.dart';
+import 'package:deck/pages/flashcard/Quiz%20Modes/quiz_mode_multChoice.dart';
 import 'package:deck/pages/flashcard/add_deck.dart';
 import 'package:deck/pages/flashcard/edit_deck.dart';
 import 'package:deck/pages/flashcard/view_deck.dart';
@@ -163,9 +164,6 @@ class _FlashcardPageState extends State<FlashcardPage> {
                         color: DeckColors.primaryColor, size: 32),
                     onPressed: () {
                       setState(() {
-                        Navigator.of(context).push(
-                          RouteGenerator.createRoute(const EditDeck()),
-                        );
                       });
                     },
                   )

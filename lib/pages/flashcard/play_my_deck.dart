@@ -51,7 +51,6 @@ class _PlayMyDeckPageState extends State<PlayMyDeckPage> {
                     () { }
             );
           },
-
         ),
         body: Padding(
           padding: const EdgeInsets.only(top: 15.0),

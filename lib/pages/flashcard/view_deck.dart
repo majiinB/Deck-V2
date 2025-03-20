@@ -17,6 +17,7 @@ import '../misc/custom widgets/appbar/auth_bar.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
 import '../misc/custom widgets/buttons/floating_action_button.dart';
 import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
+import '../misc/custom widgets/dialogs/learn_mode_dialog.dart';
 import '../misc/custom widgets/functions/if_collection_empty.dart';
 import '../misc/custom widgets/functions/tab_bar.dart';
 import '../misc/custom widgets/images/cover_image.dart';
@@ -290,7 +291,15 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                 borderColor: DeckColors.primaryColor),
                           ),
                           BuildButton(
-                            onPressed: () async {
+                            onPressed: (){
+                              showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (BuildContext context) => const LearnModeDialog(
+                                ),
+                              );
+                            },
+                            /*onPressed: () async {
                               var cards = await widget.deck.getCard();
                               var starredCards = [];
                               var noStarCard = [];
@@ -351,7 +360,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                 showInformationDialog(context, "Error viewing deck",
                                     "The deck has no card please add a card first before playing.");
                               }
-                            },
+                            },*/
                             buttonText: 'Learn',
                             height: 35,
                             width: 110,
@@ -601,22 +610,23 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                               });
                                             },
                                             trashOnPressed: () {
+                                              print("Recognized");
                                               Cards removedCard =
-                                              _filteredStarredCardCollection[
+                                              _filteredCardsCollection[
                                               index];
-                                              final String starredDeletedTitle =
+                                              final String deletedTitle =
                                                   removedCard.question;
                                               setState(() {
+                                                _filteredCardsCollection
+                                                    .removeAt(index);
                                                 _cardsCollection.removeWhere(
                                                         (card) =>
                                                     card.cardId ==
                                                         removedCard.cardId);
-                                                _filteredCardsCollection
+                                                _filteredStarredCardCollection
                                                     .removeWhere((card) =>
                                                 card.cardId ==
                                                     removedCard.cardId);
-                                                _filteredStarredCardCollection
-                                                    .removeAt(index);
                                                 _starredCardCollection
                                                     .removeWhere((card) =>
                                                 card.cardId ==
@@ -627,7 +637,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                               showConfirmationDialog(
                                                 context,
                                                 "Delete Item",
-                                                "Are you sure you want to delete '$starredDeletedTitle'?",
+                                                "Are you sure you want to delete '$deletedTitle'?",
                                                     () async {
                                                   try {
                                                     await removedCard
@@ -652,16 +662,19 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                       FlashcardUtils()
                                                           .sortByQuestion(
                                                           _filteredCardsCollection);
-                                                      _filteredStarredCardCollection
-                                                          .add(removedCard);
-                                                      FlashcardUtils()
-                                                          .sortByQuestion(
-                                                          _filteredStarredCardCollection);
-                                                      _starredCardCollection
-                                                          .add(removedCard);
-                                                      FlashcardUtils()
-                                                          .sortByQuestion(
-                                                          _starredCardCollection);
+                                                      if (removedCard
+                                                          .isStarred) {
+                                                        _filteredStarredCardCollection
+                                                            .add(removedCard);
+                                                        FlashcardUtils()
+                                                            .sortByQuestion(
+                                                            _filteredStarredCardCollection);
+                                                        _starredCardCollection
+                                                            .add(removedCard);
+                                                        FlashcardUtils()
+                                                            .sortByQuestion(
+                                                            _starredCardCollection);
+                                                      }
                                                       numberOfCards =
                                                           _cardsCollection
                                                               .length;
@@ -679,19 +692,24 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                         .add(removedCard);
                                                     FlashcardUtils().sortByQuestion(
                                                         _filteredCardsCollection);
-                                                    _filteredStarredCardCollection
-                                                        .add(removedCard);
-                                                    FlashcardUtils().sortByQuestion(
-                                                        _filteredStarredCardCollection);
-                                                    _starredCardCollection
-                                                        .add(removedCard);
-                                                    FlashcardUtils().sortByQuestion(
-                                                        _starredCardCollection);
+                                                    if (removedCard.isStarred) {
+                                                      _filteredStarredCardCollection
+                                                          .add(removedCard);
+                                                      FlashcardUtils()
+                                                          .sortByQuestion(
+                                                          _filteredStarredCardCollection);
+                                                      _starredCardCollection
+                                                          .add(removedCard);
+                                                      FlashcardUtils()
+                                                          .sortByQuestion(
+                                                          _starredCardCollection);
+                                                    }
                                                     numberOfCards =
                                                         _cardsCollection.length;
                                                   });
                                                 },
                                               );
+
                                             },
                                           ),
                                         );
