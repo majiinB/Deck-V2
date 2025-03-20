@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 
+/// DeckColors - A centralized color scheme for the Deck app.
+/// This class defines static color constants used throughout the app
+/// for consistency in UI design.
+///
+
 class DeckColors {
   //used for text,tiles,buttons,outline
   static const Color primaryColor = Color(0xFF12454C);
@@ -21,31 +26,3 @@ class DeckColors {
   static const Color deckYellow = Color(0xFFFAC55F);
   static const Color deckBlue = Color(0xFF317EFF);
 }
-
-//i have no idea what this is for eh may theme file tayo
-const lightColorScheme = ColorScheme(
-  brightness: Brightness.light,
-  primary: Colors.blue,
-  onPrimary: Color(0xFFFFFFFF),
-  secondary: Color(0xFF735761),
-  onSecondary: Color(0xFFFFFFFF),
-  surface: Color(0xFFFFFFFF),
-  onSurface: Color(0xFF000000),
-  background: Color(0xFFF5F5F5),
-  onBackground: Color(0xFF000000),
-  error: Color(0xFFB00020),
-  onError: Color(0xFFFFFFFF),
-);
-const darkColorScheme = ColorScheme(
-  brightness: Brightness.dark,
-  primary: Color(0xFF1A1A1A),
-  onPrimary: Color(0xFFFFFFFF),
-  secondary: Color(0xFF735761),
-  onSecondary: Color(0xFFFFFFFF),
-  surface: Color(0xFF121212),
-  onSurface: Color(0xFFFFFFFF),
-  background: Color(0xFF1E1E1E),
-  onBackground: Color(0xFFFFFFFF),
-  error: Color(0xFFB00020),
-  onError: Color(0xFFFFFFFF),
-);
