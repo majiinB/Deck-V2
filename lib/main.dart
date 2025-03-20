@@ -28,7 +28,7 @@ void main() async {
   await FCMService().initializeNotifications();
   NotificationService().initLocalNotifications();
   FlutterNativeSplash.remove();
-
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(
     MultiProvider(
       providers: [
