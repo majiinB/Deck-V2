@@ -36,7 +36,7 @@ class _LearnModeDialogState extends State<LearnModeDialog> {
   String selectedMode = 'None';
   final numberOfCards = TextEditingController();
 
-  String quizType = '';
+  String quizType = "Multiple Choice";
   String cardOrientation = '';
 
   ///toggles to show quiz button options or study button options

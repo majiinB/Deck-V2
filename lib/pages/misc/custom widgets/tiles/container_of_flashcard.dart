@@ -13,27 +13,33 @@ import '../functions/swipe_to_delete_and_retrieve.dart';
 
 
 class BuildContainerOfFlashCards extends StatefulWidget {
-  final VoidCallback onDelete;
+  final VoidCallback? onDelete;
   final VoidCallback? onRetrieve, onTap;
   final bool enableSwipeToRetrieve;
   final String titleOfFlashCard, contentOfFlashCard;
-  bool isStarShaded;
-  final VoidCallback onStarShaded;
-  final VoidCallback onStarUnshaded;
-  final VoidCallback trashOnPressed;
+  bool? isStarShaded;
+  final VoidCallback? onStarShaded;
+  final VoidCallback? onStarUnshaded;
+  final VoidCallback iconOnPressed;
+  final Icon? rightIcon;
+  final Color? rightIconColor;
+  final bool showStar;
 
   BuildContainerOfFlashCards({
     super.key,
-    required this.onDelete,
-    required this.isStarShaded,
-    required this.onStarShaded,
-    required this.onStarUnshaded,
+    this.onDelete,
+    this.isStarShaded,
+    this.onStarShaded,
+    this.onStarUnshaded,
     this.onRetrieve,
     required this.enableSwipeToRetrieve,
     required this.titleOfFlashCard,
     required this.contentOfFlashCard,
     this.onTap,
-    required this.trashOnPressed,
+    required this.iconOnPressed,
+    this.rightIcon,
+    required this.showStar,
+    this.rightIconColor,
   });
 
   @override
@@ -101,30 +107,32 @@ class BuildContainerOfFlashCardsState extends State<BuildContainerOfFlashCards>
                     ),
                   ),
                 ),
+                if(widget.showStar)
                 GestureDetector(
                   onTap: () {
                     setState(() {
                       // Toggle the state of isStarShaded
-                      widget.isStarShaded = !widget.isStarShaded;
-                      if (widget.isStarShaded) {
-                        widget.onStarShaded();
+                      widget.isStarShaded = !(widget.isStarShaded ?? false);
+                      if (widget.isStarShaded == true) {
+                        widget.onStarShaded?.call();
                       } else {
-                        widget.onStarUnshaded();
+                        widget.onStarUnshaded?.call();
                       }
                     });
                   },
                   child: Icon(
                     size: 24,
-                    widget.isStarShaded ? Icons.star : Icons.star_border,
-                    color: widget.isStarShaded
+                    (widget.isStarShaded ?? false)? Icons.star : Icons.star_border,
+                    color: (widget.isStarShaded ?? false)
                         ? DeckColors.deckYellow
                         : DeckColors.deckYellow,
                   ),
                 ),
+
                 BuildIconButton(
-                    onPressed: widget.trashOnPressed,
-                    icon: DeckIcons.trash_bin,
-                    iconColor: DeckColors.primaryColor,
+                    onPressed: widget.iconOnPressed,
+                    icon: widget.rightIcon?.icon ?? DeckIcons.trash_bin,
+                    iconColor: widget.rightIconColor ?? DeckColors.primaryColor,
                     backgroundColor: DeckColors.white,
                     containerWidth: 40,
                     containerHeight: 40)

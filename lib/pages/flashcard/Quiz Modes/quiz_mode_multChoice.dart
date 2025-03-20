@@ -6,6 +6,9 @@ import 'package:deck/pages/misc/custom%20widgets/buttons/custom_buttons.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:deck/pages/misc/custom widgets/dialogs/confirmation_dialog.dart';
 
+import '../../misc/widget_method.dart';
+import '../quiz_results.dart';
+
 class QuizMultChoice extends StatefulWidget {
   const QuizMultChoice({super.key});
 
@@ -14,7 +17,7 @@ class QuizMultChoice extends StatefulWidget {
 }
 
 class _QuizMultChoiceState extends State<QuizMultChoice> {
-  int currentQuestionIndex = 0; // To track the current question
+  int currentQuestionIndex = 0; //to track the current question
   String title = '';
   String question = '';
   String choice1 = '';
@@ -22,8 +25,10 @@ class _QuizMultChoiceState extends State<QuizMultChoice> {
   String choice3 = '';
   String choice4 = '';
 
-  late final List<Map<String, dynamic>> questions; // List to hold all the questions
-  late List<Map<String, dynamic>> containerData; // Choices data
+  ///List to hold all the questions
+  late final List<Map<String, dynamic>> questions;
+  ///Choices data
+  late List<Map<String, dynamic>> containerData;
 
   @override
   void initState() {
@@ -109,6 +114,7 @@ class _QuizMultChoiceState extends State<QuizMultChoice> {
       //end of quiz, show dialog
       showDialog(
           context: context,
+          barrierDismissible: false,
           builder: (context){
             return AlertDialog(
               title: const Text('Quiz Finished'),
@@ -117,6 +123,9 @@ class _QuizMultChoiceState extends State<QuizMultChoice> {
                 TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
+                    Navigator.of(context).push(
+                      RouteGenerator.createRoute(const QuizResults()),
+                    );
                   },
                   child: Text('OK'),
                 ),

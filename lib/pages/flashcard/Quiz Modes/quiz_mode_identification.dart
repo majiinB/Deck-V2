@@ -6,6 +6,8 @@ import 'package:deck/pages/misc/custom%20widgets/textboxes/textboxes.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import '../../misc/custom widgets/dialogs/confirmation_dialog.dart';
+import '../../misc/widget_method.dart';
+import '../quiz_results.dart';
 
 class QuizIdentification extends StatefulWidget {
   const QuizIdentification({super.key});
@@ -66,6 +68,7 @@ class _QuizIdentificationState extends State<QuizIdentification> {
       //end of quiz, show the dialog
       showDialog(
           context: context,
+          barrierDismissible: false,
           builder: (context){
             return AlertDialog(
               title: const Text('Quiz Finished'),
@@ -74,6 +77,9 @@ class _QuizIdentificationState extends State<QuizIdentification> {
                 TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
+                    Navigator.of(context).push(
+                      RouteGenerator.createRoute(const QuizResults()),
+                    );
                   },
                   child: Text('OK'),
                 ),

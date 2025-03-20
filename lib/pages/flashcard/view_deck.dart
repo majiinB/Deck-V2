@@ -609,7 +609,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                 }
                                               });
                                             },
-                                            trashOnPressed: () {
+                                            iconOnPressed: () {
                                               print("Recognized");
                                               Cards removedCard =
                                               _filteredCardsCollection[
@@ -710,7 +710,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                 },
                                               );
 
-                                            },
+                                            }, showStar: true,
                                           ),
                                         );
                                       },
@@ -908,7 +908,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                 }
                                               });
                                             },
-                                            trashOnPressed: () {
+                                            iconOnPressed: () {
                                               Cards removedCard =
                                               _filteredStarredCardCollection[
                                               index];
@@ -1001,6 +1001,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                 },
                                               );
                                           },
+                                            showStar: true,
                                           ),
                                         );
                                       },
