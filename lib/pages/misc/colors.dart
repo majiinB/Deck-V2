@@ -12,6 +12,8 @@ class DeckColors {
   static const Color darkgreen = Color(0xFF00945B); //mostly used for texts in home page
   static const Color softGreen = Color(0xFF99F3BD);
   static const Color white = Color(0xFFFFFFFF);
+  static const Color deepgreen= Color(0xFF1C7062); //used for gradient
+  static const Color deepblue= Color(0xFF2467B6); //used for gradient
 
   //this is only used for background color
   static const Color backgroundColor = Color(0xFFDEDEDE);

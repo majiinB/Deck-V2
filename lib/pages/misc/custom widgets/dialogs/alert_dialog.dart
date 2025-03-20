@@ -46,18 +46,16 @@ class CustomAlertDialog extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15.0),
       ),
-      contentPadding: const EdgeInsets.all(10) ,
+      contentPadding: const EdgeInsets.all(20) ,
       content:Column(
         mainAxisSize: MainAxisSize.min,
           children: [
-            Image.asset(imagePath, width: 50),
+            Image.asset(imagePath, width: 190, fit: BoxFit.fill),
             const SizedBox(height: 5),
             Text(
               title,
-              style: const TextStyle(fontSize: 15, fontFamily: 'Fraiche'),
-              textAlign: TextAlign.center,),
+              style: const TextStyle(color: DeckColors.primaryColor , fontSize: 25, fontFamily: 'Fraiche'),),
             const SizedBox(height: 5),
-
             Text(
               message,
               style: const TextStyle(fontSize: 15, fontFamily: 'Nunito-Regular'),
