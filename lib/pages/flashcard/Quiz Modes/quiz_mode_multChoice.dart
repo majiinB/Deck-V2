@@ -99,7 +99,7 @@ class _QuizMultChoiceState extends State<QuizMultChoice> {
       print('Incorrect!');
     }
 
-    //Move to the next question if available
+    //Move to the next question
     if (currentQuestionIndex < questions.length - 1) {
       setState(() {
         currentQuestionIndex++;
