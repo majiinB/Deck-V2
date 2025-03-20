@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:deck/pages/misc/colors.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:provider/provider.dart';
 
 
 ///custom dialog alerts. often used  for alerts na 1 button lng need tas walang cancel ganu
