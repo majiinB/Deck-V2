@@ -82,6 +82,7 @@ class _EditDeckState extends State<EditDeck> {
 
   @override
   Widget build(BuildContext context) {
+    ///If changes are made, return popscope to show confirmation dialog
     return PopScope(
       canPop: true,
       onPopInvoked: (bool didPop) async {
@@ -96,19 +97,19 @@ class _EditDeckState extends State<EditDeck> {
                 title: 'Are you sure you want to go back?',
                 text: 'If you go back now, all unsaved progress will be lost.',
                 onConfirm: () {
-                  Navigator.of(context).pop(true); // Confirm navigation
+                  Navigator.of(context).pop(); // Confirm navigation
                 },
                 onCancel: () {
-                  Navigator.of(context).pop(false); // Cancel navigation
+
                 },
               );
             },
           );
           if (shouldPop == true) {
-            Navigator.of(context).pop(true); // Allow exit
+            Navigator.of(context).pop(true); //Allow exit
           }
         } else {
-          Navigator.of(context).pop(true); // No changes, allow exit
+          Navigator.of(context).pop(true); //No changes, allow exit
         }
       },
       child: Scaffold(

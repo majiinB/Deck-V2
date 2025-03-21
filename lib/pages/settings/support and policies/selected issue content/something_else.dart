@@ -14,7 +14,7 @@ class _SomethingElseState extends State<SomethingElse>{
   final bugDetailsController = TextEditingController();
   bool hasUploadedImages = false;
 
-  ///This updates the state to track if images are uploaded or removed
+  ///This tracks if images are uploaded
   void _onImageUploadChange(bool hasImages) {
     setState(() {
       hasUploadedImages = hasImages;
@@ -25,6 +25,13 @@ class _SomethingElseState extends State<SomethingElse>{
   bool _hasUnsavedChanges() {
     return bugDetailsController.text.isNotEmpty ||
         hasUploadedImages;
+  }
+
+  ///This disposes controllers to free resources and prevent memory leaks
+  @override
+  void dispose() {
+    bugDetailsController.dispose();
+    super.dispose();
   }
 
   @override

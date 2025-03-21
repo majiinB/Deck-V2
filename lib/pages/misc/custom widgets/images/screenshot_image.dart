@@ -95,6 +95,7 @@ class BuildScreenshotImageState extends State<BuildScreenshotImage> {
     }
   }
 
+  ///This is the box the contains the pencil icon button
   @override
   Widget build(BuildContext context) {
     return Column(

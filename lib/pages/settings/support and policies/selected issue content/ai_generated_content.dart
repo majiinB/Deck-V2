@@ -15,7 +15,7 @@ class _AIGeneratedContentState extends State<AIGeneratedContent> {
   final addDetailsController = TextEditingController();
   bool hasUploadedImages = false;
 
-  ///This updates the state to track if images are uploaded or removed
+  ///This tracks if images are uploaded
   void _onImageUploadChange(bool hasImages) {
     setState(() {
       hasUploadedImages = hasImages;
@@ -28,6 +28,7 @@ class _AIGeneratedContentState extends State<AIGeneratedContent> {
         hasUploadedImages;
   }
 
+  ///This disposes controllers to free resources and prevent memory leaks
   @override
   void dispose() {
     addDetailsController.dispose();

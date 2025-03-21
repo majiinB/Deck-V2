@@ -33,131 +33,129 @@ class _PlayMyDeckPageState extends State<PlayMyDeckPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: DeckColors.backgroundColor,
-        appBar: LearnModeBar(
-          title: 'Study Mode',
-          color: DeckColors.primaryColor,
-          fontSize: 24,
-          onButtonPressed: () {
-            showConfirmationDialog(
-                context,
-                'Stop Playing?',
-                'Are you sure you want to stop? You will exit the study mode.',
-                    () {
-                      Navigator.of(context).pop();
-                    },
-                    () { }
-            );
-          },
-        ),
-        body: Padding(
-          padding: const EdgeInsets.only(top: 15.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 10, bottom: 30.0, left: 15.0, right: 15.0),
-                child: Text(
-                  widget.deck.title.toString(),
-                  overflow: TextOverflow.visible,
-                  style: const TextStyle(
-                    fontFamily: 'Fraiche',
-                    color: DeckColors.primaryColor,
-                    fontSize: 40,
-                    height: 1.1
-                  ),
+    return Scaffold(
+      backgroundColor: DeckColors.backgroundColor,
+      appBar: LearnModeBar(
+        title: 'Study Mode',
+        color: DeckColors.primaryColor,
+        fontSize: 24,
+        onButtonPressed: () {
+          showConfirmationDialog(
+              context,
+              'Stop Playing?',
+              'Are you sure you want to stop? You will exit the study mode.',
+                  () {
+                    Navigator.of(context).pop();
+                  },
+                  () { }
+          );
+        },
+      ),
+      body: Padding(
+        padding: const EdgeInsets.only(top: 15.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 10, bottom: 30.0, left: 15.0, right: 15.0),
+              child: Text(
+                widget.deck.title.toString(),
+                overflow: TextOverflow.visible,
+                style: const TextStyle(
+                  fontFamily: 'Fraiche',
+                  color: DeckColors.primaryColor,
+                  fontSize: 40,
+                  height: 1.1
                 ),
               ),
-              Expanded(
-                child: PageView.builder(
-                  controller: pageController,
-                  itemCount: widget.cards.length,
-                  onPageChanged: (index) {
-                    setState(() {
-                      currentIndex = index;
-                    });
-                  },
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                      child: FlipCard(
-                        front: buildFlipCard(widget.cards[index].question,
-                            DeckColors.primaryColor, 'Fraiche',
-                            "Tap to see answer"),
-                        back: buildFlipCard(widget.cards[index].answer,
-                            DeckColors.primaryColor, 'Nunito',
-                            "Tap to see description"),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(
-                    bottom: 20.0, top: 10.0, left: 15.0, right: 15.0),
-                child: Container(
-                  height: 60,
-                  decoration: BoxDecoration(
-                      color: DeckColors.white,
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: DeckColors.primaryColor,
-                        width: 2,
-                      )
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.arrow_back_ios_new_rounded),
-                          color: DeckColors.primaryColor,
-                          onPressed: () {
-                            if (currentIndex > 0) {
-                              pageController.previousPage(
-                                duration: const Duration(milliseconds: 300),
-                                curve: Curves.ease,
-                              );
-                            }
-                          },
-                        ),
-                        Text(
-                          '${currentIndex + 1} / ${widget.cards.length}',
-                          style: const TextStyle(
-                            fontFamily: 'Fraiche',
-                            color: DeckColors.primaryColor,
-                            fontSize: 24,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 2,
-                          ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.arrow_forward_ios_rounded),
-                          color: DeckColors.primaryColor,
-                          onPressed: () {
-                            if (currentIndex < widget.cards.length - 1) {
-                              pageController.nextPage(
-                                duration: const Duration(milliseconds: 300),
-                                curve: Curves.ease,
-                              );
-                            }
-                          },
-                        ),
-                      ],
+            ),
+            Expanded(
+              child: PageView.builder(
+                controller: pageController,
+                itemCount: widget.cards.length,
+                onPageChanged: (index) {
+                  setState(() {
+                    currentIndex = index;
+                  });
+                },
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                    child: FlipCard(
+                      front: buildFlipCard(widget.cards[index].question,
+                          DeckColors.primaryColor, 'Fraiche',
+                          "Tap to see answer"),
+                      back: buildFlipCard(widget.cards[index].answer,
+                          DeckColors.primaryColor, 'Nunito',
+                          "Tap to see description"),
                     ),
+                  );
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                  bottom: 20.0, top: 10.0, left: 15.0, right: 15.0),
+              child: Container(
+                height: 60,
+                decoration: BoxDecoration(
+                    color: DeckColors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: DeckColors.primaryColor,
+                      width: 2,
+                    )
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                        color: DeckColors.primaryColor,
+                        onPressed: () {
+                          if (currentIndex > 0) {
+                            pageController.previousPage(
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.ease,
+                            );
+                          }
+                        },
+                      ),
+                      Text(
+                        '${currentIndex + 1} / ${widget.cards.length}',
+                        style: const TextStyle(
+                          fontFamily: 'Fraiche',
+                          color: DeckColors.primaryColor,
+                          fontSize: 24,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 2,
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.arrow_forward_ios_rounded),
+                        color: DeckColors.primaryColor,
+                        onPressed: () {
+                          if (currentIndex < widget.cards.length - 1) {
+                            pageController.nextPage(
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.ease,
+                            );
+                          }
+                        },
+                      ),
+                    ],
                   ),
                 ),
               ),
-              Image.asset(
-                'assets/images/Deck-Bottom-Image.png',
-                fit: BoxFit.fitWidth,
-                width: MediaQuery.of(context).size.width,
-              ),
-            ],
-          ),
+            ),
+            Image.asset(
+              'assets/images/Deck-Bottom-Image.png',
+              fit: BoxFit.fitWidth,
+              width: MediaQuery.of(context).size.width,
+            ),
+          ],
         ),
       ),
     );

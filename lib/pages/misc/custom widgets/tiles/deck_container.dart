@@ -63,11 +63,15 @@ class BuildDeckContainerState extends State<BuildDeckContainer> {
         borderRadius: BorderRadius.circular(15.0),
         child: Container(
           width: MediaQuery.of(context).size.width,
-          height: 175,
+          height: 180,
           padding: const EdgeInsets.only(bottom: 20),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15.0),
             color: _containerColor,
+              border: Border.all(
+                color: DeckColors.primaryColor,
+                width: 2.0,
+              ),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.1),

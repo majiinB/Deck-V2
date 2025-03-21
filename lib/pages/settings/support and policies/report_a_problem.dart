@@ -43,12 +43,15 @@ class _ReportAProblemState extends State<ReportAProblem> {
     super.initState();
     _setRadioBtnOptions();
 
+    ///This sets default radio button selection based on the source page
     if (widget.sourcePage == 'AccountPage') {
-      selectedRadio = 0; // AI-Generated Content
+      selectedRadio = 0; //AI-Generated Content
     } else {
-      selectedRadio = 0; // Someone's Deck Content
+      selectedRadio = 0; //Someone's Deck Content
     }
   }
+
+  ///This shows radio btns otpions based on the source page
   void _setRadioBtnOptions (){
     if (widget.sourcePage == 'AccountPage'){
       buttonLabels = [
@@ -68,6 +71,7 @@ class _ReportAProblemState extends State<ReportAProblem> {
     }
   }
 
+  ///This returns the content of each radio btn based on the selectd radio btn on the src page
   Widget _getSelectRadioContent(){
     if(widget.sourcePage == 'AccountPage') {
       switch (selectedRadio) {

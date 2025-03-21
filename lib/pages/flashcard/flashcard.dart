@@ -199,6 +199,10 @@ class _FlashcardPageState extends State<FlashcardPage> {
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       color: DeckColors.white,
+                      border: Border.all(
+                        color: DeckColors.primaryColor,
+                        width: 2.0,
+                      ),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withOpacity(0.1),

@@ -205,6 +205,15 @@ class EditProfileState extends State<EditProfile> {
     setState(() {});
   }
 
+  ///This disposes controllers to free resources and prevent memory leaks
+  @override
+  void dispose() {
+    firstNameController.dispose();
+    lastNameController.dispose();
+    emailController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     ///For dialog box to appear when user clicks the back button at the app bar or the device itself
