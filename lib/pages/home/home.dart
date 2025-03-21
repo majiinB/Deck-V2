@@ -12,6 +12,7 @@ import '../../backend/flashcard/flashcard_service.dart';
 import '../../backend/models/deck.dart';
 import '../../backend/task/task_provider.dart';
 import '../misc/custom widgets/functions/if_collection_empty.dart';
+import '../misc/custom widgets/menus/pop_up_menu.dart';
 import '../misc/custom widgets/tiles/custom_home_deck_tile.dart';
 import '../misc/custom widgets/tiles/deck_task_tile.dart';
 import '../task/view_task.dart';
@@ -145,7 +146,13 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
-
+            PopupMenu(
+              items: const ['Publish Deck', 'Edit Deck', 'Delete Deck'], // Menu items
+              icons: const [Icons.download_outlined, Icons.share_outlined, Icons.delete_outline], // Corresponding icons
+              onItemSelected: (int index) {
+             // Logic when an item is selected
+              },
+            ),
             //greeting section
             Text(
                 greeting,
