@@ -3,6 +3,7 @@ import 'package:deck/pages/settings/support%20and%20policies/selected%20issue%20
 import 'package:deck/pages/settings/support%20and%20policies/selected%20issue%20content/someone_deck_content.dart';
 import 'package:deck/pages/settings/support%20and%20policies/selected%20issue%20content/something_else.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../auth/privacy_policy.dart';
 import '../../misc/colors.dart';
@@ -14,225 +15,232 @@ import '../../misc/widget_method.dart';
 
 
 class ReportAProblem extends StatefulWidget {
-  const ReportAProblem({super.key});
+  final String sourcePage;
+
+  const ReportAProblem({super.key, required this.sourcePage});
 
   @override
   _ReportAProblemState createState() => _ReportAProblemState();
 }
 class _ReportAProblemState extends State<ReportAProblem> {
+  List<String> buttonLabels = [];
+  List<String> buttonSubtexts = [];
 
-  ///Handle the button selected in radio button behavior
+  ///Handles the button selected in radio button behavior
   //tracks the selected radio button
   int selectedRadio = -1;
 
   //updates the selected radio button index
-  void radioButtonSelected(int index){
+  void _radioButtonSelected(int index){
     setState(() {
       selectedRadio = index;
     });
   }
   ///----- E N D -------
+  ///
+  @override
+  void initState(){
+    super.initState();
+    _setRadioBtnOptions();
+
+    if (widget.sourcePage == 'AccountPage') {
+      selectedRadio = 0; // AI-Generated Content
+    } else {
+      selectedRadio = 0; // Someone's Deck Content
+    }
+  }
+  void _setRadioBtnOptions (){
+    if (widget.sourcePage == 'AccountPage'){
+      buttonLabels = [
+        'AI-Generated Content',
+        'Bug Issues',
+        'Something Else',
+      ];
+      buttonSubtexts = [
+        'Harmful, incorrect, or biased AI-generated quiz or flashcard content.',
+        'App crashes, broken features, or unexpected behavior.',
+        '', //null because there is no subtext for the 4th option
+      ];
+    }
+    else {
+      buttonLabels = ['Someone\'s Deck Content'];
+      buttonSubtexts = ['Inappropriate, offensive, or misleading content in public decks.'];
+    }
+  }
+
+  Widget _getSelectRadioContent(){
+    if(widget.sourcePage == 'AccountPage') {
+      switch (selectedRadio) {
+        case 0:
+          return AIGeneratedContent();
+        case 1:
+          return BugIssues();
+        case 2:
+          return SomethingElse();
+        default:
+          return const SizedBox.shrink();
+      }
+    }
+    else {
+      return selectedRadio == 0 ? SomeoneDeckContent() : const SizedBox.shrink();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: false,
-      onPopInvoked: (bool didpop) async {
-        if (didpop) {
-          return;
-        }
-
-        // Show the dialog only if a radio button is selected
-        if (selectedRadio != -1) {
-          final shouldPop = await showDialog<bool>(
-            context: context,
-            builder: (BuildContext context) {
-              return ShowConfirmationDialog(
-                title: 'Cancel report?',
-                text: 'If you go back now, all unsaved progress will be lost. ',
-                onConfirm: () {
-                  Navigator.of(context).pop();
-                },
-                onCancel: () {},
-              );
-            },
-          );
-
-          //If the user confirmed, pop the current route
-          if (shouldPop != null && shouldPop) {
-            Navigator.of(context).pop(true);
-          }
-        } else {
-          //No unsaved changes, allow pop without confirmation
-          Navigator.of(context).pop(true);
-        }
-      },
-      child: Scaffold(
-        appBar: const AuthBar(
-          automaticallyImplyLeading: true,
-          title: 'Report A Problem',
-          color: DeckColors.primaryColor,
-          fontSize: 24,
-        ),
-        backgroundColor: DeckColors.backgroundColor,
-        body: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 15.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.only(left: 15.0, right: 15.0),
-                      child: Text('Report A Problem',
-                        style: TextStyle(
-                          fontFamily: 'Fraiche',
-                          fontWeight: FontWeight.bold,
-                          color: DeckColors.primaryColor,
-                          fontSize: 40,
-                          height: 1.1,
-                        ),
-                      ),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 20.0),
-                      child: Text('Found something on Deck that doesn’t '
-                          'seem right? Help us improve Deck by reporting it.',
-                        textAlign: TextAlign.justify,
-                        style: TextStyle(
-                          fontFamily: 'Nunito-Regular',
-                          color: DeckColors.primaryColor,
-                          fontSize: 16,
-                          height: 1.3,
-                        ),
-                      ),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 20.0),
-                      child: Text('What issue are you reporting?',
-                        style: TextStyle(
-                          fontFamily: 'Fraiche',
-                          color: DeckColors.primaryColor,
-                          fontSize: 32,
-                          height: 1.1,
-                        ),
-                      ),
-                    ),
-
-              ///this handles the radio button
-              Padding(
-                padding: const EdgeInsets.only(right: 15.0),
-                child: BuildRadioButton(
-                  numberOfButtons: 4, //number of radio buttons
-                  //radio button label
-                  buttonLabels: const [
-                    'Someone\'s Deck Content',
-                    'AI-Generated Content',
-                    'Bug Issues',
-                    'Something Else',
-                  ],
-                  //subtexts for the radio button label
-                  buttonSubtexts: const [
-                    'Inappropriate, offensive, or misleading content in public decks.',
-                    'Harmful, incorrect, or biased AI-generated quiz or flashcard content.',
-                    'App crashes, broken features, or unexpected behavior.',
-                    '', //null because there is no subtext for the 4th option
-                  ],
-                  textStyle:
-                  const TextStyle(
-                      fontFamily: 'Fraiche',
-                      color: DeckColors.primaryColor,
-                      fontSize: 24),
-                  subtextStyle:
-                  const TextStyle(
-                      fontFamily: 'Nunito-Regular',
-                      color: DeckColors.primaryColor,
-                      fontSize: 16),
-                      activeColor: DeckColors.primaryColor, //active radio button color
-                      inactiveColor: DeckColors.primaryColor, //inactive radio button color
-                      onButtonSelected: radioButtonSelected,//for radio buttons behavior
-                ),
-              ),
-                    ///shows the content based on the selected radio
-                    if (selectedRadio == 0) SomeoneDeckContent(), //Option 1: Someone's deck content
-                    if (selectedRadio == 1) AIGeneratedContent(), //Option 2: AI-Generated contet
-                    if (selectedRadio == 2) BugIssues(), //Option 3: Bug Issues
-                    if (selectedRadio == 3) SomethingElse(), //Option 4: Something Else
-
-                    ///--- E N D -----
-
-                    ///this section informs the user about the consequences or actions that will occur upon submitting the form.
-                    Padding(
-                      padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-                      child: Wrap(
-                        alignment: WrapAlignment.start,
-                        children: [
-                          const Text('By submitting this form, you agree to Deck'
-                              ' processing your information as outlined in our',
-                            textAlign: TextAlign.justify,
-                            style: TextStyle(
-                              fontFamily: 'Nunito-Regular',
-                              color: DeckColors.primaryColor,
-                              fontSize: 16,
-                              height: 1.3,
-                            ),
+    return Scaffold(
+      appBar: const AuthBar(
+        automaticallyImplyLeading: true,
+        title: 'Report A Problem',
+        color: DeckColors.primaryColor,
+        fontSize: 24,
+      ),
+      backgroundColor: DeckColors.backgroundColor,
+          body: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 15.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.only(left: 15.0, right: 15.0),
+                        child: Text('Report A Problem',
+                          style: TextStyle(
+                            fontFamily: 'Fraiche',
+                            fontWeight: FontWeight.bold,
+                            color: DeckColors.primaryColor,
+                            fontSize: 40,
+                            height: 1.1,
                           ),
-                          ///this handles when user clicks the privacy policy
-                          InkWell(
-                            onTap: () {
-                              Navigator.of(context).push(
-                                RouteGenerator.createRoute(const PrivacyPolicyPage()),
-                              );
-                            },
-                            borderRadius: BorderRadius.circular(8),
-                            splashColor: DeckColors.primaryColor.withOpacity(0.5),
-                            child: const Padding(
-                              padding: EdgeInsets.all(4.0),
-                              child: Text(
-                                'Privacy Policy',
-                                style: TextStyle(
-                                  fontFamily: 'Nunito-ExtraBold',
-                                  color: DeckColors.primaryColor,
-                                  fontSize: 16,
-                                  decoration: TextDecoration.underline,
-                                  decorationColor: DeckColors.primaryColor,
-                                  decorationThickness: 3,
-                                ),
+                        ),
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 20.0),
+                        child: Text('Found something on Deck that doesn’t '
+                            'seem right? Help us improve Deck by reporting it.',
+                          textAlign: TextAlign.justify,
+                          style: TextStyle(
+                            fontFamily: 'Nunito-Regular',
+                            color: DeckColors.primaryColor,
+                            fontSize: 16,
+                            height: 1.3,
+                          ),
+                        ),
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 20.0),
+                        child: Text('What issue are you reporting?',
+                          style: TextStyle(
+                            fontFamily: 'Fraiche',
+                            color: DeckColors.primaryColor,
+                            fontSize: 32,
+                            height: 1.1,
+                          ),
+                        ),
+                      ),
+
+                ///this handles the radio button
+                Padding(
+                  padding: const EdgeInsets.only(right: 15.0),
+                  child: BuildRadioButton(
+                    numberOfButtons: buttonLabels.length, //number of radio buttons
+                    //radio button label
+                    buttonLabels: buttonLabels,
+                    //subtexts for the radio button label
+                    buttonSubtexts: buttonSubtexts,
+                    textStyle:
+                    const TextStyle(
+                        fontFamily: 'Fraiche',
+                        color: DeckColors.primaryColor,
+                        fontSize: 24),
+                    subtextStyle:
+                    const TextStyle(
+                        fontFamily: 'Nunito-Regular',
+                        color: DeckColors.primaryColor,
+                        fontSize: 16),
+                        activeColor: DeckColors.primaryColor, //active radio button color
+                        inactiveColor: DeckColors.primaryColor, //inactive radio button color
+                        onButtonSelected: _radioButtonSelected,//for radio buttons behavior
+                        selectedIndex: selectedRadio,
+
+                  ),
+                ),
+                      ///shows the content based on the selected radio
+                      _getSelectRadioContent(),
+                      ///--- E N D -----
+
+                      ///this section informs the user about the consequences or actions that will occur upon submitting the form.
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                        child: Wrap(
+                          alignment: WrapAlignment.start,
+                          children: [
+                            const Text('By submitting this form, you agree to Deck'
+                                ' processing your information as outlined in our',
+                              textAlign: TextAlign.justify,
+                              style: TextStyle(
+                                fontFamily: 'Nunito-Regular',
+                                color: DeckColors.primaryColor,
+                                fontSize: 16,
+                                height: 1.3,
                               ),
                             ),
-                          )
-                        ],
+                            ///this handles when user clicks the privacy policy
+                            InkWell(
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  RouteGenerator.createRoute(const PrivacyPolicyPage()),
+                                );
+                              },
+                              borderRadius: BorderRadius.circular(8),
+                              splashColor: DeckColors.primaryColor.withOpacity(0.5),
+                              child: const Padding(
+                                padding: EdgeInsets.all(4.0),
+                                child: Text(
+                                  'Privacy Policy',
+                                  style: TextStyle(
+                                    fontFamily: 'Nunito-ExtraBold',
+                                    color: DeckColors.primaryColor,
+                                    fontSize: 16,
+                                    decoration: TextDecoration.underline,
+                                    decorationColor: DeckColors.primaryColor,
+                                    decorationThickness: 3,
+                                  ),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                    ///------ E N D ---------
+                      ///------ E N D ---------
 
-                    Padding(
-                      padding: const EdgeInsets.only(left: 15.0, right: 15.0, top:10, bottom: 20),
-                      child: BuildButton(
-                        onPressed: () {
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15.0, right: 15.0, top:10, bottom: 20),
+                        child: BuildButton(
+                          onPressed: () {
 
-                        },
-                        buttonText: 'Submit',
-                        height: 50.0,
+                          },
+                          buttonText: 'Submit',
+                          height: 50.0,
+                          width: MediaQuery.of(context).size.width,
+                          backgroundColor: DeckColors.primaryColor,
+                          textColor: DeckColors.white,
+                          radius: 10.0,
+                          borderColor: DeckColors.primaryColor,
+                          fontSize: 16,
+                          borderWidth: 0,
+                        ),
+                      ),
+                      Image.asset(
+                        'assets/images/Deck-Bottom-Image.png',
+                        fit: BoxFit.fitWidth,
                         width: MediaQuery.of(context).size.width,
-                        backgroundColor: DeckColors.primaryColor,
-                        textColor: DeckColors.white,
-                        radius: 10.0,
-                        borderColor: DeckColors.primaryColor,
-                        fontSize: 16,
-                        borderWidth: 0,
                       ),
-                    ),
-
-                    Image.asset(
-                      'assets/images/Deck-Bottom-Image.png',
-                      fit: BoxFit.fitWidth,
-                      width: MediaQuery.of(context).size.width,
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-      ),
+
     );
   }
 }

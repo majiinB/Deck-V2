@@ -320,8 +320,11 @@ class AccountPageState extends State<AccountPage> {
                   toggledColor:
                   DeckColors.accentColor, // Left Icon Color when Toggled
                   onTap: () {
-                    Navigator.of(context).push(
-                      RouteGenerator.createRoute(const ReportAProblem()),
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ReportAProblem(sourcePage: 'AccountPage'),
+                      ),
                     );
                   },
                 ),

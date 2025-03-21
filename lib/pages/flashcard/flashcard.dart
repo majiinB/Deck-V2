@@ -21,6 +21,7 @@ import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
 import '../misc/custom widgets/functions/if_collection_empty.dart';
 import '../misc/custom widgets/textboxes/textboxes.dart';
 import '../misc/custom widgets/tiles/deck_container.dart';
+import '../settings/support and policies/report_a_problem.dart';
 
 class FlashcardPage extends StatefulWidget {
   const FlashcardPage({super.key});
@@ -164,6 +165,12 @@ class _FlashcardPageState extends State<FlashcardPage> {
                         color: DeckColors.primaryColor, size: 32),
                     onPressed: () {
                       setState(() {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ReportAProblem(sourcePage: 'FlashcardPage'),
+                          ),
+                        );
                       });
                     },
                   )

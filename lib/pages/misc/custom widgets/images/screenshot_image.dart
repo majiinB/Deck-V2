@@ -2,14 +2,15 @@ import 'package:deck/pages/misc/colors.dart';
 import 'package:deck/pages/misc/deck_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-
 import '../buttons/icon_button.dart';
-
+import 'dart:async';
 class BuildScreenshotImage extends StatefulWidget {
+  final Function(bool) onImageUploadChange;
 
 
   const BuildScreenshotImage({
     super.key,
+    required this.onImageUploadChange,
   });
 
   @override
@@ -26,23 +27,34 @@ class BuildScreenshotImageState extends State<BuildScreenshotImage> {
   bool isVisible = true;
   final ImagePicker picker = ImagePicker();
 
-  void _simulateUpload() {
+  ///Simulate upload progress with a timer; SIMULATION LANG!!! I  just wanna see if it works
+  void _simulateUpload(String imageName) {
     setState(() {
+      widget.onImageUploadChange(uploadedImagesName.isNotEmpty);
       isUploading = true;
       progress = 0.0;
     });
 
-    ///Simulate upload progress with a timer; SIMULATION LANG!!! I  just wanna see if it works
-    Future.delayed(Duration(milliseconds: 100), () {
-      for (int i = 0; i <= 100; i++) {
-        Future.delayed(Duration(milliseconds: 50 * i), () {
-          if (isUploading) {
-            setState(() {
-              progress = i / 100;
-            });
-          }
-        });
+    int progressValue = 0;
+
+    Timer.periodic(Duration(milliseconds: 50), (timer) {
+      if (!isUploading) {
+        timer.cancel();
+        return;
       }
+
+      if (progressValue >= 100) {
+        timer.cancel();
+        setState(() {
+          progress = 1.0;
+        });
+        return;
+      }
+
+      setState(() {
+        progressValue++;
+        progress = progressValue / 100;
+      });
     });
   }
 
@@ -55,9 +67,7 @@ class BuildScreenshotImageState extends State<BuildScreenshotImage> {
   }
 
   Future<void> _pickImage() async {
-    ///check if the limit of 3 images has been reached
-    if (uploadedImagesName.length >= 3){
-      ///show dialog box
+    if (uploadedImagesName.length >= 3) {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -71,7 +81,7 @@ class BuildScreenshotImageState extends State<BuildScreenshotImage> {
           ],
         ),
       );
-      return; //exit if limit is reached
+      return;
     }
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
 
@@ -81,7 +91,7 @@ class BuildScreenshotImageState extends State<BuildScreenshotImage> {
       });
 
       ///starts the simulated (SIMULATION LANG EHE) upload process
-      _simulateUpload();
+      _simulateUpload(image.name);
     }
   }
 
@@ -135,7 +145,8 @@ class BuildScreenshotImageState extends State<BuildScreenshotImage> {
 
   Widget _buildFileItems() {
     return Column(
-      children: List.generate(uploadedImagesName.length, (index) {
+      children: List.generate(
+          uploadedImagesName.length, (index) {
         return _buildFileItem(uploadedImagesName[index], index);
       }),
     );
@@ -214,6 +225,7 @@ class BuildScreenshotImageState extends State<BuildScreenshotImage> {
               onPressed: () {
                 setState(() {
                   uploadedImagesName.removeAt(index);
+                  widget.onImageUploadChange(uploadedImagesName.isNotEmpty);
                 });
               },
             ),

@@ -9,6 +9,7 @@ class BuildRadioButton extends StatefulWidget {
   final Color activeColor;
   final Color inactiveColor;
   final Function(int) onButtonSelected;
+  final int? selectedIndex; // Added for initial selection
 
   BuildRadioButton({
     required this.numberOfButtons,
@@ -18,7 +19,8 @@ class BuildRadioButton extends StatefulWidget {
     this.subtextStyle,
     required this.activeColor,
     required this.inactiveColor,
-    required this.onButtonSelected
+    required this.onButtonSelected,
+    this.selectedIndex, // Initialize this
   });
 
   @override
@@ -27,6 +29,12 @@ class BuildRadioButton extends StatefulWidget {
 
 class _BuildRadioButtonState extends State<BuildRadioButton> {
   int? selectedValue;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedValue = widget.selectedIndex; // Set initial value
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,24 +60,27 @@ class _BuildRadioButtonState extends State<BuildRadioButton> {
                     setState(() {
                       selectedValue = value;
                     });
-                    //calls the function when a button is selected
                     widget.onButtonSelected(index);
                   },
                   activeColor: widget.activeColor,
-                  fillColor: MaterialStateProperty.all(widget.inactiveColor),
+                  fillColor: MaterialStateProperty.resolveWith<Color>(
+                        (Set<MaterialState> states) =>
+                    states.contains(MaterialState.selected)
+                        ? widget.activeColor
+                        : widget.inactiveColor,
+                  ),
                 ),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ///main label text
                       Text(
                         widget.buttonLabels[index],
                         style: widget.textStyle,
                         softWrap: true,
                       ),
-                      ///subtext (only if present)
-                      if (widget.buttonSubtexts != null && widget.buttonSubtexts![index].isNotEmpty)
+                      if (widget.buttonSubtexts != null &&
+                          widget.buttonSubtexts![index].isNotEmpty)
                         Text(
                           widget.buttonSubtexts![index],
                           style: widget.subtextStyle,
