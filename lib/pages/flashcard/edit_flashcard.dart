@@ -10,6 +10,7 @@ import '../../backend/models/deck.dart';
 import '../../backend/models/card.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
 import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
+import '../misc/custom widgets/dialogs/alert_dialog.dart';
 import '../misc/custom widgets/textboxes/textboxes.dart';
 
 class EditFlashcardPage extends StatefulWidget {
@@ -184,52 +185,55 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
                           child: BuildButton(
                             onPressed: buttonsEnabled
                                 ? () {
-                              showConfirmationDialog(
-                                context,
-                                "Save Changes",
-                                "Are you sure you want to save changes you made on this flash card?",
-                                    () async {
-                                  try {
-                                    if (_questionOrTermController.text.trim().isEmpty) {
-                                      await Future.delayed(const Duration(milliseconds: 300));
-                                      showInformationDialog(context, "Input Error", "This flash card requires a term/question");
-                                      return;
-                                    }
-                                    if (_descriptionOrAnswerController.text.trim().isEmpty) {
-                                      await Future.delayed(const Duration(milliseconds: 300));
-                                      showInformationDialog(context, "Input Error", "This flash card requires a description/answer");
-                                      return;
-                                    }
-                                    if (widget.card.question.toString().trim() != _questionOrTermController.text.toString().trim()) {
-                                      setState(() => _isLoading = true);
-                                      await widget.card.updateQuestion(
-                                        _questionOrTermController.text.toString().trim(),
-                                        widget.deck.deckId,
-                                      );
-                                    }
-                                    if (widget.card.answer.toString() != _descriptionOrAnswerController.text.toString()) {
-                                      setState(() => _isLoading = true);
-                                      await widget.card.updateAnswer(
-                                        _descriptionOrAnswerController.text.toString().trim(),
-                                        widget.deck.deckId,
-                                      );
-                                    }
+                              showConfirmDialog(
+                              context,
+                              "assets/images/Deck_Dialogue1.png",
+                              "Save Changes?",
+                              "message",
+                              "Save",
+                              () async {
+                                try {
+                                  if (_questionOrTermController.text.trim().isEmpty) {
                                     await Future.delayed(const Duration(milliseconds: 300));
-                                    setState(() => _isLoading = false);
-                                    showInformationDialog(context, "Changed flash card information!", "Successfully changed flash card information.");
-                                    setState(() {
-                                      buttonsEnabled = !buttonsEnabled;
-                                    });
-                                  } catch (e) {
-                                    print('Error saving changes $e');
-                                    setState(() => _isLoading = false);
-                                    showInformationDialog(context, "Unknown Error Occurred",
-                                        'An unknown error has occurred while editing flash card. Please try again.');
+                                    showAlertDialog(context, "assets/images/Deck_Dialogue1.png","Uh oh. Something went wrong","Input Error. This flash card requires a term/question. Please try again.");
+                                    return;
                                   }
-                                },
-                                  () {
-                                },
+                                  if (_descriptionOrAnswerController.text.trim().isEmpty) {
+                                    await Future.delayed(const Duration(milliseconds: 300));
+                                    showAlertDialog(context, "assets/images/Deck_Dialogue1.png","Uh oh. Something went wrong","Input Error. This flash card requires a description/answer. Please try again.");
+                                    return;
+                                  }
+                                  if (widget.card.question.toString().trim() != _questionOrTermController.text.toString().trim()) {
+                                    setState(() => _isLoading = true);
+                                    await widget.card.updateQuestion(
+                                      _questionOrTermController.text.toString().trim(),
+                                      widget.deck.deckId,
+                                    );
+                                  }
+                                  if (widget.card.answer.toString() != _descriptionOrAnswerController.text.toString()) {
+                                    setState(() => _isLoading = true);
+                                    await widget.card.updateAnswer(
+                                      _descriptionOrAnswerController.text.toString().trim(),
+                                      widget.deck.deckId,
+                                    );
+                                  }
+                                  await Future.delayed(const Duration(milliseconds: 300));
+                                  setState(() => _isLoading = false);
+                                  showAlertDialog(
+                                    context,
+                                    "assets/images/Deck_Dialogue1.png",
+                                    "Changed flash card information!",
+                                    "Successfully changed flash card information.",
+                                  );
+                                  setState(() { buttonsEnabled = !buttonsEnabled;});
+                                } catch (e) {
+                                  print('Error saving changes $e');
+                                  setState(() => _isLoading = false);
+                                  showAlertDialog(context, "assets/images/imagename.png","Uh oh. Something went wrong","An unknown error has occurred while editing flash card. Please try again.");
+                                }
+                              },
                               );
+
                             }
                                 : () {}, // Enable button when user clicks the pencil icon
                             buttonText: 'Save Flash Card',

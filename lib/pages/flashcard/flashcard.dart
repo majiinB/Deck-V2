@@ -189,7 +189,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
                   width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      color: DeckColors.grayPopup),
+                      color: DeckColors.white),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -231,7 +231,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
               Container(
                 padding: EdgeInsets.all(30),
                 decoration: const BoxDecoration(
-                  color: DeckColors.coverImageColorSettings,
+                  color: DeckColors.white,
                   borderRadius: BorderRadius.all(Radius.circular(40)),
                 ),
                 child: IfCollectionEmpty(
@@ -288,10 +288,12 @@ class _FlashcardPageState extends State<FlashcardPage> {
                             _decks.removeWhere(
                                 (card) => card.deckId == removedDeck.deckId);
                           });
-                          showConfirmationDialog(
+                          showConfirmDialog(
                             context,
-                            "Delete Item",
+                            "assets/images/Deck_Dialogue1.png",
+                            "Delete Item?",
                             "Are you sure you want to delete '$deletedTitle'?",
+                            "Delete Item",
                             () async {
                               try {
                                 if (await removedDeck
@@ -314,7 +316,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
                                 });
                               }
                             },
-                            () {
+                            onCancel: () {
                               setState(() {
                                 _decks.insert(index, removedDeck);
                               });

@@ -105,7 +105,12 @@ class EditProfileState extends State<EditProfile> {
     }
     setState(() => _isLoading = false);
     Navigator.pop(context, {'updated': true});
-    showInformationDialog(context, "Successfully updated information", message);
+    showAlertDialog(
+      context,
+      "assets/images/Deck_Dialogue2.png",
+      "Successfully updated information",
+      message,
+    );
   }
 
   String getNewName() {
@@ -148,12 +153,12 @@ class EditProfileState extends State<EditProfile> {
         message = e.toString();
       }
       print(e);
-      showInformationDialog(context, "Error changing information", message);
+
+      showAlertDialog(context, "assets/images/Deck_Dialogue1.png","Uh oh. Something went wrong","Error changing information. $message ");
       return false;
     } catch (e) {
       print(e);
-      showInformationDialog(
-          context, "Error changing information", e.toString());
+      showAlertDialog(context, "assets/images/Deck_Dialogue1.png","Uh oh. Something went wrong","Error changing information. " + e.toString());
       return false;
     }
   }
@@ -189,15 +194,16 @@ class EditProfileState extends State<EditProfile> {
         final shouldPop = await showDialog<bool>(
           context: context,
           builder: (BuildContext context) {
-            return ShowConfirmationDialog(
-                title: 'Are you sure you want to go back?',
-                text: 'If you go back now, all unsaved progress will be lost. ',
-                onConfirm: () {
-                  Navigator.of(context).pop();
-                },
-                onCancel: () {
-            },
-        );
+            return
+              CustomConfirmDialog(
+                imagePath:"assets/images/Deck_Dialogue1.png", //image of deck
+                title: "Are you sure you want to go back?", // title of alert
+                message: "If you go back now, all unsaved progress will be lost.", //subtitle or detailed message
+                button1: "Go Back",//text of button
+                onConfirm:(){ Navigator.of(context).pop(); },//when button is pressed perform action
+                button2: "Cancel", //text of button, default is Cancel
+                onCancel:  () {}, //when button is pressed perform action
+              );
       },
     );
         //Check the result of the dialog and decide whether to pop or not
@@ -318,7 +324,7 @@ class EditProfileState extends State<EditProfile> {
                                           height: 200,
                                           width:
                                               MediaQuery.of(context).size.width,
-                                          color: DeckColors.gray,
+                                          color: DeckColors.white,
                                           child: Column(children: [
                                             Padding(
                                               padding:
@@ -508,10 +514,12 @@ class EditProfileState extends State<EditProfile> {
                         onPressed: () {
                           print(
                               "save button clicked"); //line to test if working ung onPressedLogic XD
-                          showConfirmationDialog(
+                          showConfirmDialog(
                             context,
+                            "assets/images/Deck_Dialogue1.png",
                             "Save Account Information",
                             "Are you sure you want to change your account information?",
+                            "Save Account Information",
                             () async {
                               try {
                                 setState(() => _isLoading = true);
@@ -519,13 +527,10 @@ class EditProfileState extends State<EditProfile> {
                               } catch (e) {
                                 print(e);
                                 setState(() => _isLoading = false);
-                                showInformationDialog(context,
+                                showAlertDialog(context,
+                                    "assets/images/Deck_Dialogue1.png",
                                     "Error changing information", e.toString());
                               }
-                            },
-                            () {
-                              //when user clicks no
-                              //add logic here
                             },
                           );
                         },
