@@ -117,8 +117,9 @@ class _MainPageState extends State<MainPage> {
       ),
       label: 'Home',
       labelStyle: TextStyle(
-        color: DeckColors.white,
-        fontWeight: FontWeight.w900,
+        color: DeckColors.primaryColor,
+        fontSize: 10,
+        fontFamily: 'Fraiche',
       ),
     ),
     CurvedNavigationBarItem(
@@ -128,8 +129,9 @@ class _MainPageState extends State<MainPage> {
       ),
       label: 'Tasks',
       labelStyle: TextStyle(
-        color: DeckColors.white,
-        fontWeight: FontWeight.w900,
+        color: DeckColors.primaryColor,
+        fontSize: 10,
+        fontFamily: 'Fraiche',
       ),
     ),
     CurvedNavigationBarItem(
@@ -141,8 +143,9 @@ class _MainPageState extends State<MainPage> {
       ),
       label: 'Flashcards',
       labelStyle: TextStyle(
-        color: DeckColors.white,
-        fontWeight: FontWeight.w900,
+        color: DeckColors.primaryColor,
+        fontSize: 10,
+        fontFamily: 'Fraiche',
       ),
     ),
     CurvedNavigationBarItem(
@@ -152,8 +155,9 @@ class _MainPageState extends State<MainPage> {
       ),
       label: 'Account',
       labelStyle: TextStyle(
-        color: DeckColors.white,
-        fontWeight: FontWeight.w900,
+        color: DeckColors.primaryColor,
+        fontSize: 10,
+        fontFamily: 'Fraiche',
       ),
     ),
   ];
@@ -176,8 +180,8 @@ class _MainPageState extends State<MainPage> {
     return CurvedNavigationBar(
       key: _bottomNavigationKey,
       backgroundColor: Colors.transparent,
-      buttonBackgroundColor: DeckColors.accentColor,
-      color: DeckColors.accentColor,
+      buttonBackgroundColor: DeckColors.softGreen,
+      color: DeckColors.softGreen,
       animationDuration: const Duration(milliseconds: 300),
       animationCurve: Curves.easeInOut,
       height: 80,
