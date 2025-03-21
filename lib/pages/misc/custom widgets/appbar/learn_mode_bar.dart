@@ -1,4 +1,5 @@
 import 'package:deck/pages/misc/colors.dart';
+import 'package:deck/pages/misc/custom%20widgets/buttons/custom_buttons.dart';
 import 'package:deck/pages/misc/deck_icons.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
@@ -10,28 +11,26 @@ import 'package:provider/provider.dart';
 
 ///
 ///
-/// AuthBar is an AppBar with the font Fraiche (used in auth and main routes)
-class AuthBar extends StatelessWidget implements PreferredSizeWidget {
-  const AuthBar({
+/// LearnModeBar is an AppBar use in learning modes such as study and quiz mode
+class LearnModeBar extends StatelessWidget implements PreferredSizeWidget {
+  const LearnModeBar({
     super.key,
     required this.title,
     required this.color,
     required this.fontSize,
-    this.rightIcon,
     this.automaticallyImplyLeading = false,
-    this.onRightIconPressed,
+    required this.onButtonPressed,
   });
   final String title;
   final Color color;
   final double fontSize;
-  final IconData? rightIcon;
   final bool automaticallyImplyLeading;
-  final VoidCallback? onRightIconPressed;
+  final VoidCallback onButtonPressed;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 0),
+    return Padding(padding:
+    const EdgeInsets.symmetric(horizontal: 0),
       child: AppBar(
         automaticallyImplyLeading: automaticallyImplyLeading,
         iconTheme: const IconThemeData(
@@ -46,12 +45,26 @@ class AuthBar extends StatelessWidget implements PreferredSizeWidget {
             color: color,
           ),
         ),
-        centerTitle: true,
+        centerTitle: false,
         actions: [
-          if(rightIcon != null)
-            IconButton(
-                onPressed: onRightIconPressed,
-                icon: Icon(rightIcon))
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: BuildButton(
+                  onPressed: onButtonPressed,
+                  buttonText: 'Stop Playing',
+                  height: 35,
+                  width: 170,
+                  radius: 20,
+                  backgroundColor: DeckColors.deckRed,
+                  textColor: DeckColors.white,
+                  fontSize: 16,
+                  borderWidth: 1,
+                  borderColor: DeckColors.accentColor,
+                  icon: Icons.stop_rounded,
+                  paddingIconText: 3,
+                  iconColor: DeckColors.white,
+              ),
+            )
         ],
       ),
     );
@@ -59,4 +72,4 @@ class AuthBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Size get preferredSize => AppBar().preferredSize;
-}
+  }

@@ -3,7 +3,9 @@ import 'dart:ffi';
 import 'package:deck/backend/auth/auth_service.dart';
 import 'package:deck/backend/flashcard/flashcard_service.dart';
 import 'package:deck/backend/models/deck.dart';
+import 'package:deck/pages/flashcard/Quiz%20Modes/quiz_mode_multChoice.dart';
 import 'package:deck/pages/flashcard/add_deck.dart';
+import 'package:deck/pages/flashcard/edit_deck.dart';
 import 'package:deck/pages/flashcard/view_deck.dart';
 import 'package:deck/pages/misc/colors.dart';
 import 'package:deck/pages/misc/deck_icons.dart';
@@ -19,6 +21,7 @@ import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
 import '../misc/custom widgets/functions/if_collection_empty.dart';
 import '../misc/custom widgets/textboxes/textboxes.dart';
 import '../misc/custom widgets/tiles/deck_container.dart';
+import '../settings/support and policies/report_a_problem.dart';
 
 class FlashcardPage extends StatefulWidget {
   const FlashcardPage({super.key});
@@ -34,6 +37,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
   List<Deck> _decks = [];
   List<Deck> _filteredDecks = [];
   late User? _user;
+  int numOfCards = 0;
 
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = "";
@@ -132,13 +136,13 @@ class _FlashcardPageState extends State<FlashcardPage> {
                 children: [
                   const Icon(
                     DeckIcons2.hat,
-                    color: DeckColors.white,
+                    color: DeckColors.primaryColor,
                     size: 32,
                   ),
                   const Spacer(),
                   IconButton(
                     icon: const Icon(Icons.add,
-                        color: DeckColors.white, size: 32),
+                        color: DeckColors.primaryColor, size: 32),
                     onPressed: () async {
                       if (_user != null) {
                         try {
@@ -157,11 +161,16 @@ class _FlashcardPageState extends State<FlashcardPage> {
                     },
                   ),
                   IconButton(
-                    icon: const Icon(Icons.search_rounded,
-                        color: DeckColors.white, size: 32),
+                    icon: const Icon(Icons.filter_list_alt,
+                        color: DeckColors.primaryColor, size: 32),
                     onPressed: () {
                       setState(() {
-                        _isSearchBoxVisible = !_isSearchBoxVisible;
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ReportAProblem(sourcePage: 'FlashcardPage'),
+                          ),
+                        );
                       });
                     },
                   )
@@ -183,13 +192,26 @@ class _FlashcardPageState extends State<FlashcardPage> {
               ),
             if (_latestDeck != null)
               Padding(
-                padding: const EdgeInsets.only(top: 16.0),
+                padding: const EdgeInsets.only(top: 10.0),
                 child: Container(
                   padding: const EdgeInsets.all(20),
                   width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      color: DeckColors.grayPopup),
+                      color: DeckColors.white,
+                      border: Border.all(
+                        color: DeckColors.primaryColor,
+                        width: 2.0,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          spreadRadius: 2,
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        )
+                      ]
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -197,8 +219,8 @@ class _FlashcardPageState extends State<FlashcardPage> {
                         _latestDeck!.title.toString(),
                         overflow: TextOverflow.visible,
                         style: const TextStyle(
-                          fontFamily: 'Nunito-Bold',
-                          color: DeckColors.white,
+                          fontFamily: 'Fraiche',
+                          color: DeckColors.primaryColor,
                           fontSize: 24,
                         ),
                       ),
@@ -228,18 +250,14 @@ class _FlashcardPageState extends State<FlashcardPage> {
                 ),
               ),
             if (_decks.isEmpty)
-              Container(
-                padding: EdgeInsets.all(30),
-                decoration: const BoxDecoration(
-                  color: DeckColors.coverImageColorSettings,
-                  borderRadius: BorderRadius.all(Radius.circular(40)),
-                ),
+              Padding(
+                padding: const EdgeInsets.only(top: 20.0),
                 child: IfCollectionEmpty(
                   hasIcon: true,
-                  ifCollectionEmptyText: 'No Recent Decks Yet!',
+                  ifCollectionEmptyText: 'It’s lonely around here...',
                   ifCollectionEmptySubText:
-                  'Now’s the perfect time to get ahead. Create your own Deck now to keep learning.',
-                  ifCollectionEmptyHeight: MediaQuery.of(context).size.height/5,
+                  'No Recent Decks Yet! Now’s the perfect time to get ahead. Create your own Deck now to keep learning.',
+                  ifCollectionEmptyHeight: MediaQuery.of(context).size.height/3,
                 ),
               ),
             if (_decks.isNotEmpty)
@@ -256,9 +274,8 @@ class _FlashcardPageState extends State<FlashcardPage> {
                 ),
               ),
             if (_decks.isNotEmpty)
-              if (_isSearchBoxVisible)
                 Padding(
-                  padding: const EdgeInsets.only(top: 20.0),
+                  padding: const EdgeInsets.only(top: 10.0),
                   child: BuildTextBox(
                     controller: _searchController,
                     hintText: 'Search Decks',
@@ -267,72 +284,70 @@ class _FlashcardPageState extends State<FlashcardPage> {
                   ),
                 ),
             if (_decks.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.only(top: 10.0),
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: _filteredDecks.length,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 6.0),
-                      child: BuildDeckContainer(
-                        deckCoverPhotoUrl: _filteredDecks[index].coverPhoto,
-                        titleOfDeck: _filteredDecks[index].title,
-                        onDelete: () {
-                          Deck removedDeck = _filteredDecks[index];
-                          final String deletedTitle =
-                              removedDeck.title.toString();
-                          setState(() {
-                            _filteredDecks.removeAt(index);
-                            _decks.removeWhere(
-                                (card) => card.deckId == removedDeck.deckId);
-                          });
-                          showConfirmationDialog(
-                            context,
-                            "Delete Item",
-                            "Are you sure you want to delete '$deletedTitle'?",
-                            () async {
-                              try {
-                                if (await removedDeck
-                                    .updateDeleteStatus(true)) {
-                                  if (_latestDeck != null) {
-                                    if (_latestDeck?.deckId ==
-                                        removedDeck.deckId) {
-                                      Deck? latest = await _flashcardService
-                                          .getLatestDeckLog(_user!.uid);
-                                      setState(() {
-                                        _latestDeck = latest;
-                                      });
-                                    }
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: _filteredDecks.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 7.0),
+                    child: BuildDeckContainer(
+                      deckCoverPhotoUrl: _filteredDecks[index].coverPhoto,
+                      titleOfDeck: _filteredDecks[index].title,
+                      onDelete: () {
+                        Deck removedDeck = _filteredDecks[index];
+                        final String deletedTitle =
+                            removedDeck.title.toString();
+                        setState(() {
+                          _filteredDecks.removeAt(index);
+                          _decks.removeWhere(
+                              (card) => card.deckId == removedDeck.deckId);
+                        });
+                        showConfirmationDialog(
+                          context,
+                          "Delete Item",
+                          "Are you sure you want to delete '$deletedTitle'?",
+                          () async {
+                            try {
+                              if (await removedDeck
+                                  .updateDeleteStatus(true)) {
+                                if (_latestDeck != null) {
+                                  if (_latestDeck?.deckId ==
+                                      removedDeck.deckId) {
+                                    Deck? latest = await _flashcardService
+                                        .getLatestDeckLog(_user!.uid);
+                                    setState(() {
+                                      _latestDeck = latest;
+                                    });
                                   }
                                 }
-                              } catch (e) {
-                                print('Flash Card Page Deletion Error: $e');
-                                setState(() {
-                                  _decks.insert(index, removedDeck);
-                                });
                               }
-                            },
-                            () {
+                            } catch (e) {
+                              print('Flash Card Page Deletion Error: $e');
                               setState(() {
                                 _decks.insert(index, removedDeck);
                               });
-                            },
-                          );
-                        },
-                        enableSwipeToRetrieve: false,
-                        onTap: () {
-                          print("Clicked");
-                          Navigator.of(context).push(
-                            RouteGenerator.createRoute(
-                                ViewDeckPage(deck: _filteredDecks[index])),
-                          );
-                        },
-                      ),
-                    );
-                  },
-                ),
+                            }
+                          },
+                          () {
+                            setState(() {
+                              _decks.insert(index, removedDeck);
+                            });
+                          },
+                        );
+                      },
+                      enableSwipeToRetrieve: false,
+                      onTap: () {
+                        print("Clicked");
+                        Navigator.of(context).push(
+                          RouteGenerator.createRoute(
+                              ViewDeckPage(deck: _filteredDecks[index])),
+                        );
+                      },
+                      numberOfCards: numOfCards,
+                    ),
+                  );
+                },
               ),
             if (_decks.isNotEmpty && _filteredDecks.isEmpty)
               IfCollectionEmpty(

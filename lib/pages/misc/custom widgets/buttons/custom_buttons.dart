@@ -80,6 +80,7 @@ class BuildButton extends StatelessWidget {
             Text(
               buttonText,
               style: TextStyle(
+                overflow: TextOverflow.visible,
                 fontFamily: 'Nunito-Bold',
                 fontSize: fontSize,
                 color: textColor,

@@ -39,82 +39,77 @@ class BuildListOfDecks extends StatefulWidget {
 class BuildListOfDecksState extends State<BuildListOfDecks> {
   @override
   Widget build(BuildContext context) {
-    return SwipeToDeleteAndRetrieve(
-      onDelete: widget.onDelete,
-      onRetrieve: widget.enableSwipeToRetrieve ? widget.onRetrieve : null,
-      enableRetrieve: widget.enableSwipeToRetrieve,
-      child: Container(
-        padding: const EdgeInsets.all(20.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15.0),
-          color: DeckColors.gray,
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              color: widget.deckImageUrl != null ? null : DeckColors.white,
-              height: 75,
-              width: 75,
-              child: widget.deckImageUrl != null
-                  ? Image.network(
-                widget.deckImageUrl!,
-                width: 20,
-                height: 10,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    color: DeckColors.white,
-                    child: const Center(
-                        child:
-                        Icon(Icons.broken_image, color: Colors.grey)),
-                  );
-                },
-              )
-                  : const Placeholder(
-                color: DeckColors.white,
-              ),
+    return Container(
+      padding: const EdgeInsets.all(20.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15.0),
+        color: DeckColors.white,
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            color: widget.deckImageUrl != null ? null : DeckColors.white,
+            height: 75,
+            width: 75,
+            child: widget.deckImageUrl != null
+                ? Image.network(
+              widget.deckImageUrl!,
+              width: 20,
+              height: 10,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  color: DeckColors.white,
+                  child: const Center(
+                      child:
+                      Icon(Icons.broken_image, color: Colors.grey)),
+                );
+              },
+            )
+                : const Placeholder(
+              color: DeckColors.white,
             ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 15.0, top: 5.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.titleText,
-                      style: const TextStyle(
-                        fontFamily: 'Nunito-Bold',
-                        fontSize: 16,
-                        color: DeckColors.white,
-                      ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 15.0, top: 5.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.titleText,
+                    style: const TextStyle(
+                      fontFamily: 'Fraiche',
+                      fontSize: 24,
+                      color: DeckColors.primaryColor,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 7.0),
-                      child: Container(
-                        width: 150,
-                        padding: const EdgeInsets.all(5.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16.0),
-                          color: DeckColors.coverImageColorSettings,
-                        ),
-                        child: Text(
-                          widget.numberText,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontFamily: 'Nunito-Regular',
-                            fontSize: 16,
-                            color: DeckColors.white,
-                          ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 7.0),
+                    child: Container(
+                      width: 150,
+                      padding: const EdgeInsets.all(5.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16.0),
+                        color: DeckColors.primaryColor,
+                      ),
+                      child: Text(
+                        widget.numberText,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontFamily: 'Nunito-Regular',
+                          fontSize: 16,
+                          color: DeckColors.white,
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
