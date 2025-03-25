@@ -28,16 +28,18 @@ class CustomExpansionTileState extends State<CustomExpansionTile> {
           ),
           child: ExpansionTile(
             title: const Text(
-              'Instructions ',
+              'Instructions for using AI',
               style: TextStyle(
                 fontFamily: 'Nunito-Bold',
-                color: DeckColors.primaryColor,
+                color: DeckColors.white,
                 fontSize: 16,
               ),
             ),
             trailing: Icon(customIcon
                 ? Icons.keyboard_arrow_up_rounded
                 : Icons.keyboard_arrow_down_rounded),
+                collapsedIconColor: DeckColors.white,
+                iconColor: DeckColors.white,
             onExpansionChanged: (bool expanded) {
               setState(() {
                 customIcon = expanded;

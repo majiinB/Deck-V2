@@ -75,19 +75,19 @@ class BuildListOfDecksState extends State<BuildListOfDecks> {
                 color: DeckColors.white,
               ),
             ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 15.0, top: 5.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.titleText,
-                      style: const TextStyle(
-                        fontFamily: 'Nunito-Bold',
-                        fontSize: 16,
-                        color: DeckColors.white,
-                      ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 15.0, top: 5.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.titleText,
+                    style: const TextStyle(
+                      fontFamily: 'Fraiche',
+                      fontSize: 24,
+                      color: DeckColors.primaryColor,
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 7.0),
@@ -109,12 +109,12 @@ class BuildListOfDecksState extends State<BuildListOfDecks> {
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -18,6 +18,7 @@ class BuildDeckContainer extends StatefulWidget {
   final VoidCallback onTap;
   final VoidCallback? onRetrieve;
   final bool enableSwipeToRetrieve;
+  final int numberOfCards;
 
   const BuildDeckContainer({
     super.key,
@@ -27,6 +28,7 @@ class BuildDeckContainer extends StatefulWidget {
     this.deckCoverPhotoUrl,
     required this.titleOfDeck,
     required this.onTap,
+    required this.numberOfCards,
   });
 
   @override
@@ -43,7 +45,7 @@ class BuildDeckContainerState extends State<BuildDeckContainer> {
     return GestureDetector(
       onTapDown: (_) {
         setState(() {
-          _containerColor = Colors.grey.withOpacity(0.7);
+          _containerColor = Colors.grey.withOpacity(0.3);
         });
       },
       onTapUp: (_) {
@@ -134,28 +136,37 @@ class BuildDeckContainerState extends State<BuildDeckContainer> {
                     ),
                   ),
                 ),
-                Expanded(
-                  child: Padding(
-                    padding:
-                    const EdgeInsets.only(top: 15.0, left: 10, right: 10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.titleOfDeck,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontFamily: 'Nunito-Bold',
-                            fontSize: 16,
-                            color: DeckColors.white,
-                          ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding:
+                  const EdgeInsets.only(top: 15.0, left: 10, right: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.titleOfDeck,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontFamily: 'Fraiche',
+                          fontSize: 16,
+                          color: DeckColors.primaryColor,
                         ),
-                      ],
-                    ),
+                      ),
+                      Text(
+                        '${widget.numberOfCards} cards',
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontFamily: 'Nunito-Regular',
+                          fontSize: 12,
+                          color: DeckColors.primaryColor,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

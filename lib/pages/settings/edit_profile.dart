@@ -35,6 +35,12 @@ class EditProfile extends StatefulWidget {
 
 class EditProfileState extends State<EditProfile> {
   bool _isLoading = false;
+  bool _isFirstNameChanged = false;
+  bool _isLastNameChanged = false;
+  bool _isEmailChanged = false;
+  bool _isProfilePicChanged = false;
+
+
   final TextEditingController firstNameController =
       TextEditingController(text: AuthUtils().getFirstName());
   final TextEditingController lastNameController =
@@ -49,6 +55,11 @@ class EditProfileState extends State<EditProfile> {
   void initState() {
     super.initState();
     getUrls();
+
+    //add listener to the controllers to monitor changes made by the user in the textfields
+    firstNameController.addListener(() => _onFirstNameChanged(firstNameController.text));
+    lastNameController.addListener(() => _onLastNameChanged(lastNameController.text));
+    emailController.addListener(() => _onEmailChanged(emailController.text));
   }
 
   void getUrls() async {
@@ -57,6 +68,27 @@ class EditProfileState extends State<EditProfile> {
       photoUrl = AuthUtils().getPhoto();
     });
   }
+
+  ///Define the change detection methods
+  void _onFirstNameChanged(String value) {
+    setState(() {
+      _isFirstNameChanged = value.trim() != (AuthUtils().getFirstName()?.trim() ?? '');
+    });
+  }
+
+  void _onLastNameChanged(String value) {
+    setState(() {
+      _isLastNameChanged = value.trim() != (AuthUtils().getLastName()?.trim() ?? '');
+    });
+  }
+
+  void _onEmailChanged(String value) {
+    setState(() {
+      _isEmailChanged = value.trim() != (AuthUtils().getEmail()?.trim() ?? '');
+    });
+  }
+
+///---- E N D ----
 
   Future<void> updateAccountInformation(BuildContext context) async {
     User? user = AuthService().getCurrentUser();
@@ -182,6 +214,15 @@ class EditProfileState extends State<EditProfile> {
     setState(() {});
   }
 
+  ///This disposes controllers to free resources and prevent memory leaks
+  @override
+  void dispose() {
+    firstNameController.dispose();
+    lastNameController.dispose();
+    emailController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     ///For dialog box to appear when user clicks the back button at the app bar or the device itself
@@ -223,7 +264,7 @@ class EditProfileState extends State<EditProfile> {
         body: _isLoading
             ? const Center(child: CircularProgressIndicator())
             : SingleChildScrollView(
-                padding: const EdgeInsets.only(bottom: 20),
+                padding: const EdgeInsets.only(left: 15, right: 15,bottom: 20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -236,7 +277,7 @@ class EditProfileState extends State<EditProfile> {
                         //   left: 10,
                         Center(
                           child: Padding(
-                            padding: const EdgeInsets.only(top: 40, left: 15, right: 15),
+                            padding: const EdgeInsets.only(top: 40),
                             child: BuildProfileImage(photoUrl, height: 200,),
                           ),
                         ),
@@ -305,7 +346,7 @@ class EditProfileState extends State<EditProfile> {
                   ),*/
                         Positioned(
                           top: 190,
-                          right: 25,
+                          right: 15,
                           child: Padding(
                               padding: const EdgeInsets.only(left: 0),
                               child: BuildIconButton(
@@ -346,6 +387,7 @@ class EditProfileState extends State<EditProfile> {
                                                     photoUrl = Image.file(
                                                         File(file!.path));
                                                     pfpFile = file;
+                                                    _isProfilePicChanged = true;
                                                   });
                                                 },
                                               ),
@@ -363,6 +405,7 @@ class EditProfileState extends State<EditProfile> {
                                                     photoUrl = null;
                                                     pfpFile = null;
                                                     print(photoUrl);
+                                                    _isProfilePicChanged = true;
                                                   });
                                                 },
                                               ),
@@ -384,7 +427,7 @@ class EditProfileState extends State<EditProfile> {
                     ),
                     const Padding(
                       padding:
-                          EdgeInsets.only(top: 40.0, left: 15, right: 15),
+                          EdgeInsets.only(top: 40.0),
                       child: Text(
                         'First Name',
                         style: TextStyle(
@@ -396,16 +439,17 @@ class EditProfileState extends State<EditProfile> {
                     ),
                     Padding(
                       padding:
-                          const EdgeInsets.only(top: 10, left: 15, right: 15),
+                          const EdgeInsets.only(top: 10),
                       child: BuildTextBox(
                         showPassword: false,
                         hintText: "First Name",
                         controller: firstNameController,
+                        onChanged: _onFirstNameChanged,
                       ),
                     ),
                     const Padding(
                       padding:
-                          EdgeInsets.only(top: 10.0, left: 15, right: 15),
+                          EdgeInsets.only(top: 10.0),
                       child: Text(
                         'Last Name',
                         style: TextStyle(
@@ -417,16 +461,17 @@ class EditProfileState extends State<EditProfile> {
                     ),
                     Padding(
                       padding:
-                          const EdgeInsets.only(top: 10, left: 15, right: 15),
+                          const EdgeInsets.only(top: 10),
                       child: BuildTextBox(
                         showPassword: false,
                         hintText: "Last Name",
                         controller: lastNameController,
+                        onChanged: _onLastNameChanged,
                       ),
                     ),
                     Padding(
                       padding:
-                          const EdgeInsets.only(top: 10.0, left: 15, right: 15),
+                          const EdgeInsets.only(top: 10.0),
                       child:!AuthService()
                           .getCurrentUser()!
                           .providerData[0]
@@ -441,7 +486,7 @@ class EditProfileState extends State<EditProfile> {
                           : const SizedBox()),
                     Padding(
                         padding:
-                            const EdgeInsets.only(top: 10, left: 15, right: 15),
+                            const EdgeInsets.only(top: 10),
                         child: !AuthService()
                                 .getCurrentUser()!
                                 .providerData[0]
@@ -451,6 +496,7 @@ class EditProfileState extends State<EditProfile> {
                                 showPassword: false,
                                 hintText: "Email",
                                 controller: emailController,
+                                onChanged: _onEmailChanged,
                               )
                             : const SizedBox()),
                     !AuthService()
@@ -464,7 +510,7 @@ class EditProfileState extends State<EditProfile> {
                       children: [
                         const Padding(
                           padding:
-                          EdgeInsets.only(top: 20.0, left: 15, right: 15),
+                          EdgeInsets.only(top: 20.0),
                           child: Text(
                             'Change Password',
                             style: TextStyle(
@@ -475,7 +521,7 @@ class EditProfileState extends State<EditProfile> {
                           ),
                         ),
                         Padding(
-                            padding: const EdgeInsets.only(top: 10, left: 15, right: 15),
+                            padding: const EdgeInsets.only(top: 10),
                           child: BuildSettingsContainer(
                             selectedIcon: DeckIcons.lock,
                             nameOfTheContainer: 'Change Password',
@@ -501,7 +547,7 @@ class EditProfileState extends State<EditProfile> {
                     )
                         : const SizedBox(),
                     const Padding(
-                      padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 25.0),
+                      padding: EdgeInsets.only(top: 25.0),
                         child: Divider(
                           thickness: 1,
                           color: DeckColors.primaryColor,
@@ -509,7 +555,7 @@ class EditProfileState extends State<EditProfile> {
                     ),
                     Padding(
                       padding:
-                          const EdgeInsets.only(top: 30, left: 15, right: 15),
+                          const EdgeInsets.only(top: 30),
                       child: BuildButton(
                         onPressed: () {
                           print(

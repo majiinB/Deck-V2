@@ -72,24 +72,27 @@ class _RadioButtonGroupState extends State<RadioButtonGroup> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: List.generate(widget.buttonLabels.length, (index) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(
-              horizontal: 5.0), // Space between buttons
-          child: BuildButton(
-            onPressed: () => _onButtonPressed(index),
-            buttonText: widget.buttonLabels[index],
-            height: 50,
-            width: 120,
-            radius: 10,
-            backgroundColor: _getBackgroundColor(index),
-            textColor: DeckColors.white,
-            fontSize: 12,
-            borderWidth: 2,
-            borderColor: DeckColors.white,
+        return Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+                horizontal: 5.0), // Space between buttons
+            child: BuildButton(
+              onPressed: () => _onButtonPressed(index),
+              buttonText: widget.buttonLabels[index],
+              height: 50,
+              width: 120,
+              radius: 10,
+              backgroundColor: _getBackgroundColor(index),
+              textColor: DeckColors.primaryColor,
+              fontSize: 12,
+              borderWidth: 2,
+              borderColor: DeckColors.primaryColor,
+            ),
           ),
         );
       }),
     );
   }
 }
+
 

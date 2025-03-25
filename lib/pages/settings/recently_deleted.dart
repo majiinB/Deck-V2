@@ -106,7 +106,7 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
       ),
       body: SingleChildScrollView(
         padding:
-            const EdgeInsets.only(top: 30, left: 20, right: 20, bottom: 20),
+            const EdgeInsets.only(top: 30, left: 20, right: 15, bottom: 15),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

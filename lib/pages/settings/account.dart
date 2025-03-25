@@ -103,6 +103,7 @@ class AccountPageState extends State<AccountPage> {
       child: Scaffold(
         backgroundColor: DeckColors.backgroundColor,
         body: SingleChildScrollView(
+          padding: const EdgeInsets.only(left: 15, right: 15,bottom: 110),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -150,7 +151,7 @@ class AccountPageState extends State<AccountPage> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                       Padding(
-                        padding: const EdgeInsets.only(left: 15.0, right: 8.0),
+                        padding: const EdgeInsets.only(right: 8.0),
                         child: BuildProfileImage(AuthUtils().getPhoto(),
                           width: 170,
                           height: 170,),
@@ -160,7 +161,7 @@ class AccountPageState extends State<AccountPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
-                            padding: const EdgeInsets.only(left: 8.0, right: 15.0,),
+                            padding: const EdgeInsets.only(left: 8.0),
                             child: Text(
                               overflow: TextOverflow.visible,
                               maxLines: 2,
@@ -221,7 +222,7 @@ class AccountPageState extends State<AccountPage> {
                 ),
               ),
               const Padding(
-                padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 25.0),
+                padding: EdgeInsets.only(top: 25.0),
                 child: Divider(
                   height: 1,
                   color: DeckColors.primaryColor,
@@ -256,7 +257,7 @@ class AccountPageState extends State<AccountPage> {
                       : const SizedBox()),*/
               ///RECENTLY DELETED
               Padding(
-                padding: const EdgeInsets.only(top: 20, left: 15, right: 15),
+                padding: const EdgeInsets.only(top: 15),
                 child: BuildSettingsContainer(
                   selectedIcon: DeckIcons.trash_bin,
                   nameOfTheContainer: 'Recently Deleted Deck',
@@ -274,18 +275,18 @@ class AccountPageState extends State<AccountPage> {
                   },
                 ),
               ),
+              ///----- E N D -----
               const Padding(
-                padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 25.0),
+                padding: EdgeInsets.only(top: 10.0),
                 child: Divider(
                   thickness: 1,
                   color: DeckColors.primaryColor,
                 ),
               ),
-              ///----- E N D -----
 
               ///SUGGEST IMPROVEMENT
               Padding(
-                padding: const EdgeInsets.only(top: 20, left: 15, right: 15),
+                padding: const EdgeInsets.only(top: 15),
                 child: BuildSettingsContainer(
                   selectedIcon: Icons.self_improvement_rounded,
                   nameOfTheContainer: 'Suggest Improvement',
@@ -307,7 +308,7 @@ class AccountPageState extends State<AccountPage> {
 
               ///REPORT A PROBLEM
               Padding(
-                padding: const EdgeInsets.only(top: 8, left: 15, right: 15),
+                padding: const EdgeInsets.only(top: 8),
                 child: BuildSettingsContainer(
                   selectedIcon: Icons.report_rounded,
                   nameOfTheContainer: 'Report a Problem',
@@ -319,8 +320,11 @@ class AccountPageState extends State<AccountPage> {
                   toggledColor:
                   DeckColors.accentColor, // Left Icon Color when Toggled
                   onTap: () {
-                    Navigator.of(context).push(
-                      RouteGenerator.createRoute(const ReportAProblem()),
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ReportAProblem(sourcePage: 'AccountPage'),
+                      ),
                     );
                   },
                 ),
@@ -329,7 +333,7 @@ class AccountPageState extends State<AccountPage> {
 
               ///TERMS OF USE
               Padding(
-                padding: const EdgeInsets.only(top: 8, left: 15, right: 15),
+                padding: const EdgeInsets.only(top: 8),
                 child: BuildSettingsContainer(
                   selectedIcon: Icons.note_alt_rounded,
                   nameOfTheContainer: 'Terms of Use',
@@ -351,7 +355,7 @@ class AccountPageState extends State<AccountPage> {
 
               ///PRIVACY POLICY
               Padding(
-                padding: const EdgeInsets.only(top: 8, left: 15, right: 15),
+                padding: const EdgeInsets.only(top: 8),
                 child: BuildSettingsContainer(
                   selectedIcon: Icons.privacy_tip_rounded,
                   nameOfTheContainer: 'Privacy Policy',
@@ -370,7 +374,7 @@ class AccountPageState extends State<AccountPage> {
                 ),
               ),
               const Padding(
-                padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 25.0),
+                padding: EdgeInsets.only(top: 15.0),
                 child: Divider(
                   thickness: 1,
                   color: DeckColors.primaryColor,
@@ -380,7 +384,7 @@ class AccountPageState extends State<AccountPage> {
 
               ///LOG OUT
               Padding(
-                padding: const EdgeInsets.only(top: 20, left: 15, right: 15),
+                padding: const EdgeInsets.only(top: 10),
                 child: BuildSettingsContainer(
                   selectedIcon: DeckIcons.logout,
                   nameOfTheContainer: 'Log Out',
@@ -418,7 +422,7 @@ class AccountPageState extends State<AccountPage> {
                 ),
               ),
               const Padding(
-                padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 25.0),
+                padding: EdgeInsets.only(top: 15.0),
                 child: Divider(
                   thickness: 1,
                   color: DeckColors.primaryColor,
@@ -428,7 +432,7 @@ class AccountPageState extends State<AccountPage> {
 
               ///DELETE ACCOUNT
               Padding(
-                padding: const EdgeInsets.only(top: 20, left: 15, right: 15, bottom: 110),
+                padding: const EdgeInsets.only(top: 10),
                 child: BuildSettingsContainer(
                   selectedIcon: Icons.delete_forever_rounded,
                   nameOfTheContainer: 'Delete Account',
@@ -443,9 +447,7 @@ class AccountPageState extends State<AccountPage> {
                   toggledColor:
                   DeckColors.accentColor, // Left Icon Color when Toggled
                   onTap: () {
-                    Navigator.of(context).push(
-                      RouteGenerator.createRoute(const RecentlyDeletedPage()),
-                    );
+
                   },
                 ),
               ),

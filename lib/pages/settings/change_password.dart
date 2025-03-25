@@ -24,20 +24,69 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
   final newConfirmPasswordController = TextEditingController();
   final oldPasswordController = TextEditingController();
 
+  ///This tracks if there are unsaved changes
+  bool _hasUnsavedChanges() {
+    return newPasswordController.text.isNotEmpty ||
+        newConfirmPasswordController.text.isNotEmpty ||
+        oldPasswordController.text.isNotEmpty;
+  }
+
+  ///This disposes controllers to free resources and prevent memory leaks
+  @override
+  void dispose() {
+    newPasswordController.dispose();
+    newConfirmPasswordController.dispose();
+    oldPasswordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: DeckColors.backgroundColor,
-      appBar: const AuthBar(
-        automaticallyImplyLeading: true,
-        title: 'Change Password',
-        color: DeckColors.primaryColor,
-        fontSize: 24,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.only(top: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (bool didPop) async {
+        if (didPop) {
+          return;
+        }
+
+        //Check for unsaved changes
+        if (_hasUnsavedChanges()) {
+          final shouldPop = await showDialog<bool>(
+            context: context,
+            builder: (BuildContext context) {
+              return ShowConfirmationDialog(
+                title: 'Are you sure you want to go back?',
+                text: 'If you go back now, you will lose all your progress',
+                onConfirm: () {
+                  Navigator.of(context).pop(); //Return true to allow pop
+                },
+                onCancel: () {
+                  //Return false to prevent pop
+                },
+              );
+            },
+          );
+
+          //If the user confirmed, pop the current route
+          if (shouldPop == true) {
+            Navigator.of(context).pop(true);
+          }
+        } else {
+          //No unsaved changes, allow pop without confirmation
+          Navigator.of(context).pop(true);
+        }
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        backgroundColor: DeckColors.backgroundColor,
+        appBar: const AuthBar(
+          automaticallyImplyLeading: true,
+          title: 'Change Password',
+          color: DeckColors.primaryColor,
+          fontSize: 24,
+        ),
+        ///wrap whole content with column and expanded so image can always stay at the bottom
+        body: Column(
           children: [
             const Padding(
               padding: EdgeInsets.only(left: 15, right: 15),
@@ -221,38 +270,37 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
                       borderWidth: 0,
                     ),
                   ),
-
-                  /*Padding(
-                    padding:
-                        const EdgeInsets.only(top: 15, left: 20, right: 20),
-                    child: BuildButton(
-                      onPressed: () {
-                        // ignore: avoid_print
-                        print(
-                            "cancel button clicked"); //line to test if working ung onPressedLogic XD
-                        Navigator.pop(context);
-                      },
-                      buttonText: 'Cancel',
-                      height: 50.0,
-                      width: MediaQuery.of(context).size.width,
-                      backgroundColor: DeckColors.white,
-                      textColor: DeckColors.primaryColor,
-                      radius: 10.0,
-                      borderColor: DeckColors.white,
-                      fontSize: 16,
-                      borderWidth: 0,
-                    ),
-                  ),*/
-              Padding(
-                padding: const EdgeInsets.only(top: 85.0, bottom:0),
-                child: Image(
-                  image: const AssetImage('assets/images/Deck-Bottom-Image.png'),
-                  width: MediaQuery.of(context).size.width,
-                  fit: BoxFit.cover,
-                ),
-              ),
+            ),
+            Image.asset(
+              'assets/images/Deck-Bottom-Image.png',
+              fit: BoxFit.fitWidth,
+              width: MediaQuery.of(context).size.width,
+            ),
           ],
         ),
+
+
+                        /*Padding(
+                          padding:
+                              const EdgeInsets.only(top: 15, left: 20, right: 20),
+                          child: BuildButton(
+                            onPressed: () {
+                              // ignore: avoid_print
+                              print(
+                                  "cancel button clicked"); //line to test if working ung onPressedLogic XD
+                              Navigator.pop(context);
+                            },
+                            buttonText: 'Cancel',
+                            height: 50.0,
+                            width: MediaQuery.of(context).size.width,
+                            backgroundColor: DeckColors.white,
+                            textColor: DeckColors.primaryColor,
+                            radius: 10.0,
+                            borderColor: DeckColors.white,
+                            fontSize: 16,
+                            borderWidth: 0,
+                          ),
+                        ),*/
       ),
     );
   }

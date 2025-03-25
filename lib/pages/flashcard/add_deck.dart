@@ -15,6 +15,7 @@ import 'package:deck/pages/misc/widget_method.dart';
 // import 'package:google_fonts/google_fonts.dart';
 
 import '../../backend/models/deck.dart';
+import '../misc/custom widgets/appbar/auth_bar.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
 import '../misc/custom widgets/buttons/icon_button.dart';
 import '../misc/custom widgets/dialogs/alert_dialog.dart';
@@ -40,34 +41,94 @@ class AddDeckPage extends StatefulWidget {
 class _AddDeckPageState extends State<AddDeckPage> {
   bool _isLoading = false;
   bool _isToggled = false;
+  int wordCount = 0;
+
   String coverPhoto = "no_photo";
   final TextEditingController _deckTitleController = TextEditingController();
   final TextEditingController _pickedFileController = TextEditingController();
+  final TextEditingController _deckDescriptionController = TextEditingController();
   final TextEditingController _subjectController = TextEditingController();
   final TextEditingController _topicController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _numCardsController = TextEditingController();
 
+  ///This is used to update word count
+  void updateWordCount(int count) {
+    setState(() {
+      wordCount = count;
+    });
+  }
+
+  ///This is used to count words
+  int countWords(String text) {
+    if (text.trim().isEmpty) {
+      return 0; //return 0 if the text is empty or only contains spaces
+    }
+    return text.trim().split(RegExp(r'\s+')).length;
+  }
+
+  ///This is used to check if there are unsaved changes
+  bool _hasUnsavedChanges() {
+    return _deckTitleController.text.isNotEmpty ||
+        _deckDescriptionController.text.isNotEmpty ||
+        _subjectController.text.isNotEmpty ||
+        _topicController.text.isNotEmpty ||
+        _descriptionController.text.isNotEmpty ||
+        _numCardsController.text.isNotEmpty ||
+        coverPhoto != 'no_photo';
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (bool didPop) async {
+        if (didPop) {
+          return;
+        }
+
+        //Check for unsaved changes
+        if (_hasUnsavedChanges()) {
+          final shouldPop = await showDialog<bool>(
+            context: context,
+            builder: (BuildContext context) {
+              return ShowConfirmationDialog(
+                title: 'Are you sure you want to go back?',
+                text: 'If you go back now, you will lose all your progress',
+                onConfirm: () {
+                  Navigator.of(context).pop(); //Return true to allow pop
+                },
+                onCancel: () {
+                  //Return false to prevent pop
+                },
+              );
+            },
+          );
+
+          //If the user confirmed, pop the current route
+          if (shouldPop == true) {
+            Navigator.of(context).pop(true);
+          }
+        } else {
+          //No unsaved changes, allow pop without confirmation
+          Navigator.of(context).pop(true);
+        }
+      },
       child: Scaffold(
-        /*appBar: const DeckBar(
-          title: 'add deck',
-          color: DeckColors.white,
+        backgroundColor: DeckColors.backgroundColor,
+        appBar: const AuthBar(
+          automaticallyImplyLeading: true,
+          title: 'Add Deck',
+          color: DeckColors.primaryColor,
           fontSize: 24,
-        ),*/
+        ),
         body: _isLoading ? const Center(child: CircularProgressIndicator()) : SingleChildScrollView(
             // padding: const EdgeInsets.all(20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Image(
-                      image: AssetImage('assets/images/AddDeck_Header.png'),
-                      fit: BoxFit.cover,
-                  ),
                 Padding(
-                  padding: const EdgeInsets.all(20.0),
+                  padding: const EdgeInsets.all(15.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -77,8 +138,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                           style: TextStyle(
                             fontFamily: 'Fraiche',
                             color: DeckColors.primaryColor,
-                            fontSize: 32,
-                            fontWeight: FontWeight.w900,
+                            fontSize: 40,
                           ),
                         ),
                       ),
@@ -226,6 +286,48 @@ class _AddDeckPageState extends State<AddDeckPage> {
                         hintText: 'Enter Deck Title'
                     ),
                   ),*/
+                      Row(
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 10.0),
+                            child: Text(
+                              'Deck Description',
+                              style: TextStyle(
+                                fontFamily: 'Nunito-Bold',
+                                color: DeckColors.primaryColor,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                          Spacer(),
+                          Text(
+                            '$wordCount word(s)',
+                            style: const TextStyle(
+                              fontFamily: 'Nunito-Bold',
+                              color: DeckColors.primaryColor,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                      BuildTextBox(
+                        controller: _deckDescriptionController,
+                        hintText: 'Describe the flashcards you want to create.',
+                        isMultiLine: true,
+                        wordLimit: 201,
+                        onChanged: (text) {
+                          int count = countWords(text);
+                          updateWordCount(count);
+                        },
+                      ),
+                      const Text(
+                        'You can enter up to 200 words only.',
+                        style: TextStyle(
+                          fontFamily: 'Nunito-Regular',
+                          color: DeckColors.primaryColor,
+                          fontSize: 12,
+                        ),
+                      ),
                   Padding(
                       padding: const EdgeInsets.only(top: 10),
                       child: Row(
@@ -260,13 +362,13 @@ class _AddDeckPageState extends State<AddDeckPage> {
                       'Use AI to generate flashcards',
                       style: TextStyle(
                         fontFamily: 'Nunito-Bold',
-                        color: DeckColors.white,
+                        color: DeckColors.primaryColor,
                         fontSize: 16,
                         fontStyle: FontStyle.italic
                       ),
                     ),
                   ),
-                  if (_isToggled) const CustomExpansionTile(),
+                  const CustomExpansionTile(),
                   if (_isToggled)
                     const Padding(
                       padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
@@ -703,31 +805,17 @@ class _AddDeckPageState extends State<AddDeckPage> {
                       borderColor: Colors.transparent,
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 10),
-                    child: BuildButton(
-                      onPressed: () {
-                        print(
-                            "cancel button clicked"); //line to test if working ung onPressedLogic XD
-                        Navigator.pop(context);
-                      },
-                      buttonText: 'Cancel',
-                      height: 50.0,
-                      width: MediaQuery.of(context).size.width,
-                      backgroundColor: DeckColors.white,
-                      textColor: DeckColors.primaryColor,
-                      radius: 10.0,
-                      fontSize: 16,
-                      borderWidth: 0,
-                      borderColor: Colors.transparent,
-                    ),
+                    ],
                   ),
-                                ],
-                  ),
+                ),
+                Image.asset(
+                  'assets/images/Deck-Bottom-Image.png',
+                  fit: BoxFit.fitWidth,
+                  width: MediaQuery.of(context).size.width,
                 ),
             ],
             ),
-    ),
+            ),
       ),
     );
   }

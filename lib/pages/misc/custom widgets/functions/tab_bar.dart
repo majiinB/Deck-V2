@@ -32,7 +32,7 @@ class BuildTabBar extends StatelessWidget {
               height: 40,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20.0),
-                color: DeckColors.accentColor,
+                color: Colors.grey,
               ),
               child: TabBar(
                 overlayColor: MaterialStateProperty.all(Colors.transparent),
