@@ -8,6 +8,7 @@ import '../../backend/models/card.dart';
 import '../../backend/models/deck.dart';
 import '../misc/custom widgets/appbar/auth_bar.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
+import '../misc/custom widgets/dialogs/alert_dialog.dart';
 import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
 import '../misc/custom widgets/textboxes/textboxes.dart';
 
@@ -41,7 +42,7 @@ class _AddFlashcardPageState extends State<AddFlashcardPage> {
 
       //Check for unsaved changes
       if (_hasUnsavedChanges()) {
-        final shouldPop = await showDialog<bool>(
+        /*final shouldPop = await showDialog<bool>(
           context: context,
           builder: (BuildContext context) {
             return ShowConfirmationDialog(
@@ -60,7 +61,7 @@ class _AddFlashcardPageState extends State<AddFlashcardPage> {
         //If the user confirmed, pop the current route
         if (shouldPop == true) {
           Navigator.of(context).pop(true);
-        }
+        }*/
       } else {
         //No unsaved changes, allow pop without confirmation
         Navigator.of(context).pop(true);
@@ -155,10 +156,12 @@ class _AddFlashcardPageState extends State<AddFlashcardPage> {
                       padding: const EdgeInsets.only(top: 20),
                       child: BuildButton(
                         onPressed: () {
-                          showConfirmationDialog(
-                            context,
-                            "Add Flash Card",
-                            "Are you sure you want to add this flash card on your deck?",
+                          showConfirmDialog(
+                          context,
+                          "assets/images/Deck_Dialogue1.png",
+                          "Add Flash Card",
+                          "Are you sure you want to add this flash card on your deck?",
+                          "Add Flashcard",
                                 () async {
                                   setState(() => _isLoading = true);
                                   try {
@@ -172,17 +175,19 @@ class _AddFlashcardPageState extends State<AddFlashcardPage> {
                                         await Future.delayed(const Duration(milliseconds: 300));
                                         setState(() => _isLoading = false);
                                         Navigator.pop(context, card);
-                                        showInformationDialog(context, "Card Added Successfully", "You can now view this card in you deck");
-                                      }
+                                        showAlertDialog(context,
+                                          "assets/images/Deck_Dialogue1.png",
+                                          "Card Added Successfully", "You can now view this card in you deck");
+                                    }
                                     } else {
                                       //Navigator.of(context).pop(); // Close the confirmation dialog
                                       await Future.delayed(const Duration(milliseconds: 300)); // Ensure the dialog is fully closed
                                       setState(() => _isLoading = false);
-                                      showInformationDialog(
-                                          context,
-                                          "Input Error",
-                                          "Please fill out all of the input fields and try again.");
-                                  // showDialog(
+                                      showAlertDialog(
+                                        context,"assets/images/Deck_Dialogue1.png",
+                                        "Input Error",
+                                        "Please fill out all of the input fields and try again.");
+                               // showDialog(
                                       //   context: context,
                                       //   builder: (BuildContext context) {
                                       //     return AlertDialog(
@@ -208,15 +213,11 @@ class _AddFlashcardPageState extends State<AddFlashcardPage> {
                                   } catch (e) {
                                     print('add card error: $e');
                                     setState(() => _isLoading = false);
-                                    showInformationDialog(
-                                        context,
-                                        "An error occured" ,
-                                        "An unknown error occured. Please try again.");
+                                    showAlertDialog(
+                                      context,"assets/images/Deck_Dialogue1.png",
+                                      "An error occured" ,
+                                      "An unknown error occured. Please try again.");
                                   }
-                                },
-                                () {
-                              // when user clicks no
-                              // add logic here
                                 },
                           );
                         },

@@ -98,14 +98,15 @@ class _QuizIdentificationState extends State<QuizIdentification> {
         color: DeckColors.primaryColor,
         fontSize: 24,
         onButtonPressed: () {
-          showConfirmationDialog(
-              context,
+          showConfirmDialog(
+              context, '',
               'Stop Quiz Mode?',
               'Are you sure you want to stop? You will lose all progress if you stop now.',
+              'Stop',
                   () {
                 Navigator.of(context).pop();
               },
-                  () {});
+          );
         },
       ),
       body: SingleChildScrollView(

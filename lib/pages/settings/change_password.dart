@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 
 import '../misc/custom widgets/appbar/auth_bar.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
+import '../misc/custom widgets/dialogs/alert_dialog.dart';
 import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
 import '../misc/custom widgets/textboxes/textboxes.dart';
 
@@ -49,8 +50,8 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
         }
 
         //Check for unsaved changes
-        if (_hasUnsavedChanges()) {
-          final shouldPop = await showDialog<bool>(
+        if (_hasUnsavedChanges()) { // TODO FIX THIS
+          /*final shouldPop = await showDialog<bool>(
             context: context,
             builder: (BuildContext context) {
               return ShowConfirmationDialog(
@@ -69,7 +70,7 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
           //If the user confirmed, pop the current route
           if (shouldPop == true) {
             Navigator.of(context).pop(true);
-          }
+          }*/
         } else {
           //No unsaved changes, allow pop without confirmation
           Navigator.of(context).pop(true);
@@ -177,10 +178,12 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
                                     // ignore: avoid_print
                                     print(
                                         "save button clicked"); //line to test if working ung onPressedLogic XD
-                                    showConfirmationDialog(
+                                    showConfirmDialog(
                                       context,
+                                      "assets/images/Deck_Dialogue1.png",
                                       "Change Password",
                                       "Are you sure you want to change password?",
+                                      "Change",
                                       () async {
                                         //when user clicks yes
                                         //add logic here
@@ -195,79 +198,85 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
                                           );
                                           await user?.reauthenticateWithCredential(credential);
 
-                                          if(newPasswordController.text != newConfirmPasswordController.text){
-                                            ///display error
-                                            showInformationDialog(context, "Error changing password", "Passwords mismatch. Please try again.");
-                                            return;
-                                          } else if(newPasswordController.text == oldPasswordController.text || oldPasswordController.text == newConfirmPasswordController.text){
-                                            ///display error
-                                            showInformationDialog(context, "Error changing password", "You cannot set the same password as your new password. Please try again.");
-                                            return;
-                                          }
-                                          AuthService().resetPass(newPasswordController.text);
-                                          setState(() => _isLoading = false);
-                                          ///display error
-                                          showInformationDialog(context, "Success","You have successfully changed your password.");
-
-                                          Navigator.pop(context);
-                                        } on FirebaseAuthException catch (e){
-                                          String message = '';
-                                          if(e.code == 'user-mismatch'){
-                                            message = "User credential mismatch! Please try again.";
-                                          } else if (e.code == 'user-not-found'){
-                                            message = 'User not found! Please try again.';
-                                          } else if (e.code == 'invalid-credential') {
-                                            message = 'Invalid credential! Please try again.';
-                                          } else if (e.code == 'invalid-email'){
-                                            message = 'Invalid email! Please try again.';
-                                          } else if (e.code == 'wrong-password'){
-                                            message = 'Wrong password! Please try again.';
-                                          } else if (e.code == 'weak-password'){
-                                            message = 'Password must be atleast 6 characters! Please try again.';
-                                          } else {
-                                            message = 'Error changing your password! Please try again.';
-                                          }
-                                          print(e.toString());
-                                          setState(() => _isLoading = false);
-                                          ///display error
-                                          showInformationDialog(context, "Error changing password", message);
-
-                                        } catch (e) {
-                                          print(e.toString());
-                                          setState(() => _isLoading = false);
-                                          ///display error
-                                          showInformationDialog(context, "Error changing password", "An Unknown error occured during the process. Please try again.");
-                                        }
-                                      },
-                                      () {
-                                        //when user clicks no
-                                        //nothing happens
-                                      },
-                                    );
-                                  },
-                                  buttonText: 'Change Password',
-                                  height: 50.0,
-                                  width: MediaQuery.of(context).size.width,
-                                  backgroundColor: DeckColors.primaryColor,
-                                  textColor: DeckColors.white,
-                                  radius: 10.0,
-                                  borderColor: DeckColors.primaryColor,
-                                  fontSize: 16,
-                                  borderWidth: 0,
-                                ),
-                              ),
-                      ],
+                              if(newPasswordController.text != newConfirmPasswordController.text){
+                                ///display error
+                                showAlertDialog(
+                                  context,
+                                  "assets/images/Deck_Dialogue1.png",
+                                  "Uh oh. Something went wrong.",
+                                  "Error changing password! Passwords mismatch. Please try again.",
+                                );
+                                return;
+                              } else if(newPasswordController.text == oldPasswordController.text || oldPasswordController.text == newConfirmPasswordController.text){
+                                ///display error
+                                showAlertDialog(
+                                  context,
+                                  "assets/images/Deck_Dialogue1.png",
+                                  "Uh oh. Something went wrong.",
+                                  "Error changing password! You cannot set the same password as your new password. Please try again.",
+                                );
+                                return;
+                              }
+                              AuthService().resetPass(newPasswordController.text);
+                              setState(() => _isLoading = false);
+                              ///display error
+                              showAlertDialog(
+                                context,
+                                "assets/images/Deck_Dialogue1.png",
+                                "Success",
+                                "You have successfully changed your password."
+                              );
+                              Navigator.pop(context);
+                            } on FirebaseAuthException catch (e){
+                              String message = '';
+                              if(e.code == 'user-mismatch'){
+                                message = "User credential mismatch! Please try again.";
+                              } else if (e.code == 'user-not-found'){
+                                message = 'User not found! Please try again.';
+                              } else if (e.code == 'invalid-credential') {
+                                message = 'Invalid credential! Please try again.';
+                              } else if (e.code == 'invalid-email'){
+                                message = 'Invalid email! Please try again.';
+                              } else if (e.code == 'wrong-password'){
+                                message = 'Wrong password! Please try again.';
+                              } else if (e.code == 'weak-password'){
+                                message = 'Password must be atleast 6 characters! Please try again.';
+                              } else {
+                                message = 'Error changing your password! Please try again.';
+                              }
+                              print(e.toString());
+                              setState(() => _isLoading = false);
+                              ///display error
+                              showAlertDialog(
+                                context,
+                                "assets/images/Deck_Dialogue1.png",
+                                "Uh oh. Something went wrong.",
+                                "Error changing password! $message Please try again.",
+                              );
+                            } catch (e) {
+                              print(e.toString());
+                              setState(() => _isLoading = false);
+                              ///display error
+                              showAlertDialog(
+                                context,
+                                "assets/images/Deck_Dialogue1.png",
+                                "Uh oh. Something went wrong.",
+                                "Error changing password! An Unknown error occured during the process. Please try again.",
+                              );}
+                          },
+                        );
+                      },
+                      buttonText: 'Change Password',
+                      height: 50.0,
+                      width: MediaQuery.of(context).size.width,
+                      backgroundColor: DeckColors.primaryColor,
+                      textColor: DeckColors.white,
+                      radius: 10.0,
+                      borderColor: DeckColors.primaryColor,
+                      fontSize: 16,
+                      borderWidth: 0,
                     ),
                   ),
-            ),
-            Image.asset(
-              'assets/images/Deck-Bottom-Image.png',
-              fit: BoxFit.fitWidth,
-              width: MediaQuery.of(context).size.width,
-            ),
-          ],
-        ),
-
 
                         /*Padding(
                           padding:
@@ -290,7 +299,13 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
                             borderWidth: 0,
                           ),
                         ),*/
-      ),
+                  ],            
+                ),
+              )
+            )
+          ]
+        )
+      )
     );
   }
 }
