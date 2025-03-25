@@ -18,6 +18,7 @@ import '../../backend/models/deck.dart';
 import '../misc/custom widgets/appbar/auth_bar.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
 import '../misc/custom widgets/buttons/icon_button.dart';
+import '../misc/custom widgets/dialogs/alert_dialog.dart';
 import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
 import '../misc/custom widgets/images/cover_image.dart';
 import '../misc/custom widgets/textboxes/textboxes.dart';
@@ -194,7 +195,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                                       child: Container(
                                         height: 200,
                                         width: MediaQuery.of(context).size.width,
-                                        color: DeckColors.gray,
+                                        color: DeckColors.white,
                                         child: Column(children: [
                                           Padding(
                                             padding: const EdgeInsets.only(top: 10),
@@ -220,8 +221,9 @@ class _AddDeckPageState extends State<AddDeckPage> {
                                                   }
                                                 } catch (e) {
                                                   print('Error: $e');
-                                                  showInformationDialog(
+                                                  showAlertDialog(
                                                       context,
+                                                      "assets/images/Deck_Dialogue1.png",
                                                       "Error in selecting files",
                                                       "There was an error in selecting the file. Please try again.");
                                                   // showDialog(
@@ -443,32 +445,14 @@ class _AddDeckPageState extends State<AddDeckPage> {
                                 }
                               } catch (e) {
                                 print('Error: $e');
-                                showInformationDialog(context, 'Error in selecting files!', 'There was an error in selecting the file. Please try again.');
+                                showAlertDialog(
+                                    context,
+                                    "assets/images/Deck_Dialogue1.png",
+                                    "Error in selecting files!",
+                                    "There was an error in selecting the file. Please try again.",
+                                );
 
-                                // showDialog(
-                                //   context: context,
-                                //   builder: (BuildContext context) {
-                                //     return AlertDialog(
-                                //       title: const Text('File Selection Error'),
-                                //       content: const Text('There was an error in selecting the file. Please try again.'),
-                                //       actions: <Widget>[
-                                //         TextButton(
-                                //           onPressed: () {
-                                //             Navigator.of(context).pop(); // Close the dialog
-                                //           },
-                                //           child: const Text(
-                                //             'Close',
-                                //             style: TextStyle(
-                                //               color: Colors.red,
-                                //             ),
-                                //           ),
-                                //         ),
-                                //       ],
-                                //     );
-                                //   },
-                                // );
                               }
-
                             },
                             buttonText: 'Upload PDF',
                             height: 50,
@@ -476,8 +460,8 @@ class _AddDeckPageState extends State<AddDeckPage> {
                             radius: 10,
                             fontSize: 16,
                             borderWidth: 0,
-                            borderColor: DeckColors.primaryColor,
-                            backgroundColor: DeckColors.primaryColor,
+                            borderColor: Colors.transparent,
+                            backgroundColor: DeckColors.white,
                             textColor: DeckColors.white,
                           ),
                         ),
@@ -510,8 +494,12 @@ class _AddDeckPageState extends State<AddDeckPage> {
                     padding: const EdgeInsets.only(top: 35),
                     child: BuildButton(
                       onPressed: () {
-                        showConfirmationDialog(context, "Generate Deck",
+                        showConfirmDialog(
+                            context,
+                            "assets/images/Deck_Dialogue1.png",
+                            "Generate Deck",
                             "Are you sure you want to generate deck?",
+                            "Generate",
                         () async{
                           setState(() => _isLoading = true);
                           if(_isToggled){
@@ -520,15 +508,19 @@ class _AddDeckPageState extends State<AddDeckPage> {
                             if(_deckTitleController.text.trim().isEmpty && _numCardsController.text.trim().isNotEmpty){
                               await Future.delayed(const Duration(milliseconds: 300));
                               setState(() => _isLoading = false);
-                              showInformationDialog(context, "Error adding Deck", "Your deck requires a title");
+                              showAlertDialog(context,
+                                  "assets/images/Deck_Dialogue1.png",
+                                  "Error adding Deck",
+                                  "Your deck requires a title");
                               return;
                             }
-
                             //Check if the number of cards to be generate was given
                             if(_numCardsController.text.trim().isEmpty){
                               await Future.delayed(const Duration(milliseconds: 300));
                               setState(() => _isLoading = false);
-                              showInformationDialog(context, "Error adding Deck", "The AI needs to know how many cards to generate");
+                              showAlertDialog(context,
+                                  "assets/images/Deck_Dialogue1.png",
+                                  "Error adding Deck", "The AI needs to know how many cards to generate");
                               return;
                             }else{
                               int? numberOfCards = int.tryParse(_numCardsController.text);
@@ -536,7 +528,10 @@ class _AddDeckPageState extends State<AddDeckPage> {
                               if (numberOfCards == null || (numberOfCards < 0 && numberOfCards > 20)) {
                                 await Future.delayed(const Duration(milliseconds: 300));
                                 setState(() => _isLoading = false);
-                                showInformationDialog(context,"Error adding Deck", "Please enter a valid integer ranging from 2-20");
+                                showAlertDialog(context,
+                                    "assets/images/Deck_Dialogue1.png",
+                                    "Error adding Deck",
+                                    "Please enter a valid integer ranging from 2-20");
                                 return;
                               }
                             }
@@ -558,7 +553,9 @@ class _AddDeckPageState extends State<AddDeckPage> {
                               )){
                                 await Future.delayed(const Duration(milliseconds: 300));
                                 setState(() => _isLoading = false);
-                                showInformationDialog(context, "Title Already Exist", 'You already have a deck named $deckTitle');
+                                showAlertDialog(context,
+                                    "assets/images/Deck_Dialogue1.png",
+                                    "Title Already Exist", 'You already have a deck named $deckTitle');
                                 return;
                               }
 
@@ -613,7 +610,9 @@ class _AddDeckPageState extends State<AddDeckPage> {
                                   print(e);
                                   await Future.delayed(const Duration(milliseconds: 300));
                                   setState(() => _isLoading = false);
-                                  showInformationDialog(context, "Unknown Error Occurred",
+                                  showAlertDialog(context,
+                                      "assets/images/Deck_Dialogue1.png",
+                                      "Unknown Error Occurred",
                                       'An unknown error has occurred while generating your deck. Please try again.');
                                   return;
                                 }
@@ -631,15 +630,19 @@ class _AddDeckPageState extends State<AddDeckPage> {
                                   );
                                 }on ApiException catch(e){
                                   setState(() => _isLoading = false);
-                                  showInformationDialog(context, "Error while creating Deck!", e.message.toString());
+                                  showAlertDialog(context,
+                                      "assets/images/Deck_Dialogue1.png",
+                                      "Error while creating Deck!", e.message.toString());
                                   return;
                                 }catch(e){
                                   print(flashCardDataList);
                                   print(e);
                                   await Future.delayed(const Duration(milliseconds: 300));
                                   setState(() => _isLoading = false);
-                                  showInformationDialog(context, "Unknown Error Occurred",
-                                      'An unknown error has occurred while generating your deck. Please try again.');
+                                  showAlertDialog(context,
+                                      "assets/images/Deck_Dialogue1.png",
+                                      "Unknown Error Occurred",
+                                      "An unknown error has occurred while generating your deck. Please try again.");
                                   return;
                                 }
                               }
@@ -647,16 +650,16 @@ class _AddDeckPageState extends State<AddDeckPage> {
                               if (flashCardDataList.isEmpty) {
                                 await Future.delayed(const Duration(milliseconds: 300));
                                 setState(() => _isLoading = false);
-                                showInformationDialog(
+                                showAlertDialog(
                                     context,
+                                    "assets/images/Deck_Dialogue1.png",
                                     "AI Did Not Give A Response!",
-                                    'This usually happens if\n'
-                                    '1.) The subject, topic, or description given is inappropriate\n'
-                                    '2.) The request is not related to academics\n'
-                                    '3.) The uploaded file is a ppt converted to pdf\n'
-                                    '4.) There was a internet connection error\n'
-                                    '\nPlease check your input and try again' );
-
+                                    "This usually happens if\n"
+                                    "1.) The subject, topic, or description given is inappropriate\n"
+                                    "2.) The request is not related to academics\n"
+                                    "3.) The uploaded file is a ppt converted to pdf\n"
+                                    "4.) There was a internet connection error\n"
+                                    "\nPlease check your input and try again");
                               } else {
                                 // If sendData is successful, navigate to ViewDeckPage
                                 if(_deckTitleController.text.isNotEmpty){
@@ -691,10 +694,11 @@ class _AddDeckPageState extends State<AddDeckPage> {
                                 }else{
                                   await Future.delayed(const Duration(milliseconds: 300)); // Ensure the dialog is fully closed
                                   setState(() => _isLoading = false);
-                                  showInformationDialog(
+                                  showAlertDialog(
                                       context,
-                                      'Input Error',
-                                      'Please fill out all of the input fields and try again.');
+                                      "assets/images/Deck_Dialogue1.png",
+                                      "Input Error",
+                                      "Please fill out all of the input fields and try again.");
                                   // showDialog(
                                   //   context: context,
                                   //   builder: (BuildContext context) {
@@ -723,8 +727,9 @@ class _AddDeckPageState extends State<AddDeckPage> {
                               // Handle any errors that occur during sendData
                               print('Error: $e');
                               setState(() => _isLoading = false);
-                              showInformationDialog(
+                              showAlertDialog(
                                   context,
+                                  "assets/images/Deck_Dialogue1.png",
                                   "An error occured",
                                   "Please fill out all of the input fields and try again.");                        }
                             // END OF AI
@@ -734,7 +739,8 @@ class _AddDeckPageState extends State<AddDeckPage> {
                             if(_deckTitleController.text.trim().isEmpty) {
                               await Future.delayed(const Duration(milliseconds: 300));
                               setState(() => _isLoading = false);
-                              showInformationDialog(context, "Error adding Deck", "Your deck requires a title");
+                              showAlertDialog(context,
+                                  "assets/images/Deck_Dialogue1.png","Error adding Deck", "Your deck requires a title");
                               return;
                             }
 
@@ -752,7 +758,8 @@ class _AddDeckPageState extends State<AddDeckPage> {
                             )){
                               await Future.delayed(const Duration(milliseconds: 300));
                               setState(() => _isLoading = false);
-                              showInformationDialog(context, "Error adding Deck!", 'You already have a deck named $deckTitle');
+                              showAlertDialog(context,
+                                  "assets/images/Deck_Dialogue1.png","Error adding Deck!", 'You already have a deck named $deckTitle');
                               return;
                             }
 
@@ -778,14 +785,14 @@ class _AddDeckPageState extends State<AddDeckPage> {
                               // Tell user if the deck is null because deck was not added
                               await Future.delayed(const Duration(milliseconds: 300));
                               setState(() => _isLoading = false);
-                              showInformationDialog(context, "Error adding Deck", "Deck was not added please try again");
+                              showAlertDialog(context,
+                                  "assets/images/Deck_Dialogue1.png",
+                                  "Error adding Deck", "Deck was not added please try again");
                               return;
                             }
                           }
-                        }, () {
-                          //when user clicks no
-                          //add logic here
-                        });
+                        },
+                        );
                       },
                       buttonText: 'Generate Deck',
                       height: 50.0,

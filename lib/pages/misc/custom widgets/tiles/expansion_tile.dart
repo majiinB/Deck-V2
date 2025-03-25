@@ -53,7 +53,7 @@ class CustomExpansionTileState extends State<CustomExpansionTile> {
             ),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
-              side: const BorderSide(color: DeckColors.gray),
+              side: const BorderSide(color: DeckColors.white),
             ),
             children: const <Widget>[
               ListTile(

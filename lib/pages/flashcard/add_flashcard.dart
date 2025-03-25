@@ -8,6 +8,7 @@ import '../../backend/models/card.dart';
 import '../../backend/models/deck.dart';
 import '../misc/custom widgets/appbar/auth_bar.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
+import '../misc/custom widgets/dialogs/alert_dialog.dart';
 import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
 import '../misc/custom widgets/textboxes/textboxes.dart';
 
@@ -141,95 +142,104 @@ class _AddFlashcardPageState extends State<AddFlashcardPage> {
                           color: DeckColors.primaryColor,
                           fontSize: 16,
                         ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: BuildTextBox(
-                              controller: _descriptionOrAnswerController,
-                              hintText: 'Enter Description',
-                              isMultiLine: true
-                          ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20),
-                      child: BuildButton(
-                        onPressed: () {
-                          showConfirmationDialog(
-                            context,
-                            "Add Flash Card",
-                            "Are you sure you want to add this flash card on your deck?",
-                                () async {
-                                  setState(() => _isLoading = true);
-                                  try {
-                                    if (_descriptionOrAnswerController.text.isNotEmpty &&
-                                        _questionOrTermController.text.isNotEmpty) {
-                                      Cards? card = await widget.deck.addQuestionToDeck(
-                                        _questionOrTermController.text.toString(),
-                                        _descriptionOrAnswerController.text.toString(),
-                                      );
-                                      if (card != null) {
-                                        await Future.delayed(const Duration(milliseconds: 300));
-                                        setState(() => _isLoading = false);
-                                        Navigator.pop(context, card);
-                                        showInformationDialog(context, "Card Added Successfully", "You can now view this card in you deck");
-                                      }
-                                    } else {
-                                      //Navigator.of(context).pop(); // Close the confirmation dialog
-                                      await Future.delayed(const Duration(milliseconds: 300)); // Ensure the dialog is fully closed
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: BuildButton(
+                      onPressed: () {
+                        showConfirmDialog(
+                          context,
+                          "assets/images/Deck_Dialogue1.png",
+                          "Add Flash Card",
+                          "Are you sure you want to add this flash card on your deck?",
+                          "Add Flashcard",
+                              () async {
+                                setState(() => _isLoading = true);
+                                try {
+                                  if (_descriptionOrAnswerController.text.isNotEmpty &&
+                                      _questionOrTermController.text.isNotEmpty) {
+                                    Cards? card = await widget.deck.addQuestionToDeck(
+                                      _questionOrTermController.text.toString(),
+                                      _descriptionOrAnswerController.text.toString(),
+                                    );
+                                    if (card != null) {
+                                      await Future.delayed(const Duration(milliseconds: 300));
                                       setState(() => _isLoading = false);
-                                      showInformationDialog(
-                                          context,
-                                          "Input Error",
-                                          "Please fill out all of the input fields and try again.");
-                                  // showDialog(
-                                      //   context: context,
-                                      //   builder: (BuildContext context) {
-                                      //     return AlertDialog(
-                                      //       title: const Text('Input Error'),
-                                      //       content: const Text('Please fill out all of the input fields.'),
-                                      //       actions: <Widget>[
-                                      //         TextButton(
-                                      //           onPressed: () {
-                                      //             Navigator.of(context).pop(); // Close the dialog
-                                      //           },
-                                      //           child: const Text(
-                                      //             'Close',
-                                      //             style: TextStyle(
-                                      //               color: Colors.red,
-                                      //             ),
-                                      //           ),
-                                      //         ),
-                                      //       ],
-                                      //     );
-                                      //   },
-                                      // );
+                                      Navigator.pop(context, card);
+                                      showAlertDialog(context,
+                                          "assets/images/Deck_Dialogue1.png",
+                                          "Card Added Successfully", "You can now view this card in you deck");
                                     }
                                   } catch (e) {
                                     print('add card error: $e');
                                     setState(() => _isLoading = false);
-                                    showInformationDialog(
-                                        context,
-                                        "An error occured" ,
-                                        "An unknown error occured. Please try again.");
+                                    showAlertDialog(
+                                        context,"assets/images/Deck_Dialogue1.png",
+                                        "Input Error",
+                                        "Please fill out all of the input fields and try again.");
+                                // showDialog(
+                                    //   context: context,
+                                    //   builder: (BuildContext context) {
+                                    //     return AlertDialog(
+                                    //       title: const Text('Input Error'),
+                                    //       content: const Text('Please fill out all of the input fields.'),
+                                    //       actions: <Widget>[
+                                    //         TextButton(
+                                    //           onPressed: () {
+                                    //             Navigator.of(context).pop(); // Close the dialog
+                                    //           },
+                                    //           child: const Text(
+                                    //             'Close',
+                                    //             style: TextStyle(
+                                    //               color: Colors.red,
+                                    //             ),
+                                    //           ),
+                                    //         ),
+                                    //       ],
+                                    //     );
+                                    //   },
+                                    // );
                                   }
-                                },
-                                () {
-                              // when user clicks no
-                              // add logic here
-                                },
-                          );
-                        },
-                        buttonText: 'Add Card',
-                        height: 50.0,
-                        width: MediaQuery.of(context).size.width,
-                        backgroundColor: DeckColors.primaryColor,
-                        textColor: DeckColors.white,
-                        radius: 10.0,
-                        fontSize: 16,
-                        borderWidth: 2,
-                        borderColor: DeckColors.primaryColor,
-                      ),
+                                } catch (e) {
+                                  print('add card error: $e');
+                                  setState(() => _isLoading = false);
+                                  showAlertDialog(
+                                      context,"assets/images/Deck_Dialogue1.png",
+                                      "An error occured" ,
+                                      "An unknown error occured. Please try again.");
+                                }
+                              },
+
+                        );
+                      },
+                      buttonText: 'Save Changes',
+                      height: 50.0,
+                      width: MediaQuery.of(context).size.width,
+                      backgroundColor: DeckColors.primaryColor,
+                      textColor: DeckColors.white,
+                      radius: 10.0,
+                      fontSize: 16,
+                      borderWidth: 0,
+                      borderColor: Colors.transparent,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: BuildButton(
+                      onPressed: () {
+                        print(
+                            "cancel button clicked");
+                        Navigator.pop(context);
+                      },
+                      buttonText: 'Cancel',
+                      height: 50.0,
+                      width: MediaQuery.of(context).size.width,
+                      backgroundColor: DeckColors.white,
+                      textColor: DeckColors.primaryColor,
+                      radius: 10.0,
+                      fontSize: 16,
+                      borderWidth: 0,
+                      borderColor: Colors.transparent,
                     ),
                   ],
                 ),

@@ -40,7 +40,7 @@ class DeckTaskTile extends StatefulWidget {
 }
 
 class DeckTaskTileState extends State<DeckTaskTile> {
-  Color _containerColor = DeckColors.grayTask; // Default color
+  Color _containerColor = DeckColors.white; // Default color
 
   @override
   void initState() {

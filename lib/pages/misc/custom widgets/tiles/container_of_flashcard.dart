@@ -49,7 +49,7 @@ class BuildContainerOfFlashCards extends StatefulWidget {
 
 class BuildContainerOfFlashCardsState extends State<BuildContainerOfFlashCards>
     with SingleTickerProviderStateMixin {
-  Color _containerColor = DeckColors.white;
+  Color _containerColor = DeckColors.accentColor;
 
   @override
   Widget build(BuildContext context) {
