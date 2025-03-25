@@ -17,7 +17,6 @@ import 'package:flutter/widgets.dart';
 
 import '../misc/custom widgets/buttons/custom_buttons.dart';
 import '../misc/custom widgets/checkbox/checkbox.dart';
-import '../misc/custom widgets/dialogs/alert_dialog.dart';
 import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
 import '../misc/custom widgets/textboxes/textboxes.dart';
 
@@ -273,24 +272,14 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     if(!checkBox.isChecked){
     ///display error
     setState(() => _isLoading = false);
-    showAlertDialog(
-      context,
-      "assets/images/Deck_Dialogue1.png",
-      "Uh oh. Something went wrong.",
-      "Error Signing Up! You haven't agreed to the Terms of Use and Privacy Policy. Please try again",
-    );
+    showInformationDialog(context, "Error Signing Up","You haven't agreed to the Terms of Use and Privacy Policy. Please try again");
     return;
     }
 
     if(passwordController.text != confirmPasswordController.text) {
     setState(() => _isLoading = false);
     ///display error
-    showAlertDialog(
-      context,
-      "assets/images/Deck_Dialogue1.png",
-      "Uh oh. Something went wrong.",
-      "Error Signing Up! Passwords do not match! Please try again.",
-    );
+    showInformationDialog(context, "Error Signing Up","Passwords do not match! Please try again.");
     return;
     }
 
@@ -328,21 +317,11 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     message = "Unknown Error! Please try again.";
     }
     setState(() => _isLoading = false);
-    showAlertDialog(
-      context,
-      "assets/images/Deck_Dialogue1.png",
-      "Uh oh. Something went wrong.",
-      "Error creating your account!$message Please try again.",
-    );
+    showInformationDialog(context, "Error creating your account!",message);
     } catch (e) {
     print(e.toString());
     setState(() => _isLoading = false);
-    showAlertDialog(
-      context,
-      "assets/images/Deck_Dialogue1.png",
-      "Uh oh. Something went wrong.",
-      "Error creating your account!Unknown Error! Please try again.",
-    );
+    showInformationDialog(context, "Error creating your account!", "Unknown Error! Please try again.");
     }
     },
     buttonText: 'Join the Deck Party!',
@@ -415,12 +394,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     } catch (e){
     print(e.toString());
     ///display error
-    showAlertDialog(
-      context,
-      "assets/images/Deck_Dialogue1.png",
-      "Uh oh. Something went wrong.",
-      "Error signing up!A problem occured while signing up.Please try again.",
-    );
+    showInformationDialog(context, "Error signing up", "A problem occured while signing up. Please try again.");
     }
     },
     buttonText: 'Google',

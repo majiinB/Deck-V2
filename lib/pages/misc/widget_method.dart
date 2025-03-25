@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 // import 'package:google_fonts/google_fonts.dart';
 import 'package:msh_checkbox/msh_checkbox.dart';
 import 'package:provider/provider.dart';
+import '../theme/theme_provider.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
 import 'custom widgets/buttons/icon_button.dart';
 

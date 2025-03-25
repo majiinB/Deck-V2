@@ -7,7 +7,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../misc/custom widgets/buttons/custom_buttons.dart';
-import '../misc/custom widgets/dialogs/alert_dialog.dart';
 import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
 import '../misc/custom widgets/textboxes/textboxes.dart';
 
@@ -88,12 +87,7 @@ class RecoverAccountPage extends StatelessWidget {
                 onPressed: () async {
                   try {
                     await AuthService().sendResetPass(emailController.text).then((_) => {
-                    showAlertDialog(
-                    context,
-                    "assets/images/Deck_Dialogue1.png",
-                    "Success!",
-                    "Please check your email to verify.",
-                    ),
+                      showInformationDialog(context, "Success!", "Please check your email to verify."),
                       Navigator.of(context).pop(RouteGenerator.createRoute(const LoginPage()),)
                     });
                   } on FirebaseAuthException catch (e) {
@@ -106,20 +100,10 @@ class RecoverAccountPage extends StatelessWidget {
                     } else {
                       message = 'There was an error finding email! Please try again';
                     }
-                    showAlertDialog(
-                      context,
-                      "assets/images/Deck_Dialogue1.png",
-                      "Uh oh. Something went wrong.",
-                      "Error while trying to recover account! $message Please try again.",
-                    );
+                    showInformationDialog(context, "Error while trying to recover account", message);
                   } catch (e){
                     print(e.toString());
-                    showAlertDialog(
-                      context,
-                      "assets/images/Deck_Dialogue1.png",
-                      "Uh oh. Something went wrong.",
-                      "Error while trying to recover account! An unknown error occured while performing process. Please try again.",
-                    );
+                    showInformationDialog(context, "Error while trying to recover account", "An unknown error occured while performing process. Please try again");
                   }
                 },
                 buttonText: 'Recover Account',

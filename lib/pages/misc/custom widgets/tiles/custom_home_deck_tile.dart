@@ -50,7 +50,7 @@ class HomeDeckTile extends StatelessWidget {
                 children: [
                   Container(
                     decoration: BoxDecoration(
-                      color: DeckColors.white,
+                      color: DeckColors.gray,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: ClipRRect(
@@ -63,7 +63,7 @@ class HomeDeckTile extends StatelessWidget {
                         fit: BoxFit.fill,
                         errorBuilder: (context, error, stackTrace) {
                           return Container(
-                            color: DeckColors.white,
+                            color: DeckColors.gray,
                             child: const Center(
                                 child: Icon(Icons.broken_image,
                                     color: Colors.white)),
@@ -71,7 +71,7 @@ class HomeDeckTile extends StatelessWidget {
                         },
                       )
                           : Container(
-                        color: DeckColors.white,
+                        color: DeckColors.gray,
                         child: const Center(
                             child: Icon(Icons.image_not_supported,
                                 color: Colors.white)),

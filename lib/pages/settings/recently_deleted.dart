@@ -124,16 +124,18 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
                   Expanded(
                     child: BuildButton(
                       onPressed: () {
-                        showConfirmDialog(
+                        showConfirmationDialog(
                           context,
-                          "assets/images/Deck_Dialogue1.png",
                           "Retrieve All Items",
                           "Are you sure you want to retrieve all items? Once retrieved, they will return to the deck page.",
-                          "Retrieve All",
                           () async {
                             for (int i = _decks.length - 1; i >= 0; i--) {
                               await _retrieveDeck(_decks[i], i);
                             }
+                          },
+                          () {
+                            // when user clicks no
+                            // add logic here
                           },
                         );
                       },
@@ -153,16 +155,18 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
                       padding: const EdgeInsets.only(left: 7.0),
                       child: BuildButton(
                         onPressed: () {
-                          showConfirmDialog(
+                          showConfirmationDialog(
                             context,
-                            "assets/images/Deck_Dialogue1.png",
                             "Delete All Items",
                             "Are you sure you want to delete all items? Once deleted, they cannot be retrieved. Proceed with caution.",
-                            "Delete All",
-                                () async {
+                            () async {
                               for (int i = _decks.length - 1; i >= 0; i--) {
                                 _deleteDeck(_decks[i], i);
                               }
+                            },
+                            () {
+                              // when user clicks no
+                              // add logic here
                             },
                           );
                         },
@@ -207,15 +211,17 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
                           String deletedTitle =
                               _filteredDecks[index].title.toString();
                           Deck removedDeck = _filteredDecks[index];
-                          showConfirmDialog(
+                          showConfirmationDialog(
                             context,
-                            "assets/images/Deck_Dialogue1.png",
                             "Delete Item",
                             "Are you sure you want to delete '$deletedTitle'?",
-                            "Delete Item",
                             () async {
                               await _deleteDeck(
                                   removedDeck, _decks.indexOf(removedDeck));
+                            },
+                            () {
+                              // when user clicks no
+                              // add logic here
                             },
                           );
                         },
@@ -223,15 +229,17 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
                           final String retrievedTitle =
                               _filteredDecks[index].title.toString();
                           Deck retrievedDeck = _filteredDecks[index];
-                          showConfirmDialog(
+                          showConfirmationDialog(
                             context,
-                            "assets/images/Deck_Dialogue1.png",
                             "Retrieve Item",
                             "Are you sure you want to retrieve '$retrievedTitle'?",
-                            "Retrieve",
                             () async {
                               await _retrieveDeck(
                                   retrievedDeck, _decks.indexOf(retrievedDeck));
+                            },
+                            () {
+                              // when user clicks no
+                              // add logic here
                             },
                           );
                         },

@@ -8,6 +8,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:msh_checkbox/msh_checkbox.dart';
 import 'package:provider/provider.dart';
 
+import '../../../theme/theme_provider.dart';
 // import '../theme/theme_provider.dart';
 // import '../misc/custom widgets/buttons/custom_buttons.dart';
 
@@ -59,12 +60,12 @@ class BuildSettingsContainer extends StatefulWidget {
 class BuildSettingsContainerState extends State<BuildSettingsContainer> {
   late bool _isToggled;
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
-  //   _isToggled = themeProvider.isDarkMode;
-  // }
+  @override
+  void initState() {
+    super.initState();
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    _isToggled = themeProvider.isDarkMode;
+  }
 
   @override
   Widget build(BuildContext context) {
