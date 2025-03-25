@@ -198,7 +198,20 @@ class _FlashcardPageState extends State<FlashcardPage> {
                   width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      color: DeckColors.white),
+                      color: DeckColors.white,
+                      border: Border.all(
+                        color: DeckColors.primaryColor,
+                        width: 2.0,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          spreadRadius: 2,
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        )
+                      ]
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -237,12 +250,8 @@ class _FlashcardPageState extends State<FlashcardPage> {
                 ),
               ),
             if (_decks.isEmpty)
-              Container(
-                padding: EdgeInsets.all(30),
-                decoration: const BoxDecoration(
-                  color: DeckColors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(40)),
-                ),
+              Padding(
+                padding: const EdgeInsets.only(top: 20.0),
                 child: IfCollectionEmpty(
                   hasIcon: true,
                   ifCollectionEmptyText: 'It’s lonely around here...',
@@ -275,46 +284,41 @@ class _FlashcardPageState extends State<FlashcardPage> {
                   ),
                 ),
             if (_decks.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.only(top: 10.0),
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: _filteredDecks.length,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 6.0),
-                      child: BuildDeckContainer(
-                        deckCoverPhotoUrl: _filteredDecks[index].coverPhoto,
-                        titleOfDeck: _filteredDecks[index].title,
-                        onDelete: () {
-                          Deck removedDeck = _filteredDecks[index];
-                          final String deletedTitle =
-                              removedDeck.title.toString();
-                          setState(() {
-                            _filteredDecks.removeAt(index);
-                            _decks.removeWhere(
-                                (card) => card.deckId == removedDeck.deckId);
-                          });
-                          showConfirmDialog(
-                            context,
-                            "assets/images/Deck_Dialogue1.png",
-                            "Delete Item?",
-                            "Are you sure you want to delete '$deletedTitle'?",
-                            "Delete Item",
-                            () async {
-                              try {
-                                if (await removedDeck
-                                    .updateDeleteStatus(true)) {
-                                  if (_latestDeck != null) {
-                                    if (_latestDeck?.deckId ==
-                                        removedDeck.deckId) {
-                                      Deck? latest = await _flashcardService
-                                          .getLatestDeckLog(_user!.uid);
-                                      setState(() {
-                                        _latestDeck = latest;
-                                      });
-                                    }
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: _filteredDecks.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 7.0),
+                    child: BuildDeckContainer(
+                      deckCoverPhotoUrl: _filteredDecks[index].coverPhoto,
+                      titleOfDeck: _filteredDecks[index].title,
+                      onDelete: () {
+                        Deck removedDeck = _filteredDecks[index];
+                        final String deletedTitle =
+                            removedDeck.title.toString();
+                        setState(() {
+                          _filteredDecks.removeAt(index);
+                          _decks.removeWhere(
+                              (card) => card.deckId == removedDeck.deckId);
+                        });
+                        showConfirmationDialog(
+                          context,
+                          "Delete Item",
+                          "Are you sure you want to delete '$deletedTitle'?",
+                          () async {
+                            try {
+                              if (await removedDeck
+                                  .updateDeleteStatus(true)) {
+                                if (_latestDeck != null) {
+                                  if (_latestDeck?.deckId ==
+                                      removedDeck.deckId) {
+                                    Deck? latest = await _flashcardService
+                                        .getLatestDeckLog(_user!.uid);
+                                    setState(() {
+                                      _latestDeck = latest;
+                                    });
                                   }
                                 }
                               }
@@ -325,7 +329,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
                               });
                             }
                           },
-                          onCancel: () {
+                          () {
                             setState(() {
                               _decks.insert(index, removedDeck);
                             });

@@ -18,7 +18,6 @@ import '../auth/signup.dart';
 import '../misc/custom widgets/appbar/auth_bar.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
 import '../misc/custom widgets/buttons/icon_button.dart';
-import '../misc/custom widgets/dialogs/alert_dialog.dart';
 import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
 import '../misc/custom widgets/images/profile_image.dart';
 import '../misc/custom widgets/textboxes/textboxes.dart';
@@ -102,14 +101,11 @@ class EditProfileState extends State<EditProfile> {
         lastNameController.text.isEmpty ||
         emailController.text.isEmpty) {
       ///display error
-      showAlertDialog(
-        context,
-        "assets/images/Deck_Dialogue1.png",
-        "Uh oh. Something went wrong.",
-        "Error changing information! Please fill out all of the input fields and try again.",
-      );
+      showInformationDialog(context, "Error changing information",
+          "Please fill out all of the input fields and try again.");
       return;
     }
+
     if (newName != '$userName $lastName')
       await _updateDisplayName(user, newName);
     if (user?.email != emailController.text) {
@@ -137,12 +133,7 @@ class EditProfileState extends State<EditProfile> {
     }
     setState(() => _isLoading = false);
     Navigator.pop(context, {'updated': true});
-    showAlertDialog(
-      context,
-      "assets/images/Deck_Dialogue2.png",
-      "Successfully updated information",
-      message,
-    );
+    showInformationDialog(context, "Successfully updated information", message);
   }
 
   String getNewName() {
@@ -185,12 +176,12 @@ class EditProfileState extends State<EditProfile> {
         message = e.toString();
       }
       print(e);
-
-      showAlertDialog(context, "assets/images/Deck_Dialogue1.png","Uh oh. Something went wrong","Error changing information. $message ");
+      showInformationDialog(context, "Error changing information", message);
       return false;
     } catch (e) {
       print(e);
-      showAlertDialog(context, "assets/images/Deck_Dialogue1.png","Uh oh. Something went wrong","Error changing information. " + e.toString());
+      showInformationDialog(
+          context, "Error changing information", e.toString());
       return false;
     }
   }
@@ -232,24 +223,29 @@ class EditProfileState extends State<EditProfile> {
         if (didpop) {
           return;
         }
-        final shouldPop = await showDialog<bool>(
-          context: context,
-          builder: (BuildContext context) {
-            return
-              CustomConfirmDialog(
-                imagePath:"assets/images/Deck_Dialogue1.png", //image of deck
-                title: "Are you sure you want to go back?", // title of alert
-                message: "If you go back now, all unsaved progress will be lost.", //subtitle or detailed message
-                button1: "Go Back",//text of button
-                onConfirm:(){ Navigator.of(context).pop(); },//when button is pressed perform action
-                button2: "Cancel", //text of button, default is Cancel
-                onCancel:  () {}, //when button is pressed perform action
+        //Only show the confirmation dialog if changes were made
+        if (_isFirstNameChanged || _isLastNameChanged || _isEmailChanged || _isProfilePicChanged) {
+          final shouldPop = await showDialog<bool>(
+            context: context,
+            builder: (BuildContext context) {
+              return ShowConfirmationDialog(
+                title: 'Are you sure you want to go back?',
+                text: 'If you go back now, all unsaved progress will be lost.',
+                onConfirm: () {
+                  Navigator.of(context).pop();
+                },
+                onCancel: () {
+                },
               );
-      },
-    );
-        //Check the result of the dialog and decide whether to pop or not
-        if (shouldPop != null && shouldPop) {
-          Navigator.of(context).pop();
+            },
+          );
+
+          //Check the result of the dialog and decide whether to pop or not
+          if (shouldPop != null && shouldPop) {
+            Navigator.of(context).pop();
+          }
+        } else {
+          Navigator.of(context).pop(); //no changes, just pop
         }
       },
       ///----- E N D -----
@@ -365,7 +361,7 @@ class EditProfileState extends State<EditProfile> {
                                           height: 200,
                                           width:
                                               MediaQuery.of(context).size.width,
-                                          color: DeckColors.white,
+                                          color: DeckColors.gray,
                                           child: Column(children: [
                                             Padding(
                                               padding:
@@ -560,12 +556,10 @@ class EditProfileState extends State<EditProfile> {
                         onPressed: () {
                           print(
                               "save button clicked"); //line to test if working ung onPressedLogic XD
-                          showConfirmDialog(
+                          showConfirmationDialog(
                             context,
-                            "assets/images/Deck_Dialogue1.png",
                             "Save Account Information",
                             "Are you sure you want to change your account information?",
-                            "Save Account Information",
                             () async {
                               try {
                                 setState(() => _isLoading = true);
@@ -573,10 +567,13 @@ class EditProfileState extends State<EditProfile> {
                               } catch (e) {
                                 print(e);
                                 setState(() => _isLoading = false);
-                                showAlertDialog(context,
-                                    "assets/images/Deck_Dialogue1.png",
+                                showInformationDialog(context,
                                     "Error changing information", e.toString());
                               }
+                            },
+                            () {
+                              //when user clicks no
+                              //add logic here
                             },
                           );
                         },

@@ -7,6 +7,7 @@ import 'package:deck/pages/home/home.dart';
 import 'package:deck/pages/misc/deck_icons.dart';
 import 'package:deck/pages/settings/account.dart';
 import 'package:deck/pages/task/main_task.dart';
+import 'package:deck/pages/theme/theme_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:curved_labeled_navigation_bar/curved_navigation_bar.dart';
@@ -28,11 +29,11 @@ void main() async {
   await FCMService().initializeNotifications();
   NotificationService().initLocalNotifications();
   FlutterNativeSplash.remove();
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
   runApp(
     MultiProvider(
       providers: [
-        // ChangeNotifierProvider(create: (context) => ThemeProvider()),
+        ChangeNotifierProvider(create: (context) => ThemeProvider()),
         ChangeNotifierProvider(create: (context) => TaskProvider()),
         ChangeNotifierProvider(create: (context) => ProfileProvider()),
       ],
@@ -67,7 +68,7 @@ class _myAppState extends State<MyApp> {
       title: 'Deck',
       // theme: Provider.of<ThemeProvider>(context).themeData,
       // navigatorKey: navigatorKey,
-      // theme: darkMode,
+      theme: darkMode,
       home: const AuthGate(),
     );
   }
@@ -117,9 +118,8 @@ class _MainPageState extends State<MainPage> {
       ),
       label: 'Home',
       labelStyle: TextStyle(
-        color: DeckColors.primaryColor,
-        fontSize: 10,
-        fontFamily: 'Fraiche',
+        color: DeckColors.white,
+        fontWeight: FontWeight.w900,
       ),
     ),
     CurvedNavigationBarItem(
@@ -129,9 +129,8 @@ class _MainPageState extends State<MainPage> {
       ),
       label: 'Tasks',
       labelStyle: TextStyle(
-        color: DeckColors.primaryColor,
-        fontSize: 10,
-        fontFamily: 'Fraiche',
+        color: DeckColors.white,
+        fontWeight: FontWeight.w900,
       ),
     ),
     CurvedNavigationBarItem(
@@ -143,9 +142,8 @@ class _MainPageState extends State<MainPage> {
       ),
       label: 'Flashcards',
       labelStyle: TextStyle(
-        color: DeckColors.primaryColor,
-        fontSize: 10,
-        fontFamily: 'Fraiche',
+        color: DeckColors.white,
+        fontWeight: FontWeight.w900,
       ),
     ),
     CurvedNavigationBarItem(
@@ -155,9 +153,8 @@ class _MainPageState extends State<MainPage> {
       ),
       label: 'Account',
       labelStyle: TextStyle(
-        color: DeckColors.primaryColor,
-        fontSize: 10,
-        fontFamily: 'Fraiche',
+        color: DeckColors.white,
+        fontWeight: FontWeight.w900,
       ),
     ),
   ];
@@ -180,8 +177,8 @@ class _MainPageState extends State<MainPage> {
     return CurvedNavigationBar(
       key: _bottomNavigationKey,
       backgroundColor: Colors.transparent,
-      buttonBackgroundColor: DeckColors.softGreen,
-      color: DeckColors.softGreen,
+      buttonBackgroundColor: DeckColors.accentColor,
+      color: DeckColors.accentColor,
       animationDuration: const Duration(milliseconds: 300),
       animationCurve: Curves.easeInOut,
       height: 80,

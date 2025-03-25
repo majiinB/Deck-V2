@@ -12,7 +12,6 @@ import 'package:flutter/material.dart';
 
 import '../../backend/auth/auth_service.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
-import '../misc/custom widgets/dialogs/alert_dialog.dart';
 import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
 import '../misc/custom widgets/textboxes/textboxes.dart';
 
@@ -195,25 +194,16 @@ class _LoginPageState extends State<LoginPage> {
                           if (mounted) {
                             setState(() => _isLoading = false);
                             // Display error dialog to the user.
-                            showAlertDialog(
-                              context,
-                              "assets/images/Deck_Dialogue1.png",
-                              "Uh oh. Something went wrong.",
-                              "Error signing up!$message Please try again.",
-                            );
-
+                            showInformationDialog(context, message,
+                                "A problem occurred while signing in. Please try again.");
                           }
                         } catch (e) {
                           // Handle any other errors.
                           print(e.toString());
                           if (mounted) {
                             setState(() => _isLoading = false);
-                            showAlertDialog(
-                              context,
-                              "assets/images/Deck_Dialogue1.png",
-                              "Uh oh. Something went wrong.",
-                              "Error signing up! A problem occurred while signing in.Please try again.",
-                            );
+                            showInformationDialog(context, "Error signing in.",
+                                "A problem occurred while signing in. Please try again.");
                           }
                         }
                       },
@@ -292,12 +282,7 @@ class _LoginPageState extends State<LoginPage> {
                           print(e.toString());
                           setState(() => _isLoading = false);
                           ///display error
-                          showAlertDialog(
-                            context,
-                            "assets/images/Deck_Dialogue1.png",
-                            "Uh oh. Something went wrong.",
-                            "Error signing up! A problem occurred while signing in.Please try again.",
-                          );
+                          showInformationDialog(context, "Error signing up", "A problem occured while signing up. Please try again.");
                         }
                       },
                       buttonText: 'Google',
