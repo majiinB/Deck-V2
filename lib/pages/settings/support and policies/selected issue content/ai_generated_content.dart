@@ -45,18 +45,22 @@ class _AIGeneratedContentState extends State<AIGeneratedContent> {
         }
 
         //Check for unsaved changes
-        if (_hasUnsavedChanges()) { //TODO FIX THIS
-          /*final shouldPop = await showDialog<bool>(
+        if (_hasUnsavedChanges()) { //TODO FIX THIS (status: FIXED!!!)
+          final shouldPop = await showDialog<bool>(
             context: context,
+            barrierDismissible: false,
             builder: (BuildContext context) { 
-              return ShowConfirmationDialog(
+              return CustomConfirmDialog(
                 title: 'Are you sure you want to go back?',
-                text: 'If you go back now, you will lose all your progress',
+                message: 'If you go back now, you will lose all your progress',
+                imagePath: 'assets/images/Deck_Dialogue4.png',
+                button1: 'Go Back',
+                button2: 'Cancel',
                 onConfirm: () {
-                  Navigator.of(context).pop(); //Return true to allow pop
+                  Navigator.of(context).pop(true); //Return true to allow pop
                 },
                 onCancel: () {
-                  //Return false to prevent pop
+                  Navigator.of(context).pop(false); //Return false to prevent pop
                 },
               );
             },
@@ -65,7 +69,7 @@ class _AIGeneratedContentState extends State<AIGeneratedContent> {
           //If the user confirmed, pop the current route
           if (shouldPop == true) {
             Navigator.of(context).pop(true);
-          }*/
+          }
         } else {
           //No unsaved changes, allow pop without confirmation
           Navigator.of(context).pop(true);
