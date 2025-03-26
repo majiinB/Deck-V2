@@ -47,7 +47,10 @@ class _ReportAProblemState extends State<ReportAProblem> {
     ///This sets default radio button selection based on the source page
     if (widget.sourcePage == 'AccountPage') {
       selectedRadio = 0; //AI-Generated Content
-    } else {
+    } else if (widget.sourcePage == 'ViewDeckOwner'){
+      selectedRadio = 0; //AI-Generated Content
+    }
+    else {
       selectedRadio = 0; //Someone's Deck Content
     }
   }
@@ -56,14 +59,20 @@ class _ReportAProblemState extends State<ReportAProblem> {
   void _setRadioBtnOptions (){
     if (widget.sourcePage == 'AccountPage'){
       buttonLabels = [
-        'AI-Generated Content',
         'Bug Issues',
         'Something Else',
       ];
       buttonSubtexts = [
-        'Harmful, incorrect, or biased AI-generated quiz or flashcard content.',
         'App crashes, broken features, or unexpected behavior.',
         '', //null because there is no subtext for the 4th option
+      ];
+    }
+    else if (widget.sourcePage == 'ViewDeckOwner'){
+      buttonLabels = [
+        'AI-Generated Content',
+      ];
+      buttonSubtexts = [
+        'Harmful, incorrect, or biased AI-generated quiz or flashcard content.',
       ];
     }
     else {
@@ -77,14 +86,15 @@ class _ReportAProblemState extends State<ReportAProblem> {
     if(widget.sourcePage == 'AccountPage') {
       switch (selectedRadio) {
         case 0:
-          return AIGeneratedContent();
-        case 1:
           return BugIssues();
-        case 2:
+        case 1:
           return SomethingElse();
         default:
           return const SizedBox.shrink();
       }
+    }
+    else if (widget.sourcePage == 'ViewDeckOwner') {
+      return selectedRadio == 0 ? AIGeneratedContent() : const SizedBox.shrink();
     }
     else {
       return selectedRadio == 0 ? SomeoneDeckContent() : const SizedBox.shrink();

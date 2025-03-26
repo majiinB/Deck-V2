@@ -164,14 +164,6 @@ class _FlashcardPageState extends State<FlashcardPage> {
                     icon: const Icon(Icons.filter_list_alt,
                         color: DeckColors.primaryColor, size: 32),
                     onPressed: () {
-                      setState(() {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const ReportAProblem(sourcePage: 'FlashcardPage'),
-                          ),
-                        );
-                      });
                     },
                   )
                 ],

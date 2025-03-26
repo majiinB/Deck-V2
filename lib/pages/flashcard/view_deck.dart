@@ -3,6 +3,7 @@ import 'package:deck/backend/flashcard/flashcard_service.dart';
 import 'package:deck/backend/flashcard/flashcard_utils.dart';
 import 'package:deck/backend/models/card.dart';
 import 'package:deck/pages/flashcard/add_flashcard.dart';
+import 'package:deck/pages/flashcard/edit_deck.dart';
 import 'package:deck/pages/flashcard/edit_flashcard.dart';
 import 'package:deck/pages/flashcard/play_my_deck.dart';
 import 'package:deck/pages/misc/colors.dart';
@@ -24,6 +25,7 @@ import '../misc/custom widgets/functions/tab_bar.dart';
 import '../misc/custom widgets/images/cover_image.dart';
 import '../misc/custom widgets/textboxes/textboxes.dart';
 import '../misc/custom widgets/tiles/container_of_flashcard.dart';
+import '../settings/support and policies/report_a_problem.dart';
 
 class ViewDeckPage extends StatefulWidget {
   final Deck deck;
@@ -44,6 +46,13 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
   int numberOfCards = 0;
   final TextEditingController _searchController = TextEditingController();
   User? currentUser;
+
+  ///This keeps track of the deck's publish status
+  bool isDeckPublished = false;
+  bool isOwner = true;
+
+  bool isSaved = false;
+
 
   @override
   void initState() {
@@ -117,11 +126,145 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
 
     return Scaffold(
       backgroundColor: DeckColors.backgroundColor,
-      appBar: const AuthBar(
+      appBar:  AuthBar(
         automaticallyImplyLeading: true,
         title: 'View Deck',
         color: DeckColors.primaryColor,
         fontSize: 24,
+          showPopMenu: true,
+          items: isOwner
+              ? [isDeckPublished ? 'Unpublish Deck' : 'Publish Deck', 'Edit Deck Info',  'Report Deck', 'Delete Deck'] ///Owner
+              : [isSaved ? 'Unsave Deck' : 'Save Deck', 'Report Deck'], ///Not owner
+          icons: isOwner
+              ? [
+            isDeckPublished ? Icons.undo_rounded : Icons.publish_rounded,
+            DeckIcons.pencil,
+            Icons.report,
+            DeckIcons.trash_bin,
+          ]///Owner
+              : [
+            isSaved? Icons.remove_circle : Icons.save,
+            Icons.report,
+          ], ///Not Owner
+
+          /// If owner, show these options in the popup menu
+          onItemsSelected: (index) {
+            if (isOwner) {
+              ///P U B L I S H  D E C K
+              if (index == 0) {
+                // Show the confirmation dialog for Publish/Unpublish
+                showDialog<bool>(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (BuildContext context) {
+                    return CustomConfirmDialog(
+                      title: isDeckPublished ? 'Unpublish Deck?' : 'Publish Deck?',
+                      message: isDeckPublished
+                          ? 'Are you sure you want to unpublish this deck?'
+                          : 'Are you sure you want to publish this deck?',
+                      imagePath: 'assets/images/Deck_Dialogue4.png',
+                      button1: isDeckPublished ? 'Unpublish Deck' : 'Publish Deck',
+                      button2: 'Cancel',
+                      onConfirm: () async {
+                        setState(() {
+                          isDeckPublished = !isDeckPublished;
+                          Navigator.of(context).pop();
+                        });
+                      },
+                      onCancel: () {
+                        Navigator.of(context).pop();
+                      },
+                    );
+                  },
+                );
+              }
+              ///E D I T  D E C K
+              else if (index == 1) {
+                Navigator.of(context).push(
+                    RouteGenerator.createRoute(const EditDeck()),
+                );
+              }
+              ///R E P O R T  D E C K
+              else if (index == 2){
+                setState(() {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ReportAProblem(sourcePage: 'ViewDeckOwner'),
+                    ),
+                  );
+                });
+              }
+              ///D E L E T E  D E C K
+              else if (index == 3) {
+                showDialog<bool>(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (BuildContext context) {
+                      return CustomConfirmDialog(
+                        title: 'Delete this deck?',
+                        message: 'Once deleted, this deck will no longer be playable. '
+                            'But do not worry, you can still retrieve it in the trash bin.',
+                        imagePath: 'assets/images/Deck_Dialogue4.png',
+                        button1: 'Delete Account',
+                        button2: 'Cancel',
+                        onConfirm: () async {
+                          Navigator.of(context).pop();
+                        },
+                        onCancel: () {
+                          Navigator.of(context).pop(
+                              false); // Close the first dialog on cancel
+                        },
+                      );
+                    }
+                );
+              }
+            }
+            ///----- E N D  O F  O W N E R -----------
+
+            ///If not owner, show these options
+            else {
+              ///S A V E  D E C K
+              if (index == 0) {
+                showDialog<bool>(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (BuildContext context) {
+                    return CustomConfirmDialog(
+                      title: isSaved ? 'Unsave Deck?' : 'Save Deck?',
+                      message: isSaved
+                          ? 'Are you sure you want to save this deck?'
+                          : 'Are you sure you want to unsave this deck?',
+                      imagePath: 'assets/images/Deck_Dialogue4.png',
+                      button1: isDeckPublished ? 'Unsave Deck' : 'Save Deck',
+                      button2: 'Cancel',
+                      onConfirm: () async {
+                        setState(() {
+                          isSaved = !isSaved;
+                          Navigator.of(context).pop();
+                        });
+                      },
+                      onCancel: () {
+                        Navigator.of(context).pop();
+                      },
+                    );
+                  },
+                );
+              }
+              ///R E P O R T  P A G E
+              else if (index == 1) {
+                setState(() {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ReportAProblem(sourcePage: 'FlashcardPage'),
+                    ),
+                  );
+                });
+              }
+            }
+            ///----- E N D  O F  N O T  O W N E R -----------
+          }
       ),
       /*floatingActionButton: DeckFAB(
         text: "Add FlashCard",
@@ -254,7 +397,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                         ),
                         Spacer(),
                         ///this is used sana to check if the currently signed-in user's UID matches the deck owner's UID
-                        //if (currentUser?.uid == widget.deck.ownerUid)
+                        if(isOwner)
                         Padding(
                           padding: const EdgeInsets.only(right: 8.0),
                           child: BuildButton(
@@ -445,7 +588,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                           contentOfFlashCard:
                                               _filteredCardsCollection[index]
                                                   .answer,
-                                          onDelete: () {
+                                          onDelete: isOwner ? () {
                                             /*Cards removedCard =
                                                 _filteredCardsCollection[
                                                     index];
@@ -547,7 +690,8 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                 });
                                               },
                                             );*/
-                                          },
+                                          }
+                                          : null,
                                           enableSwipeToRetrieve: false,
                                           onTap: () {
                                             print("Clicked");
@@ -618,7 +762,8 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                               }
                                             });
                                           },
-                                          iconOnPressed: () {
+                                          ///Delete Icon
+                                          iconOnPressed: isOwner ? () {
                                             print("Recognized");
                                             Cards removedCard =
                                             _filteredCardsCollection[
@@ -643,24 +788,72 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                               numberOfCards =
                                                   _cardsCollection.length;
                                             });
-                                            showConfirmDialog(
-                                              context, '',
-                                              "Delete Item",
-                                              "Are you sure you want to delete '$deletedTitle'?",
-                                              'Delete',
-                                                  () async {
-                                                try {
-                                                  await removedCard
-                                                      .updateDeleteStatus(
-                                                      true,
-                                                      widget.deck.deckId);
-                                                } catch (e) {
-                                                  print(
-                                                      'View Deck Error: $e');
-                                                  showAlertDialog(
-                                                      context, '',
-                                                      'Card Deletion Unsuccessful',
-                                                      'An error occurred during the deletion process please try again');
+                                          showDialog<bool>(
+                                          context: context,
+                                          barrierDismissible: false,
+                                          builder: (BuildContext context) {
+                                             return CustomConfirmDialog(
+                                                imagePath: 'assets/images/Deck_Dialogue4.png',
+                                                title: 'Delete this flashcard?',
+                                                message: 'Are you sure you want to delete ${deletedTitle}?',
+                                                button1: 'Delete Flashcard',
+                                                button2: 'Cancel',
+                                                onConfirm: () async {
+                                                  try {
+                                                    await removedCard
+                                                        .updateDeleteStatus(
+                                                        true,
+                                                        widget.deck.deckId);
+                                                  } catch (e) {
+                                                    print(
+                                                        'View Deck Error: $e');
+                                                    showDialog<bool>(
+                                                    context: context,
+                                                    barrierDismissible: false,
+                                                    builder: (BuildContext context) {
+                                                    return CustomAlertDialog(
+                                                      imagePath: 'assets/images/Deck_Dialogue4.png',
+                                                      title: 'Card Deletion Unsuccessful',
+                                                      message: 'An error occurred during the deletion process please try again',
+                                                      button1: 'Ok',
+                                                      onConfirm: () {
+
+                                                      },
+                                                    );
+                                                    setState(() {
+                                                      _cardsCollection
+                                                          .add(removedCard);
+                                                      FlashcardUtils()
+                                                          .sortByQuestion(
+                                                          _cardsCollection);
+                                                      _filteredCardsCollection
+                                                          .add(removedCard);
+                                                      FlashcardUtils()
+                                                          .sortByQuestion(
+                                                          _filteredCardsCollection);
+                                                      if (removedCard
+                                                          .isStarred) {
+                                                        _filteredStarredCardCollection
+                                                            .add(removedCard);
+                                                        FlashcardUtils()
+                                                            .sortByQuestion(
+                                                            _filteredStarredCardCollection);
+                                                        _starredCardCollection
+                                                            .add(removedCard);
+                                                        FlashcardUtils()
+                                                            .sortByQuestion(
+                                                            _starredCardCollection);
+                                                      }
+                                                      numberOfCards =
+                                                          _cardsCollection
+                                                              .length;
+                                                    });
+                                                  }
+                                                    );
+                                                }
+                                                  Navigator.of(context).pop(true);
+                                                },
+                                                onCancel: () {
                                                   setState(() {
                                                     _cardsCollection
                                                         .add(removedCard);
@@ -672,8 +865,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                     FlashcardUtils()
                                                         .sortByQuestion(
                                                         _filteredCardsCollection);
-                                                    if (removedCard
-                                                        .isStarred) {
+                                                    if (removedCard.isStarred) {
                                                       _filteredStarredCardCollection
                                                           .add(removedCard);
                                                       FlashcardUtils()
@@ -686,41 +878,32 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                           _starredCardCollection);
                                                     }
                                                     numberOfCards =
-                                                        _cardsCollection
-                                                            .length;
+                                                        _cardsCollection.length;
                                                   });
-                                                }
-                                              },
-                                                  onCancel:() {
-                                                setState(() {
-                                                  _cardsCollection
-                                                      .add(removedCard);
-                                                  FlashcardUtils()
-                                                      .sortByQuestion(
-                                                      _cardsCollection);
-                                                  _filteredCardsCollection
-                                                      .add(removedCard);
-                                                  FlashcardUtils().sortByQuestion(
-                                                      _filteredCardsCollection);
-                                                  if (removedCard.isStarred) {
-                                                    _filteredStarredCardCollection
-                                                        .add(removedCard);
-                                                    FlashcardUtils()
-                                                        .sortByQuestion(
-                                                        _filteredStarredCardCollection);
-                                                    _starredCardCollection
-                                                        .add(removedCard);
-                                                    FlashcardUtils()
-                                                        .sortByQuestion(
-                                                        _starredCardCollection);
-                                                  }
-                                                  numberOfCards =
-                                                      _cardsCollection.length;
-                                                });
+                                                  Navigator.of(context).pop(true);
+                                                },
+                                             );
+                                            },
+                                          );
+                                          }
+                                          : () {
+                                            showDialog<void>(
+                                              context: context,
+                                              barrierDismissible: false,
+                                              builder: (BuildContext context) {
+                                                return CustomAlertDialog(
+                                                  imagePath: 'assets/images/Deck_Dialogue2.png',
+                                                  title: 'Uh oh. You can\'t delete this flashcard!',
+                                                  message: 'You cannot delete a flashcard from a deck you do not own.',
+                                                  button1: 'Ok',
+                                                  onConfirm: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                );
                                               },
                                             );
-
-                                          }, showStar: true,
+                                          },
+                                          showStar: isOwner,
                                         ),
                                       );
                                     },
@@ -918,7 +1101,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                               }
                                             });
                                           },
-                                          iconOnPressed: () {
+                                          iconOnPressed: isOwner ? () {
                                             Cards removedCard =
                                             _filteredStarredCardCollection[
                                             index];
@@ -942,76 +1125,107 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                               numberOfCards =
                                                   _cardsCollection.length;
                                             });
-                                            showConfirmDialog(
-                                              context, '',
-                                              "Delete Item",
-                                              "Are you sure you want to delete '$starredDeletedTitle'?",
-                                              'Delete',
-                                                  () async {
-                                                try {
-                                                  await removedCard
-                                                      .updateDeleteStatus(
-                                                      true,
-                                                      widget.deck.deckId);
-                                                } catch (e) {
-                                                  print(
-                                                      'View Deck Error: $e');
-                                                  showAlertDialog(
-                                                      context, '',
-                                                      'Card Deletion Unsuccessful',
-                                                      'An error occurred during the deletion process please try again');
-                                                  setState(() {
-                                                    _cardsCollection
-                                                        .add(removedCard);
-                                                    FlashcardUtils()
-                                                        .sortByQuestion(
-                                                        _cardsCollection);
-                                                    _filteredCardsCollection
-                                                        .add(removedCard);
-                                                    FlashcardUtils()
-                                                        .sortByQuestion(
-                                                        _filteredCardsCollection);
-                                                    _filteredStarredCardCollection
-                                                        .add(removedCard);
-                                                    FlashcardUtils()
-                                                        .sortByQuestion(
-                                                        _filteredStarredCardCollection);
-                                                    _starredCardCollection
-                                                        .add(removedCard);
-                                                    FlashcardUtils()
-                                                        .sortByQuestion(
-                                                        _starredCardCollection);
-                                                    numberOfCards =
+                                            showDialog<bool>(
+                                              context: context,
+                                              barrierDismissible: false,
+                                              builder: (BuildContext context) {
+                                                return CustomConfirmDialog(
+                                                  imagePath: 'assets/images/Deck_Dialogue4.png',
+                                                  title: 'Delete this flashcard?',
+                                                  message: 'Are you sure you want to delete ${starredDeletedTitle}?',
+                                                  button1: 'Delete Flashcard',
+                                                  button2: 'Cancel',
+                                                  onConfirm: () async {
+                                                    try {
+                                                      await removedCard
+                                                          .updateDeleteStatus(
+                                                          true,
+                                                          widget.deck.deckId);
+                                                    } catch (e) {
+                                                      print(
+                                                          'View Deck Error: $e');
+                                                      showAlertDialog(
+                                                          context, '',
+                                                          'Card Deletion Unsuccessful',
+                                                          'An error occurred during the deletion process please try again'
+                                                      );
+                                                      setState(() {
                                                         _cardsCollection
-                                                            .length;
-                                                  });
-                                                }
-                                              },
+                                                            .add(removedCard);
+                                                        FlashcardUtils()
+                                                            .sortByQuestion(
+                                                            _cardsCollection);
+                                                        _filteredCardsCollection
+                                                            .add(removedCard);
+                                                        FlashcardUtils()
+                                                            .sortByQuestion(
+                                                            _filteredCardsCollection);
+                                                        _filteredStarredCardCollection
+                                                            .add(removedCard);
+                                                        FlashcardUtils()
+                                                            .sortByQuestion(
+                                                            _filteredStarredCardCollection);
+                                                        _starredCardCollection
+                                                            .add(removedCard);
+                                                        FlashcardUtils()
+                                                            .sortByQuestion(
+                                                            _starredCardCollection);
+                                                        numberOfCards =
+                                                            _cardsCollection
+                                                                .length;
+                                                      });
+                                                    }
+                                                    Navigator.of(context).pop(true);
+                                                  },
                                                   onCancel: () {
-                                                setState(() {
-                                                  _cardsCollection
-                                                      .add(removedCard);
-                                                  FlashcardUtils()
-                                                      .sortByQuestion(
-                                                      _cardsCollection);
-                                                  _filteredCardsCollection
-                                                      .add(removedCard);
-                                                  FlashcardUtils().sortByQuestion(
-                                                      _filteredCardsCollection);
-                                                  _filteredStarredCardCollection
-                                                      .add(removedCard);
-                                                  FlashcardUtils().sortByQuestion(
-                                                      _filteredStarredCardCollection);
-                                                  _starredCardCollection
-                                                      .add(removedCard);
-                                                  FlashcardUtils().sortByQuestion(
-                                                      _starredCardCollection);
-                                                  numberOfCards =
-                                                      _cardsCollection.length;
-                                                });
+                                                    setState(() {
+                                                      _cardsCollection
+                                                          .add(removedCard);
+                                                      FlashcardUtils()
+                                                          .sortByQuestion(
+                                                          _cardsCollection);
+                                                      _filteredCardsCollection
+                                                          .add(removedCard);
+                                                      FlashcardUtils()
+                                                          .sortByQuestion(
+                                                          _filteredCardsCollection);
+                                                      _filteredStarredCardCollection
+                                                          .add(removedCard);
+                                                      FlashcardUtils()
+                                                          .sortByQuestion(
+                                                          _filteredStarredCardCollection);
+                                                      _starredCardCollection
+                                                          .add(removedCard);
+                                                      FlashcardUtils()
+                                                          .sortByQuestion(
+                                                          _starredCardCollection);
+                                                      numberOfCards =
+                                                          _cardsCollection
+                                                              .length;
+                                                    });
+                                                    Navigator.of(context).pop(true);
+                                                  },
+                                                );
                                               },
                                             );
-                                        },
+                                          }
+                                        : () {
+                                            showDialog<void>(
+                                              context: context,
+                                              barrierDismissible: false,
+                                              builder: (BuildContext context) {
+                                                return CustomAlertDialog(
+                                                  imagePath: 'assets/images/Deck_Dialogue2.png',
+                                                  title: 'Uh oh. You can\'t delete this flashcard!',
+                                                  message: 'You cannot delete a flashcard from a deck you do not own.',
+                                                  button1: 'Ok',
+                                                  onConfirm: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                );
+                                              },
+                                            );
+                                          },
                                           showStar: true,
                                         ),
                                       );

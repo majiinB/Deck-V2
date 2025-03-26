@@ -197,7 +197,7 @@ class _EditDeckState extends State<EditDeck> {
                                     child: Container(
                                       height: 200,
                                       width: MediaQuery.of(context).size.width,
-                                      color: DeckColors.softGray, // TODO IDK WHAT COLOR, BASTA GRAY SIYA
+                                      color: DeckColors.white,
                                       child: Column(children: [
                                         Padding(
                                           padding: const EdgeInsets.only(top: 10),
@@ -251,6 +251,7 @@ class _EditDeckState extends State<EditDeck> {
                                                 //   },
                                                 // );
                                               }
+                                              Navigator.pop(context);
                                             },
                                           ),
                                         ),
@@ -268,6 +269,7 @@ class _EditDeckState extends State<EditDeck> {
                                                 _updateCoverPhoto(null);
                                               });
                                               print(coverPhoto);
+                                              Navigator.pop(context);
                                             },
                                           ),
                                         ),
@@ -277,8 +279,8 @@ class _EditDeckState extends State<EditDeck> {
                                 });
                           },
                           icon: DeckIcons.pencil,
-                          iconColor: DeckColors.white,
-                          backgroundColor: DeckColors.accentColor,
+                          iconColor: DeckColors.primaryColor,
+                          backgroundColor: DeckColors.white,
                         )),
                   ],
                 ),

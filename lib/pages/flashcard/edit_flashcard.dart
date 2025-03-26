@@ -75,17 +75,20 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
         if (didPop) {
           return;
         }
-        /*final shouldPop = await showDialog<bool>(
+        final shouldPop = await showDialog<bool>(
           context: context,
           builder: (BuildContext context) {
-            return ShowConfirmationDialog(
+            return CustomConfirmDialog(
               title: 'Are you sure you want to go back?',
-              text: 'If you go back now, all unsaved progress will be lost.',
+              message: 'If you go back now, you will lose all your progress',
+              imagePath: 'assets/images/Deck_Dialogue4.png',
+              button1: 'Go Back',
+              button2: 'Cancel',
               onConfirm: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(true); //Return true to allow pop
               },
               onCancel: () {
-
+                Navigator.of(context).pop(false); //Return false to prevent pop
               },
             );
           },
@@ -93,7 +96,7 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
 
         if (shouldPop == true) {
           Navigator.of(context).pop(); //allow exit
-        }*/
+        }
       },
       child: Scaffold(
         resizeToAvoidBottomInset: false,

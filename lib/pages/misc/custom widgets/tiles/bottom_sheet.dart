@@ -37,7 +37,7 @@ class BuildContentOfBottomSheet extends StatelessWidget {
         radius: 0.0,
         fontSize: 16,
         borderWidth: 0,
-        iconColor: DeckColors.white,
+        iconColor: DeckColors.primaryColor,
         paddingIconText: 20.0,
         size: 32,
       ),

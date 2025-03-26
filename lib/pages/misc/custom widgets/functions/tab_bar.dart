@@ -39,7 +39,7 @@ class BuildTabBar extends StatelessWidget {
                 indicatorSize: TabBarIndicatorSize.tab,
                 dividerColor: Colors.transparent,
                 indicator: BoxDecoration(
-                  color: DeckColors.primaryColor,
+                  color: DeckColors.accentColor,
                   borderRadius: BorderRadius.circular(20.0),
                 ),
                 labelColor: DeckColors.white,
