@@ -50,23 +50,23 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
         }
 
         //Check for unsaved changes
-        if (_hasUnsavedChanges()) { // TODO FIX THIS
+        if (_hasUnsavedChanges()) { // TODO FIX THIS (status: FIXED!)
           final shouldPop = await showDialog<bool>(
             context: context,
             barrierDismissible: false,
             builder: (BuildContext context) {
               return CustomConfirmDialog(
                 title: 'Are you sure you want to go back?',
+                message: 'If you go back now, you will lose all your progress',
+                imagePath: 'assets/images/Deck_Dialogue4.png',
+                button1: 'Go Back',
+                button2: 'Cancel',
                 onConfirm: () {
                   Navigator.of(context).pop(true); //Return true to allow pop
                 },
                 onCancel: () {
                   Navigator.of(context).pop(false); //Return false to prevent pop
                 },
-                imagePath: 'assets/images/Deck_Dialogue4.png',
-                button1: 'Go Back',
-                button2: 'Cancel',
-                message: 'If you go back now, you will lose all your progress',
               );
             },
           );
@@ -100,8 +100,21 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Padding(
+                          padding: EdgeInsets.only(left: 15.0, right: 15.0, bottom: 10),
+                          child: Text('Change Password',
+                            style: TextStyle(
+                              fontFamily: 'Fraiche',
+                              fontWeight: FontWeight.bold,
+                              color: DeckColors.primaryColor,
+                              fontSize: 40,
+                              height: 1.1,
+                            ),
+                          ),
+                        ),
+                        const Padding(
                           padding: EdgeInsets.only(left: 15, right: 15),
-                          child: Text(
+                          child:
+                          Text(
                             'Enter a new password below to change your password.',
                             style: TextStyle(
                               fontFamily: 'Nunito-Bold',
