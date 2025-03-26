@@ -807,18 +807,11 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                   } catch (e) {
                                                     print(
                                                         'View Deck Error: $e');
-                                                    showDialog<bool>(
-                                                    context: context,
-                                                    barrierDismissible: false,
-                                                    builder: (BuildContext context) {
-                                                    return CustomAlertDialog(
-                                                      imagePath: 'assets/images/Deck_Dialogue4.png',
-                                                      title: 'Card Deletion Unsuccessful',
-                                                      message: 'An error occurred during the deletion process please try again',
-                                                      button1: 'Ok',
-                                                      onConfirm: () {
-
-                                                      },
+                                                    showAlertDialog(
+                                                      context,
+                                                      "assets/images/Deck_Dialogue2.png",
+                                                      "Changed flash card information!",
+                                                      "Successfully changed flash card information.",
                                                     );
                                                     setState(() {
                                                       _cardsCollection
@@ -848,8 +841,6 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                           _cardsCollection
                                                               .length;
                                                     });
-                                                  }
-                                                    );
                                                 }
                                                   Navigator.of(context).pop(true);
                                                 },

@@ -161,7 +161,7 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
                           'Title',
                           style: TextStyle(
                             fontFamily: 'Nunito-Bold',
-                            color: DeckColors.white,
+                            color: DeckColors.primaryColor,
                             fontSize: 16,
                           ),
                         ),
@@ -215,9 +215,9 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
                                   ? () {
                                 showConfirmDialog(
                                   context,
-                                  "assets/images/Deck_Dialogue1.png",
+                                  "assets/images/Deck_Dialogue4.png",
                                   "Save Changes?",
-                                  "message",
+                                  "Are you sure you want to save changes made?",
                                   "Save",
                                       () async {
                                     try {
@@ -249,7 +249,7 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
                                       setState(() => _isLoading = false);
                                       showAlertDialog(
                                         context,
-                                        "assets/images/Deck_Dialogue1.png",
+                                        "assets/images/Deck_Dialogue3.png",
                                         "Changed flash card information!",
                                         "Successfully changed flash card information.",
                                       );
@@ -261,7 +261,7 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
                                       setState(() => _isLoading = false);
                                       showAlertDialog(
                                         context,
-                                        "assets/images/Deck_Dialogue1.png",
+                                        "assets/images/Deck_Dialogue3.png",
                                         "Changed flash card information!",
                                         "Successfully changed flash card information.",
                                       );
@@ -287,7 +287,26 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
                         padding: const EdgeInsets.only(top: 10),
                         child: BuildButton(
                           onPressed: () {
-                            showConfirmDialog(
+                            showDialog<bool>(
+                              context: context,
+                              barrierDismissible: false,
+                              builder: (BuildContext context) {
+                                return CustomConfirmDialog(
+                                  title: 'Delete this flashcard?',
+                                  message: 'Deleting this flashcard will permanently remove it, and it cannot be recovered',
+                                  imagePath: 'assets/images/Deck_Dialogue4.png',
+                                  button1: 'Delete Flashcard',
+                                  button2: 'Cancel',
+                                  onConfirm: () {
+                                    Navigator.of(context).pop();  //Close the first dialog
+                                  },
+                                  onCancel: () {
+                                    Navigator.of(context).pop(false); // Close the first dialog on cancel
+                                  },
+                                );
+                              },
+                            );
+                            /*showConfirmDialog(
                               context, // Pass the context
                               '',
                               'Are you sure you want to delete the card?',
@@ -296,7 +315,7 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
                                   () {
                                     print("Confirm");
                               },
-                            );
+                            );*/
                           },
                           buttonText: 'Delete Card',
                           height: 50.0,
