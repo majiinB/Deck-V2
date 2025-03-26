@@ -1,11 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:deck/pages/misc/colors.dart';
 import 'package:deck/pages/misc/deck_icons.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 // import 'package:google_fonts/google_fonts.dart';
-import 'package:msh_checkbox/msh_checkbox.dart';
-import 'package:provider/provider.dart';
 // import '../theme/theme_provider.dart';
 // import '../misc/custom widgets/buttons/custom_buttons.dart';
 
@@ -43,7 +39,7 @@ class BuildCoverImageState extends State<BuildCoverImage> {
         borderRadius: BorderRadius.circular(widget.borderRadiusContainer),
         color: widget.coverPhotoFile != null || widget.imageUrl != null
             ? null
-            : DeckColors.coverImageColorSettings,
+            : DeckColors.primaryColor,
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(widget.borderRadiusImage),
@@ -81,9 +77,9 @@ class BuildCoverImageState extends State<BuildCoverImage> {
   /// Builds the fallback for the **header** when the image fails to load.
   Widget _buildHeaderFallback() {
     return Container(
-      color: DeckColors.coverImageColorSettings,
+      color: DeckColors.white,
       child: const Center(
-        child: Icon(Icons.photo, color: Colors.grey, size: 50),
+        child: Icon(Icons.photo, color: DeckColors.primaryColor, size: 50),
       ),
     );
   }
@@ -91,7 +87,7 @@ class BuildCoverImageState extends State<BuildCoverImage> {
   /// Builds the fallback for **selection** when no image is selected.
   Widget _buildSelectionFallback() {
     return Container(
-      color: DeckColors.coverImageColorSettings,
+      color: DeckColors.primaryColor,
       child: const Center(
         child: Icon(Icons.add_a_photo, color: Colors.white, size: 50),
       ),

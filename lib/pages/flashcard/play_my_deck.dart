@@ -39,8 +39,8 @@ class _PlayMyDeckPageState extends State<PlayMyDeckPage> {
         title: 'Study Mode',
         color: DeckColors.primaryColor,
         fontSize: 24,
-        onButtonPressed: () {
-          showConfirmationDialog(
+        onButtonPressed: () { //TODO FIX THIS
+          /*showConfirmationDialog(
               context,
               'Stop Playing?',
               'Are you sure you want to stop? You will exit the study mode.',
@@ -48,7 +48,7 @@ class _PlayMyDeckPageState extends State<PlayMyDeckPage> {
                     Navigator.of(context).pop();
                   },
                   () { }
-          );
+          );*/
         },
       ),
       body: Padding(

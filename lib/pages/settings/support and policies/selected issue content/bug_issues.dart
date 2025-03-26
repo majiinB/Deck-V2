@@ -45,8 +45,8 @@ class BugIssues extends StatefulWidget {
           }
 
           //Check for unsaved changes
-          if (_hasUnsavedChanges()) {
-            final shouldPop = await showDialog<bool>(
+          if (_hasUnsavedChanges()) { // TODO FIX THIS
+            /* final shouldPop = await showDialog<bool>(
               context: context,
               builder: (BuildContext context) {
                 return ShowConfirmationDialog(
@@ -65,7 +65,7 @@ class BugIssues extends StatefulWidget {
             //If the user confirmed, pop the current route
             if (shouldPop == true) {
               Navigator.of(context).pop(true);
-            }
+            }*/ 
           } else {
             //No unsaved changes, allow pop without confirmation
             Navigator.of(context).pop(true);

@@ -303,10 +303,12 @@ class _FlashcardPageState extends State<FlashcardPage> {
                           _decks.removeWhere(
                               (card) => card.deckId == removedDeck.deckId);
                         });
-                        showConfirmationDialog(
-                          context,
-                          "Delete Item",
-                          "Are you sure you want to delete '$deletedTitle'?",
+                        showConfirmDialog(
+                            context,
+                            "assets/images/Deck_Dialogue1.png",
+                            "Delete Item?",
+                            "Are you sure you want to delete '$deletedTitle'?",
+                            "Delete Item",
                           () async {
                             try {
                               if (await removedDeck
@@ -329,7 +331,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
                               });
                             }
                           },
-                          () {
+                          onCancel: () {
                             setState(() {
                               _decks.insert(index, removedDeck);
                             });

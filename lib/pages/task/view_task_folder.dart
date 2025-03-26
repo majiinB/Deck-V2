@@ -1,6 +1,5 @@
 import 'package:deck/backend/task/task_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:deck/pages/misc/widget_method.dart';
 import 'package:deck/pages/misc/colors.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -13,7 +12,6 @@ import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
 import '../misc/custom widgets/functions/if_collection_empty.dart';
 import '../misc/custom widgets/functions/tab_bar.dart';
 import '../misc/custom widgets/tiles/deck_task_tile.dart';
-//sample
 
 class ViewTaskFolderPage extends StatefulWidget {
   const ViewTaskFolderPage({super.key});
@@ -74,13 +72,17 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
               progressStatus: 'to do',
               onDelete: () {
                 final String deletedTitle = task.title;
-                showConfirmationDialog(
-                    context, "Delete Item",
-                    "Are you sure you want to delete '$deletedTitle'?", () {
-                  Provider.of<TaskProvider>(context, listen: false).deleteTask(task.uid);
-                }, () {
-                  setState(() {}); // You may need to handle state updates accordingly
-                });
+                showConfirmDialog(
+                    context,
+                    "assets/images/Deck_Dialogue1.png",
+                    "Delete Item",
+                    "Are you sure you want to delete '$deletedTitle'?",
+                    "Delete Item",
+                        () {Provider.of<TaskProvider>(context, listen: false).deleteTask(task.uid);},
+                    // "Cancel",
+                    //     () {setState(() {}); // You may need to handle state updates accordingly
+                // }
+                );
               },
               enableRetrieve: false,
               onTap: () {
@@ -333,7 +335,7 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
                 height: (MediaQuery.of(context).size.height/2),
                 padding: const EdgeInsets.symmetric(vertical: 10, horizontal:50),
                 decoration: const BoxDecoration(
-                  color: DeckColors.coverImageColorSettings,
+                  color: DeckColors.white,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(60),  // Rounded top-left corner
                     topRight: Radius.circular(60), // Rounded top-right corner
@@ -493,7 +495,7 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
                 height: (MediaQuery.of(context).size.height/1.25),
                 padding: const EdgeInsets.symmetric(vertical: 10, horizontal:50),
                 decoration: const BoxDecoration(
-                  color: DeckColors.coverImageColorSettings,
+                  color: DeckColors.white,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(60),  // Rounded top-left corner
                     topRight: Radius.circular(60), // Rounded top-right corner

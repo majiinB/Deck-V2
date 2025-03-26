@@ -45,10 +45,10 @@ class _AIGeneratedContentState extends State<AIGeneratedContent> {
         }
 
         //Check for unsaved changes
-        if (_hasUnsavedChanges()) {
-          final shouldPop = await showDialog<bool>(
+        if (_hasUnsavedChanges()) { //TODO FIX THIS
+          /*final shouldPop = await showDialog<bool>(
             context: context,
-            builder: (BuildContext context) {
+            builder: (BuildContext context) { 
               return ShowConfirmationDialog(
                 title: 'Are you sure you want to go back?',
                 text: 'If you go back now, you will lose all your progress',
@@ -65,7 +65,7 @@ class _AIGeneratedContentState extends State<AIGeneratedContent> {
           //If the user confirmed, pop the current route
           if (shouldPop == true) {
             Navigator.of(context).pop(true);
-          }
+          }*/
         } else {
           //No unsaved changes, allow pop without confirmation
           Navigator.of(context).pop(true);

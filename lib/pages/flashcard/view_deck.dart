@@ -16,6 +16,7 @@ import '../../backend/models/deck.dart';
 import '../misc/custom widgets/appbar/auth_bar.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
 import '../misc/custom widgets/buttons/floating_action_button.dart';
+import '../misc/custom widgets/dialogs/alert_dialog.dart';
 import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
 import '../misc/custom widgets/dialogs/learn_mode_dialog.dart';
 import '../misc/custom widgets/functions/if_collection_empty.dart';
@@ -351,17 +352,19 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                     print('View Deck Error: $e');
 
                                     ///display error
-                                    showInformationDialog(
-                                        context,
-                                        "Error viewing deck",
-                                        "A problem occured while trying to view deck. Please try again.");
-                                  }
+                                    showAlertDialog(
+                                  context,
+                                  "assets/images/Deck_Dialogue1.png",
+                                  "Error viewing deck",
+                                  "A problem occured while trying to view deck. Please try again.");
+                            }
                                 }
                               } else {
                                 ///display error
-                                showInformationDialog(context, "Error viewing deck",
-                                    "The deck has no card please add a card first before playing.");
-                              }
+                                showAlertDialog(context,
+                              "assets/images/Deck_Dialogue1.png","Error viewing deck",
+                              "The deck has no card please add a card first before playing.");
+                        }
                             },*/
                             buttonText: 'Learn',
                             height: 35,
@@ -466,10 +469,12 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                               numberOfCards =
                                                   _cardsCollection.length;
                                             });
-                                            showConfirmationDialog(
-                                              context,
-                                              "Delete Item",
-                                              "Are you sure you want to delete '$deletedTitle'?",
+                                            showConfirmDialog(
+                                                context,
+                                                "assets/images/Deck_Dialogue1.png",
+                                                "Delete Item?",
+                                                "Are you sure you want to delete '$deletedTitle'?",
+                                                "Delete Item",
                                               () async {
                                                 try {
                                                   await removedCard
@@ -479,10 +484,11 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                 } catch (e) {
                                                   print(
                                                       'View Deck Error: $e');
-                                                  showInformationDialog(
-                                                      context,
-                                                      'Card Deletion Unsuccessful',
-                                                      'An error occurred during the deletion process please try again');
+                                                  showAlertDialog(
+                                                        context,
+                                                        "assets/images/Deck_Dialogue1.png",
+                                                        "Card Deletion Unsuccessful",
+                                                        "An error occurred during the deletion process please try again");
                                                   setState(() {
                                                     _cardsCollection
                                                         .add(removedCard);
@@ -637,10 +643,11 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                               numberOfCards =
                                                   _cardsCollection.length;
                                             });
-                                            showConfirmationDialog(
-                                              context,
+                                            showConfirmDialog(
+                                              context, '',
                                               "Delete Item",
                                               "Are you sure you want to delete '$deletedTitle'?",
+                                              'Delete',
                                                   () async {
                                                 try {
                                                   await removedCard
@@ -650,8 +657,8 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                 } catch (e) {
                                                   print(
                                                       'View Deck Error: $e');
-                                                  showInformationDialog(
-                                                      context,
+                                                  showAlertDialog(
+                                                      context, '',
                                                       'Card Deletion Unsuccessful',
                                                       'An error occurred during the deletion process please try again');
                                                   setState(() {
@@ -684,7 +691,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                   });
                                                 }
                                               },
-                                                  () {
+                                                  onCancel:() {
                                                 setState(() {
                                                   _cardsCollection
                                                       .add(removedCard);
@@ -935,10 +942,11 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                               numberOfCards =
                                                   _cardsCollection.length;
                                             });
-                                            showConfirmationDialog(
-                                              context,
+                                            showConfirmDialog(
+                                              context, '',
                                               "Delete Item",
                                               "Are you sure you want to delete '$starredDeletedTitle'?",
+                                              'Delete',
                                                   () async {
                                                 try {
                                                   await removedCard
@@ -948,8 +956,8 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                 } catch (e) {
                                                   print(
                                                       'View Deck Error: $e');
-                                                  showInformationDialog(
-                                                      context,
+                                                  showAlertDialog(
+                                                      context, '',
                                                       'Card Deletion Unsuccessful',
                                                       'An error occurred during the deletion process please try again');
                                                   setState(() {
@@ -979,7 +987,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                   });
                                                 }
                                               },
-                                                  () {
+                                                  onCancel: () {
                                                 setState(() {
                                                   _cardsCollection
                                                       .add(removedCard);

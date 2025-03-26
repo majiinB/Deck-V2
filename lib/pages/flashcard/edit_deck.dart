@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:deck/pages/misc/colors.dart';
 import 'package:deck/pages/misc/custom%20widgets/buttons/custom_buttons.dart';
+import 'package:deck/pages/misc/custom%20widgets/dialogs/alert_dialog.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
@@ -90,7 +91,7 @@ class _EditDeckState extends State<EditDeck> {
           return;
         }
         if (_isDeckTitleChanged || _isDeckDescriptionChanged || _isCoverPhotoChanged) {
-          final shouldPop = await showDialog<bool>(
+          /*final shouldPop = await showDialog<bool>(
             context: context,
             builder: (BuildContext context) {
               return ShowConfirmationDialog(
@@ -107,7 +108,7 @@ class _EditDeckState extends State<EditDeck> {
           );
           if (shouldPop == true) {
             Navigator.of(context).pop(true); //Allow exit
-          }
+          }*/
         } else {
           Navigator.of(context).pop(true); //No changes, allow exit
         }
@@ -193,7 +194,7 @@ class _EditDeckState extends State<EditDeck> {
                                     child: Container(
                                       height: 200,
                                       width: MediaQuery.of(context).size.width,
-                                      color: DeckColors.gray,
+                                      color: DeckColors.softGray, // TODO IDK WHAT COLOR, BASTA GRAY SIYA
                                       child: Column(children: [
                                         Padding(
                                           padding: const EdgeInsets.only(top: 10),
@@ -220,8 +221,8 @@ class _EditDeckState extends State<EditDeck> {
                                                 }
                                               } catch (e) {
                                                 print('Error: $e');
-                                                showInformationDialog(
-                                                    context,
+                                                showAlertDialog(
+                                                    context,"assets/images/Deck_Dialogue1.png",
                                                     "Error in selecting files",
                                                     "There was an error in selecting the file. Please try again.");
                                                 // showDialog(
