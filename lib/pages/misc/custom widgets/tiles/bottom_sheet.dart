@@ -33,7 +33,7 @@ class BuildContentOfBottomSheet extends StatelessWidget {
         borderColor: Colors.transparent,
         width: MediaQuery.of(context).size.width,
         backgroundColor: DeckColors.white,
-        textColor: DeckColors.white,
+        textColor: DeckColors.primaryColor,
         radius: 0.0,
         fontSize: 16,
         borderWidth: 0,

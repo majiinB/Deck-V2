@@ -134,6 +134,8 @@ class _LearnModeDialogState extends State<LearnModeDialog> {
                   thickness: 2,
                 ),
 
+                ///
+                ///
                 ///If quiz option is clicked, it will show this result:
                 if (showQuizOptions)
                   Column(
@@ -170,6 +172,8 @@ class _LearnModeDialogState extends State<LearnModeDialog> {
                   ),
                 ///---- E N D  O F  Q U I Z  O P T I O N S ---------
 
+                ///
+                ///
                 ///If study option is clicked, it will show this result:
                 if (showStudyOptions)
                   Column(

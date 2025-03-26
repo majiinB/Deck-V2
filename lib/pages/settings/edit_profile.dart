@@ -399,6 +399,7 @@ class EditProfileState extends State<EditProfile> {
                                                     pfpFile = file;
                                                     _isProfilePicChanged = true;
                                                   });
+                                                  Navigator.pop(context);
                                                 },
                                               ),
                                             ),
@@ -417,6 +418,7 @@ class EditProfileState extends State<EditProfile> {
                                                     print(photoUrl);
                                                     _isProfilePicChanged = true;
                                                   });
+                                                  Navigator.pop(context);
                                                 },
                                               ),
                                             ),

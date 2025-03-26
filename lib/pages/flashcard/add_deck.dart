@@ -14,6 +14,7 @@ import '../../backend/models/deck.dart';
 import '../misc/custom widgets/appbar/auth_bar.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
 import '../misc/custom widgets/buttons/icon_button.dart';
+import '../misc/custom widgets/buttons/radio_button_group.dart';
 import '../misc/custom widgets/dialogs/alert_dialog.dart';
 import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
 import '../misc/custom widgets/images/cover_image.dart';
@@ -38,6 +39,8 @@ class _AddDeckPageState extends State<AddDeckPage> {
   bool _isLoading = false;
   bool _isToggled = false;
   int wordCount = 0;
+  bool showUploadFile = true;
+  bool showPrompt = false;
 
   String coverPhoto = "no_photo";
   final TextEditingController _deckTitleController = TextEditingController();
@@ -84,18 +87,21 @@ class _AddDeckPageState extends State<AddDeckPage> {
         }
 
         //Check for unsaved changes
-        if (_hasUnsavedChanges()) { //TODO FIX THIS, IDK HOW TO FIX
-          /*final shouldPop = await showDialog<bool>(
+        if (_hasUnsavedChanges()) { //TODO FIX THIS, IDK HOW TO FIX (status: FIXED!!)
+          final shouldPop = await showDialog<bool>(
             context: context,
             builder: (BuildContext context) {
-              return ShowConfirmationDialog( 
+              return CustomConfirmDialog(
                 title: 'Are you sure you want to go back?',
-                text: 'If you go back now, you will lose all your progress',
+                message: 'If you go back now, you will lose all your progress',
+                imagePath: 'assets/images/Deck_Dialogue4.png',
+                button1: 'Go Back',
+                button2: 'Cancel',
                 onConfirm: () {
-                  Navigator.of(context).pop(); //Return true to allow pop
+                  Navigator.of(context).pop(true); //Return true to allow pop
                 },
                 onCancel: () {
-                  //Return false to prevent pop
+                  Navigator.of(context).pop(false); //Return false to prevent pop
                 },
               );
             },
@@ -104,7 +110,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
           //If the user confirmed, pop the current route
           if (shouldPop == true) {
             Navigator.of(context).pop(true);
-          }*/
+          }
         } else {
           //No unsaved changes, allow pop without confirmation
           Navigator.of(context).pop(true);
@@ -245,6 +251,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                                                   //   },
                                                   // );
                                                 }
+                                                Navigator.pop(context);
                                               },
                                             ),
                                           ),
@@ -261,6 +268,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                                                   coverPhoto = "no_photo";
                                                 });
                                                 print(coverPhoto);
+                                                Navigator.pop(context);
                                               },
                                             ),
                                           ),
@@ -270,8 +278,8 @@ class _AddDeckPageState extends State<AddDeckPage> {
                                   });
                             },
                             icon: DeckIcons.pencil,
-                            iconColor: DeckColors.white,
-                            backgroundColor: DeckColors.accentColor,
+                            iconColor: DeckColors.primaryColor,
+                            backgroundColor: DeckColors.white,
                           )),
                     ],
                   ),
@@ -365,54 +373,39 @@ class _AddDeckPageState extends State<AddDeckPage> {
                     ),
                   ),
                   const CustomExpansionTile(),
-                  if (_isToggled)
-                    const Padding(
-                      padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
-                      child: Text(
-                        'Subject',
-                        style: TextStyle(
-                          fontFamily: 'Nunito-Bold',
-                          color: DeckColors.primaryColor,
+                      if (_isToggled)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: RadioButtonGroup(
+                          buttonLabels: const ['Upload a file', 'Enter a prompt'],
+                          buttonColors: const [DeckColors.deckYellow, DeckColors.deckYellow],
                           fontSize: 16,
+                          isClickable: true,
+                          onChange: (label, index){
+                            setState(() {
+                              if (index == 0) {
+                                showUploadFile = true;
+                                showPrompt = false;
+                              } else if (index == 1) {
+                                showPrompt = true;
+                                showUploadFile = false;
+                              }
+                            });
+                          },
                         ),
                       ),
-                    ),
-                      if (_isToggled)
-                    BuildTextBox(hintText: 'Enter Subject (e.g. English)', controller: _subjectController,),
-                  if (_isToggled)
-                    const Padding(
-                      padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
-                      child: Text(
-                        'Topic',
-                        style: TextStyle(
-                          fontFamily: 'Nunito-Bold',
-                          color: DeckColors.primaryColor,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                      if (_isToggled)
-                    BuildTextBox(hintText: 'Enter A Topic (e.g. Verb)', controller: _topicController,),
-                  if (_isToggled)
-                    const Padding(
-                      padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
-                      child: Text(
-                        'Description',
-                        style: TextStyle(
-                          fontFamily: 'Nunito-Bold',
-                          color: DeckColors.primaryColor,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                      if (_isToggled)
-                    BuildTextBox(
-                        hintText: 'Describe the flashcards you want to create. \n(e.g. Focus on Verbs.....)', isMultiLine: true, controller: _descriptionController,),
-                      if (_isToggled)
+
+                      ///
+                      ///
+                      /// If upload file is clicked, it will show this result
+                    if(showPrompt && _isToggled)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
                         const Padding(
                           padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
                           child: Text(
-                            'Attach File',
+                            'Subject',
                             style: TextStyle(
                               fontFamily: 'Nunito-Bold',
                               color: DeckColors.primaryColor,
@@ -420,58 +413,128 @@ class _AddDeckPageState extends State<AddDeckPage> {
                             ),
                           ),
                         ),
-                  if (_isToggled)
-                    Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 10.0),
-                          child: BuildButton(
-                            onPressed: () async{
-                              try {
-                                FilePickerResult? result = await FilePicker.platform.pickFiles(
-                                  type: FileType.custom,
-                                  allowedExtensions: ['pdf'],
-                                );
-
-                                if (result != null) {
-                                  PlatformFile file = result.files.first;
-                                  _pickedFileController.text = file.path ?? '';
-                                } else {
-                                  // User canceled the picker
-                                }
-                              } catch (e) {
-                                print('Error: $e');
-                                showAlertDialog(
-                                    context,
-                                    "assets/images/Deck_Dialogue1.png",
-                                    "Error in selecting files!",
-                                    "There was an error in selecting the file. Please try again.",
-                                );
-
-                              }
-                            },
-                            buttonText: 'Upload PDF',
-                            height: 50,
-                            width: 150,
-                            radius: 10,
-                            fontSize: 16,
-                            borderWidth: 0,
-                            borderColor: Colors.transparent,
-                            backgroundColor: DeckColors.white,
-                            textColor: DeckColors.white,
+                        BuildTextBox(
+                          hintText: 'Enter Subject (e.g. English)',
+                          controller: _subjectController,
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
+                          child: Text(
+                            'Topic',
+                            style: TextStyle(
+                              fontFamily: 'Nunito-Bold',
+                              color: DeckColors.primaryColor,
+                              fontSize: 16,
+                            ),
                           ),
                         ),
-                        Expanded(
-                          flex: 1,
-                            child: IgnorePointer(
-                              child: BuildTextBox(
-                                  hintText: 'File Name',
-                                  controller: _pickedFileController,
-                              ),
+                        BuildTextBox(hintText: 'Enter A Topic (e.g. Verb)',
+                          controller: _topicController,
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
+                          child: Text(
+                            'Description',
+                            style: TextStyle(
+                              fontFamily: 'Nunito-Bold',
+                              color: DeckColors.primaryColor,
+                              fontSize: 16,
                             ),
+                          ),
+                        ),
+                        BuildTextBox(
+                          hintText: 'Describe the flashcards you want to create. \n(e.g. Focus on Verbs.....)',
+                          isMultiLine: true,
+                          controller: _descriptionController,
                         ),
                       ],
                     ),
+                      ///---- E N D  O F  U P L O A D  O P T I O N  ---------
+
+                      ///
+                      ///
+                      ///If you choose enter a prompt, it will show this result
+                      if(showUploadFile && _isToggled)
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
+                              child: Text(
+                                'Attach File',
+                                style: TextStyle(
+                                  fontFamily: 'Nunito-Bold',
+                                  color: DeckColors.primaryColor,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                            Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 10.0),
+                                  child: BuildButton(
+                                    onPressed: () async{
+                                      try {
+                                        FilePickerResult? result = await FilePicker.platform.pickFiles(
+                                          type: FileType.custom,
+                                          allowedExtensions: ['pdf'],
+                                        );
+
+                                        if (result != null) {
+                                          PlatformFile file = result.files.first;
+                                          _pickedFileController.text = file.path ?? '';
+                                        } else {
+                                          // User canceled the picker
+                                        }
+                                      } catch (e) {
+                                        print('Error: $e');
+                                        showAlertDialog(
+                                          context,
+                                          "assets/images/Deck_Dialogue1.png",
+                                          "Error in selecting files!",
+                                          "There was an error in selecting the file. Please try again.",
+                                        );
+
+                                      }
+                                    },
+                                    buttonText: 'Upload PDF',
+                                    height: 50,
+                                    width: 150,
+                                    radius: 10,
+                                    fontSize: 16,
+                                    borderWidth: 2,
+                                    borderColor: DeckColors.primaryColor,
+                                    backgroundColor: DeckColors.accentColor,
+                                    textColor: DeckColors.primaryColor,
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: IgnorePointer(
+                                    child: BuildTextBox(
+                                      hintText: 'File Name',
+                                      controller: _pickedFileController,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ///---- E N D  O F  P R O M P T  O P T I O N  ---------
+
+                      const Padding(
+                        padding: EdgeInsets.only(top: 15.0),
+                        child: Divider(
+                          thickness: 1,
+                          color: DeckColors.primaryColor,
+                        ),
+                      ),
+
+                      ///
+                      ///
+                      ///Amount of flashcards
                       if (_isToggled)
                         const Padding(
                           padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
@@ -485,7 +548,10 @@ class _AddDeckPageState extends State<AddDeckPage> {
                           ),
                         ),
                   if (_isToggled)
-                    BuildTextBox(hintText: 'Enter amount of flashcards to create', controller: _numCardsController),
+                    BuildTextBox(hintText: 'Enter amount of flashcards to create',
+                        controller: _numCardsController
+                    ),
+                      ///---- E N D  O F  A M O U N T  F L A S H C A R D ---------
                   Padding(
                     padding: const EdgeInsets.only(top: 35),
                     child: BuildButton(
@@ -790,15 +856,15 @@ class _AddDeckPageState extends State<AddDeckPage> {
                         },
                         );
                       },
-                      buttonText: 'Generate Deck',
+                      buttonText: 'Create Deck',
                       height: 50.0,
                       width: MediaQuery.of(context).size.width,
-                      backgroundColor: DeckColors.primaryColor,
-                      textColor: DeckColors.white,
                       radius: 10.0,
                       fontSize: 16,
-                      borderWidth: 0,
-                      borderColor: Colors.transparent,
+                      borderWidth: 2,
+                      borderColor: DeckColors.primaryColor,
+                      backgroundColor: DeckColors.accentColor,
+                      textColor: DeckColors.primaryColor,
                     ),
                   ),
                     ],
