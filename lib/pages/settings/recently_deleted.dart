@@ -126,8 +126,8 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
                       onPressed: () {
                         showConfirmDialog(
                           context,
-                          "assets/images/Deck_Dialogue1.png",
-                          "Retrieve All Items",
+                          "assets/images/Deck_Dialogue4.png",
+                          "Retrieve All Items?",
                           "Are you sure you want to retrieve all items? Once retrieved, they will return to the deck page.",
                           "Retrieve All",
                           () async {
@@ -155,8 +155,8 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
                         onPressed: () {
                           showConfirmDialog(
                             context,
-                            "assets/images/Deck_Dialogue1.png",
-                            "Delete All Items",
+                            "assets/images/Deck_Dialogue4.png",
+                            "Delete All Items?",
                             "Are you sure you want to delete all items? Once deleted, they cannot be retrieved. Proceed with caution.",
                             "Delete All",
                                 () async {

@@ -10,6 +10,7 @@ import '../../misc/colors.dart';
 import '../../misc/custom widgets/appbar/auth_bar.dart';
 import '../../misc/custom widgets/buttons/custom_buttons.dart';
 import '../../misc/custom widgets/buttons/radio_button.dart';
+import '../../misc/custom widgets/dialogs/alert_dialog.dart';
 import '../../misc/custom widgets/dialogs/confirmation_dialog.dart';
 import '../../misc/widget_method.dart';
 
@@ -222,7 +223,22 @@ class _ReportAProblemState extends State<ReportAProblem> {
                         padding: const EdgeInsets.only(left: 15.0, right: 15.0, top:10, bottom: 20),
                         child: BuildButton(
                           onPressed: () {
+                            showDialog<bool>(
+                              context: context,
+                              barrierDismissible: false,
+                              builder: (BuildContext context) {
+                                return CustomAlertDialog(
+                                    imagePath: 'assets/images/Deck_Dialogue3.png',
+                                    title: 'Report Submitted',
+                                    message: 'Thanks for helping keep Deck a safe space for everyone.',
+                                    button1: 'Ok',
+                                    onConfirm: () {
+                                      Navigator.of(context).popUntil((route) => route.isFirst);
+                                    }
+                                );
+                              },
 
+                            );
                           },
                           buttonText: 'Submit',
                           height: 50.0,

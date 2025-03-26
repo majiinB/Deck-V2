@@ -1,3 +1,4 @@
+import 'package:deck/pages/misc/custom%20widgets/dialogs/alert_dialog.dart';
 import 'package:flutter/material.dart';
 
 import '../../auth/privacy_policy.dart';
@@ -195,7 +196,22 @@ class _SuggestImprovementState extends State<SuggestImprovement> {
                         padding: const EdgeInsets.only(left: 15.0, right: 15.0, top:30),
                         child: BuildButton(
                           onPressed: () {
+                              showDialog<bool>(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (BuildContext context) {
+                                  return CustomAlertDialog(
+                                      imagePath: 'assets/images/Deck_Dialogue3.png',
+                                      title: 'Suggestion received!',
+                                      message: 'Thanks for helping us improve Deck. Your feedback matters!',
+                                      button1: 'Ok',
+                                      onConfirm: () {
+                                        Navigator.of(context).popUntil((route) => route.isFirst);
+                                      }
+                                  );
+                                },
 
+                              );
                           },
                           buttonText: 'Submit',
                           height: 50.0,
