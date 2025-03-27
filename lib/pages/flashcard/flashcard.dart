@@ -482,7 +482,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
                             );
                           }
                         }
-                        ///----- E N D  O F  O W N E R -----------
+                        ///--------- E N D  O F  O W N E R -----------
 
                         ///If not owner, show these options
                         ///S A V E  D E C K
