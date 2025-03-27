@@ -1,5 +1,6 @@
 import 'package:deck/backend/flashcard/flashcard_utils.dart';
 import 'package:deck/pages/misc/colors.dart';
+import 'package:deck/pages/misc/deck_icons.dart';
 import 'package:deck/pages/misc/widget_method.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -206,7 +207,7 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
                         numberText:
                             "${_deckCardCount[_filteredDecks[index].deckId]} Card(s)",
                         onDelete: () {
-                          String deletedTitle =
+                          /*String deletedTitle =
                               _filteredDecks[index].title.toString();
                           Deck removedDeck = _filteredDecks[index];
                           showConfirmDialog(
@@ -219,10 +220,10 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
                               await _deleteDeck(
                                   removedDeck, _decks.indexOf(removedDeck));
                             },
-                          );
+                          );*/
                         },
                         onRetrieve: () {
-                          final String retrievedTitle =
+                          /*final String retrievedTitle =
                               _filteredDecks[index].title.toString();
                           Deck retrievedDeck = _filteredDecks[index];
                           showConfirmDialog(
@@ -235,7 +236,48 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
                               await _retrieveDeck(
                                   retrievedDeck, _decks.indexOf(retrievedDeck));
                             },
-                          );
+                          );*/
+                        },
+                        items: const ['Retrieve Deck', 'Delete Deck'],
+                        icons: const [Icons.restore, DeckIcons.trash_bin],
+                        onItemsSelected: (index) {
+                          /// R E T R I E V E  I T E M
+                          if(index == 0){
+                            final String retrievedTitle =
+                            _filteredDecks[index].title.toString();
+                            Deck retrievedDeck = _filteredDecks[index];
+                            showConfirmDialog(
+                              context,
+                              "assets/images/Deck_Dialogue1.png",
+                              "Retrieve Item",
+                              "Are you sure you want to retrieve '$retrievedTitle'?",
+                              "Retrieve",
+                                  () async {
+                                await _retrieveDeck(
+                                    retrievedDeck, _decks.indexOf(retrievedDeck));
+                              },
+                            );
+                          }
+                          ///----- E N D  O F  R E T R I E V E  I T E M -----------
+
+                          ///D E L E T E  I T E M
+                          else if (index == 1){
+                            String deletedTitle =
+                            _filteredDecks[index].title.toString();
+                            Deck removedDeck = _filteredDecks[index];
+                            showConfirmDialog(
+                              context,
+                              "assets/images/Deck_Dialogue1.png",
+                              "Delete Item",
+                              "Are you sure you want to delete '$deletedTitle'?",
+                              "Delete Item",
+                                  () async {
+                                await _deleteDeck(
+                                    removedDeck, _decks.indexOf(removedDeck));
+                              },
+                            );
+                          }
+                          ///----- E N D  O F  D E L E T E  I T E M -----------
                         },
                         enableSwipeToRetrieve: true,
                       ),
