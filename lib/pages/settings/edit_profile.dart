@@ -232,24 +232,35 @@ class EditProfileState extends State<EditProfile> {
         if (didpop) {
           return;
         }
-        /*final shouldPop = await showDialog<bool>( //TODO FIX THIS
-          context: context,
-          builder: (BuildContext context) {
-            return ShowConfirmationDialog(
+        //Only show the confirmation dialog if changes were made
+        if (_isFirstNameChanged || _isLastNameChanged || _isEmailChanged || _isProfilePicChanged) {
+          final shouldPop = await showDialog<bool>(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return CustomConfirmDialog(
                 title: 'Are you sure you want to go back?',
-                text: 'If you go back now, all unsaved progress will be lost. ',
+                message: 'If you go back now, you will lose all your progress',
+                imagePath: 'assets/images/Deck_Dialogue4.png',
+                button1: 'Go Back',
+                button2: 'Cancel',
                 onConfirm: () {
-                  Navigator.of(context).pop();
+                  Navigator.of(context).pop(true); //Return true to allow pop
                 },
                 onCancel: () {
+                  Navigator.of(context).pop(false); //Return false to prevent pop
+                },
+              );
             },
-        );
-      },
-    );
-        //Check the result of the dialog and decide whether to pop or not
-        if (shouldPop != null && shouldPop) {
-          Navigator.of(context).pop();
-        }*/
+          );
+
+          //Check the result of the dialog and decide whether to pop or not
+          if (shouldPop != null && shouldPop) {
+            Navigator.of(context).pop();
+          }
+        } else {
+          Navigator.of(context).pop(); //no changes, just pop
+        }
       },
       ///----- E N D -----
       child: Scaffold(
@@ -388,6 +399,7 @@ class EditProfileState extends State<EditProfile> {
                                                     pfpFile = file;
                                                     _isProfilePicChanged = true;
                                                   });
+                                                  Navigator.pop(context);
                                                 },
                                               ),
                                             ),
@@ -406,6 +418,7 @@ class EditProfileState extends State<EditProfile> {
                                                     print(photoUrl);
                                                     _isProfilePicChanged = true;
                                                   });
+                                                  Navigator.pop(context);
                                                 },
                                               ),
                                             ),
@@ -527,7 +540,7 @@ class EditProfileState extends State<EditProfile> {
                             showArrow: true,
                             showSwitch: false,
                             containerColor: DeckColors.primaryColor, // Container Color
-                            selectedColor: DeckColors.primaryColor, // Left Icon Color
+                            selectedColor: DeckColors.white, // Left Icon Color
                             textColor: Colors.white, // Text Color
                             iconColor: DeckColors.white,
                             iconArrowColor: DeckColors.white,

@@ -1,5 +1,6 @@
 import 'package:deck/backend/flashcard/flashcard_utils.dart';
 import 'package:deck/pages/misc/colors.dart';
+import 'package:deck/pages/misc/deck_icons.dart';
 import 'package:deck/pages/misc/widget_method.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -110,12 +111,14 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            if (_filteredDecks.isNotEmpty)
             BuildTextBox(
               hintText: 'Search Decks',
               controller: _searchController,
               showPassword: false,
               leftIcon: Icons.search,
             ),
+            if (_filteredDecks.isNotEmpty)
             Padding(
               padding: const EdgeInsets.only(top: 20.0),
               child: Row(
@@ -126,8 +129,8 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
                       onPressed: () {
                         showConfirmDialog(
                           context,
-                          "assets/images/Deck_Dialogue1.png",
-                          "Retrieve All Items",
+                          "assets/images/Deck_Dialogue4.png",
+                          "Retrieve All Items?",
                           "Are you sure you want to retrieve all items? Once retrieved, they will return to the deck page.",
                           "Retrieve All",
                           () async {
@@ -152,11 +155,11 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
                     child: Padding(
                       padding: const EdgeInsets.only(left: 7.0),
                       child: BuildButton(
-                        onPressed: () {
+                        onPressed: _decks.isEmpty ? () {}: () {
                           showConfirmDialog(
                             context,
-                            "assets/images/Deck_Dialogue1.png",
-                            "Delete All Items",
+                            "assets/images/Deck_Dialogue4.png",
+                            "Delete All Items?",
                             "Are you sure you want to delete all items? Once deleted, they cannot be retrieved. Proceed with caution.",
                             "Delete All",
                                 () async {
@@ -183,8 +186,8 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
             ),
             if (_filteredDecks.isEmpty)
               IfCollectionEmpty(
-                  ifCollectionEmptyText: "Nothing in Trash",
-                  ifCollectionEmptySubText: "Deleted Items go here",
+                  ifCollectionEmptyText: 'A clean mind starts with a clean trash',
+                  ifCollectionEmptySubText: 'Deleted Decks are kept in the trash bin until you delete them permanently.',
                   ifCollectionEmptyHeight:
                       MediaQuery.of(context).size.height * 0.7),
             if (_filteredDecks.isNotEmpty)
@@ -204,7 +207,7 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
                         numberText:
                             "${_deckCardCount[_filteredDecks[index].deckId]} Card(s)",
                         onDelete: () {
-                          String deletedTitle =
+                          /*String deletedTitle =
                               _filteredDecks[index].title.toString();
                           Deck removedDeck = _filteredDecks[index];
                           showConfirmDialog(
@@ -217,10 +220,10 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
                               await _deleteDeck(
                                   removedDeck, _decks.indexOf(removedDeck));
                             },
-                          );
+                          );*/
                         },
                         onRetrieve: () {
-                          final String retrievedTitle =
+                          /*final String retrievedTitle =
                               _filteredDecks[index].title.toString();
                           Deck retrievedDeck = _filteredDecks[index];
                           showConfirmDialog(
@@ -233,7 +236,48 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
                               await _retrieveDeck(
                                   retrievedDeck, _decks.indexOf(retrievedDeck));
                             },
-                          );
+                          );*/
+                        },
+                        items: const ['Retrieve Deck', 'Delete Deck'],
+                        icons: const [Icons.restore, DeckIcons.trash_bin],
+                        onItemsSelected: (index) {
+                          /// R E T R I E V E  I T E M
+                          if(index == 0){
+                            final String retrievedTitle =
+                            _filteredDecks[index].title.toString();
+                            Deck retrievedDeck = _filteredDecks[index];
+                            showConfirmDialog(
+                              context,
+                              "assets/images/Deck_Dialogue1.png",
+                              "Retrieve Item",
+                              "Are you sure you want to retrieve '$retrievedTitle'?",
+                              "Retrieve",
+                                  () async {
+                                await _retrieveDeck(
+                                    retrievedDeck, _decks.indexOf(retrievedDeck));
+                              },
+                            );
+                          }
+                          ///----- E N D  O F  R E T R I E V E  I T E M -----------
+
+                          ///D E L E T E  I T E M
+                          else if (index == 1){
+                            String deletedTitle =
+                            _filteredDecks[index].title.toString();
+                            Deck removedDeck = _filteredDecks[index];
+                            showConfirmDialog(
+                              context,
+                              "assets/images/Deck_Dialogue1.png",
+                              "Delete Item",
+                              "Are you sure you want to delete '$deletedTitle'?",
+                              "Delete Item",
+                                  () async {
+                                await _deleteDeck(
+                                    removedDeck, _decks.indexOf(removedDeck));
+                              },
+                            );
+                          }
+                          ///----- E N D  O F  D E L E T E  I T E M -----------
                         },
                         enableSwipeToRetrieve: true,
                       ),

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:deck/pages/misc/custom%20widgets/dialogs/alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:deck/pages/misc/colors.dart';
 import 'package:deck/pages/misc/custom%20widgets/appbar/learn_mode_bar.dart';
@@ -116,8 +117,8 @@ class _QuizMultChoiceState extends State<QuizMultChoice> {
           context: context,
           barrierDismissible: false,
           builder: (context){
-            return AlertDialog(
-              title: const Text('Quiz Finished'),
+            return CustomAlertDialog(
+              /*title: const Text('Quiz Finished'),
               content: const Text('Congratulations! You have finished the quiz!'),
               actions: [
                 TextButton(
@@ -129,7 +130,16 @@ class _QuizMultChoiceState extends State<QuizMultChoice> {
                   },
                   child: Text('OK'),
                 ),
-              ],
+              ],*/ imagePath: 'assets/images/Deck_Dialogue3.png',
+              title: 'Quiz Finished!',
+              message: 'Congratulations, wanderer! You\'ve completed the quiz! Let\'s now take a look at your results!',
+              button1: 'Ok',
+              onConfirm: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).push(
+                  RouteGenerator.createRoute(const QuizResults()),
+                );
+              },
             );
           }
       );
@@ -146,13 +156,15 @@ class _QuizMultChoiceState extends State<QuizMultChoice> {
         fontSize: 24,
         onButtonPressed: () {
           showConfirmDialog(
-              context, '',
+              context,
+              'assets/images/Deck_Dialogue4.png',
               'Stop Quiz Mode?',
               'Are you sure you want to stop? You will lose all progress if you stop now.',
               'Stop',
                   () {
-                Navigator.of(context).pop();
-              },
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pop();
+                  },
             );
         },
       ),
@@ -174,7 +186,7 @@ class _QuizMultChoiceState extends State<QuizMultChoice> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 15.0, bottom: 20),
+                    padding: const EdgeInsets.only(top: 15.0),
                     child: Container(
                       height: 550,
                       decoration: BoxDecoration(
@@ -276,6 +288,39 @@ class _QuizMultChoiceState extends State<QuizMultChoice> {
                       ),
                     ),
                   ),
+                  Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10.0),
+                    child: Container(
+                      height: 70,
+                      width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15.0),
+                        color: DeckColors.accentColor,
+                        border: Border.all(
+                          color: DeckColors.primaryColor,
+                          width: 2.0,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            spreadRadius: 2,
+                            blurRadius: 20,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Center(
+                        child: Text(
+                          '${currentQuestionIndex + 1}/${questions.length}',
+                          style: const TextStyle(
+                            fontFamily: 'Fraiche',
+                            fontSize: 32,
+                            color: DeckColors.primaryColor
+                          ),
+                        ),
+                      )
+                    ),
+                  )
                 ],
               ),
             ),

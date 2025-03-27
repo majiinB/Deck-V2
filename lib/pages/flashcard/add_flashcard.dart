@@ -42,17 +42,20 @@ class _AddFlashcardPageState extends State<AddFlashcardPage> {
 
       //Check for unsaved changes
       if (_hasUnsavedChanges()) {
-        /*final shouldPop = await showDialog<bool>(
+        final shouldPop = await showDialog<bool>(
           context: context,
           builder: (BuildContext context) {
-            return ShowConfirmationDialog(
+            return CustomConfirmDialog(
               title: 'Are you sure you want to go back?',
-              text: 'If you go back now, you will lose all your progress',
+              message: 'If you go back now, you will lose all your progress',
+              imagePath: 'assets/images/Deck_Dialogue4.png',
+              button1: 'Go Back',
+              button2: 'Cancel',
               onConfirm: () {
-                Navigator.of(context).pop(); //Return true to allow pop
+                Navigator.of(context).pop(true); //Return true to allow pop
               },
               onCancel: () {
-                //Return false to prevent pop
+                Navigator.of(context).pop(false); //Return false to prevent pop
               },
             );
           },
@@ -61,7 +64,7 @@ class _AddFlashcardPageState extends State<AddFlashcardPage> {
         //If the user confirmed, pop the current route
         if (shouldPop == true) {
           Navigator.of(context).pop(true);
-        }*/
+        }
       } else {
         //No unsaved changes, allow pop without confirmation
         Navigator.of(context).pop(true);
@@ -158,7 +161,7 @@ class _AddFlashcardPageState extends State<AddFlashcardPage> {
                         onPressed: () {
                           showConfirmDialog(
                           context,
-                          "assets/images/Deck_Dialogue1.png",
+                          "assets/images/Deck_Dialogue4.png",
                           "Add Flash Card",
                           "Are you sure you want to add this flash card on your deck?",
                           "Add Flashcard",
@@ -176,11 +179,11 @@ class _AddFlashcardPageState extends State<AddFlashcardPage> {
                                         setState(() => _isLoading = false);
                                         Navigator.pop(context, card);
                                         showAlertDialog(context,
-                                          "assets/images/Deck_Dialogue1.png",
+                                          "assets/images/Deck_Dialogue3.png",
                                           "Card Added Successfully", "You can now view this card in you deck");
                                     }
                                     } else {
-                                      //Navigator.of(context).pop(); // Close the confirmation dialog
+                                      Navigator.of(context).pop(); // Close the confirmation dialog
                                       await Future.delayed(const Duration(milliseconds: 300)); // Ensure the dialog is fully closed
                                       setState(() => _isLoading = false);
                                       showAlertDialog(
@@ -224,8 +227,8 @@ class _AddFlashcardPageState extends State<AddFlashcardPage> {
                         buttonText: 'Add Card',
                         height: 50.0,
                         width: MediaQuery.of(context).size.width,
-                        backgroundColor: DeckColors.primaryColor,
-                        textColor: DeckColors.white,
+                        backgroundColor: DeckColors.accentColor,
+                        textColor: DeckColors.primaryColor,
                         radius: 10.0,
                         fontSize: 16,
                         borderWidth: 2,

@@ -15,6 +15,7 @@ class RadioButtonGroup extends StatefulWidget {
   final List<Color> buttonColors; // List of button colors
   final bool isClickable; // whether the buttons can be clicked by user or not
   final int initialSelectedIndex;
+  final double? fontSize;
   final Function(String label, int index)? onChange;
 
   const RadioButtonGroup({
@@ -23,7 +24,8 @@ class RadioButtonGroup extends StatefulWidget {
     required this.buttonLabels,
     required this.buttonColors,
     this.isClickable = true,
-    this.onChange
+    this.onChange,
+    this.fontSize
   })  : assert(buttonLabels.length == buttonColors.length,
   'Each button must have a corresponding color');
   //use assert statement to prevent crashes and bugs
@@ -84,7 +86,7 @@ class _RadioButtonGroupState extends State<RadioButtonGroup> {
               radius: 10,
               backgroundColor: _getBackgroundColor(index),
               textColor: DeckColors.primaryColor,
-              fontSize: 12,
+              fontSize: widget.fontSize ?? 12,
               borderWidth: 2,
               borderColor: DeckColors.primaryColor,
             ),

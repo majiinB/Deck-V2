@@ -59,12 +59,13 @@ class BuildSettingsContainer extends StatefulWidget {
 class BuildSettingsContainerState extends State<BuildSettingsContainer> {
   late bool _isToggled;
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
-  //   _isToggled = themeProvider.isDarkMode;
-  // }
+  @override
+   void initState() {
+     super.initState();
+     /*final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+     _isToggled = themeProvider.isDarkMode;*/
+    _isToggled = false;
+   }
 
   @override
   Widget build(BuildContext context) {

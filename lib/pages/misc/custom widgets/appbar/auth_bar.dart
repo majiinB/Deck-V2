@@ -7,6 +7,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:msh_checkbox/msh_checkbox.dart';
 import 'package:provider/provider.dart';
 
+import '../menus/pop_up_menu.dart';
+
 
 ///
 ///
@@ -20,6 +22,10 @@ class AuthBar extends StatelessWidget implements PreferredSizeWidget {
     this.rightIcon,
     this.automaticallyImplyLeading = false,
     this.onRightIconPressed,
+    this.onItemsSelected,
+    this.items,
+    this.icons,
+    this. showPopMenu,
   });
   final String title;
   final Color color;
@@ -27,6 +33,11 @@ class AuthBar extends StatelessWidget implements PreferredSizeWidget {
   final IconData? rightIcon;
   final bool automaticallyImplyLeading;
   final VoidCallback? onRightIconPressed;
+  final ValueChanged<int>? onItemsSelected;
+  final List<String>? items;
+  final List<IconData>? icons;
+  final bool? showPopMenu;
+
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +59,12 @@ class AuthBar extends StatelessWidget implements PreferredSizeWidget {
         ),
         centerTitle: true,
         actions: [
+          if (showPopMenu ?? false && items != null && icons != null && items!.isNotEmpty && icons!.isNotEmpty)
+            PopupMenu(
+              items: items!,
+              icons: icons!,
+              onItemSelected: onItemsSelected,
+            ),
           if(rightIcon != null)
             IconButton(
                 onPressed: onRightIconPressed,

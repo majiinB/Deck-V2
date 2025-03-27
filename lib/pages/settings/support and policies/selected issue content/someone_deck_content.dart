@@ -78,17 +78,23 @@ class _SomeoneDeckContentState extends State<SomeoneDeckContent> {
         }
 
         // Show the dialog only if a radio button is selected
-        if (selectedDeckRadio != -1 || seletedLocalLawsRadio != -1) { //TODO FIX THIS
-          /*final shouldPop = await showDialog<bool>(
+        if (selectedDeckRadio != -1 || seletedLocalLawsRadio != -1) { //TODO FIX THIS (status: FIXED!!!)
+          final shouldPop = await showDialog<bool>(
             context: context,
+            barrierDismissible: false,
             builder: (BuildContext context) {
-              return showConfirmationDialog(
-                title: 'Cancel report?',
-                text: 'If you go back now, all unsaved progress will be lost. ',
+              return CustomConfirmDialog(
+                title: 'Are you sure you want to go back?',
+                message: 'If you go back now, you will lose all your progress',
+                imagePath: 'assets/images/Deck_Dialogue4.png',
+                button1: 'Go Back',
+                button2: 'Cancel',
                 onConfirm: () {
-                  Navigator.of(context).pop();
+                  Navigator.of(context).pop(true); //Return true to allow pop
                 },
-                onCancel: () {},
+                onCancel: () {
+                  Navigator.of(context).pop(false); //Return false to prevent pop
+                },
               );
             },
           );
@@ -96,7 +102,7 @@ class _SomeoneDeckContentState extends State<SomeoneDeckContent> {
           //If the user confirmed, pop the current route
           if (shouldPop != null && shouldPop) {
             Navigator.of(context).pop(true);
-          }*/
+          }
         } else {
           //No unsaved changes, allow pop without confirmation
           Navigator.of(context).pop(true);

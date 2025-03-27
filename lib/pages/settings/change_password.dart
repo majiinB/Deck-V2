@@ -50,18 +50,22 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
         }
 
         //Check for unsaved changes
-        if (_hasUnsavedChanges()) { // TODO FIX THIS
-          /*final shouldPop = await showDialog<bool>(
+        if (_hasUnsavedChanges()) { // TODO FIX THIS (status: FIXED!)
+          final shouldPop = await showDialog<bool>(
             context: context,
+            barrierDismissible: false,
             builder: (BuildContext context) {
-              return ShowConfirmationDialog(
+              return CustomConfirmDialog(
                 title: 'Are you sure you want to go back?',
-                text: 'If you go back now, you will lose all your progress',
+                message: 'If you go back now, you will lose all your progress',
+                imagePath: 'assets/images/Deck_Dialogue4.png',
+                button1: 'Go Back',
+                button2: 'Cancel',
                 onConfirm: () {
-                  Navigator.of(context).pop(); //Return true to allow pop
+                  Navigator.of(context).pop(true); //Return true to allow pop
                 },
                 onCancel: () {
-                  //Return false to prevent pop
+                  Navigator.of(context).pop(false); //Return false to prevent pop
                 },
               );
             },
@@ -70,7 +74,7 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
           //If the user confirmed, pop the current route
           if (shouldPop == true) {
             Navigator.of(context).pop(true);
-          }*/
+          }
         } else {
           //No unsaved changes, allow pop without confirmation
           Navigator.of(context).pop(true);
@@ -96,8 +100,21 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Padding(
+                          padding: EdgeInsets.only(left: 15.0, right: 15.0, bottom: 10),
+                          child: Text('Change Password',
+                            style: TextStyle(
+                              fontFamily: 'Fraiche',
+                              fontWeight: FontWeight.bold,
+                              color: DeckColors.primaryColor,
+                              fontSize: 40,
+                              height: 1.1,
+                            ),
+                          ),
+                        ),
+                        const Padding(
                           padding: EdgeInsets.only(left: 15, right: 15),
-                          child: Text(
+                          child:
+                          Text(
                             'Enter a new password below to change your password.',
                             style: TextStyle(
                               fontFamily: 'Nunito-Bold',
@@ -269,12 +286,12 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
                       buttonText: 'Change Password',
                       height: 50.0,
                       width: MediaQuery.of(context).size.width,
-                      backgroundColor: DeckColors.primaryColor,
-                      textColor: DeckColors.white,
+                      backgroundColor: DeckColors.accentColor,
+                      textColor: DeckColors.primaryColor,
                       radius: 10.0,
                       borderColor: DeckColors.primaryColor,
                       fontSize: 16,
-                      borderWidth: 0,
+                      borderWidth: 2,
                     ),
                   ),
 
@@ -302,7 +319,12 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
                   ],            
                 ),
               )
-            )
+            ),
+            Image.asset(
+              'assets/images/Deck-Bottom-Image.png',
+              fit: BoxFit.fitWidth,
+              width: MediaQuery.of(context).size.width,
+            ),
           ]
         )
       )

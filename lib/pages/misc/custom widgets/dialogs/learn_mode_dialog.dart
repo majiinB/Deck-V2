@@ -33,14 +33,14 @@ class LearnModeDialog extends StatefulWidget {
   _LearnModeDialogState createState() => _LearnModeDialogState();
 }
 class _LearnModeDialogState extends State<LearnModeDialog> {
-  String selectedMode = 'None';
+  String selectedMode = 'Quiz';
   final numberOfCards = TextEditingController();
 
   String quizType = "Multiple Choice";
   String cardOrientation = '';
 
   ///toggles to show quiz button options or study button options
-  bool showQuizOptions = false;
+  bool showQuizOptions = true;
   bool showStudyOptions = false;
 
 
@@ -134,6 +134,8 @@ class _LearnModeDialogState extends State<LearnModeDialog> {
                   thickness: 2,
                 ),
 
+                ///
+                ///
                 ///If quiz option is clicked, it will show this result:
                 if (showQuizOptions)
                   Column(
@@ -170,6 +172,8 @@ class _LearnModeDialogState extends State<LearnModeDialog> {
                   ),
                 ///---- E N D  O F  Q U I Z  O P T I O N S ---------
 
+                ///
+                ///
                 ///If study option is clicked, it will show this result:
                 if (showStudyOptions)
                   Column(
@@ -225,47 +229,30 @@ class _LearnModeDialogState extends State<LearnModeDialog> {
                   padding: const EdgeInsets.symmetric(vertical: 10.0),
                   child: BuildButton(
                     onPressed: (){
+
+                      ///If user clicks quiz
                         if(showQuizOptions){
                           if(quizType == "Multiple Choice"){
                             Navigator.of(context).push(
                               RouteGenerator.createRoute(const QuizMultChoice()),
-                            );
+                            ).then((_) {
+                              Navigator.of(context).pop(); ///Close the dialog after navigating
+                            });
                           }
                           else if(quizType == "Identification") {
                             Navigator.of(context).push(
                               RouteGenerator.createRoute(const QuizIdentification()),
-                            );
+                            ).then((_) {
+                              Navigator.of(context).pop(); ///Close the dialog after navigating
+                            });
                           }
-                            AlertDialog(
-                              title: const Text('Select a quiz type'),
-                              content: const Text('Please select a quiz type before starting'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Text('OK'),
-                                ),
-                              ],
-                            );
                           }
+
+                        ///If user clicks study (flashcard mode)
                         else if (showStudyOptions){
                           if(cardOrientation.isNotEmpty){
                             print("Starting study with: $cardOrientation");
                           }
-                        } else {
-                          AlertDialog(
-                            title: const Text('Select a card orientation'),
-                            content: const Text('Please select a card orientation before starting'),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text('OK'),
-                              ),
-                            ],
-                          );
                         }
                     },
                     buttonText: 'Start',

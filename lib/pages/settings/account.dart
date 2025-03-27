@@ -3,6 +3,7 @@ import 'package:deck/backend/auth/auth_utils.dart';
 import 'package:deck/pages/auth/privacy_policy.dart';
 import 'package:deck/pages/auth/signup.dart';
 import 'package:deck/pages/auth/terms_of_use.dart';
+import 'package:deck/pages/misc/custom%20widgets/dialogs/alert_dialog.dart';
 import 'package:deck/pages/settings/change_password.dart';
 import 'package:deck/pages/settings/edit_profile.dart';
 import 'package:deck/pages/settings/recently_deleted.dart';
@@ -23,6 +24,7 @@ import '../../backend/flashcard/flashcard_utils.dart';
 import '../../backend/models/deck.dart';
 import '../../backend/profile/profile_provider.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
+import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
 import '../misc/custom widgets/images/profile_image.dart';
 import '../misc/custom widgets/tiles/settings_container.dart';
 
@@ -397,6 +399,49 @@ class AccountPageState extends State<AccountPage> {
                   toggledColor:
                       DeckColors.accentColor, // Left Icon Color when Toggled
                   onTap: () async {
+                    showDialog<bool>(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (BuildContext context) {
+                        return CustomConfirmDialog(
+                          title: 'Logging Out?',
+                          message: 'Are you sure you want to log out?',
+                          imagePath: 'assets/images/Deck_Dialogue4.png',
+                          button1: 'Log Out',
+                          button2: 'Cancel',
+                          onConfirm: () async {
+                            //dialog is closed first, then execute the log out logic
+                            Navigator.of(context).pop(); // Close the dialog
+
+                            //Perform the log out logic after dialog is closed
+                            setState(() => _isLoading = true);
+                            await Future.delayed(const Duration(milliseconds: 300));
+                            final authService = AuthService();
+                            await authService.signOut();
+                            GoogleSignIn _googleSignIn = GoogleSignIn();
+                            if (await _googleSignIn.isSignedIn()) {
+                              await _googleSignIn.signOut();
+                            }
+
+                            if (mounted) {
+                              setState(() => _isLoading = false);
+
+                              // Use the rootNavigator to ensure you navigate properly
+                              Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+                                RouteGenerator.createRoute(const SignUpPage()),
+                                    (Route<dynamic> route) => false,
+                              );
+                            }
+                            print("Log Out Clicked");
+                          },
+                          onCancel: () {
+                            Navigator.of(context).pop(false); // Close the dialog
+                          },
+                        );
+                      },
+                    );
+                  },
+                  /*onTap: () async {
                     setState(() => _isLoading = true);
                     await Future.delayed(const Duration(milliseconds: 300));
                     final authService = AuthService();
@@ -418,7 +463,7 @@ class AccountPageState extends State<AccountPage> {
                     // );
                     // ignore: avoid_print
                     print("Log Out Clicked");
-                  },
+                  },*/
                 ),
               ),
               const Padding(
@@ -438,16 +483,58 @@ class AccountPageState extends State<AccountPage> {
                   nameOfTheContainer: 'Delete Account',
                   showArrow: false,
                   showSwitch: false,
-                  containerColor: DeckColors.deckRed, // Container Color
+                  containerColor: DeckColors.deckRed,
                   borderColor: DeckColors.deckRed,
-                  selectedColor: DeckColors.primaryColor, // Left Icon Color
+                  selectedColor: DeckColors.white,
                   textColor: DeckColors.white, // Text Color
                   iconColor: DeckColors.white, //Color of the icon at the left
                   iconArrowColor: DeckColors.white, //Color of the arrow icon at the right
-                  toggledColor:
-                  DeckColors.accentColor, // Left Icon Color when Toggled
+                  toggledColor: DeckColors.accentColor,
                   onTap: () {
+                    // Show the first confirmation dialog
+                    showDialog<bool>(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (BuildContext context) {
+                        return CustomConfirmDialog(
+                          title: 'Leaving already, wanderer?',
+                          message: 'Deleting your account will remove all your decks, tasks, '
+                              'and progress permanently. Deck will surely miss you… '
+                              'Are you sure you want to go?',
+                          imagePath: 'assets/images/Deck_Dialogue1.png',
+                          button1: 'Delete Account',
+                          button2: 'Cancel',
+                          onConfirm: () async {
+                            //dialog is closed first, then execute the delete acc logic
+                            Navigator.of(context).pop();  //Close the first dialog
 
+                            //Wait until the first dialog has been dismissed
+                            await Future.delayed(Duration.zero);
+
+                            //Show the second alert dialog
+                            showDialog<void>(
+                              context: context,
+                              barrierDismissible: false,
+                              builder: (BuildContext context) {
+                                return CustomAlertDialog(
+                                  imagePath: 'assets/images/Deck_Dialogue1.png',
+                                  title: 'Goodbye, wanderer',
+                                  message: 'Your account has been deleted. Thank you for '
+                                      'being part of Deck. See you again someday!',
+                                  button1: 'Ok',
+                                  onConfirm: () {
+                                    Navigator.of(context).pop(); // Close the second dialog
+                                  },
+                                );
+                              },
+                            );
+                          },
+                          onCancel: () {
+                            Navigator.of(context).pop(false); // Close the first dialog on cancel
+                          },
+                        );
+                      },
+                    );
                   },
                 ),
               ),

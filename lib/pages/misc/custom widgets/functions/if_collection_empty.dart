@@ -56,6 +56,7 @@ class IfCollectionEmpty extends StatelessWidget {
                   fontSize: 30,
                   color: DeckColors.primaryColor,
                   fontWeight: FontWeight.bold,
+                  height: 1.1
                 ),
                 textAlign: TextAlign.center,
               ),

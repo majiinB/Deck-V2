@@ -54,7 +54,8 @@ class CustomAlertDialog extends StatelessWidget {
             const SizedBox(height: 5),
             Text(
               title,
-              style: const TextStyle(color: DeckColors.primaryColor , fontSize: 25, fontFamily: 'Fraiche'),),
+              style: const TextStyle(color: DeckColors.primaryColor , fontSize: 25, fontFamily: 'Fraiche'),
+              textAlign: TextAlign.center,),
             const SizedBox(height: 5),
             Text(
               message,

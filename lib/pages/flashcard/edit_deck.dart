@@ -91,24 +91,27 @@ class _EditDeckState extends State<EditDeck> {
           return;
         }
         if (_isDeckTitleChanged || _isDeckDescriptionChanged || _isCoverPhotoChanged) {
-          /*final shouldPop = await showDialog<bool>(
+          final shouldPop = await showDialog<bool>(
             context: context,
             builder: (BuildContext context) {
-              return ShowConfirmationDialog(
+              return CustomConfirmDialog(
                 title: 'Are you sure you want to go back?',
-                text: 'If you go back now, all unsaved progress will be lost.',
+                message: 'If you go back now, you will lose all your progress',
+                imagePath: 'assets/images/Deck_Dialogue4.png',
+                button1: 'Go Back',
+                button2: 'Cancel',
                 onConfirm: () {
-                  Navigator.of(context).pop(); // Confirm navigation
+                  Navigator.of(context).pop(true); //Return true to allow pop
                 },
                 onCancel: () {
-
+                  Navigator.of(context).pop(false); //Return false to prevent pop
                 },
               );
             },
           );
           if (shouldPop == true) {
             Navigator.of(context).pop(true); //Allow exit
-          }*/
+          }
         } else {
           Navigator.of(context).pop(true); //No changes, allow exit
         }
@@ -194,7 +197,7 @@ class _EditDeckState extends State<EditDeck> {
                                     child: Container(
                                       height: 200,
                                       width: MediaQuery.of(context).size.width,
-                                      color: DeckColors.softGray, // TODO IDK WHAT COLOR, BASTA GRAY SIYA
+                                      color: DeckColors.white,
                                       child: Column(children: [
                                         Padding(
                                           padding: const EdgeInsets.only(top: 10),
@@ -248,6 +251,7 @@ class _EditDeckState extends State<EditDeck> {
                                                 //   },
                                                 // );
                                               }
+                                              Navigator.pop(context);
                                             },
                                           ),
                                         ),
@@ -265,6 +269,7 @@ class _EditDeckState extends State<EditDeck> {
                                                 _updateCoverPhoto(null);
                                               });
                                               print(coverPhoto);
+                                              Navigator.pop(context);
                                             },
                                           ),
                                         ),
@@ -274,8 +279,8 @@ class _EditDeckState extends State<EditDeck> {
                                 });
                           },
                           icon: DeckIcons.pencil,
-                          iconColor: DeckColors.white,
-                          backgroundColor: DeckColors.accentColor,
+                          iconColor: DeckColors.primaryColor,
+                          backgroundColor: DeckColors.white,
                         )),
                   ],
                 ),
@@ -328,12 +333,12 @@ class _EditDeckState extends State<EditDeck> {
                           buttonText: 'Save Deck',
                           height: 50.0,
                           width: MediaQuery.of(context).size.width,
-                          backgroundColor: DeckColors.primaryColor,
-                          textColor: DeckColors.white,
                           radius: 10.0,
                           fontSize: 16,
-                          borderWidth: 1,
-                          borderColor: DeckColors.primaryColor,),
+                          borderWidth: 2,
+                          borderColor: DeckColors.primaryColor,
+                          backgroundColor: DeckColors.accentColor,
+                          textColor: DeckColors.primaryColor,),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 10.0, bottom: 20),
@@ -346,7 +351,7 @@ class _EditDeckState extends State<EditDeck> {
                         textColor: DeckColors.white,
                         radius: 10.0,
                         fontSize: 16,
-                        borderWidth: 1,
+                        borderWidth: 2,
                         borderColor: DeckColors.primaryColor,),
                     )
                   ],
