@@ -278,7 +278,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
               const Padding(
                 padding: EdgeInsets.only(top: 20.0),
                 child: Text(
-                  'My Decks',
+                  'Deck Library',
                   style: TextStyle(
                     fontFamily: 'Fraiche',
                     color: DeckColors.primaryColor,
