@@ -290,6 +290,7 @@ class _QuizResultsState extends State<QuizResults> {
                                         // Define your onPressed logic here
                                       },
                                       showStar: false,
+                                      showIcon: true,
                                     ),
                                   );
                                 },
@@ -319,6 +320,7 @@ class _QuizResultsState extends State<QuizResults> {
                                         // Define your onPressed logic here
                                       },
                                       showStar: false,
+                                      showIcon: true,
                                     ),
                                   );
                                 },

@@ -769,7 +769,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                             });
                                           },
                                           ///Delete Icon
-                                          iconOnPressed: isOwner ? () {
+                                          iconOnPressed: () {
                                             print("Recognized");
                                             Cards removedCard =
                                             _filteredCardsCollection[
@@ -882,25 +882,9 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                              );
                                             },
                                           );
-                                          }
-                                          : () {
-                                            showDialog<void>(
-                                              context: context,
-                                              barrierDismissible: false,
-                                              builder: (BuildContext context) {
-                                                return CustomAlertDialog(
-                                                  imagePath: 'assets/images/Deck_Dialogue2.png',
-                                                  title: 'Uh oh. You can\'t delete this flashcard!',
-                                                  message: 'You cannot delete a flashcard from a deck you do not own.',
-                                                  button1: 'Ok',
-                                                  onConfirm: () {
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                );
-                                              },
-                                            );
                                           },
-                                          showStar: isOwner,
+                                          showStar: true,
+                                          showIcon: isOwner,
 
                                         ),
                                       );
@@ -1101,7 +1085,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                               }
                                             });
                                           },
-                                          iconOnPressed: isOwner ? () {
+                                          iconOnPressed: () {
                                             Cards removedCard =
                                             _filteredStarredCardCollection[
                                             index];
@@ -1208,25 +1192,9 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                 );
                                               },
                                             );
-                                          }
-                                        : () {
-                                            showDialog<void>(
-                                              context: context,
-                                              barrierDismissible: false,
-                                              builder: (BuildContext context) {
-                                                return CustomAlertDialog(
-                                                  imagePath: 'assets/images/Deck_Dialogue2.png',
-                                                  title: 'Uh oh. You can\'t delete this flashcard!',
-                                                  message: 'You cannot delete a flashcard from a deck you do not own.',
-                                                  button1: 'Ok',
-                                                  onConfirm: () {
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                );
-                                              },
-                                            );
                                           },
                                           showStar: true,
+                                          showIcon: isOwner,
                                         ),
                                       );
                                     },

@@ -24,6 +24,7 @@ class BuildContainerOfFlashCards extends StatefulWidget {
   final Icon? rightIcon;
   final Color? rightIconColor;
   final bool showStar;
+  final bool showIcon;
 
   BuildContainerOfFlashCards({
     super.key,
@@ -40,6 +41,7 @@ class BuildContainerOfFlashCards extends StatefulWidget {
     this.rightIcon,
     required this.showStar,
     this.rightIconColor,
+    required this.showIcon,
   });
 
   @override
@@ -129,6 +131,7 @@ class BuildContainerOfFlashCardsState extends State<BuildContainerOfFlashCards>
                   ),
                 ),
 
+                if(widget.showIcon)
                 BuildIconButton(
                     onPressed: widget.iconOnPressed,
                     icon: widget.rightIcon?.icon ?? DeckIcons.trash_bin,

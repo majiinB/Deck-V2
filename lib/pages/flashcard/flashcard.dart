@@ -44,7 +44,12 @@ class _FlashcardPageState extends State<FlashcardPage> {
   String _searchQuery = "";
 
   bool _isSearchBoxVisible = false;
+
+  ///This keeps track of the deck's publish status
   bool isDeckPublished = false;
+
+  ///this is used sana to check if the currently signed-in is the owner
+  bool isOwner = true;
 
   @override
   void initState() {
@@ -356,10 +361,18 @@ class _FlashcardPageState extends State<FlashcardPage> {
                         );
                       },
                       numberOfCards: numOfCards,
-                      items: [isDeckPublished ? 'Unpublish Deck' : 'Publish Deck', 'Edit Deck Info', 'Delete Deck'],
-                      icons: [isDeckPublished? Icons.undo_rounded: Icons.publish_rounded, DeckIcons.pencil, DeckIcons.trash_bin],
+                      items: isOwner?
+                      [isDeckPublished ? 'Unpublish Deck' : 'Publish Deck', 'Edit Deck Info', 'Delete Deck']///Owner
+                        : ['Unsave Deck', 'Report'],///Not Owner
+
+                      icons: isOwner?
+                          [isDeckPublished? Icons.undo_rounded: Icons.publish_rounded, DeckIcons.pencil, DeckIcons.trash_bin]///Owner
+                        : [Icons.remove_circle, Icons.report],///Not Owner
+
                         ///START FOR LOGIC OF POP UP MENU BUTTON (ung three dots)
                       onItemsSelected: (index) {
+                        ///If owner, show these options in the popup menu
+                        if(isOwner)
                         if(index == 0){
                           ///Show the confirmation dialog for Publish/Unpublish
                           showDialog<bool>(
@@ -459,6 +472,47 @@ class _FlashcardPageState extends State<FlashcardPage> {
                               }
                           );
                         }
+                        ///----- E N D  O F  O W N E R -----------
+
+                        ///If not owner, show these options
+                        ///S A V E  D E C K
+                        else {
+                          if(index == 0){
+                            showDialog<bool>(
+                              context: context,
+                              barrierDismissible: false,
+                              builder: (BuildContext context) {
+                                return CustomConfirmDialog(
+                                  title:'Unsave Deck?',
+                                  message: 'Are you sure you want to unsave this deck?',
+                                  imagePath: 'assets/images/Deck_Dialogue4.png',
+                                  button1: isDeckPublished ? 'Unsave Deck' : 'Save Deck',
+                                  button2: 'Cancel',
+                                  onConfirm: () async {
+                                    setState(() {
+                                      Navigator.of(context).pop();
+                                    });
+                                  },
+                                  onCancel: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                );
+                              },
+                            );
+                          }
+                          ///R E P O R T  P A G E
+                          else if (index == 1) {
+                            setState(() {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const ReportAProblem(sourcePage: 'FlashcardPage'),
+                                ),
+                              );
+                            });
+                          }
+                        }
+                        ///----- E N D  O F  N O T  O W N E R -----------
                       }
                       ///------- E N D ---------------
                     ),
