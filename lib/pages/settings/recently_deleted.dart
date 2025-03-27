@@ -110,12 +110,14 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            if (_filteredDecks.isNotEmpty)
             BuildTextBox(
               hintText: 'Search Decks',
               controller: _searchController,
               showPassword: false,
               leftIcon: Icons.search,
             ),
+            if (_filteredDecks.isNotEmpty)
             Padding(
               padding: const EdgeInsets.only(top: 20.0),
               child: Row(
@@ -152,7 +154,7 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
                     child: Padding(
                       padding: const EdgeInsets.only(left: 7.0),
                       child: BuildButton(
-                        onPressed: () {
+                        onPressed: _decks.isEmpty ? () {}: () {
                           showConfirmDialog(
                             context,
                             "assets/images/Deck_Dialogue4.png",
@@ -183,8 +185,8 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
             ),
             if (_filteredDecks.isEmpty)
               IfCollectionEmpty(
-                  ifCollectionEmptyText: "Nothing in Trash",
-                  ifCollectionEmptySubText: "Deleted Items go here",
+                  ifCollectionEmptyText: 'A clean mind starts with a clean trash',
+                  ifCollectionEmptySubText: 'Deleted Decks are kept in the trash bin until you delete them permanently.',
                   ifCollectionEmptyHeight:
                       MediaQuery.of(context).size.height * 0.7),
             if (_filteredDecks.isNotEmpty)

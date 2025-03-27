@@ -39,16 +39,18 @@ class _PlayMyDeckPageState extends State<PlayMyDeckPage> {
         title: 'Study Mode',
         color: DeckColors.primaryColor,
         fontSize: 24,
-        onButtonPressed: () { //TODO FIX THIS
-          /*showConfirmationDialog(
-              context,
-              'Stop Playing?',
-              'Are you sure you want to stop? You will exit the study mode.',
-                  () {
-                    Navigator.of(context).pop();
-                  },
-                  () { }
-          );*/
+        onButtonPressed: () { //TODO FIX THIS (status: FIXED!!)
+          showConfirmDialog(
+            context,
+            'assets/images/Deck_Dialogue4.png',
+            'Stop Quiz Mode?',
+            'Are you sure you want to stop? You will lose all progress if you stop now.',
+            'Stop',
+                () {
+              Navigator.of(context).pop();
+              Navigator.of(context).pop();
+            },
+          );
         },
       ),
       body: Padding(
@@ -99,7 +101,7 @@ class _PlayMyDeckPageState extends State<PlayMyDeckPage> {
               child: Container(
                 height: 60,
                 decoration: BoxDecoration(
-                    color: DeckColors.white,
+                    color: DeckColors.accentColor,
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
                       color: DeckColors.primaryColor,
@@ -208,7 +210,7 @@ class _PlayMyDeckPageState extends State<PlayMyDeckPage> {
                 ),
               ),
 
-              // BOTTOM DIVIDER OF THE FLASHCARD
+              /// BOTTOM DIVIDER OF THE FLASHCARD
               Padding(
                 padding: const EdgeInsets.only(top: 10, bottom: 8.0, left: 5, right: 5),
                 child: Container(

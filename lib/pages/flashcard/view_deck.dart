@@ -49,6 +49,8 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
 
   ///This keeps track of the deck's publish status
   bool isDeckPublished = false;
+
+  ///this is used sana to check if the currently signed-in is the owner
   bool isOwner = true;
 
   bool isSaved = false;
@@ -147,12 +149,13 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
             Icons.report,
           ], ///Not Owner
 
+          ///START FOR LOGIC OF POP UP MENU BUTTON (ung three dots)
           /// If owner, show these options in the popup menu
           onItemsSelected: (index) {
             if (isOwner) {
               ///P U B L I S H  D E C K
               if (index == 0) {
-                // Show the confirmation dialog for Publish/Unpublish
+                //Show the confirmation dialog for Publish/Unpublish
                 showDialog<bool>(
                   context: context,
                   barrierDismissible: false,
@@ -265,6 +268,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
             }
             ///----- E N D  O F  N O T  O W N E R -----------
           }
+          ///-------- E N D  O F  P O P  U P  M E N U  B U T T O N -------------
       ),
       /*floatingActionButton: DeckFAB(
         text: "Add FlashCard",
@@ -396,7 +400,6 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                           ),
                         ),
                         Spacer(),
-                        ///this is used sana to check if the currently signed-in user's UID matches the deck owner's UID
                         if(isOwner)
                         Padding(
                           padding: const EdgeInsets.only(right: 8.0),
@@ -553,7 +556,10 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                           if (_cardsCollection.isEmpty)
                             IfCollectionEmpty(
                               ifCollectionEmptyText:
-                                  'No Flashcard(s) Available',
+                                  'No Flashcards Yet!',
+                              ifCollectionEmptySubText:
+                              'Looks like you haven\'t added any flashcards yet. '
+                                  'Let\'s kick things off by adding your first one.',
                               ifCollectionEmptyHeight:
                                   MediaQuery.of(context).size.height * 0.3,
                             )
@@ -895,6 +901,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                             );
                                           },
                                           showStar: isOwner,
+
                                         ),
                                       );
                                     },
@@ -913,7 +920,9 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                           if (_starredCardCollection.isEmpty)
                             IfCollectionEmpty(
                               ifCollectionEmptyText:
-                                  'No Starred Flashcard(s) Available',
+                                  'No Starred Flashcards Yet!',
+                              ifCollectionEmptySubText:
+                              'Looks like you haven\'t starred any flashcards yet.',
                               ifCollectionEmptyHeight:
                                   MediaQuery.of(context).size.height * 0.3,
                             )

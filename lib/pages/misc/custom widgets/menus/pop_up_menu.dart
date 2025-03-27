@@ -30,19 +30,21 @@ class PopupMenu extends StatelessWidget {
   final List<String> items;
   final List<IconData> icons;
   final ValueChanged<int>? onItemSelected;
+  final Icon? icon;
 
   const PopupMenu({
     Key? key,
     required this.items,
     required this.icons,
     this.onItemSelected,
+    this.icon,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<int>(
         color: DeckColors.white,
-        icon: const Icon(Icons.more_vert_rounded, color:DeckColors.primaryColor), //change the icon if may custom icon for this
+        icon: icon ?? const Icon(Icons.more_vert_rounded, color:DeckColors.primaryColor), //change the icon if may custom icon for this
         shape: RoundedRectangleBorder(
           side: BorderSide(color: DeckColors.primaryColor, width: 2),
           borderRadius: BorderRadius.circular(10),

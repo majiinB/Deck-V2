@@ -558,7 +558,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                       onPressed: () {
                         showConfirmDialog(
                             context,
-                            "assets/images/Deck_Dialogue1.png",
+                            "assets/images/Deck_Dialogue4.png",
                             "Generate Deck",
                             "Are you sure you want to generate deck?",
                             "Generate",
@@ -571,7 +571,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                               await Future.delayed(const Duration(milliseconds: 300));
                               setState(() => _isLoading = false);
                               showAlertDialog(context,
-                                  "assets/images/Deck_Dialogue1.png",
+                                  "assets/images/Deck_Dialogue2.png",
                                   "Error adding Deck",
                                   "Your deck requires a title");
                               return;
@@ -581,7 +581,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                               await Future.delayed(const Duration(milliseconds: 300));
                               setState(() => _isLoading = false);
                               showAlertDialog(context,
-                                  "assets/images/Deck_Dialogue1.png",
+                                  "assets/images/Deck_Dialogue2.png",
                                   "Error adding Deck", "The AI needs to know how many cards to generate");
                               return;
                             }else{
@@ -591,7 +591,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                                 await Future.delayed(const Duration(milliseconds: 300));
                                 setState(() => _isLoading = false);
                                 showAlertDialog(context,
-                                    "assets/images/Deck_Dialogue1.png",
+                                    "assets/images/Deck_Dialogue2.png",
                                     "Error adding Deck",
                                     "Please enter a valid integer ranging from 2-20");
                                 return;
@@ -616,7 +616,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                                 await Future.delayed(const Duration(milliseconds: 300));
                                 setState(() => _isLoading = false);
                                 showAlertDialog(context,
-                                    "assets/images/Deck_Dialogue1.png",
+                                    "assets/images/Deck_Dialogue2.png",
                                     "Title Already Exist", 'You already have a deck named $deckTitle');
                                 return;
                               }
@@ -673,7 +673,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                                   await Future.delayed(const Duration(milliseconds: 300));
                                   setState(() => _isLoading = false);
                                   showAlertDialog(context,
-                                      "assets/images/Deck_Dialogue1.png",
+                                      "assets/images/Deck_Dialogue2.png",
                                       "Unknown Error Occurred",
                                       'An unknown error has occurred while generating your deck. Please try again.');
                                   return;
@@ -693,7 +693,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                                 }on ApiException catch(e){
                                   setState(() => _isLoading = false);
                                   showAlertDialog(context,
-                                      "assets/images/Deck_Dialogue1.png",
+                                      "assets/images/Deck_Dialogue2.png",
                                       "Error while creating Deck!", e.message.toString());
                                   return;
                                 }catch(e){
@@ -702,7 +702,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                                   await Future.delayed(const Duration(milliseconds: 300));
                                   setState(() => _isLoading = false);
                                   showAlertDialog(context,
-                                      "assets/images/Deck_Dialogue1.png",
+                                      "assets/images/Deck_Dialogue2.png",
                                       "Unknown Error Occurred",
                                       "An unknown error has occurred while generating your deck. Please try again.");
                                   return;
@@ -714,7 +714,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                                 setState(() => _isLoading = false);
                                 showAlertDialog(
                                     context,
-                                    "assets/images/Deck_Dialogue1.png",
+                                    "assets/images/Deck_Dialogue2.png",
                                     "AI Did Not Give A Response!",
                                     "This usually happens if\n"
                                     "1.) The subject, topic, or description given is inappropriate\n"
@@ -758,7 +758,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                                   setState(() => _isLoading = false);
                                   showAlertDialog(
                                       context,
-                                      "assets/images/Deck_Dialogue1.png",
+                                      "assets/images/Deck_Dialogue2.png",
                                       "Input Error",
                                       "Please fill out all of the input fields and try again.");
                                   // showDialog(
@@ -791,7 +791,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                               setState(() => _isLoading = false);
                               showAlertDialog(
                                   context,
-                                  "assets/images/Deck_Dialogue1.png",
+                                  "assets/images/Deck_Dialogue2.png",
                                   "An error occured",
                                   "Please fill out all of the input fields and try again.");                        }
                             // END OF AI
@@ -802,7 +802,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                               await Future.delayed(const Duration(milliseconds: 300));
                               setState(() => _isLoading = false);
                               showAlertDialog(context,
-                                  "assets/images/Deck_Dialogue1.png","Error adding Deck", "Your deck requires a title");
+                                  "assets/images/Deck_Dialogue2.png","Error adding Deck", "Your deck requires a title");
                               return;
                             }
 
@@ -821,7 +821,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                               await Future.delayed(const Duration(milliseconds: 300));
                               setState(() => _isLoading = false);
                               showAlertDialog(context,
-                                  "assets/images/Deck_Dialogue1.png","Error adding Deck!", 'You already have a deck named $deckTitle');
+                                  "assets/images/Deck_Dialogue2.png","Error adding Deck!", 'You already have a deck named $deckTitle');
                               return;
                             }
 
@@ -848,7 +848,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                               await Future.delayed(const Duration(milliseconds: 300));
                               setState(() => _isLoading = false);
                               showAlertDialog(context,
-                                  "assets/images/Deck_Dialogue1.png",
+                                  "assets/images/Deck_Dialogue2.png",
                                   "Error adding Deck", "Deck was not added please try again");
                               return;
                             }

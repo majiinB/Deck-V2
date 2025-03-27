@@ -84,7 +84,7 @@ class BuildListOfDecksState extends State<BuildListOfDecks> {
                     Text(
                       widget.titleText,
                       style: const TextStyle(
-                        fontFamily: 'Nunito-Bold',
+                        fontFamily: 'Fraiche',
                         fontSize: 16,
                         color: DeckColors.white,
                       ),

@@ -99,11 +99,13 @@ class _QuizIdentificationState extends State<QuizIdentification> {
         fontSize: 24,
         onButtonPressed: () {
           showConfirmDialog(
-              context, '',
+              context,
+              'assets/images/Deck_Dialogue4.png',
               'Stop Quiz Mode?',
               'Are you sure you want to stop? You will lose all progress if you stop now.',
               'Stop',
                   () {
+                Navigator.of(context).pop();
                 Navigator.of(context).pop();
               },
           );
@@ -127,7 +129,7 @@ class _QuizIdentificationState extends State<QuizIdentification> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 15.0, bottom: 20.0),
+                    padding: const EdgeInsets.only(top: 15.0),
                     child: Container(
                       height: 550,
                       decoration: BoxDecoration(
@@ -215,6 +217,39 @@ class _QuizIdentificationState extends State<QuizIdentification> {
                       ),
                     ),
                   ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10.0),
+                    child: Container(
+                        height: 70,
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15.0),
+                          color: DeckColors.accentColor,
+                          border: Border.all(
+                            color: DeckColors.primaryColor,
+                            width: 2.0,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              spreadRadius: 2,
+                              blurRadius: 20,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Center(
+                          child: Text(
+                            '${currentQuestionIndex + 1}/${questions.length}',
+                            style: const TextStyle(
+                                fontFamily: 'Fraiche',
+                                fontSize: 32,
+                                color: DeckColors.primaryColor
+                            ),
+                          ),
+                        )
+                    ),
+                  )
                 ],
               ),
             ),

@@ -312,7 +312,7 @@ class _QuizMultChoiceState extends State<QuizMultChoice> {
                       child: Center(
                         child: Text(
                           '${currentQuestionIndex + 1}/${questions.length}',
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontFamily: 'Fraiche',
                             fontSize: 32,
                             color: DeckColors.primaryColor
