@@ -12,7 +12,7 @@ class SomeoneDeckContent extends StatefulWidget {
   _SomeoneDeckContentState createState() => _SomeoneDeckContentState();
 }
 class _SomeoneDeckContentState extends State<SomeoneDeckContent> {
-  /*final linkDeckController = TextEditingController();*/
+  final someoneDetailsController = TextEditingController();
 
   ///handles behavior of the radio buttons in the 'Reason for reporting this content' section
   int selectedDeckRadio = -1;
@@ -51,23 +51,12 @@ class _SomeoneDeckContentState extends State<SomeoneDeckContent> {
   }
   ///--- E N D -----
 
-  ///handles behavior of the radio buttons in the 'Content Violate Local Laws' section
-  int seletedLocalLawsRadio = -1;
-  void localLawRadioSelected (int index){
-    setState(() {
-      seletedLocalLawsRadio = index;
-    });
-    if (seletedLocalLawsRadio == 0) {
-      print('Yes, I believe this content violate local laws');
-    }
-    else if (seletedLocalLawsRadio == 1){
-      print('No');
-    }
-    else {
-      print('Please choose between two options!');
-    }
+  bool _hasUnsavedChanges() {
+    return someoneDetailsController.text.isNotEmpty;
   }
-  ///--- E N D -----
+
+
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -78,7 +67,7 @@ class _SomeoneDeckContentState extends State<SomeoneDeckContent> {
         }
 
         // Show the dialog only if a radio button is selected
-        if (selectedDeckRadio != -1 || seletedLocalLawsRadio != -1) { //TODO FIX THIS (status: FIXED!!!)
+        if (selectedDeckRadio != -1 || _hasUnsavedChanges()) { //TODO FIX THIS (status: FIXED!!!)
           final shouldPop = await showDialog<bool>(
             context: context,
             barrierDismissible: false,
@@ -113,26 +102,6 @@ class _SomeoneDeckContentState extends State<SomeoneDeckContent> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            /*const Text(
-              'Link of the content you\'re porting',
-              style: TextStyle(
-                fontFamily: 'Fraiche',
-                fontSize: 24,
-                color: DeckColors.primaryColor,
-              ),
-            ),
-
-            ///Textbox to enter link of the deck being reported
-            Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: BuildTextBox(
-                showPassword: false,
-                hintText: 'Enter link',
-                controller: linkDeckController,
-              ),
-            ),
-            ///---- E N D -----*/
-
             const Padding(
               padding: EdgeInsets.only(top: 8.0),
               child: Text(
@@ -192,11 +161,10 @@ class _SomeoneDeckContentState extends State<SomeoneDeckContent> {
             ),
             ///--- E N D ------
 
-            ///Radio buttons for 'Content Violate Local Laws' section
             const Padding(
               padding: EdgeInsets.only(top: 8.0),
               child: Text(
-                'Do you think this content violates any local laws?',
+                'Give us additional details about your report',
                 style: TextStyle(
                   fontFamily: 'Fraiche',
                   fontSize: 24,
@@ -204,30 +172,14 @@ class _SomeoneDeckContentState extends State<SomeoneDeckContent> {
                 ),
               ),
             ),
-            BuildRadioButton(
-              numberOfButtons: 2,
-              buttonLabels: const [
-                'Yes',
-                'No (or I am not sure)',
-              ],
-              buttonSubtexts: const [
-                'I believe this content violate local regulations',
-                '',
-              ],
-              textStyle:  const TextStyle(
-                fontFamily: 'Fraiche',
-                fontSize: 24,
-                color: DeckColors.primaryColor,
+            ///Textbox for user to provide additional details about the report
+             Padding(
+              padding: const EdgeInsets.only(top: 10.0, bottom: 15.0),
+              child: BuildTextBox(
+                hintText: 'Enter additional details',
+                isMultiLine: true,
+                controller: someoneDetailsController,
               ),
-              subtextStyle:
-              const TextStyle(
-                fontFamily: 'Nunito-Regular',
-                fontSize: 16,
-                color: DeckColors.primaryColor,
-              ),
-              activeColor: DeckColors.primaryColor,
-              inactiveColor: DeckColors.primaryColor,
-              onButtonSelected: localLawRadioSelected,
             )
             ///---- E N D -----
           ],

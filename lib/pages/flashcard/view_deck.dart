@@ -51,7 +51,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
   bool isDeckPublished = false;
 
   ///this is used sana to check if the currently signed-in is the owner
-  bool isOwner = true;
+  bool isOwner = false;
 
   bool isSaved = false;
 
