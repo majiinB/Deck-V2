@@ -243,7 +243,9 @@ class _ReportAProblemState extends State<ReportAProblem> {
                                     message: 'Thanks for helping keep Deck a safe space for everyone.',
                                     button1: 'Ok',
                                     onConfirm: () {
-                                      Navigator.of(context).popUntil((route) => route.isFirst);
+                                      ///Pop twice: first, close the dialog, then navigate back to the previous page
+                                      Navigator.pop(context);
+                                      Navigator.pop(context);
                                     }
                                 );
                               },

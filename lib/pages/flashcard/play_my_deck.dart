@@ -47,6 +47,7 @@ class _PlayMyDeckPageState extends State<PlayMyDeckPage> {
             'Are you sure you want to stop? You will lose all progress if you stop now.',
             'Stop',
                 () {
+              ///Pop twice: first, close the dialog, then navigate back to the previous page
               Navigator.of(context).pop();
               Navigator.of(context).pop();
             },
