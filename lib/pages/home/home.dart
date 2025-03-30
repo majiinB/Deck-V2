@@ -89,8 +89,9 @@ class _HomePageState extends State<HomePage> {
     /// This function sets the `correct` and `total` scores, checks if user
     /// has passed based on whether they scored at least half of the total, and
     /// updates the `score` display accordingly.
-    correct = 50; //get scores
+    correct = 50; //get scores from db
     total = 100;
+
     if(correct >= (total/2)){
       isRecentQuizPassed = true;
     }else {
@@ -159,6 +160,7 @@ class _HomePageState extends State<HomePage> {
           left: true,
           right: true,
           child:SingleChildScrollView(
+            padding: const EdgeInsets.only(bottom: 100),
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
@@ -206,16 +208,15 @@ class _HomePageState extends State<HomePage> {
                           onPressed: () {
                             Navigator.push(
                                 context,
-                                MaterialPageRoute(
-                                  builder: (context) => NotificationPage(),
-                                )
+                                RouteGenerator.createRoute(NotificationPage()),
+
                             );
                           },
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Padding(
                     padding:EdgeInsets.symmetric(horizontal: 30),
                     child: Column(
@@ -255,8 +256,8 @@ class _HomePageState extends State<HomePage> {
                                   decoration: BoxDecoration(
                                     color: DeckColors.white,
                                       border: Border.all(color: DeckColors.primaryColor, width: 2),
-                                      image: const DecorationImage(
-                                      image: AssetImage('assets/images/Deck-Background2.png'),
+                                      image: DecorationImage(
+                                      image: AssetImage( isRecentQuizPassed ? 'assets/images/Deck-Background2.png': 'assets/images/Deck-Background2.png'),
                                       fit: BoxFit.cover ,
                                       alignment: Alignment.bottomCenter,
                                     ),
@@ -473,6 +474,7 @@ class _HomePageState extends State<HomePage> {
                             'Now’s the perfect time to get ahead. Start adding new tasks and stay on top of your game!',
                           )
                         else if(taskToday.isNotEmpty) ...[
+
                           ...taskToday.take(3).map((task) =>
                               Padding(
                                 padding: EdgeInsets.only(bottom: 10),
@@ -493,11 +495,11 @@ class _HomePageState extends State<HomePage> {
                               style: TextButton.styleFrom(
                                 backgroundColor: DeckColors.softGray,
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                  side: BorderSide(
-                                      width: 2,
-                                      color: DeckColors.primaryColor
-                                  ),
+                                  borderRadius: BorderRadius.circular(20),
+                                  // side: BorderSide(
+                                  //     width: 2,
+                                  //     color: DeckColors.primaryColor
+                                  // ),
                                 ),
                                 padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
                               ),
@@ -560,9 +562,9 @@ class _HomePageState extends State<HomePage> {
                   ),
                   const SizedBox(height: 10),
                   //recently accessed decks section
-                  Padding(
-                    padding:EdgeInsets.only(left: 30),
-                    child:const Text(
+                  const Padding(
+                    padding: EdgeInsets.only(left: 30),
+                    child: Text(
                         'Continue Learning',
                         style: TextStyle(
                             fontFamily: 'Fraiche',
@@ -578,7 +580,7 @@ class _HomePageState extends State<HomePage> {
                       // This next line does the trick.
                       scrollDirection: Axis.horizontal,
                       children: <Widget>[
-                        Container(width: 160, color: Colors.red),
+                        Container(width: 30, color: Colors.transparent),
                         Container(width: 160, color: Colors.blue),
                         Container(width: 160, color: Colors.green),
                         Container(width: 160, color: Colors.yellow),
@@ -588,10 +590,9 @@ class _HomePageState extends State<HomePage> {
                   ),
                   const SizedBox(height: 10),
                   //recently accessed decks section
-
-                  Padding(
+                  const Padding(
                     padding:EdgeInsets.only(left: 30),
-                    child:const Text(
+                    child: Text(
                         'Explore',
                         style: TextStyle(
                             fontFamily: 'Fraiche',
@@ -607,7 +608,7 @@ class _HomePageState extends State<HomePage> {
                       // This next line does the trick.
                       scrollDirection: Axis.horizontal,
                       children: <Widget>[
-                        Container(width: 160, color: Colors.red),
+                        Container(width: 30, color: Colors.transparent),
                         Container(width: 160, color: Colors.blue),
                         Container(width: 160, color: Colors.green),
                         Container(width: 160, color: Colors.yellow),
@@ -615,8 +616,6 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 100),                         // added this so kita buong explore section
-
                 ]
             ),
           )
