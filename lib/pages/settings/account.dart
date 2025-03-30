@@ -8,7 +8,6 @@ import 'package:deck/pages/misc/custom%20widgets/dialogs/alert_dialog.dart';
 import 'package:deck/pages/settings/change_password.dart';
 import 'package:deck/pages/settings/edit_profile.dart';
 import 'package:deck/pages/settings/recently_deleted.dart';
-import 'package:deck/pages/settings/settings.dart';
 import 'package:deck/pages/settings/support%20and%20policies/report_a_problem.dart';
 import 'package:deck/pages/settings/support%20and%20policies/suggest_improvement.dart';
 import 'package:firebase_auth/firebase_auth.dart';
