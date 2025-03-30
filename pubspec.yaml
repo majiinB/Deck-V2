@@ -61,6 +61,7 @@ dependencies:
   liquid_progress_indicator_v2: ^0.5.0
   flutter_native_splash: ^2.4.0
   smooth_page_indicator: ^1.1.0
+  auto_size_text: ^3.0.0
 
   firebase_remote_config: ^4.4.7
   firebase_analytics: ^10.10.7
