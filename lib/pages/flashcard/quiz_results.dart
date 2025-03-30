@@ -13,6 +13,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+import '../misc/custom widgets/progressbar/progress_bar.dart';
+
 class QuizResults extends StatefulWidget {
   const QuizResults({super.key});
 
@@ -113,21 +115,10 @@ class _QuizResultsState extends State<QuizResults> {
                             ///P R O G R E S S  B A R
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 10.0),
-                              child: Container(
+                              child: ProgressBar(
+                                progress: progress,
+                                progressColor: DeckColors.deckYellow,
                                 height: 20.0,
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: DeckColors.primaryColor,
-                                    width: 2.0,
-                                  ),
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                                child: LinearProgressIndicator(
-                                  value: progress,
-                                  color: DeckColors.primaryColor,
-                                  backgroundColor: Colors.grey.withOpacity(0.3),
-                                  minHeight: 20.0,
-                                ),
                               ),
                             ),
                             /// ----- end progress bar ----------
