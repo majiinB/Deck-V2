@@ -1,12 +1,5 @@
-import 'package:deck/backend/models/deck.dart';
 import 'package:deck/pages/misc/colors.dart';
-import 'package:deck/pages/misc/deck_icons.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-// import 'package:google_fonts/google_fonts.dart';
-import 'package:msh_checkbox/msh_checkbox.dart';
-import 'package:provider/provider.dart';
 
 // import '../theme/theme_provider.dart';
 // import '../misc/custom widgets/buttons/custom_buttons.dart';
@@ -91,6 +84,7 @@ class BuildSettingsContainerState extends State<BuildSettingsContainer> {
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Row(
                 children: [
@@ -137,7 +131,7 @@ class BuildSettingsContainerState extends State<BuildSettingsContainer> {
                  Icon(
                   Icons.arrow_right,
                   color: widget.iconArrowColor,
-                  size: 32,
+                  size: 20,
                 ),
             ],
           ),
