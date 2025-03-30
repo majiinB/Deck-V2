@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 import '../../colors.dart';
@@ -43,6 +44,7 @@ class PopupMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<int>(
+      padding: EdgeInsets.all(5),
         color: DeckColors.white,
         icon: icon ?? const Icon(Icons.more_vert_rounded, color:DeckColors.primaryColor), //change the icon if may custom icon for this
         shape: RoundedRectangleBorder(
@@ -60,7 +62,8 @@ class PopupMenu extends StatelessWidget {
               value: index,
               child: ListTile(
                 leading: Icon(icons[index]),
-                title: Text(items[index],
+                title: AutoSizeText(items[index],
+                  maxLines:1,
                   style: const TextStyle(
                     height:1,
                     fontSize: 10,
