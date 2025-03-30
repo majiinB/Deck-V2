@@ -80,6 +80,7 @@ class BuildSettingsContainerState extends State<BuildSettingsContainer> {
           }
         },
         child: Container(
+            height: 50,
           padding: const EdgeInsets.all(10.0),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15.0),

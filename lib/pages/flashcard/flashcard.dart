@@ -133,7 +133,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
         fontSize: 24,
       ),*/
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(30),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

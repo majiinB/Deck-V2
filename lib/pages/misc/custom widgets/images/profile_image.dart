@@ -36,7 +36,7 @@ class BuildProfileImageState extends State<BuildProfileImage> {
         child: Container(
           width: widget.width,
           height: widget.height,
-          color: DeckColors.white,
+          color: DeckColors.primaryColor,
         // backgroundImage: widget.profilePhotoFile?.image,
         child: widget.profilePhotoFile?.image != null
         ? Image(
