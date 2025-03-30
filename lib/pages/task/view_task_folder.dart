@@ -11,7 +11,7 @@ import '../../backend/models/task.dart';
 import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
 import '../misc/custom widgets/functions/if_collection_empty.dart';
 import '../misc/custom widgets/functions/tab_bar.dart';
-import '../misc/custom widgets/tiles/deck_task_tile.dart';
+import '../misc/custom widgets/tiles/task_tile.dart';
 
 class ViewTaskFolderPage extends StatefulWidget {
   const ViewTaskFolderPage({super.key});

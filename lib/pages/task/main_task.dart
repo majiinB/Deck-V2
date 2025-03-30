@@ -1,6 +1,5 @@
-import 'package:deck/pages/task/view_task_folder.dart';
+import 'package:deck/pages/misc/custom%20widgets/tiles/task_folder_tile.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../../backend/models/task.dart';
 import '../../backend/task/task_provider.dart';
@@ -14,6 +13,7 @@ import 'package:deck/pages/misc/deck_icons2.dart';
 
 import '../misc/custom widgets/tiles/home_task_tile.dart';
 import '../misc/widget_method.dart';
+import 'add_task_folder.dart';
 // import '../../backend/models/task.dart';
 // import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
 
@@ -94,7 +94,7 @@ class _TaskPageState extends State<TaskPage> {
                 mainAxisSize: MainAxisSize.min,
                     children:[
                       Padding(
-                        padding: const EdgeInsets.only(left:30, right:30, top: 20.0),
+                        padding: const EdgeInsets.only(left:30, right:30),
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisSize: MainAxisSize.min,
@@ -113,7 +113,7 @@ class _TaskPageState extends State<TaskPage> {
                                   onPressed: () async {
                                     Navigator.push(
                                       context,
-                                      RouteGenerator.createRoute(ViewTaskFolderPage()),
+                                      RouteGenerator.createRoute(AddTaskFolderPage()),
                                     );
                                   },
                                 ),
@@ -125,7 +125,6 @@ class _TaskPageState extends State<TaskPage> {
                                     fontFamily: 'Fraiche',
                                     fontSize: 30,
                                     color: DeckColors.primaryColor,
-                                    fontWeight: FontWeight.bold
                                 )
                             ),
                             // if(taskToday.isEmpty)
@@ -147,10 +146,37 @@ class _TaskPageState extends State<TaskPage> {
                           scrollDirection: Axis.horizontal,
                           children: <Widget>[
                             Container(width: 30, color: Colors.transparent),
-                            Container(width: 160, color: Colors.blue),
-                            Container(width: 160, color: Colors.green),
-                            Container(width: 160, color: Colors.yellow),
-                            Container(width: 160, color: Colors.orange),
+                            TaskFolderTile(
+                                folderName: 'archorg',
+                                taskDone: 10,
+                                taskTotal: 50,
+                                onPressed: (){
+                                }),
+                            TaskFolderTile(
+                                folderName: 'archorg',
+                                taskDone: 10,
+                                taskTotal: 50,
+                                onPressed: (){
+                                }),
+                            TaskFolderTile(
+                                folderName: 'archorg',
+                                taskDone: 10,
+                                taskTotal: 50,
+                                onPressed: (){
+                                }),
+                            TaskFolderTile(
+                                folderName: 'archorg',
+                                taskDone: 10,
+                                taskTotal: 50,
+                                onPressed: (){
+                                }),
+                            TaskFolderTile(
+                                folderName: 'archorg',
+                                taskDone: 10,
+                                taskTotal: 50,
+                                onPressed: (){
+                                }),
+
                           ],
                         ),
                       ),
@@ -164,7 +190,7 @@ class _TaskPageState extends State<TaskPage> {
                                   'Upcoming Deadlines',
                                   style: TextStyle(
                                       fontFamily: 'Fraiche',
-                                      fontSize: 20,
+                                      fontSize: 25,
                                       color: DeckColors.primaryColor,
                                       fontWeight: FontWeight.bold
                                   )
