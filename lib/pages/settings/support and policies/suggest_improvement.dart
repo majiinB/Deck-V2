@@ -34,7 +34,7 @@ class _SuggestImprovementState extends State<SuggestImprovement> {
         }
 
         //Check for unsaved changes
-        if (_hasUnsavedChanges()) { //TODO FIX THIS (status: FIXED!!)
+        if (_hasUnsavedChanges()) {
           final shouldPop = await showDialog<bool>(
             context: context,
             barrierDismissible: false,
@@ -84,18 +84,6 @@ class _SuggestImprovementState extends State<SuggestImprovement> {
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Padding(
-                        padding: EdgeInsets.only(left: 15.0, right: 15.0),
-                        child: Text('Suggest Improvement',
-                        style: TextStyle(
-                          fontFamily: 'Fraiche',
-                          fontWeight: FontWeight.bold,
-                          color: DeckColors.primaryColor,
-                          fontSize: 40,
-                          height: 1.1,
-                        ),
-                        ),
-                      ),
                       const Padding(
                         padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 20.0),
                         child: Text('We’d love to know what you want to see in the'
@@ -229,14 +217,14 @@ class _SuggestImprovementState extends State<SuggestImprovement> {
                 ),
               ),
             ),
-                      Image.asset(
-                        'assets/images/Deck-Bottom-Image.png',
-                        fit: BoxFit.fitWidth,
-                        width: MediaQuery.of(context).size.width,
-                    ),
-                  ],
-                ),
-              ),
+            Image.asset(
+              'assets/images/Deck-Bottom-Image.png',
+              fit: BoxFit.fitWidth,
+              width: MediaQuery.of(context).size.width,
+            ),
+          ],
+        ),
+      ),
     );
         }
       }
