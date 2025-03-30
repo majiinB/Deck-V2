@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:deck/backend/auth/auth_service.dart';
 import 'package:deck/backend/auth/auth_utils.dart';
 import 'package:deck/pages/auth/privacy_policy.dart';
@@ -101,15 +102,17 @@ class AccountPageState extends State<AccountPage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+      top:true,
+      left: true,
+      right: true,
       bottom: false,
       child: Scaffold(
         backgroundColor: DeckColors.backgroundColor,
         body: SingleChildScrollView(
-          padding: const EdgeInsets.only(left: 15, right: 15,bottom: 110),
+          padding: const EdgeInsets.only(left: 30, right: 30,bottom: 100),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
               /*Stack(
                 clipBehavior: Clip.none,
                 alignment: Alignment.centerLeft,
@@ -155,8 +158,8 @@ class AccountPageState extends State<AccountPage> {
                       Padding(
                         padding: const EdgeInsets.only(right: 8.0),
                         child: BuildProfileImage(AuthUtils().getPhoto(),
-                          width: 170,
-                          height: 170,),
+                          width: 120,
+                          height: 120,),
                       ),
                     Expanded(
                       child: Column(
@@ -164,7 +167,7 @@ class AccountPageState extends State<AccountPage> {
                         children: [
                           Padding(
                             padding: const EdgeInsets.only(left: 8.0),
-                            child: Text(
+                            child: AutoSizeText(
                               overflow: TextOverflow.visible,
                               maxLines: 2,
                               AuthUtils().getDisplayName() ?? "Guest",
@@ -179,9 +182,9 @@ class AccountPageState extends State<AccountPage> {
                           ),
                           Padding(
                             padding: const EdgeInsets.only(left: 8.0),
-                            child: Text(
+                            child: AutoSizeText(
                               overflow: TextOverflow.visible,
-                              maxLines: 2,
+                              maxLines: 1,
                               AuthUtils().getEmail() ?? "guest@guest.com",
                               style: const TextStyle(
                                 fontFamily: 'Nunito-Bold',

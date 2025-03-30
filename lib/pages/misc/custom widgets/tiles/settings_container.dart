@@ -80,7 +80,7 @@ class BuildSettingsContainerState extends State<BuildSettingsContainer> {
           }
         },
         child: Container(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(10.0),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15.0),
             border: Border.all(
@@ -88,7 +88,6 @@ class BuildSettingsContainerState extends State<BuildSettingsContainer> {
               width: 2,
             )
           ),
-          height: 80,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -101,7 +100,7 @@ class BuildSettingsContainerState extends State<BuildSettingsContainer> {
                     color: _isToggled
                         ? widget.iconColor
                         : widget.selectedColor,
-                    size: 30,
+                    size: 20,
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 16.0),
