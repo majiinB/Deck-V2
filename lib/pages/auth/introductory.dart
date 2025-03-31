@@ -24,14 +24,31 @@ class _IntroductoryPageState extends State<IntroductoryPage> {
           PageView(
             onPageChanged: (index){
               setState((){
-                onLastPage = (index == 2);
+                onLastPage = (index == 4);
               });
             },
             controller: _controller,
             children: const [
-              DeckIntroPage(img: 'assets/images/Deck-Icon.png', text: '',),
-              DeckIntroPage(img: 'assets/images/Deck-Icon3.png', text: '',),
-              DeckIntroPage(img: 'assets/images/Deck-Branding7.png', text: '',),
+              DeckIntroPage(
+                img: 'assets/images/Deck_Introduction2.png',
+                title: 'Stay on top of your\nto-dos.',
+                subtitle: 'Easily create, organize, and track your\ntasks with our intuitive to-do list feature.',
+              ),
+              DeckIntroPage(
+                img: 'assets/images/Deck_Introduction2.png',
+                title: 'Learn and revise\nefficiently.',
+                subtitle: 'Create flashcards manually or use our AI\nto generate them automatically from\nyour notes.',
+              ),
+              DeckIntroPage(
+                img: 'assets/images/Deck_Introduction2.png',
+                title: '',
+                subtitle: '',
+              ),
+              DeckIntroPage(
+                img: 'assets/images/Deck_Introduction2.png',
+                title: '',
+                subtitle: '',
+              ),
             ],
           ),
           Container(
