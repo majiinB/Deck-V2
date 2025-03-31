@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../misc/custom widgets/functions/intro_page.dart';
 import '../misc/widget_method.dart';
-import 'package:deck/pages/auth/signup.dart';
+import 'package:deck/pages/auth/welcome.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
 
 class IntroductoryPage extends StatefulWidget{
@@ -14,11 +14,8 @@ class IntroductoryPage extends StatefulWidget{
 
 }
 class _IntroductoryPageState extends State<IntroductoryPage> {
-
   final PageController _controller = PageController();
-
   bool onLastPage = false;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,12 +44,10 @@ class _IntroductoryPageState extends State<IntroductoryPage> {
                       },
                       child: const Text("")),
                   SmoothPageIndicator(controller: _controller, count: 3,),
-
-                  onLastPage
-                      ? GestureDetector(
+                  onLastPage ? GestureDetector(
                       onTap:(){
                         Navigator.push(
-                          context, MaterialPageRoute(builder: (context){return const SignUpPage();})
+                          context, MaterialPageRoute(builder: (context){return const WelcomePage();})
                         );
                       },
                       child: const Text("Done", style: TextStyle(
@@ -61,22 +56,21 @@ class _IntroductoryPageState extends State<IntroductoryPage> {
                         color: DeckColors.primaryColor,
                       )
                       )
-                  )
-                  : GestureDetector(
+                  ) : GestureDetector(
                       onTap:(){},
-                      child: const Text("Next", style: TextStyle(
-                        fontFamily: 'Nunito-Regular',
-                        fontSize: 16,
-                        color: DeckColors.white,
-                      )
+                      child: const Text("Next",
+                          style: TextStyle(
+                            fontFamily: 'Nunito-Regular',
+                            fontSize: 16,
+                            color: DeckColors.white,
+                          )
                       )
                   ),
-
                 ],
-              ))
+              )
+          )
         ],
       ),
     );
   }
-
 }
