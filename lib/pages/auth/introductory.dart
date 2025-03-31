@@ -2,9 +2,7 @@ import 'package:deck/pages/misc/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../misc/custom widgets/functions/intro_page.dart';
-import '../misc/widget_method.dart';
 import 'package:deck/pages/auth/welcome.dart';
-import '../misc/custom widgets/buttons/custom_buttons.dart';
 
 class IntroductoryPage extends StatefulWidget{
   const IntroductoryPage({super.key});
@@ -24,7 +22,7 @@ class _IntroductoryPageState extends State<IntroductoryPage> {
           PageView(
             onPageChanged: (index){
               setState((){
-                onLastPage = (index == 4);
+                onLastPage = (index == 3);
               });
             },
             controller: _controller,
@@ -35,19 +33,20 @@ class _IntroductoryPageState extends State<IntroductoryPage> {
                 subtitle: 'Easily create, organize, and track your\ntasks with our intuitive to-do list feature.',
               ),
               DeckIntroPage(
-                img: 'assets/images/Deck_Introduction2.png',
+                img: 'assets/images/Deck_Introduction3.png',
                 title: 'Learn and revise\nefficiently.',
                 subtitle: 'Create flashcards manually or use our AI\nto generate them automatically from\nyour notes.',
               ),
               DeckIntroPage(
-                img: 'assets/images/Deck_Introduction2.png',
+                img: 'assets/images/Deck_Introduction4.png',
                 title: '',
                 subtitle: '',
               ),
               DeckIntroPage(
-                img: 'assets/images/Deck_Introduction2.png',
+                img: 'assets/images/Deck_Introduction5.png',
                 title: '',
                 subtitle: '',
+                hasButton: true,
               ),
             ],
           ),
@@ -60,20 +59,10 @@ class _IntroductoryPageState extends State<IntroductoryPage> {
                         _controller.jumpToPage(2);
                       },
                       child: const Text("")),
-                  SmoothPageIndicator(controller: _controller, count: 3,),
-                  onLastPage ? GestureDetector(
-                      onTap:(){
-                        Navigator.push(
-                          context, MaterialPageRoute(builder: (context){return const WelcomePage();})
-                        );
-                      },
-                      child: const Text("Done", style: TextStyle(
-                        fontFamily: 'Nunito-Regular',
-                        fontSize: 16,
-                        color: DeckColors.primaryColor,
-                      )
-                      )
-                  ) : GestureDetector(
+                  SmoothPageIndicator(controller: _controller, count: 4,),
+                  onLastPage ?
+                  SizedBox() :
+                  GestureDetector(
                       onTap:(){},
                       child: const Text("Next",
                           style: TextStyle(
