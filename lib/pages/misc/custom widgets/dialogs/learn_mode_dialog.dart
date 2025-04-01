@@ -75,7 +75,7 @@ class _LearnModeDialogState extends State<LearnModeDialog> {
                         Expanded(
                           child: LearnModeButton(
                               label: 'Quiz',
-                              imagePath: 'assets/images/Deck_Quiz.png',
+                              imagePath: 'assets/images/Deck-Quiz.png',
                               isSelected: selectedMode == 'Quiz',
                               onTap: (){
                                 setState(() {
@@ -92,7 +92,7 @@ class _LearnModeDialogState extends State<LearnModeDialog> {
                         Expanded(
                           child: LearnModeButton(
                             label: 'Study',
-                            imagePath: 'assets/images/Deck_Study.png',
+                            imagePath: 'assets/images/Deck-Study.png',
                             isSelected: selectedMode == 'Study',
                             onTap: (){
                               setState(() {

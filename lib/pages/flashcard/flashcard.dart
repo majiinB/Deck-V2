@@ -391,7 +391,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
                                       message: isDeckPublished
                                           ? 'Are you sure you want to unpublish this deck?'
                                           : 'Are you sure you want to publish this deck?',
-                                      imagePath: 'assets/images/Deck_Dialogue4.png',
+                                      imagePath: 'assets/images/Deck-Dialogue4.png',
                                       button1: isDeckPublished
                                           ? 'Unpublish Deck'
                                           : 'Publish Deck',
@@ -427,7 +427,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
                                         title: 'Delete this deck?',
                                         message: 'Once deleted, this deck will no longer be playable. '
                                             'But do not worry, you can still retrieve it in the trash bin.',
-                                        imagePath: 'assets/images/Deck_Dialogue4.png',
+                                        imagePath: 'assets/images/Deck-Dialogue4.png',
                                         button1: 'Delete Account',
                                         button2: 'Cancel',
                                         onConfirm: () async {
@@ -442,7 +442,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
                                           });
                                           showConfirmDialog(
                                             context,
-                                            "assets/images/Deck_Dialogue1.png",
+                                            "assets/images/Deck-Dialogue1.png",
                                             "Delete Item?",
                                             "Are you sure you want to delete '$deletedTitle'?",
                                             "Delete Item",
@@ -500,7 +500,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
                                     return CustomConfirmDialog(
                                       title:'Unsave Deck?',
                                       message: 'Are you sure you want to unsave this deck?',
-                                      imagePath: 'assets/images/Deck_Dialogue4.png',
+                                      imagePath: 'assets/images/Deck-Dialogue4.png',
                                       button1: isDeckPublished ? 'Unsave Deck' : 'Save Deck',
                                       button2: 'Cancel',
                                       onConfirm: () async {

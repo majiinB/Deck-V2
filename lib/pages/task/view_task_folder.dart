@@ -74,7 +74,7 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
                 final String deletedTitle = task.title;
                 showConfirmDialog(
                     context,
-                    "assets/images/Deck_Dialogue1.png",
+                    "assets/images/Deck-Dialogue1.png",
                     "Delete Item",
                     "Are you sure you want to delete '$deletedTitle'?",
                     "Delete Item",

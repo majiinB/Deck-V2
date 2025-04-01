@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:deck/pages/misc/widget_method.dart';
 import 'introductory.dart';
 
+/// serves as the landing screen of the app.
+
 class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});
 
@@ -29,7 +31,7 @@ class _WelcomePageState extends State<WelcomePage> {
                   height: MediaQuery.of(context).size.height * 0.60,
                   alignment: Alignment.bottomCenter,
                   child: Image.asset(
-                    'assets/images/Deck_Introduction1.png',
+                    'assets/images/Deck-Introduction1.png',
                     fit: BoxFit.cover,
                     width: double.infinity,
                   ),
@@ -43,7 +45,7 @@ class _WelcomePageState extends State<WelcomePage> {
                   height: MediaQuery.of(context).size.height * 0.55,
                     decoration: const BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage('assets/images/Deck_Bottom_Image.png'),
+                          image: AssetImage('assets/images/Deck-Bottom-Image2.png'),
                           fit: BoxFit.cover,
                         ),
                     ),

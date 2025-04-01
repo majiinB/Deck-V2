@@ -42,7 +42,7 @@ class _SuggestImprovementState extends State<SuggestImprovement> {
               return CustomConfirmDialog(
                 title: 'Are you sure you want to go back?',
                 message: 'If you go back now, you will lose all your progress',
-                imagePath: 'assets/images/Deck_Dialogue4.png',
+                imagePath: 'assets/images/Deck-Dialogue4.png',
                 button1: 'Go Back',
                 button2: 'Cancel',
                 onConfirm: () {
@@ -189,7 +189,7 @@ class _SuggestImprovementState extends State<SuggestImprovement> {
                                 barrierDismissible: false,
                                 builder: (BuildContext context) {
                                   return CustomAlertDialog(
-                                      imagePath: 'assets/images/Deck_Dialogue3.png',
+                                      imagePath: 'assets/images/Deck-Dialogue3.png',
                                       title: 'Suggestion received!',
                                       message: 'Thanks for helping us improve Deck. Your feedback matters!',
                                       button1: 'Ok',
@@ -218,7 +218,7 @@ class _SuggestImprovementState extends State<SuggestImprovement> {
               ),
             ),
             Image.asset(
-              'assets/images/Deck-Bottom-Image.png',
+              'assets/images/Deck-Bottom-Image1.png',
               fit: BoxFit.fitWidth,
               width: MediaQuery.of(context).size.width,
             ),

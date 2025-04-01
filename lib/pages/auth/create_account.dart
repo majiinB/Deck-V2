@@ -275,7 +275,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     setState(() => _isLoading = false);
     showAlertDialog(
       context,
-      "assets/images/Deck_Dialogue1.png",
+      "assets/images/Deck-Dialogue1.png",
       "Uh oh. Something went wrong.",
       "Error Signing Up! You haven't agreed to the Terms of Use and Privacy Policy. Please try again",
     );
@@ -287,7 +287,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     ///display error
     showAlertDialog(
       context,
-      "assets/images/Deck_Dialogue1.png",
+      "assets/images/Deck-Dialogue1.png",
       "Uh oh. Something went wrong.",
       "Error Signing Up! Passwords do not match! Please try again.",
     );
@@ -330,7 +330,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     setState(() => _isLoading = false);
     showAlertDialog(
       context,
-      "assets/images/Deck_Dialogue1.png",
+      "assets/images/Deck-Dialogue1.png",
       "Uh oh. Something went wrong.",
       "Error creating your account!$message Please try again.",
     );
@@ -339,7 +339,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     setState(() => _isLoading = false);
     showAlertDialog(
       context,
-      "assets/images/Deck_Dialogue1.png",
+      "assets/images/Deck-Dialogue1.png",
       "Uh oh. Something went wrong.",
       "Error creating your account!Unknown Error! Please try again.",
     );
@@ -417,7 +417,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     ///display error
     showAlertDialog(
       context,
-      "assets/images/Deck_Dialogue1.png",
+      "assets/images/Deck-Dialogue1.png",
       "Uh oh. Something went wrong.",
       "Error signing up!A problem occured while signing up.Please try again.",
     );

@@ -90,7 +90,7 @@ class RecoverAccountPage extends StatelessWidget {
                     await AuthService().sendResetPass(emailController.text).then((_) => {
                     showAlertDialog(
                     context,
-                    "assets/images/Deck_Dialogue1.png",
+                    "assets/images/Deck-Dialogue1.png",
                     "Success!",
                     "Please check your email to verify.",
                     ),
@@ -108,7 +108,7 @@ class RecoverAccountPage extends StatelessWidget {
                     }
                     showAlertDialog(
                       context,
-                      "assets/images/Deck_Dialogue1.png",
+                      "assets/images/Deck-Dialogue1.png",
                       "Uh oh. Something went wrong.",
                       "Error while trying to recover account! $message Please try again.",
                     );
@@ -116,7 +116,7 @@ class RecoverAccountPage extends StatelessWidget {
                     print(e.toString());
                     showAlertDialog(
                       context,
-                      "assets/images/Deck_Dialogue1.png",
+                      "assets/images/Deck-Dialogue1.png",
                       "Uh oh. Something went wrong.",
                       "Error while trying to recover account! An unknown error occured while performing process. Please try again.",
                     );

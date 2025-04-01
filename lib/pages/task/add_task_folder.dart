@@ -210,7 +210,7 @@ class _AddTaskFolderPageState extends State<AddTaskFolderPage> {
                                   ///display error
                                   showAlertDialog(
                                     context,
-                                    "assets/images/Deck_Dialogue1.png",
+                                    "assets/images/Deck-Dialogue1.png",
                                     "Uh oh. Something went wrong.",
                                     "Error adding task! A text field is blank! Please fill all the text fields and try again.",
                                   );
@@ -224,7 +224,7 @@ class _AddTaskFolderPageState extends State<AddTaskFolderPage> {
                                   ///display error
                                   showAlertDialog(
                                     context,
-                                    "assets/images/Deck_Dialogue1.png",
+                                    "assets/images/Deck-Dialogue1.png",
                                     "Uh oh. Something went wrong.",
                                     "Error adding task! Past deadlines aren't allowed. Please try again.",
                                   );

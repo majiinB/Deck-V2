@@ -14,7 +14,7 @@ import 'package:provider/provider.dart';
 
 import '../../backend/profile/profile_provider.dart';
 import '../../backend/profile/profile_utils.dart';
-import '../auth/signup.dart';
+import '../auth/welcome.dart';
 import '../misc/custom widgets/appbar/auth_bar.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
 import '../misc/custom widgets/buttons/icon_button.dart';
@@ -104,7 +104,7 @@ class EditProfileState extends State<EditProfile> {
       ///display error
       showAlertDialog(
         context,
-        "assets/images/Deck_Dialogue1.png",
+        "assets/images/Deck-Dialogue1.png",
         "Uh oh. Something went wrong.",
         "Error changing information! Please fill out all of the input fields and try again.",
       );
@@ -131,7 +131,7 @@ class EditProfileState extends State<EditProfile> {
     if (user?.email != emailController.text) {
       AuthService().signOut();
       Navigator.of(context).pushAndRemoveUntil(
-          RouteGenerator.createRoute(const SignUpPage()),
+          RouteGenerator.createRoute(const WelcomePage()),
           (Route<dynamic> route) => false);
       return;
     }
@@ -139,7 +139,7 @@ class EditProfileState extends State<EditProfile> {
     Navigator.pop(context, {'updated': true});
     showAlertDialog(
       context,
-      "assets/images/Deck_Dialogue2.png",
+      "assets/images/Deck-Dialogue2.png",
       "Successfully updated information",
       message,
     );
@@ -186,11 +186,11 @@ class EditProfileState extends State<EditProfile> {
       }
       print(e);
 
-      showAlertDialog(context, "assets/images/Deck_Dialogue1.png","Uh oh. Something went wrong","Error changing information. $message ");
+      showAlertDialog(context, "assets/images/Deck-Dialogue1.png","Uh oh. Something went wrong","Error changing information. $message ");
       return false;
     } catch (e) {
       print(e);
-      showAlertDialog(context, "assets/images/Deck_Dialogue1.png","Uh oh. Something went wrong","Error changing information. " + e.toString());
+      showAlertDialog(context, "assets/images/Deck-Dialogue1.png","Uh oh. Something went wrong","Error changing information. " + e.toString());
       return false;
     }
   }
@@ -241,7 +241,7 @@ class EditProfileState extends State<EditProfile> {
               return CustomConfirmDialog(
                 title: 'Are you sure you want to go back?',
                 message: 'If you go back now, you will lose all your progress',
-                imagePath: 'assets/images/Deck_Dialogue4.png',
+                imagePath: 'assets/images/Deck-Dialogue4.png',
                 button1: 'Go Back',
                 button2: 'Cancel',
                 onConfirm: () {
@@ -574,7 +574,7 @@ class EditProfileState extends State<EditProfile> {
                               "save button clicked"); //line to test if working ung onPressedLogic XD
                           showConfirmDialog(
                             context,
-                            "assets/images/Deck_Dialogue1.png",
+                            "assets/images/Deck-Dialogue1.png",
                             "Save Account Information",
                             "Are you sure you want to change your account information?",
                             "Save Account Information",
@@ -586,7 +586,7 @@ class EditProfileState extends State<EditProfile> {
                                 print(e);
                                 setState(() => _isLoading = false);
                                 showAlertDialog(context,
-                                    "assets/images/Deck_Dialogue1.png",
+                                    "assets/images/Deck-Dialogue1.png",
                                     "Error changing information", e.toString());
                               }
                             },

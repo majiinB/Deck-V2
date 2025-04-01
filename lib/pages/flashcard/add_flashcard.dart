@@ -48,7 +48,7 @@ class _AddFlashcardPageState extends State<AddFlashcardPage> {
             return CustomConfirmDialog(
               title: 'Are you sure you want to go back?',
               message: 'If you go back now, you will lose all your progress',
-              imagePath: 'assets/images/Deck_Dialogue4.png',
+              imagePath: 'assets/images/Deck-Dialogue4.png',
               button1: 'Go Back',
               button2: 'Cancel',
               onConfirm: () {
@@ -161,7 +161,7 @@ class _AddFlashcardPageState extends State<AddFlashcardPage> {
                         onPressed: () {
                           showConfirmDialog(
                           context,
-                          "assets/images/Deck_Dialogue4.png",
+                          "assets/images/Deck-Dialogue4.png",
                           "Add Flash Card",
                           "Are you sure you want to add this flash card on your deck?",
                           "Add Flashcard",
@@ -179,7 +179,7 @@ class _AddFlashcardPageState extends State<AddFlashcardPage> {
                                         setState(() => _isLoading = false);
                                         Navigator.pop(context, card);
                                         showAlertDialog(context,
-                                          "assets/images/Deck_Dialogue3.png",
+                                          "assets/images/Deck-Dialogue3.png",
                                           "Card Added Successfully", "You can now view this card in you deck");
                                     }
                                     } else {
@@ -187,7 +187,7 @@ class _AddFlashcardPageState extends State<AddFlashcardPage> {
                                       await Future.delayed(const Duration(milliseconds: 300)); // Ensure the dialog is fully closed
                                       setState(() => _isLoading = false);
                                       showAlertDialog(
-                                        context,"assets/images/Deck_Dialogue1.png",
+                                        context,"assets/images/Deck-Dialogue1.png",
                                         "Input Error",
                                         "Please fill out all of the input fields and try again.");
                                // showDialog(
@@ -217,7 +217,7 @@ class _AddFlashcardPageState extends State<AddFlashcardPage> {
                                     print('add card error: $e');
                                     setState(() => _isLoading = false);
                                     showAlertDialog(
-                                      context,"assets/images/Deck_Dialogue1.png",
+                                      context,"assets/images/Deck-Dialogue1.png",
                                       "An error occured" ,
                                       "An unknown error occured. Please try again.");
                                   }
@@ -241,7 +241,7 @@ class _AddFlashcardPageState extends State<AddFlashcardPage> {
             ),
           ),
           Image.asset(
-            'assets/images/Deck-Bottom-Image.png',
+            'assets/images/Deck-Bottom-Image1.png',
             fit: BoxFit.fitWidth,
             width: MediaQuery.of(context).size.width,
           ),

@@ -42,7 +42,7 @@ class _PlayMyDeckPageState extends State<PlayMyDeckPage> {
         onButtonPressed: () { //TODO FIX THIS (status: FIXED!!)
           showConfirmDialog(
             context,
-            'assets/images/Deck_Dialogue4.png',
+            'assets/images/Deck-Dialogue4.png',
             'Stop Quiz Mode?',
             'Are you sure you want to stop? You will lose all progress if you stop now.',
             'Stop',
@@ -154,7 +154,7 @@ class _PlayMyDeckPageState extends State<PlayMyDeckPage> {
               ),
             ),
             Image.asset(
-              'assets/images/Deck-Bottom-Image.png',
+              'assets/images/Deck-Bottom-Image1.png',
               fit: BoxFit.fitWidth,
               width: MediaQuery.of(context).size.width,
             ),

@@ -28,22 +28,22 @@ class _IntroductoryPageState extends State<IntroductoryPage> {
             controller: _controller,
             children: const [
               DeckIntroPage(
-                img: 'assets/images/Deck_Introduction2.png',
+                img: 'assets/images/Deck-Introduction2.png',
                 title: 'Stay on top of your\nto-dos.',
                 subtitle: 'Easily create, organize, and track your\ntasks with our intuitive to-do list feature.',
               ),
               DeckIntroPage(
-                img: 'assets/images/Deck_Introduction3.png',
+                img: 'assets/images/Deck-Introduction3.png',
                 title: 'Learn and revise\nefficiently.',
                 subtitle: 'Create flashcards manually or use our AI\nto generate them automatically from\nyour notes.',
               ),
               DeckIntroPage(
-                img: 'assets/images/Deck_Introduction4.png',
+                img: 'assets/images/Deck-Introduction4.png',
                 title: '',
                 subtitle: '',
               ),
               DeckIntroPage(
-                img: 'assets/images/Deck_Introduction5.png',
+                img: 'assets/images/Deck-Introduction5.png',
                 title: '',
                 subtitle: '',
                 hasButton: true,

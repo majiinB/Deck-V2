@@ -130,7 +130,7 @@ class _QuizMultChoiceState extends State<QuizMultChoice> {
                   },
                   child: Text('OK'),
                 ),
-              ],*/ imagePath: 'assets/images/Deck_Dialogue3.png',
+              ],*/ imagePath: 'assets/images/Deck-Dialogue3.png',
               title: 'Quiz Finished!',
               message: 'Congratulations, wanderer! You\'ve completed the quiz! Let\'s now take a look at your results!',
               button1: 'Ok',
@@ -157,7 +157,7 @@ class _QuizMultChoiceState extends State<QuizMultChoice> {
         onButtonPressed: () {
           showConfirmDialog(
               context,
-              'assets/images/Deck_Dialogue4.png',
+              'assets/images/Deck-Dialogue4.png',
               'Stop Quiz Mode?',
               'Are you sure you want to stop? You will lose all progress if you stop now.',
               'Stop',
@@ -326,7 +326,7 @@ class _QuizMultChoiceState extends State<QuizMultChoice> {
               ),
             ),
             Image.asset(
-              'assets/images/Deck-Bottom-Image.png',
+              'assets/images/Deck-Bottom-Image1.png',
               fit: BoxFit.fitWidth,
               width: MediaQuery.of(context).size.width,
             ),

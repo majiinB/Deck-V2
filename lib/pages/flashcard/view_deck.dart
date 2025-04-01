@@ -165,7 +165,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                       message: isDeckPublished
                           ? 'Are you sure you want to unpublish this deck?'
                           : 'Are you sure you want to publish this deck?',
-                      imagePath: 'assets/images/Deck_Dialogue4.png',
+                      imagePath: 'assets/images/Deck-Dialogue4.png',
                       button1: isDeckPublished ? 'Unpublish Deck' : 'Publish Deck',
                       button2: 'Cancel',
                       onConfirm: () async {
@@ -208,7 +208,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                         title: 'Delete this deck?',
                         message: 'Once deleted, this deck will no longer be playable. '
                             'But do not worry, you can still retrieve it in the trash bin.',
-                        imagePath: 'assets/images/Deck_Dialogue4.png',
+                        imagePath: 'assets/images/Deck-Dialogue4.png',
                         button1: 'Delete Account',
                         button2: 'Cancel',
                         onConfirm: () async {
@@ -238,7 +238,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                       message: isSaved
                           ? 'Are you sure you want to save this deck?'
                           : 'Are you sure you want to unsave this deck?',
-                      imagePath: 'assets/images/Deck_Dialogue4.png',
+                      imagePath: 'assets/images/Deck-Dialogue4.png',
                       button1: isDeckPublished ? 'Unsave Deck' : 'Save Deck',
                       button2: 'Cancel',
                       onConfirm: () async {
@@ -799,7 +799,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                           barrierDismissible: false,
                                           builder: (BuildContext context) {
                                              return CustomConfirmDialog(
-                                                imagePath: 'assets/images/Deck_Dialogue4.png',
+                                                imagePath: 'assets/images/Deck-Dialogue4.png',
                                                 title: 'Delete this flashcard?',
                                                 message: 'Are you sure you want to delete ${deletedTitle}?',
                                                 button1: 'Delete Flashcard',
@@ -815,7 +815,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                         'View Deck Error: $e');
                                                     showAlertDialog(
                                                       context,
-                                                      "assets/images/Deck_Dialogue2.png",
+                                                      "assets/images/Deck-Dialogue2.png",
                                                       "Changed flash card information!",
                                                       "Successfully changed flash card information.",
                                                     );
@@ -1114,7 +1114,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                               barrierDismissible: false,
                                               builder: (BuildContext context) {
                                                 return CustomConfirmDialog(
-                                                  imagePath: 'assets/images/Deck_Dialogue4.png',
+                                                  imagePath: 'assets/images/Deck-Dialogue4.png',
                                                   title: 'Delete this flashcard?',
                                                   message: 'Are you sure you want to delete ${starredDeletedTitle}?',
                                                   button1: 'Delete Flashcard',

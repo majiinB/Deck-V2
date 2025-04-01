@@ -2,7 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:deck/backend/auth/auth_service.dart';
 import 'package:deck/backend/auth/auth_utils.dart';
 import 'package:deck/pages/auth/privacy_policy.dart';
-import 'package:deck/pages/auth/signup.dart';
+import 'package:deck/pages/auth/welcome.dart';
 import 'package:deck/pages/auth/terms_of_use.dart';
 import 'package:deck/pages/misc/custom%20widgets/dialogs/alert_dialog.dart';
 import 'package:deck/pages/settings/change_password.dart';
@@ -408,7 +408,7 @@ class AccountPageState extends State<AccountPage> {
                         return CustomConfirmDialog(
                           title: 'Logging Out?',
                           message: 'Are you sure you want to log out?',
-                          imagePath: 'assets/images/Deck_Dialogue4.png',
+                          imagePath: 'assets/images/Deck-Dialogue4.png',
                           button1: 'Log Out',
                           button2: 'Cancel',
                           onConfirm: () async {
@@ -430,7 +430,7 @@ class AccountPageState extends State<AccountPage> {
 
                               // Use the rootNavigator to ensure you navigate properly
                               Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-                                RouteGenerator.createRoute(const SignUpPage()),
+                                RouteGenerator.createRoute(const WelcomePage()),
                                     (Route<dynamic> route) => false,
                               );
                             }
@@ -503,7 +503,7 @@ class AccountPageState extends State<AccountPage> {
                           message: 'Deleting your account will remove all your decks, tasks, '
                               'and progress permanently. Deck will surely miss you… '
                               'Are you sure you want to go?',
-                          imagePath: 'assets/images/Deck_Dialogue1.png',
+                          imagePath: 'assets/images/Deck-Dialogue1.png',
                           button1: 'Delete Account',
                           button2: 'Cancel',
                           onConfirm: () async {
@@ -519,7 +519,7 @@ class AccountPageState extends State<AccountPage> {
                               barrierDismissible: false,
                               builder: (BuildContext context) {
                                 return CustomAlertDialog(
-                                  imagePath: 'assets/images/Deck_Dialogue1.png',
+                                  imagePath: 'assets/images/Deck-Dialogue1.png',
                                   title: 'Goodbye, wanderer',
                                   message: 'Your account has been deleted. Thank you for '
                                       'being part of Deck. See you again someday!',

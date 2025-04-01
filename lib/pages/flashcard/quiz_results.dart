@@ -326,7 +326,7 @@ class _QuizResultsState extends State<QuizResults> {
                 ),
               ),
               Image.asset(
-                'assets/images/Deck-Bottom-Image.png',
+                'assets/images/Deck-Bottom-Image1.png',
                 fit: BoxFit.fitWidth,
                 width: MediaQuery.of(context).size.width,
               ),

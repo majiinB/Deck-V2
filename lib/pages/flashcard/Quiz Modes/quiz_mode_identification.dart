@@ -100,7 +100,7 @@ class _QuizIdentificationState extends State<QuizIdentification> {
         onButtonPressed: () {
           showConfirmDialog(
               context,
-              'assets/images/Deck_Dialogue4.png',
+              'assets/images/Deck-Dialogue4.png',
               'Stop Quiz Mode?',
               'Are you sure you want to stop? You will lose all progress if you stop now.',
               'Stop',
@@ -255,7 +255,7 @@ class _QuizIdentificationState extends State<QuizIdentification> {
               ),
             ),
             Image.asset(
-              'assets/images/Deck-Bottom-Image.png',
+              'assets/images/Deck-Bottom-Image1.png',
               fit: BoxFit.fitWidth,
               width: MediaQuery.of(context).size.width,
             ),

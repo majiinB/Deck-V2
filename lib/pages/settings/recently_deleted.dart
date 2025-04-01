@@ -129,7 +129,7 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
                       onPressed: () {
                         showConfirmDialog(
                           context,
-                          "assets/images/Deck_Dialogue4.png",
+                          "assets/images/Deck-Dialogue4.png",
                           "Retrieve All Items?",
                           "Are you sure you want to retrieve all items? Once retrieved, they will return to the deck page.",
                           "Retrieve All",
@@ -158,7 +158,7 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
                         onPressed: _decks.isEmpty ? () {}: () {
                           showConfirmDialog(
                             context,
-                            "assets/images/Deck_Dialogue4.png",
+                            "assets/images/Deck-Dialogue4.png",
                             "Delete All Items?",
                             "Are you sure you want to delete all items? Once deleted, they cannot be retrieved. Proceed with caution.",
                             "Delete All",
@@ -248,7 +248,7 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
                             Deck retrievedDeck = _filteredDecks[index];
                             showConfirmDialog(
                               context,
-                              "assets/images/Deck_Dialogue1.png",
+                              "assets/images/Deck-Dialogue1.png",
                               "Retrieve Item",
                               "Are you sure you want to retrieve '$retrievedTitle'?",
                               "Retrieve",
@@ -267,7 +267,7 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
                             Deck removedDeck = _filteredDecks[index];
                             showConfirmDialog(
                               context,
-                              "assets/images/Deck_Dialogue1.png",
+                              "assets/images/Deck-Dialogue1.png",
                               "Delete Item",
                               "Are you sure you want to delete '$deletedTitle'?",
                               "Delete Item",
