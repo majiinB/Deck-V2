@@ -1,10 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import '../misc/colors.dart';
-import '../misc/custom widgets/appbar/auth_bar.dart';
 import '../misc/deck_icons.dart';
-import '../misc/widget_method.dart';
 
 class PrivacyPolicyPage extends StatelessWidget {
   const PrivacyPolicyPage({super.key});
@@ -18,12 +15,12 @@ class PrivacyPolicyPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ///This is the header of the terms of use page
                 Stack(
                   children: [
-                    Image.asset('assets/images/Deck-Header.png',
-                      fit: BoxFit.fitWidth,
+                    Image(
+                      image: AssetImage('assets/images/Deck-Header.png'),
                       width: MediaQuery.of(context).size.width,
+                      fit: BoxFit.cover,
                     ),
                     Positioned(
                       bottom: 20,
@@ -40,37 +37,33 @@ class PrivacyPolicyPage extends StatelessWidget {
                   ],
                 ),
                 const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 15.0),
+                  padding: EdgeInsets.symmetric(horizontal: 30.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("AGREEMENT",
+                      Text("Agreement",
+                          textAlign: TextAlign.start,
                           style: TextStyle(
                             fontFamily: 'Fraiche',
-                            fontSize: 16,
+                            fontSize: 20,
                             fontWeight: FontWeight.w300,
                             color: DeckColors.primaryColor,
                           )
                       ),
-
-                      ///
-                      /// P R I V A C Y  P O L I C Y
-                      ///
-
                       Text("Privacy Policy",
+                          textAlign: TextAlign.start,
                           style: TextStyle(
+                            height: 0.9,
                             fontFamily: 'Fraiche',
-                            fontSize: 24,
-                            fontWeight: FontWeight.w600,
+                            fontSize: 56,
                             color: DeckColors.primaryColor,
                           )
                       ),
-                      SizedBox( height: 10),
+                      SizedBox(height: 20,),
                       Text('At Deck, we are committed to protecting your privacy. This '
                           'Privacy Policy describes how your personal information is collected, '
                           'used, and shared when you use the Deck application (the "App").',
                         textAlign: TextAlign.justify,
-
                         style: TextStyle(
                           fontFamily: 'Nunito-Regular',
                           fontSize: 16,
@@ -88,6 +81,8 @@ class PrivacyPolicyPage extends StatelessWidget {
                             color: DeckColors.primaryColor,
                           ),
                           children: [
+                            //TODO:update the information fot privacy policy
+                            //information We Collect section
                             TextSpan(
                               text: '1. Information We Collect\n\n',
                               style: TextStyle(fontFamily: 'Nunito-ExtraBold'),
@@ -117,6 +112,8 @@ class PrivacyPolicyPage extends StatelessWidget {
                                   'including the hardware model, operating system version, and unique '
                                   'device identifiers.\n\n\n',
                             ),
+
+                            //How We Use Your Information seciton
                             TextSpan(
                               text: '2. How We Use Your Information\n\n',
                               style: TextStyle(fontFamily: 'Nunito-ExtraBold'),
@@ -126,6 +123,8 @@ class PrivacyPolicyPage extends StatelessWidget {
                                   'personalize your experience, communicate with you, and protect the '
                                   'security of the App.\n\n\n',
                             ),
+
+                            //Sharing Your Information section
                             TextSpan(
                               text: '3. Sharing Your Information\n\n',
                               style: TextStyle(fontFamily: 'Nunito-ExtraBold'),
@@ -136,6 +135,8 @@ class PrivacyPolicyPage extends StatelessWidget {
                                   'and analytics services. We may also share your information in response '
                                   'to legal requests or to protect our rights or the rights of others.\n\n\n',
                             ),
+
+                            // Data Retention section
                             TextSpan(
                               text: '4. Data Retention\n\n',
                               style: TextStyle(fontFamily: 'Nunito-ExtraBold'),
@@ -145,6 +146,8 @@ class PrivacyPolicyPage extends StatelessWidget {
                                   'fulfill the purposes outlined in this Privacy Policy unless a longer '
                                   'retention period is required or permitted by law.\n\n\n',
                             ),
+
+                            //Security section
                             TextSpan(
                               text: '5. Security\n\n',
                               style: TextStyle(fontFamily: 'Nunito-ExtraBold'),
@@ -154,6 +157,8 @@ class PrivacyPolicyPage extends StatelessWidget {
                                   'personal information and to prevent unauthorized access, disclosure, '
                                   'alteration, or destruction.\n\n\n',
                             ),
+
+                            //Children's Privacy section
                             TextSpan(
                               text: '6. Children\'s Privacy\n\n',
                               style: TextStyle(fontFamily: 'Nunito-ExtraBold'),
@@ -165,6 +170,8 @@ class PrivacyPolicyPage extends StatelessWidget {
                                   'information from a child under the age of 13, we will take steps '
                                   'to delete such information.\n\n\n',
                             ),
+
+                            //Changes to Privacy Policy section
                             TextSpan(
                               text: '7. Changes to Privacy Policy\n\n',
                               style: TextStyle(fontFamily: 'Nunito-ExtraBold'),
@@ -186,8 +193,6 @@ class PrivacyPolicyPage extends StatelessWidget {
                           ],
                         ),
                         textAlign: TextAlign.justify,
-
-
                       ),
                       SizedBox(height: 10),
                       Text("By using the Deck App, you consent to the "
@@ -204,11 +209,9 @@ class PrivacyPolicyPage extends StatelessWidget {
                     ],
                   ),
                 ),
-
               ],
             ),
           )
-
       ),
     );
   }
