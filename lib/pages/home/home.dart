@@ -138,11 +138,11 @@ class _HomePageState extends State<HomePage> {
     //this is only sample data
     // sorry if it doesn't sort out the task yet hehe, you already have a logic for that naman
     List<Map<String, dynamic>> sampleTasks = [
-      // {'folderName': 'ArchOrg', 'taskName': 'Make a circuit board', 'deadline': DateTime.now(), 'priority': 0, 'isDone': false},
-      // {'folderName': 'Hello', 'taskName': 'Exam in Quizalize', 'deadline': DateTime.now(), 'priority': 1, 'isDone': false},
+      {'folderName': 'ArchOrg', 'taskName': 'Make a circuit board', 'deadline': DateTime.now(), 'priority': 0, 'isDone': false},
+      {'folderName': 'Hello', 'taskName': 'Exam in Quizalize', 'deadline': DateTime.now(), 'priority': 1, 'isDone': false},
       // {'folderName': 'SoftEng', 'taskName': 'Nyehehe', 'deadline': DateTime.now(), 'priority': 2, 'isDone': false},
-      // {'folderName': 'Math', 'taskName': 'Finish homework', 'deadline': DateTime.now(), 'priority': 0, 'isDone': false},
-      // {'folderName': 'Science', 'taskName': 'Read module', 'deadline': DateTime.now(), 'priority': 1, 'isDone': false},
+      {'folderName': 'Math', 'taskName': 'Finish homework', 'deadline': DateTime.now(), 'priority': 0, 'isDone': false},
+      {'folderName': 'Science', 'taskName': 'Read module', 'deadline': DateTime.now(), 'priority': 1, 'isDone': false},
     ];
     List<Map<String, dynamic>> taskToday = sampleTasks
         .where((task) => isSameDay(task['deadline'], DateTime.now()) && task['isDone'] == false)
@@ -194,6 +194,7 @@ class _HomePageState extends State<HomePage> {
                                       color: DeckColors.softGreen,
                                       width: 2,
                                     ),
+
                                   ),
                                   constraints: const BoxConstraints(
                                     minWidth: 10,
@@ -255,7 +256,7 @@ class _HomePageState extends State<HomePage> {
                                   height: 120,
                                   decoration: BoxDecoration(
                                     color: DeckColors.white,
-                                      border: Border.all(color: DeckColors.primaryColor, width: 2),
+                                      border: Border.all(color: DeckColors.primaryColor, width: 3),
                                       image: DecorationImage(
                                       image: AssetImage( isRecentQuizPassed ? 'assets/images/Deck-Background2.png': 'assets/images/Deck-Background2.png'),
                                       fit: BoxFit.cover ,
@@ -317,7 +318,7 @@ class _HomePageState extends State<HomePage> {
                                   padding: EdgeInsets.all(15),
                                   height: 120,
                                   decoration: BoxDecoration(
-                                    border: Border.all(color: DeckColors.primaryColor, width: 2),
+                                    border: Border.all(color: DeckColors.primaryColor, width: 3),
                                     image: const DecorationImage(
                                       image: AssetImage('assets/images/Deck-Background1.png'),
                                       fit: BoxFit.fitWidth,
@@ -377,15 +378,15 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                     ],
                                   ),
-                                )
-                                ,),
+                                ),
+                              ),
                               SizedBox(width: 20),
                               Expanded(
                                   child: Container(
                                     padding: EdgeInsets.all(15),
                                     height: 120,
                                     decoration: BoxDecoration(
-                                      border: Border.all(color: DeckColors.primaryColor, width: 2),
+                                      border: Border.all(color: DeckColors.primaryColor, width: 3),
                                       image: const DecorationImage(
                                         image: AssetImage('assets/images/Deck-Background1.png'),
                                         fit: BoxFit.fitWidth,
@@ -430,7 +431,6 @@ class _HomePageState extends State<HomePage> {
                                             );
                                             },
 
-
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor: DeckColors.white,
                                             foregroundColor: DeckColors.primaryColor,
@@ -441,6 +441,7 @@ class _HomePageState extends State<HomePage> {
                                           ),
                                           child: const AutoSizeText("Search for Decks",
                                               maxLines: 1,
+                                              minFontSize:8,
                                               style: TextStyle(
                                                   fontFamily: 'Nunito-SemiBold',
                                                   fontSize: 15,
@@ -465,6 +466,7 @@ class _HomePageState extends State<HomePage> {
                                 color: DeckColors.primaryColor,
                                 fontWeight: FontWeight.bold)
                         ),
+                        const SizedBox(height: 10),
                         if(taskToday.isEmpty)
                           const IfCollectionEmpty(
                             hasIcon: false,
@@ -557,22 +559,29 @@ class _HomePageState extends State<HomePage> {
                         // ),
 
                         // Explore section
+                        const SizedBox(height: 10),
+                        //recently accessed decks section
+                        const Text(
+                            'Continue Learning',
+                            style: TextStyle(
+                                fontFamily: 'Fraiche',
+                                fontSize: 30,
+                                color: DeckColors.primaryColor,
+                                fontWeight: FontWeight.bold)
+                        ),
+                        if (_decks.isEmpty)
+                          const IfCollectionEmpty(
+                            hasIcon: false,
+                            hasBackground: true,
+                            ifCollectionEmptyText: 'YIPEE! No upcoming deadlines! ',
+                            ifCollectionEmptySubText:
+                            'Now’s the perfect time to get ahead. Start adding new tasks and stay on top of your game!',
+                          ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 10),
-                  //recently accessed decks section
-                  const Padding(
-                    padding: EdgeInsets.only(left: 30),
-                    child: Text(
-                        'Continue Learning',
-                        style: TextStyle(
-                            fontFamily: 'Fraiche',
-                            fontSize: 30,
-                            color: DeckColors.primaryColor,
-                            fontWeight: FontWeight.bold)
-                    ),
-                  ),
+
+                  // if (_decks.isNotEmpty) //TODO uncomment this if ok na database
                   SizedBox(
                     height: 200.0,
                     child:
@@ -614,6 +623,38 @@ class _HomePageState extends State<HomePage> {
                         Container(width: 160, color: Colors.yellow),
                         Container(width: 160, color: Colors.orange),
                       ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 150.0,
+                    child:
+                    ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: 10,
+                      itemBuilder:(context, index){
+                        // First item is a SizedBox
+                        if (index == 0) {
+                          return const SizedBox(
+                            width: 30.0,
+                          );
+                        } else {
+                          return Padding(
+                              padding: EdgeInsets.only( right: 10,) ,
+                              // child: TaskFolderTile(
+                              //   folderName: 'archorg', //TODO: CHANGE PLACEHOLDERS
+                              //   taskDone: 10,
+                              //   taskTotal: 50,
+                              //   folderBackground: 'assets/images/Deck-Background4.png',
+                              //   onPressed: () {
+                              //     Navigator.push(
+                              //       context,
+                              //       RouteGenerator.createRoute(ViewTaskFolderPage()),
+                              //     );
+                              //   },
+                              // )
+                          );
+                        }
+                      },
                     ),
                   ),
                 ]
