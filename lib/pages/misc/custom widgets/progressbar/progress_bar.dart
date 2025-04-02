@@ -5,11 +5,13 @@ import '../../colors.dart';
 class ProgressBar extends StatelessWidget{
   final double progress;
   final Color progressColor;
+  final Color backgroundColor;
   final double height;
   const ProgressBar({
     Key? key,
     required this.progress,
     this.progressColor = DeckColors.primaryColor,
+    this.backgroundColor = DeckColors.white,
     this.height = 20.0,
   }) : super(key: key);
 
@@ -30,7 +32,7 @@ class ProgressBar extends StatelessWidget{
           child:LinearProgressIndicator(
             value: progress,
             color: progressColor,
-            backgroundColor: Colors.transparent,
+            backgroundColor: backgroundColor,
             minHeight: height,
             borderRadius: BorderRadius.circular(15),
           ),
