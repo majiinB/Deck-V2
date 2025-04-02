@@ -13,6 +13,7 @@ import '../../backend/flashcard/flashcard_service.dart';
 import '../../backend/models/deck.dart';
 import '../../backend/task/task_provider.dart';
 import '../flashcard/flashcard.dart';
+import '../misc/custom widgets/tiles/home_deck_tile.dart';
 import '../task/main_task.dart';
 import '../misc/custom widgets/functions/if_collection_empty.dart';
 import '../misc/custom widgets/tiles/task_tile.dart';
@@ -423,21 +424,19 @@ class _HomePageState extends State<HomePage> {
                                         ),
                                         const SizedBox(height: 5), // Space between text and button
                                         // Search for Decks Button
-                                        ElevatedButton(
+                                        TextButton(
                                           onPressed: () {
                                             Navigator.push(
                                               context,
                                               RouteGenerator.createRoute(FlashcardPage()),
                                             );
-                                            },
-
-                                          style: ElevatedButton.styleFrom(
+                                          },
+                                          style: TextButton.styleFrom(
                                             backgroundColor: DeckColors.white,
-                                            foregroundColor: DeckColors.primaryColor,
                                             shape: RoundedRectangleBorder(
                                               borderRadius: BorderRadius.circular(20),
                                             ),
-                                            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                                            padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                                           ),
                                           child: const AutoSizeText("Search for Decks",
                                               maxLines: 1,
@@ -448,7 +447,7 @@ class _HomePageState extends State<HomePage> {
                                                   color: DeckColors.primaryColor,
                                                   fontWeight: FontWeight.bold)
                                           ),
-                                        ),
+                                        )
                                       ],
                                     ),
                                   )
@@ -583,21 +582,34 @@ class _HomePageState extends State<HomePage> {
 
                   // if (_decks.isNotEmpty) //TODO uncomment this if ok na database
                   SizedBox(
-                    height: 200.0,
+                    height: 150.0,
                     child:
-                    ListView(
-                      // This next line does the trick.
+                    ListView.builder( //TODO Change datas here using data from db
                       scrollDirection: Axis.horizontal,
-                      children: <Widget>[
-                        Container(width: 30, color: Colors.transparent),
-                        Container(width: 160, color: Colors.blue),
-                        Container(width: 160, color: Colors.green),
-                        Container(width: 160, color: Colors.yellow),
-                        Container(width: 160, color: Colors.orange),
-                      ],
+                      itemCount: 15,
+                      itemBuilder:(context, index){
+                        // First item is a SizedBox
+                        if (index == 0) {
+                          return const SizedBox(
+                            width: 30.0,
+                          );
+                        } else {
+                          return Padding(
+                              padding: EdgeInsets.only( right: 10,) ,
+                              child: HomeDeckTile(
+                                titleOfDeck: 'yee',
+                                ownerOfDeck: 'sample',
+                                numberOfCards: 100,
+                                onDelete: () {  },
+                                onTap: () {  },
+                              )
+                          );
+                        }
+                      },
                     ),
                   ),
                   const SizedBox(height: 10),
+
                   //recently accessed decks section
                   const Padding(
                     padding:EdgeInsets.only(left: 30),
@@ -608,21 +620,6 @@ class _HomePageState extends State<HomePage> {
                             fontSize: 30,
                             color: DeckColors.primaryColor,
                             fontWeight: FontWeight.bold)
-                    ),
-                  ),
-                  SizedBox(
-                    height: 200.0,
-                    child:
-                    ListView(
-                      // This next line does the trick.
-                      scrollDirection: Axis.horizontal,
-                      children: <Widget>[
-                        Container(width: 30, color: Colors.transparent),
-                        Container(width: 160, color: Colors.blue),
-                        Container(width: 160, color: Colors.green),
-                        Container(width: 160, color: Colors.yellow),
-                        Container(width: 160, color: Colors.orange),
-                      ],
                     ),
                   ),
                   SizedBox(
@@ -640,18 +637,13 @@ class _HomePageState extends State<HomePage> {
                         } else {
                           return Padding(
                               padding: EdgeInsets.only( right: 10,) ,
-                              // child: TaskFolderTile(
-                              //   folderName: 'archorg', //TODO: CHANGE PLACEHOLDERS
-                              //   taskDone: 10,
-                              //   taskTotal: 50,
-                              //   folderBackground: 'assets/images/Deck-Background4.png',
-                              //   onPressed: () {
-                              //     Navigator.push(
-                              //       context,
-                              //       RouteGenerator.createRoute(ViewTaskFolderPage()),
-                              //     );
-                              //   },
-                              // )
+                              child: HomeDeckTile(
+                                titleOfDeck: 'yee',
+                                ownerOfDeck: 'sample',
+                                numberOfCards: 100,
+                                onDelete: () {  },
+                                onTap: () {  },
+                              )
                           );
                         }
                       },

@@ -83,7 +83,7 @@ class DeckTileState extends State<DeckTile> {
                 color: (widget.deckCoverPhotoUrl != null &&
                     widget.deckCoverPhotoUrl != "no_image")
                     ? null
-                    : DeckColors.white,
+                    : Colors.transparent,
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(15.0),
                   topRight: Radius.circular(15.0),
@@ -110,7 +110,7 @@ class DeckTileState extends State<DeckTile> {
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
                         return Container(
-                          color: Colors.cyan,
+                          color: Colors.transparent,
                           child: const Center(
                             child: Icon(Icons.broken_image,
                                 color: DeckColors.primaryColor),
@@ -120,21 +120,25 @@ class DeckTileState extends State<DeckTile> {
                     );
                   },
                 )
-                    : Image.network(
-                  defaultImageUrl,
-                  width: double.infinity,
-                  height: double.infinity,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      color: DeckColors.white,
-                      child: const Center(
-                        child: Icon(Icons.image_not_supported,
-                            color: DeckColors.primaryColor),
-                      ),
-                    );
-                  },
+                    : Image.asset(
+                    'assets/images/Deck-Branding1.png',
+                    fit: BoxFit.cover
                 ),
+                //     : Image.network(
+                //   defaultImageUrl,
+                //   width: double.infinity,
+                //   height: double.infinity,
+                //   fit: BoxFit.cover,
+                //   errorBuilder: (context, error, stackTrace) {
+                //     return Container(
+                //       color: DeckColors.white,
+                //       child: const Center(
+                //         child: Icon(Icons.image_not_supported,
+                //             color: DeckColors.primaryColor),
+                //       ),
+                //     );
+                //   },
+                // ),
               ),
             ),
             Padding(
