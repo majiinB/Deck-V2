@@ -202,6 +202,11 @@ class TermsOfUsePage extends StatelessWidget {
                  ],
                ),
              ),
+             Image(
+               image: const AssetImage('assets/images/Deck-Bottom-Image3.png'),
+               width: MediaQuery.of(context).size.width,
+               fit: BoxFit.cover,
+             ),
            ],
          ),
        )

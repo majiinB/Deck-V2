@@ -30,13 +30,14 @@ class PrivacyPolicyPage extends StatelessWidget {
                             color: DeckColors.primaryColor,
                             size: 24),
                         onPressed: () {
+                          print("Cancel button clicked");
                           Navigator.pop(context);
-                        },
+                          },
                       ),
                     ),
                   ],
                 ),
-                const Padding(
+                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 30.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -206,8 +207,14 @@ class PrivacyPolicyPage extends StatelessWidget {
                           )
                       ),
                       SizedBox(height: 40),
+
                     ],
                   ),
+                ),
+                Image(
+                  image: const AssetImage('assets/images/Deck-Bottom-Image3.png'),
+                  width: MediaQuery.of(context).size.width,
+                  fit: BoxFit.cover,
                 ),
               ],
             ),

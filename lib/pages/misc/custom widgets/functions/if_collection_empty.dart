@@ -1,11 +1,5 @@
 import 'package:deck/pages/misc/colors.dart';
-import 'package:deck/pages/misc/deck_icons.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-// import 'package:google_fonts/google_fonts.dart';
-import 'package:msh_checkbox/msh_checkbox.dart';
-import 'package:provider/provider.dart';
 
 
 class IfCollectionEmpty extends StatelessWidget {
@@ -32,10 +26,17 @@ class IfCollectionEmpty extends StatelessWidget {
             decoration: BoxDecoration(
                 color: hasBackground ? DeckColors.white : Colors.transparent,
                 border: hasBackground
-                    ? Border.all(color: DeckColors.primaryColor, width: 2)
+                    ? Border.all(color: DeckColors.primaryColor, width: 3)
                     : null,
                 borderRadius: hasBackground
-                    ?  BorderRadius.circular(15) : null
+                    ?  BorderRadius.circular(15) : null,
+                boxShadow: hasBackground
+                    ? const [
+                  BoxShadow(
+                    color: DeckColors.deepGray,
+                    blurRadius: 4,
+                    offset: Offset(1, 1),
+                  ),] : null
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,

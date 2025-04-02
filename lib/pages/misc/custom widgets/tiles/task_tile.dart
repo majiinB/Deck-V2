@@ -1,20 +1,12 @@
 import 'package:deck/pages/misc/colors.dart';
-import 'package:deck/pages/misc/deck_icons.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-// import 'package:google_fonts/google_fonts.dart';
-import 'package:msh_checkbox/msh_checkbox.dart';
-import 'package:provider/provider.dart';
-
-import '../../widget_method.dart';
 import '../functions/swipe_to_delete_and_retrieve.dart';
 
 
 ///
 /// ------------ D E C K  T A S K T I L E ----------------------
 /// a custom widget that is used in the task page
-class DeckTaskTile extends StatefulWidget {
+class TaskTile extends StatefulWidget {
   final String title;
   final String deadline;
   final String priority; // high, medium, low
@@ -23,7 +15,7 @@ class DeckTaskTile extends StatefulWidget {
   final VoidCallback? onRetrieve, onTap;
   final bool enableRetrieve;
 
-  DeckTaskTile({
+  TaskTile({
     super.key,
     required this.title,
     required this.deadline,
@@ -36,10 +28,10 @@ class DeckTaskTile extends StatefulWidget {
   });
 
   @override
-  State<DeckTaskTile> createState() => DeckTaskTileState();
+  State<TaskTile> createState() => DeckTaskTileState();
 }
 
-class DeckTaskTileState extends State<DeckTaskTile> {
+class DeckTaskTileState extends State<TaskTile> {
   Color _containerColor = DeckColors.white; // Default color
 
   @override

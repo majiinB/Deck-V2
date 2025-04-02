@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:deck/backend/auth/auth_gate.dart';
 import 'package:deck/backend/auth/auth_service.dart';
 import 'package:deck/backend/fcm/fcm_service.dart';
-import 'package:deck/backend/models/deck.dart';
 import 'package:deck/pages/auth/login.dart';
 import 'package:deck/pages/auth/privacy_policy.dart';
 import 'package:deck/pages/auth/terms_of_use.dart';
@@ -13,11 +12,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-
 import '../misc/custom widgets/buttons/custom_buttons.dart';
 import '../misc/custom widgets/checkbox/checkbox.dart';
 import '../misc/custom widgets/dialogs/alert_dialog.dart';
-import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
 import '../misc/custom widgets/textboxes/textboxes.dart';
 
 class CreateAccountPage extends StatefulWidget {
@@ -429,6 +426,11 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                     )
                   ]
               ),
+            ),
+            Image(
+              image: const AssetImage('assets/images/Deck-Bottom-Image3.png'),
+              width: MediaQuery.of(context).size.width,
+              fit: BoxFit.cover,
             ),
           ],
         )

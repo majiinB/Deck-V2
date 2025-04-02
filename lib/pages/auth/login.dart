@@ -10,16 +10,15 @@ import 'package:deck/pages/misc/widget_method.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-
 import '../../backend/auth/auth_service.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
 import '../misc/custom widgets/dialogs/alert_dialog.dart';
-import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
 import '../misc/custom widgets/textboxes/textboxes.dart';
 
 /// The LoginPage widget allows users to log in with email/password or via Google.
 /// It includes input fields for email and password, and buttons for login
 /// and password recovery.
+
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -242,7 +241,7 @@ class _LoginPageState extends State<LoginPage> {
                               ]
                           ),
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 10),
 
                         //Google sign-in button. Uses Firebase Authentication with Google.
                         Row(
@@ -281,7 +280,7 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 10),
                         BuildButton(
                           onPressed: () async {
                             setState(() => _isLoading = true);
@@ -373,6 +372,11 @@ class _LoginPageState extends State<LoginPage> {
 
                       ],
                     ),
+                  ),
+                  Image(
+                    image: const AssetImage('assets/images/Deck-Bottom-Image3.png'),
+                    width: MediaQuery.of(context).size.width,
+                    fit: BoxFit.cover,
                   ),
 
                   // Google sign-in button. Uses Firebase Authentication with Google.
