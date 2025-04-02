@@ -58,7 +58,7 @@ class PopupMenu extends StatelessWidget {
               Icons.more_vert_rounded,
               color: DeckColors.primaryColor), //change the icon if may custom icon for this
           shape: RoundedRectangleBorder(
-            side: BorderSide(color: DeckColors.primaryColor, width: 2),
+            side: BorderSide(color: DeckColors.primaryColor, width: 3),
             borderRadius: BorderRadius.circular(10),
           ),
           onSelected: onItemSelected,
@@ -76,6 +76,7 @@ class PopupMenu extends StatelessWidget {
                     leading: Icon(icons[index]),
                     title: Text(items[index],
                       maxLines:1,
+                      textAlign: TextAlign.end,
                       style: const TextStyle(
                         height:1,
                         fontSize: 10,
