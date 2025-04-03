@@ -557,7 +557,6 @@ class _HomePageState extends State<HomePage> {
                         //   }),
                         // ),
 
-                        // Explore section
                         const SizedBox(height: 10),
                         //recently accessed decks section
                         const Text(
@@ -586,16 +585,10 @@ class _HomePageState extends State<HomePage> {
                     child:
                     ListView.builder( //TODO Change datas here using data from db
                       scrollDirection: Axis.horizontal,
-                      itemCount: 15,
+                      itemCount: 15, //_decks.length
                       itemBuilder:(context, index){
-                        // First item is a SizedBox
-                        if (index == 0) {
-                          return const SizedBox(
-                            width: 30.0,
-                          );
-                        } else {
                           return Padding(
-                              padding: EdgeInsets.only( right: 10,) ,
+                              padding: EdgeInsets.only(left: index == 0 ? 30 : 10, right: 10) ,
                               child: HomeDeckTile(
                                 titleOfDeck: 'yee',
                                 ownerOfDeck: 'sample',
@@ -604,13 +597,11 @@ class _HomePageState extends State<HomePage> {
                                 onTap: () {  },
                               )
                           );
-                        }
                       },
                     ),
                   ),
                   const SizedBox(height: 10),
 
-                  //recently accessed decks section
                   const Padding(
                     padding:EdgeInsets.only(left: 30),
                     child: Text(
@@ -625,27 +616,20 @@ class _HomePageState extends State<HomePage> {
                   SizedBox(
                     height: 150.0,
                     child:
-                    ListView.builder(
+                    ListView.builder( //TODO Change datas here using data from db
                       scrollDirection: Axis.horizontal,
-                      itemCount: 10,
+                      itemCount: 15, //_decks.length
                       itemBuilder:(context, index){
-                        // First item is a SizedBox
-                        if (index == 0) {
-                          return const SizedBox(
-                            width: 30.0,
-                          );
-                        } else {
-                          return Padding(
-                              padding: EdgeInsets.only( right: 10,) ,
-                              child: HomeDeckTile(
-                                titleOfDeck: 'yee',
-                                ownerOfDeck: 'sample',
-                                numberOfCards: 100,
-                                onDelete: () {  },
-                                onTap: () {  },
-                              )
-                          );
-                        }
+                        return Padding(
+                            padding: EdgeInsets.only(left: index == 0 ? 30 : 10, right: 10) ,
+                            child: HomeDeckTile(
+                              titleOfDeck: 'yee',
+                              ownerOfDeck: 'sample',
+                              numberOfCards: 100,
+                              onDelete: () {  },
+                              onTap: () {  },
+                            )
+                        );
                       },
                     ),
                   ),

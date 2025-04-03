@@ -24,6 +24,7 @@ import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
 import '../misc/custom widgets/functions/if_collection_empty.dart';
 import '../misc/custom widgets/textboxes/textboxes.dart';
 import '../misc/custom widgets/tiles/deck_tile.dart';
+import '../misc/custom widgets/tiles/home_deck_tile.dart';
 import '../settings/support and policies/report_a_problem.dart';
 
 class FlashcardPage extends StatefulWidget {
@@ -143,6 +144,51 @@ class _FlashcardPageState extends State<FlashcardPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              if (_decks.isEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 20.0),
+                  child: IfCollectionEmpty(
+                    hasIcon: true,
+                    ifCollectionEmptyText: 'It’s lonely around here...',
+                    ifCollectionEmptySubText:
+                    'No Recent Decks Yet! Now’s the perfect time to get ahead. Create your own Deck now to keep learning.',
+                    ifCollectionEmptyHeight: MediaQuery.of(context).size.height/3,
+                  ),
+                ),
+              if (_decks.isEmpty)
+                const Padding(
+                  padding:EdgeInsets.only(left: 30),
+                  child: Text(
+                      'Explore',
+                      style: TextStyle(
+                          fontFamily: 'Fraiche',
+                          fontSize: 30,
+                          color: DeckColors.primaryColor,
+                          fontWeight: FontWeight.bold)
+                  ),
+                ),
+              if (_decks.isEmpty)
+                SizedBox(
+                  height: 150.0,
+                  child:
+                  ListView.builder( //TODO Change datas here using data from db
+                    scrollDirection: Axis.horizontal,
+                    itemCount: 15, //_decks.length
+                    itemBuilder:(context, index){
+                      return Padding(
+                          padding: EdgeInsets.only(left: index == 0 ? 30 : 10, right: 10) ,
+                          child: HomeDeckTile(
+                            titleOfDeck: 'yee',
+                            ownerOfDeck: 'sample',
+                            numberOfCards: 100,
+                            onDelete: () {  },
+                            onTap: () {  },
+                          )
+                      );
+                    },
+                  ),
+                ),
+
               Padding(
                 padding: const EdgeInsets.only(top: 0.0),
                 child: Row(
@@ -341,75 +387,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
                   ],
                 ),
               ),
-                // Padding(
-                //   padding: const EdgeInsets.only(top: 10.0),
-                //   child: Container(
-                //     padding: const EdgeInsets.all(20),
-                //     width: MediaQuery.of(context).size.width,
-                //     decoration: BoxDecoration(
-                //         borderRadius: BorderRadius.circular(10),
-                //         color: DeckColors.white,
-                //         border: Border.all(
-                //           color: DeckColors.primaryColor,
-                //           width: 3.0,
-                //         ),
-                //         boxShadow: [
-                //           BoxShadow(
-                //             color: Colors.black.withOpacity(0.1),
-                //             spreadRadius: 2,
-                //             blurRadius: 10,
-                //             offset: const Offset(0, 4),
-                //           )
-                //         ]
-                //     ),
-                //     child: Column(
-                //       crossAxisAlignment: CrossAxisAlignment.start,
-                //       children: [
-                //         Text(
-                //           _latestDeck!.title.toString(),
-                //           overflow: TextOverflow.visible,
-                //           style: const TextStyle(
-                //             fontFamily: 'Fraiche',
-                //             color: DeckColors.primaryColor,
-                //             fontSize: 24,
-                //           ),
-                //         ),
-                //         Padding(
-                //           padding: const EdgeInsets.only(top: 10.0),
-                //           child: BuildButton(
-                //             onPressed: () {
-                //               print("Continue Learning Button Clicked");
-                //               Navigator.of(context).push(
-                //                 RouteGenerator.createRoute(
-                //                     ViewDeckPage(deck: _latestDeck!)),
-                //               );
-                //             },
-                //             buttonText: 'Continue Learning',
-                //             height: 35,
-                //             width: 180,
-                //             radius: 20,
-                //             backgroundColor: DeckColors.primaryColor,
-                //             textColor: DeckColors.white,
-                //             fontSize: 16,
-                //             borderWidth: 0,
-                //             borderColor: Colors.transparent,
-                //           ),
-                //         ),
-                //       ],
-                //     ),
-                //   ),
-                // ),
-              if (_decks.isEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(top: 20.0),
-                  child: IfCollectionEmpty(
-                    hasIcon: true,
-                    ifCollectionEmptyText: 'It’s lonely around here...',
-                    ifCollectionEmptySubText:
-                    'No Recent Decks Yet! Now’s the perfect time to get ahead. Create your own Deck now to keep learning.',
-                    ifCollectionEmptyHeight: MediaQuery.of(context).size.height/3,
-                  ),
-                ),
+
               if (_decks.isNotEmpty)
                 const Padding(
                   padding: EdgeInsets.only(top: 20.0),
@@ -423,7 +401,6 @@ class _FlashcardPageState extends State<FlashcardPage> {
                     ),
                   ),
                 ),
-
               //TODO DELETE THIS SAMLPLE
               DeckTile(
                   titleOfDeck: 'sample',
@@ -474,6 +451,12 @@ class _FlashcardPageState extends State<FlashcardPage> {
                   enableSwipeToRetrieve: false,
                   onTap: () {
                     print("Clicked");
+                    Navigator.of(context).push(
+                      RouteGenerator.createRoute(
+                          ViewDeckPage(
+                              deck: Deck('A very long deck title that is more than 2 lines', '_userId', '_deckId', false, true, DateTime.now(), 'assets/images/Deck-Branding1.png'))
+                      )
+                    );
 
                   },
                   numberOfCards: numOfCards,
@@ -640,7 +623,6 @@ class _FlashcardPageState extends State<FlashcardPage> {
                   }
                 ///------- E N D ---------------
               ),
-
               if (_decks.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.only(top: 10.0),
