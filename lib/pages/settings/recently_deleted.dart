@@ -13,7 +13,7 @@ import '../misc/custom widgets/buttons/custom_buttons.dart';
 import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
 import '../misc/custom widgets/functions/if_collection_empty.dart';
 import '../misc/custom widgets/textboxes/textboxes.dart';
-import '../misc/custom widgets/tiles/list_of_decks.dart';
+import '../misc/custom widgets/tiles/deck_list.dart';
 
 class RecentlyDeletedPage extends StatefulWidget {
   const RecentlyDeletedPage({super.key});
@@ -200,7 +200,7 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
                   itemBuilder: (context, index) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 6.0),
-                      child: BuildListOfDecks(
+                      child: DeckList(
                         deckImageUrl:
                             _filteredDecks[index].coverPhoto.toString(),
                         titleText: _filteredDecks[index].title.toString(),
