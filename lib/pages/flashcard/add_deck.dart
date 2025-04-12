@@ -134,16 +134,6 @@ class _AddDeckPageState extends State<AddDeckPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Padding(padding: EdgeInsets.symmetric(vertical: 10),
-                        child: Text(
-                          'Add A New Deck',
-                          style: TextStyle(
-                            fontFamily: 'Fraiche',
-                            color: DeckColors.primaryColor,
-                            fontSize: 40,
-                          ),
-                        ),
-                      ),
                       const Padding(
                         padding: EdgeInsets.only(bottom: 10.0),
                         child: Text(
@@ -503,7 +493,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                                     width: 150,
                                     radius: 10,
                                     fontSize: 16,
-                                    borderWidth: 2,
+                                    borderWidth: 3,
                                     borderColor: DeckColors.primaryColor,
                                     backgroundColor: DeckColors.accentColor,
                                     textColor: DeckColors.primaryColor,
@@ -553,7 +543,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                     ),
                       ///---- E N D  O F  A M O U N T  F L A S H C A R D ---------
                   Padding(
-                    padding: const EdgeInsets.only(top: 35),
+                    padding: const EdgeInsets.only(top: 20),
                     child: BuildButton(
                       onPressed: () {
                         showConfirmDialog(
@@ -861,7 +851,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                       width: MediaQuery.of(context).size.width,
                       radius: 10.0,
                       fontSize: 16,
-                      borderWidth: 2,
+                      borderWidth: 3,
                       borderColor: DeckColors.primaryColor,
                       backgroundColor: DeckColors.accentColor,
                       textColor: DeckColors.primaryColor,
