@@ -24,7 +24,7 @@ class TermsOfUsePage extends StatelessWidget {
                    fit: BoxFit.cover,
                  ),
                  Positioned(
-                   bottom: 20,
+                   bottom: 0,
                    left: 10,
                    child: IconButton(
                      icon: const Icon(DeckIcons.back_arrow,
@@ -34,7 +34,7 @@ class TermsOfUsePage extends StatelessWidget {
                        Navigator.pop(context);
                      },
                    ),
-                 ),
+                 )
                ],
              ),
              const Padding(
@@ -205,7 +205,8 @@ class TermsOfUsePage extends StatelessWidget {
              Image(
                image: const AssetImage('assets/images/Deck-Bottom-Image3.png'),
                width: MediaQuery.of(context).size.width,
-               fit: BoxFit.cover,
+               height:80,
+               fit: BoxFit.fill,
              ),
            ],
          ),
