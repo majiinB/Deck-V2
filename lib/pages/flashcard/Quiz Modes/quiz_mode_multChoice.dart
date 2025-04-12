@@ -150,6 +150,8 @@ class _QuizMultChoiceState extends State<QuizMultChoice> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: DeckColors.backgroundColor,
+      resizeToAvoidBottomInset: false,
+
       appBar: LearnModeBar(
         title: 'Quiz Mode',
         color: DeckColors.primaryColor,
@@ -195,7 +197,7 @@ class _QuizMultChoiceState extends State<QuizMultChoice> {
                         color: DeckColors.white,
                         border: Border.all(
                           color: DeckColors.primaryColor,
-                          width: 2.0,
+                          width: 3.0,
                         ),
                         boxShadow: [
                           BoxShadow(
@@ -299,7 +301,7 @@ class _QuizMultChoiceState extends State<QuizMultChoice> {
                         color: DeckColors.accentColor,
                         border: Border.all(
                           color: DeckColors.primaryColor,
-                          width: 2.0,
+                          width: 3.0,
                         ),
                         boxShadow: [
                           BoxShadow(
