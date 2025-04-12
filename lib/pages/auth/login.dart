@@ -38,11 +38,11 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset: false,
       backgroundColor: DeckColors.backgroundColor,
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              child:  Column(
+          : Column(
                 children: [
                    Stack(
                    children: [
@@ -67,7 +67,9 @@ class _LoginPageState extends State<LoginPage> {
                      )
                    ],
                  ),
-                  Padding(
+                  Expanded(
+                      child:SingleChildScrollView(
+                          child: Padding(
                     padding: EdgeInsets.only( left: 30, right: 30),
                     child:Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -372,77 +374,17 @@ class _LoginPageState extends State<LoginPage> {
 
                       ],
                     ),
+                  )
+                      )
                   ),
                   Image(
                     image: const AssetImage('assets/images/Deck-Bottom-Image3.png'),
                     width: MediaQuery.of(context).size.width,
-                    fit: BoxFit.cover,
+                    height:80,
+                    fit: BoxFit.fill,
                   ),
-
-                  // Google sign-in button. Uses Firebase Authentication with Google.
-                  // BuildButton(
-                  //   onPressed: () async {
-                  //     setState(() => _isLoading = true);
-                  //     final authService = AuthService();
-                  //     try {
-                  //       // Sign in using Google.
-                  //       final currentUser =
-                  //       await authService.signUpWithGoogle();
-                  //
-                  //       // Create a user object to save in Firestore.
-                  //       final user = <String, dynamic>{
-                  //         "email": currentUser?.email,
-                  //         "name": currentUser?.displayName,
-                  //         "uid": currentUser?.uid,
-                  //         "cover_photo": "",
-                  //         "fcm_token": await FCMService().getToken(),
-                  //       };
-                  //
-                  //       final db = FirebaseFirestore.instance;
-                  //
-                  //       // Check if the user exists in Firestore; if not, create a new entry.
-                  //       final snap = await db
-                  //           .collection("users")
-                  //           .where('email', isEqualTo: currentUser?.email)
-                  //           .get();
-                  //       if (snap.docs.isEmpty) {
-                  //         await db.collection("users").add(user);
-                  //       } else {
-                  //         // Renew FCM token if the user already exists.
-                  //         await FCMService().renewToken();
-                  //       }
-                  //       if (mounted) {
-                  //         setState(() => _isLoading = false);
-                  //         // Navigate to AuthGate after successful login.
-                  //         Navigator.of(context).push(
-                  //           RouteGenerator.createRoute(const AuthGate()),
-                  //         );
-                  //       }
-                  //     } catch (e) {
-                  //       print(e.toString());
-                  //       if (mounted) {
-                  //         setState(() => _isLoading = false);
-                  //         showInformationDialog(context, "Error signing in.",
-                  //             "A problem occurred while signing in. Please try again.");
-                  //       }
-                  //     }
-                  //   },
-                  //   buttonText: 'Continue with Google',
-                  //   height: 60,
-                  //   width: MediaQuery.of(context).size.width,
-                  //   radius: 10,
-                  //   backgroundColor: Colors.transparent,
-                  //   textColor: DeckColors.white,
-                  //   fontSize: 16,
-                  //   borderWidth: 1,
-                  //   borderColor: Colors.white,
-                  //   svg:
-                  //   'assets/icons/google-icon.svg', // Google icon for the button.
-                  //   svgHeight: 24,
-                  // ),
                 ],
               )
-            ),
     );
   }
 }
