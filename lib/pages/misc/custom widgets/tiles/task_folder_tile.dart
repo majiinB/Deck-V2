@@ -5,6 +5,8 @@ import 'package:flutter_svg/svg.dart';
 import '../../colors.dart';
 import '../menus/pop_up_menu.dart';
 import '../progressbar/progress_bar.dart';
+import 'package:deck/pages/task/edit_task_folder.dart';
+import 'package:deck/pages/misc/widget_method.dart';
 
 class TaskFolderTile extends StatelessWidget{
   final String? folderName;
@@ -124,11 +126,15 @@ class TaskFolderTile extends StatelessWidget{
             onItemSelected: (index) {
               if (index == 0) {
                 print("Edit Folder Info Selected");
+                Navigator.push(
+                  context,
+                  RouteGenerator.createRoute(EditTaskFolderPage()),//TODO ADD THE INDEX OF THE FOLDER HERE
+                );
               } else if (index == 1) {
                 print("Delete Selected");
               }
             },
-            offset: -100,
+            // offset: -100,
           ),
 
         )
