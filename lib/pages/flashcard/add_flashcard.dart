@@ -231,7 +231,7 @@ class _AddFlashcardPageState extends State<AddFlashcardPage> {
                         textColor: DeckColors.primaryColor,
                         radius: 10.0,
                         fontSize: 16,
-                        borderWidth: 2,
+                        borderWidth: 3,
                         borderColor: DeckColors.primaryColor,
                       ),
                     ),

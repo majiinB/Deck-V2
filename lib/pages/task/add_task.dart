@@ -111,7 +111,9 @@ class _AddTaskPageState extends State<AddTaskPage> {
           left: true,
           right: true,
           minimum: const EdgeInsets.only(left: 20, right: 20),
-          child: isLoading ? const Center(child: CircularProgressIndicator()) : SingleChildScrollView(
+          child:
+          isLoading ? const Center(child: CircularProgressIndicator())
+              : SingleChildScrollView(
             child: Column(
                 children: [
                   const Image(
