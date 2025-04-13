@@ -97,7 +97,7 @@ class _EditDeckState extends State<EditDeck> {
               return CustomConfirmDialog(
                 title: 'Are you sure you want to go back?',
                 message: 'If you go back now, you will lose all your progress',
-                imagePath: 'assets/images/Deck_Dialogue4.png',
+                imagePath: 'assets/images/Deck-Dialogue4.png',
                 button1: 'Go Back',
                 button2: 'Cancel',
                 onConfirm: () {
@@ -225,7 +225,7 @@ class _EditDeckState extends State<EditDeck> {
                                               } catch (e) {
                                                 print('Error: $e');
                                                 showAlertDialog(
-                                                    context,"assets/images/Deck_Dialogue1.png",
+                                                    context,"assets/images/Deck-Dialogue1.png",
                                                     "Error in selecting files",
                                                     "There was an error in selecting the file. Please try again.");
                                                 // showDialog(
@@ -359,7 +359,7 @@ class _EditDeckState extends State<EditDeck> {
               ),
 
               Image.asset(
-                'assets/images/Deck-Bottom-Image.png',
+                'assets/images/Deck-Bottom-Image1.png',
                 fit: BoxFit.fitWidth,
                 width: MediaQuery.of(context).size.width,
               ),

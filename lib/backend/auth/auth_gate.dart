@@ -1,5 +1,5 @@
 import 'package:deck/main.dart';
-import 'package:deck/pages/auth/signup.dart';
+import 'package:deck/pages/auth/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -27,7 +27,7 @@ class _AuthGateState extends State<AuthGate> {
           if (snapshot.hasData) {
             return const MainPage();
           } else {
-            return const SignUpPage();
+            return const WelcomePage();
           }
         },
       ),

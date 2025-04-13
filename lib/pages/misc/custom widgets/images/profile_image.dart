@@ -28,15 +28,15 @@ class BuildProfileImageState extends State<BuildProfileImage> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: DeckColors.primaryColor, width: 3.0),
+        border: Border.all(color: DeckColors.primaryColor, width: 2.0),
           borderRadius: BorderRadius.circular(20),
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(18),
         child: Container(
           width: widget.width,
           height: widget.height,
-          color: DeckColors.white,
+          color: DeckColors.primaryColor,
         // backgroundImage: widget.profilePhotoFile?.image,
         child: widget.profilePhotoFile?.image != null
         ? Image(

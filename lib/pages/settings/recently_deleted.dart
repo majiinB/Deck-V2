@@ -13,7 +13,7 @@ import '../misc/custom widgets/buttons/custom_buttons.dart';
 import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
 import '../misc/custom widgets/functions/if_collection_empty.dart';
 import '../misc/custom widgets/textboxes/textboxes.dart';
-import '../misc/custom widgets/tiles/list_of_decks.dart';
+import '../misc/custom widgets/tiles/deck_list.dart';
 
 class RecentlyDeletedPage extends StatefulWidget {
   const RecentlyDeletedPage({super.key});
@@ -129,7 +129,7 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
                       onPressed: () {
                         showConfirmDialog(
                           context,
-                          "assets/images/Deck_Dialogue4.png",
+                          "assets/images/Deck-Dialogue4.png",
                           "Retrieve All Items?",
                           "Are you sure you want to retrieve all items? Once retrieved, they will return to the deck page.",
                           "Retrieve All",
@@ -158,7 +158,7 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
                         onPressed: _decks.isEmpty ? () {}: () {
                           showConfirmDialog(
                             context,
-                            "assets/images/Deck_Dialogue4.png",
+                            "assets/images/Deck-Dialogue4.png",
                             "Delete All Items?",
                             "Are you sure you want to delete all items? Once deleted, they cannot be retrieved. Proceed with caution.",
                             "Delete All",
@@ -200,7 +200,7 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
                   itemBuilder: (context, index) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 6.0),
-                      child: BuildListOfDecks(
+                      child: DeckList(
                         deckImageUrl:
                             _filteredDecks[index].coverPhoto.toString(),
                         titleText: _filteredDecks[index].title.toString(),
@@ -248,7 +248,7 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
                             Deck retrievedDeck = _filteredDecks[index];
                             showConfirmDialog(
                               context,
-                              "assets/images/Deck_Dialogue1.png",
+                              "assets/images/Deck-Dialogue1.png",
                               "Retrieve Item",
                               "Are you sure you want to retrieve '$retrievedTitle'?",
                               "Retrieve",
@@ -267,7 +267,7 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
                             Deck removedDeck = _filteredDecks[index];
                             showConfirmDialog(
                               context,
-                              "assets/images/Deck_Dialogue1.png",
+                              "assets/images/Deck-Dialogue1.png",
                               "Delete Item",
                               "Are you sure you want to delete '$deletedTitle'?",
                               "Delete Item",

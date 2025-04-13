@@ -34,7 +34,7 @@ class _SuggestImprovementState extends State<SuggestImprovement> {
         }
 
         //Check for unsaved changes
-        if (_hasUnsavedChanges()) { //TODO FIX THIS (status: FIXED!!)
+        if (_hasUnsavedChanges()) {
           final shouldPop = await showDialog<bool>(
             context: context,
             barrierDismissible: false,
@@ -42,7 +42,7 @@ class _SuggestImprovementState extends State<SuggestImprovement> {
               return CustomConfirmDialog(
                 title: 'Are you sure you want to go back?',
                 message: 'If you go back now, you will lose all your progress',
-                imagePath: 'assets/images/Deck_Dialogue4.png',
+                imagePath: 'assets/images/Deck-Dialogue4.png',
                 button1: 'Go Back',
                 button2: 'Cancel',
                 onConfirm: () {
@@ -84,18 +84,6 @@ class _SuggestImprovementState extends State<SuggestImprovement> {
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Padding(
-                        padding: EdgeInsets.only(left: 15.0, right: 15.0),
-                        child: Text('Suggest Improvement',
-                        style: TextStyle(
-                          fontFamily: 'Fraiche',
-                          fontWeight: FontWeight.bold,
-                          color: DeckColors.primaryColor,
-                          fontSize: 40,
-                          height: 1.1,
-                        ),
-                        ),
-                      ),
                       const Padding(
                         padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 20.0),
                         child: Text('We’d love to know what you want to see in the'
@@ -201,7 +189,7 @@ class _SuggestImprovementState extends State<SuggestImprovement> {
                                 barrierDismissible: false,
                                 builder: (BuildContext context) {
                                   return CustomAlertDialog(
-                                      imagePath: 'assets/images/Deck_Dialogue3.png',
+                                      imagePath: 'assets/images/Deck-Dialogue3.png',
                                       title: 'Suggestion received!',
                                       message: 'Thanks for helping us improve Deck. Your feedback matters!',
                                       button1: 'Ok',
@@ -229,14 +217,14 @@ class _SuggestImprovementState extends State<SuggestImprovement> {
                 ),
               ),
             ),
-                      Image.asset(
-                        'assets/images/Deck-Bottom-Image.png',
-                        fit: BoxFit.fitWidth,
-                        width: MediaQuery.of(context).size.width,
-                    ),
-                  ],
-                ),
-              ),
+            Image.asset(
+              'assets/images/Deck-Bottom-Image1.png',
+              fit: BoxFit.fitWidth,
+              width: MediaQuery.of(context).size.width,
+            ),
+          ],
+        ),
+      ),
     );
         }
       }

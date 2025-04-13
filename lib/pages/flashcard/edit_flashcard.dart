@@ -81,7 +81,7 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
             return CustomConfirmDialog(
               title: 'Are you sure you want to go back?',
               message: 'If you go back now, you will lose all your progress',
-              imagePath: 'assets/images/Deck_Dialogue4.png',
+              imagePath: 'assets/images/Deck-Dialogue4.png',
               button1: 'Go Back',
               button2: 'Cancel',
               onConfirm: () {
@@ -215,7 +215,7 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
                                   ? () {
                                 showConfirmDialog(
                                   context,
-                                  "assets/images/Deck_Dialogue4.png",
+                                  "assets/images/Deck-Dialogue4.png",
                                   "Save Changes?",
                                   "Are you sure you want to save changes made?",
                                   "Save",
@@ -223,12 +223,12 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
                                     try {
                                       if (_questionOrTermController.text.trim().isEmpty) {
                                         await Future.delayed(const Duration(milliseconds: 300));
-                                        showAlertDialog(context, "assets/images/Deck_Dialogue1.png","Uh oh. Something went wrong","Input Error. This flash card requires a term/question. Please try again.");
+                                        showAlertDialog(context, "assets/images/Deck-Dialogue1.png","Uh oh. Something went wrong","Input Error. This flash card requires a term/question. Please try again.");
                                         return;
                                       }
                                       if (_descriptionOrAnswerController.text.trim().isEmpty) {
                                         await Future.delayed(const Duration(milliseconds: 300));
-                                        showAlertDialog(context, "assets/images/Deck_Dialogue1.png","Uh oh. Something went wrong","Input Error. This flash card requires a description/answer. Please try again.");
+                                        showAlertDialog(context, "assets/images/Deck-Dialogue1.png","Uh oh. Something went wrong","Input Error. This flash card requires a description/answer. Please try again.");
                                     return;
                                       }
                                       if (widget.card.question.toString().trim() != _questionOrTermController.text.toString().trim()) {
@@ -249,7 +249,7 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
                                       setState(() => _isLoading = false);
                                       showAlertDialog(
                                         context,
-                                        "assets/images/Deck_Dialogue3.png",
+                                        "assets/images/Deck-Dialogue3.png",
                                         "Changed flash card information!",
                                         "Successfully changed flash card information.",
                                       );
@@ -261,7 +261,7 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
                                       setState(() => _isLoading = false);
                                       showAlertDialog(
                                         context,
-                                        "assets/images/Deck_Dialogue3.png",
+                                        "assets/images/Deck-Dialogue3.png",
                                         "Changed flash card information!",
                                         "Successfully changed flash card information.",
                                       );
@@ -294,7 +294,7 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
                                 return CustomConfirmDialog(
                                   title: 'Delete this flashcard?',
                                   message: 'Deleting this flashcard will permanently remove it, and it cannot be recovered',
-                                  imagePath: 'assets/images/Deck_Dialogue4.png',
+                                  imagePath: 'assets/images/Deck-Dialogue4.png',
                                   button1: 'Delete Flashcard',
                                   button2: 'Cancel',
                                   onConfirm: () {
@@ -334,7 +334,7 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
               ),
             ),
             Image.asset(
-              'assets/images/Deck-Bottom-Image.png',
+              'assets/images/Deck-Bottom-Image1.png',
               fit: BoxFit.fitWidth,
               width: MediaQuery.of(context).size.width,
             ),

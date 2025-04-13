@@ -58,7 +58,7 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
               return CustomConfirmDialog(
                 title: 'Are you sure you want to go back?',
                 message: 'If you go back now, you will lose all your progress',
-                imagePath: 'assets/images/Deck_Dialogue4.png',
+                imagePath: 'assets/images/Deck-Dialogue4.png',
                 button1: 'Go Back',
                 button2: 'Cancel',
                 onConfirm: () {
@@ -197,7 +197,7 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
                                         "save button clicked"); //line to test if working ung onPressedLogic XD
                                     showConfirmDialog(
                                       context,
-                                      "assets/images/Deck_Dialogue1.png",
+                                      "assets/images/Deck-Dialogue1.png",
                                       "Change Password",
                                       "Are you sure you want to change password?",
                                       "Change",
@@ -219,7 +219,7 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
                                 ///display error
                                 showAlertDialog(
                                   context,
-                                  "assets/images/Deck_Dialogue1.png",
+                                  "assets/images/Deck-Dialogue1.png",
                                   "Uh oh. Something went wrong.",
                                   "Error changing password! Passwords mismatch. Please try again.",
                                 );
@@ -228,7 +228,7 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
                                 ///display error
                                 showAlertDialog(
                                   context,
-                                  "assets/images/Deck_Dialogue1.png",
+                                  "assets/images/Deck-Dialogue1.png",
                                   "Uh oh. Something went wrong.",
                                   "Error changing password! You cannot set the same password as your new password. Please try again.",
                                 );
@@ -239,7 +239,7 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
                               ///display error
                               showAlertDialog(
                                 context,
-                                "assets/images/Deck_Dialogue1.png",
+                                "assets/images/Deck-Dialogue1.png",
                                 "Success",
                                 "You have successfully changed your password."
                               );
@@ -266,7 +266,7 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
                               ///display error
                               showAlertDialog(
                                 context,
-                                "assets/images/Deck_Dialogue1.png",
+                                "assets/images/Deck-Dialogue1.png",
                                 "Uh oh. Something went wrong.",
                                 "Error changing password! $message Please try again.",
                               );
@@ -276,7 +276,7 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
                               ///display error
                               showAlertDialog(
                                 context,
-                                "assets/images/Deck_Dialogue1.png",
+                                "assets/images/Deck-Dialogue1.png",
                                 "Uh oh. Something went wrong.",
                                 "Error changing password! An Unknown error occured during the process. Please try again.",
                               );}
@@ -321,7 +321,7 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
               )
             ),
             Image.asset(
-              'assets/images/Deck-Bottom-Image.png',
+              'assets/images/Deck-Bottom-Image1.png',
               fit: BoxFit.fitWidth,
               width: MediaQuery.of(context).size.width,
             ),

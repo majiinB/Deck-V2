@@ -1,19 +1,29 @@
 import 'package:deck/pages/misc/colors.dart';
-import 'package:deck/pages/misc/deck_icons.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-// import 'package:google_fonts/google_fonts.dart';
-import 'package:msh_checkbox/msh_checkbox.dart';
-import 'package:provider/provider.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
-
+/// HomeTaskTile is a widget that represents a task item in the home screen.
 ///
-/// ----------------------- S T A R T --------------------------
-/// ------------ T A S K  T I L E  I N  H O M E-----------------
+/// It displays the task name, deadline, and folder name, along with a color-coded priority indicator.
+/// - `folderName`: The name of the folder where the task belongs.
+/// - `taskName`: The title of the task.
+/// - `priority`: An integer representing the priority level of the task (0 = High, 1 = Medium, 3 = Low).
+/// - `deadline`: The due date of the task.
+/// - `onPressed`: A callback function triggered when the tile is tapped.
+
+/// how to call
+/// HomeTaskTile(
+/// folderName: '',
+/// taskName: '',
+/// deadline: ,
+/// onPressed: () {  },
+/// priority:
+/// )
 
 class HomeTaskTile extends StatelessWidget {
+  final String folderName;
   final String taskName;
+  final int priority;
   final String deadline;
   // final double cardWidth;
   //final File? deckImage;
@@ -21,19 +31,27 @@ class HomeTaskTile extends StatelessWidget {
 
   const HomeTaskTile({
     super.key,
+    required this.folderName,
     required this.taskName,
+    required this.priority,
     required this.deadline,
     required this.onPressed,
 
-    // required this.cardWidth,
-    // required this.deckImage,
   });
 
+  Color getColor(int priority){
+    Color color = DeckColors.white;
+    if(priority == 0) { color = DeckColors.deckRed;}
+    else if(priority == 1) { color = DeckColors.deckYellow;}
+    else if(priority == 2) { color = DeckColors.deckBlue;}
+    else{color = DeckColors.white;}
+    return color;
+  }
   @override
   Widget build(BuildContext context) {
     return Material(
       borderRadius: BorderRadius.circular(15.0),
-      color: DeckColors.accentColor,
+      color: DeckColors.white,
       child: InkWell(
         borderRadius: BorderRadius.circular(15.0),
         onTap: () {
@@ -42,53 +60,77 @@ class HomeTaskTile extends StatelessWidget {
           }
         },
         child: Container(
-          padding:
-          const EdgeInsets.only(left: 20.0, right: 20, top: 10, bottom: 10),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15.0),
+              border: Border.all(color: DeckColors.primaryColor, width: 3),
+              borderRadius: BorderRadius.circular(15.0),
           ),
           child: Row(
-            // Use Row to position the colored box and text side by side
-            crossAxisAlignment:
-            CrossAxisAlignment.start, // Aligns children vertically
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 10, // Set width for the colored box
-                height: 60, // Set height for the colored box
-                color: DeckColors.deckRed, // Set your desired color here
+                  width: 20,
+                  height: 80,
+                  decoration: BoxDecoration(
+                      color: getColor(priority),
+                      borderRadius: const BorderRadius.horizontal(
+                          left: Radius.circular(12)
+                      )
+                  )
               ),
-              const SizedBox(
-                  width: 10), // Add some spacing between the box and text
+              const SizedBox(width: 10),
               Expanded(
-                // Use Expanded to fill available space
-                child: Column(
-                  crossAxisAlignment:
-                  CrossAxisAlignment.start, // Aligns text to the left
-                  children: [
-                    Text(
-                      taskName,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontFamily: 'fraiche',
-                        fontSize: 24,
-                        fontWeight: FontWeight.w700,
-                        color: DeckColors.white,
+                child:Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: Column(
+                    crossAxisAlignment:
+                    CrossAxisAlignment.start,
+                    children: [
+                      AutoSizeText(
+                        taskName,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontFamily: 'fraiche',
+                          fontSize: 20,
+                          color: DeckColors.primaryColor,
+                        ),
                       ),
+                      AutoSizeText(
+                        deadline,
+                        textAlign: TextAlign.start,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontFamily: 'Nunito-SemiBold',
+                          fontSize: 14,
+                          color: DeckColors.primaryColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Padding(padding: const EdgeInsets.all(10),
+                child: IntrinsicWidth(
+                  child: Container(
+                    padding:EdgeInsets.symmetric(horizontal: 10,vertical: 2),
+                    decoration:BoxDecoration(
+                      color: DeckColors.deepGray,
+                      borderRadius: BorderRadius.circular(15),
                     ),
-                    Text(
-                      deadline,
-                      textAlign: TextAlign.start,
+                    child: Text(
+                      folderName,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         fontFamily: 'Nunito-SemiBold',
-                        fontSize: 14,
+                        fontSize: 10,
                         color: DeckColors.white,
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                )
               ),
             ],
           ),
@@ -97,6 +139,3 @@ class HomeTaskTile extends StatelessWidget {
     );
   }
 }
-
-/// ------------------------ E N D -----------------------------
-/// ------------ T A S K  T I L E  I N  H O M E-----------------

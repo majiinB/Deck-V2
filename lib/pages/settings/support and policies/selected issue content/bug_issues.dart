@@ -53,7 +53,7 @@ class BugIssues extends StatefulWidget {
                 return CustomConfirmDialog(
                 title: 'Are you sure you want to go back?',
                 message: 'If you go back now, you will lose all your progress',
-                imagePath: 'assets/images/Deck_Dialogue4.png',
+                imagePath: 'assets/images/Deck-Dialogue4.png',
                 button1: 'Go Back',
                 button2: 'Cancel',
                 onConfirm: () {

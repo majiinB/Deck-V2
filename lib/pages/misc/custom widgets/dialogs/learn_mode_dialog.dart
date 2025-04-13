@@ -1,28 +1,31 @@
 import 'package:deck/pages/flashcard/Quiz%20Modes/quiz_mode_identification.dart';
 import 'package:deck/pages/misc/colors.dart';
 import 'package:deck/pages/misc/custom%20widgets/buttons/learn_mode_buttons.dart';
-import 'package:deck/pages/misc/custom%20widgets/buttons/radio_button.dart';
 import 'package:deck/pages/misc/custom%20widgets/buttons/radio_button_group.dart';
 import 'package:deck/pages/misc/custom%20widgets/textboxes/textboxes.dart';
-import 'package:deck/pages/misc/deck_icons.dart';
-import 'package:deck/pages/settings/support%20and%20policies/selected%20issue%20content/ai_generated_content.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-// import 'package:google_fonts/google_fonts.dart';
-import 'package:msh_checkbox/msh_checkbox.dart';
-import 'package:provider/provider.dart';
-
 import '../../../flashcard/Quiz Modes/quiz_mode_multChoice.dart';
-import '../../../flashcard/play_my_deck.dart';
 import '../../widget_method.dart';
 import '../buttons/custom_buttons.dart';
 
+/// LearnModeDialog - A dialog that allows users to choose a learning mode.
 ///
+/// This dialog provides two options for learning:
+/// - **Quiz Mode** (Multiple Choice or Identification)
+/// - **Study Mode** (Flashcards with different orientations)
 ///
-///LearnModeDialog is a method for what learning mode does the user want to choose
+/// The user can customize their session by selecting the number of cards
+/// and the preferred quiz or study settings.
+///
+/// Usage:
+/// showDialog(
+///   context: context,
+///   builder: (context) => const LearnModeDialog(),
+/// );
+///
+
 class LearnModeDialog extends StatefulWidget {
 
   const LearnModeDialog({
@@ -53,7 +56,7 @@ class _LearnModeDialogState extends State<LearnModeDialog> {
       ),
       child: SizedBox(
         width: MediaQuery.of(context).size.width * 0.99,
-        height: MediaQuery.of(context).size.height * 0.6,
+        // height: MediaQuery.of(context).size.height * 0.6,
         child: Padding(
           padding: const EdgeInsets.all(15),
           child: SingleChildScrollView(
@@ -75,7 +78,7 @@ class _LearnModeDialogState extends State<LearnModeDialog> {
                         Expanded(
                           child: LearnModeButton(
                               label: 'Quiz',
-                              imagePath: 'assets/images/Deck_Quiz.png',
+                              imagePath: 'assets/images/Deck-Quiz.png',
                               isSelected: selectedMode == 'Quiz',
                               onTap: (){
                                 setState(() {
@@ -92,7 +95,7 @@ class _LearnModeDialogState extends State<LearnModeDialog> {
                         Expanded(
                           child: LearnModeButton(
                             label: 'Study',
-                            imagePath: 'assets/images/Deck_Study.png',
+                            imagePath: 'assets/images/Deck-Study.png',
                             isSelected: selectedMode == 'Study',
                             onTap: (){
                               setState(() {
@@ -109,7 +112,7 @@ class _LearnModeDialogState extends State<LearnModeDialog> {
                   ),
                 const Divider(
                   color: DeckColors.primaryColor,
-                  thickness: 2,
+                  thickness: 3,
                 ),
                 const Align(
                   alignment: Alignment.centerLeft,
@@ -131,7 +134,7 @@ class _LearnModeDialogState extends State<LearnModeDialog> {
                 ),
                 const Divider(
                   color: DeckColors.primaryColor,
-                  thickness: 2,
+                  thickness: 3,
                 ),
 
                 ///
@@ -166,7 +169,7 @@ class _LearnModeDialogState extends State<LearnModeDialog> {
                       ),
                       const Divider(
                         color: DeckColors.primaryColor,
-                        thickness: 2,
+                        thickness: 3,
                       ),
                     ],
                   ),

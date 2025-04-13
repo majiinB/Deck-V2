@@ -1,12 +1,5 @@
-import 'package:deck/backend/models/deck.dart';
 import 'package:deck/pages/misc/colors.dart';
-import 'package:deck/pages/misc/deck_icons.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-// import 'package:google_fonts/google_fonts.dart';
-import 'package:msh_checkbox/msh_checkbox.dart';
-import 'package:provider/provider.dart';
 
 // import '../theme/theme_provider.dart';
 // import '../misc/custom widgets/buttons/custom_buttons.dart';
@@ -80,7 +73,8 @@ class BuildSettingsContainerState extends State<BuildSettingsContainer> {
           }
         },
         child: Container(
-          padding: const EdgeInsets.all(20.0),
+            height: 50,
+          padding: const EdgeInsets.all(10.0),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15.0),
             border: Border.all(
@@ -88,9 +82,9 @@ class BuildSettingsContainerState extends State<BuildSettingsContainer> {
               width: 2,
             )
           ),
-          height: 80,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Row(
                 children: [
@@ -101,7 +95,7 @@ class BuildSettingsContainerState extends State<BuildSettingsContainer> {
                     color: _isToggled
                         ? widget.iconColor
                         : widget.selectedColor,
-                    size: 30,
+                    size: 20,
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 16.0),
@@ -137,7 +131,7 @@ class BuildSettingsContainerState extends State<BuildSettingsContainer> {
                  Icon(
                   Icons.arrow_right,
                   color: widget.iconArrowColor,
-                  size: 32,
+                  size: 20,
                 ),
             ],
           ),

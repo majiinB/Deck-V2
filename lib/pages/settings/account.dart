@@ -1,13 +1,13 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:deck/backend/auth/auth_service.dart';
 import 'package:deck/backend/auth/auth_utils.dart';
 import 'package:deck/pages/auth/privacy_policy.dart';
-import 'package:deck/pages/auth/signup.dart';
+import 'package:deck/pages/auth/welcome.dart';
 import 'package:deck/pages/auth/terms_of_use.dart';
 import 'package:deck/pages/misc/custom%20widgets/dialogs/alert_dialog.dart';
 import 'package:deck/pages/settings/change_password.dart';
 import 'package:deck/pages/settings/edit_profile.dart';
 import 'package:deck/pages/settings/recently_deleted.dart';
-import 'package:deck/pages/settings/settings.dart';
 import 'package:deck/pages/settings/support%20and%20policies/report_a_problem.dart';
 import 'package:deck/pages/settings/support%20and%20policies/suggest_improvement.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -101,15 +101,17 @@ class AccountPageState extends State<AccountPage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+      top:true,
+      left: true,
+      right: true,
       bottom: false,
       child: Scaffold(
         backgroundColor: DeckColors.backgroundColor,
         body: SingleChildScrollView(
-          padding: const EdgeInsets.only(left: 15, right: 15,bottom: 110),
+          padding: const EdgeInsets.only(left: 30, right: 30,bottom: 100),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
               /*Stack(
                 clipBehavior: Clip.none,
                 alignment: Alignment.centerLeft,
@@ -152,11 +154,11 @@ class AccountPageState extends State<AccountPage> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                      Padding(
+                    Padding(
                         padding: const EdgeInsets.only(right: 8.0),
                         child: BuildProfileImage(AuthUtils().getPhoto(),
-                          width: 170,
-                          height: 170,),
+                          width: 120,
+                          height: 120,),
                       ),
                     Expanded(
                       child: Column(
@@ -164,7 +166,7 @@ class AccountPageState extends State<AccountPage> {
                         children: [
                           Padding(
                             padding: const EdgeInsets.only(left: 8.0),
-                            child: Text(
+                            child: AutoSizeText(
                               overflow: TextOverflow.visible,
                               maxLines: 2,
                               AuthUtils().getDisplayName() ?? "Guest",
@@ -179,9 +181,9 @@ class AccountPageState extends State<AccountPage> {
                           ),
                           Padding(
                             padding: const EdgeInsets.only(left: 8.0),
-                            child: Text(
+                            child: AutoSizeText(
                               overflow: TextOverflow.visible,
-                              maxLines: 2,
+                              maxLines: 1,
                               AuthUtils().getEmail() ?? "guest@guest.com",
                               style: const TextStyle(
                                 fontFamily: 'Nunito-Bold',
@@ -224,9 +226,9 @@ class AccountPageState extends State<AccountPage> {
                 ),
               ),
               const Padding(
-                padding: EdgeInsets.only(top: 25.0),
+                padding: EdgeInsets.only(top: 15.0),
                 child: Divider(
-                  height: 1,
+                  thickness : 2,
                   color: DeckColors.primaryColor,
                 ),
               ),
@@ -279,9 +281,9 @@ class AccountPageState extends State<AccountPage> {
               ),
               ///----- E N D -----
               const Padding(
-                padding: EdgeInsets.only(top: 10.0),
+                padding: EdgeInsets.only(top: 15.0),
                 child: Divider(
-                  thickness: 1,
+                  thickness: 2,
                   color: DeckColors.primaryColor,
                 ),
               ),
@@ -310,7 +312,7 @@ class AccountPageState extends State<AccountPage> {
 
               ///REPORT A PROBLEM
               Padding(
-                padding: const EdgeInsets.only(top: 8),
+                padding: const EdgeInsets.only(top: 10),
                 child: BuildSettingsContainer(
                   selectedIcon: Icons.report_rounded,
                   nameOfTheContainer: 'Report a Problem',
@@ -335,7 +337,7 @@ class AccountPageState extends State<AccountPage> {
 
               ///TERMS OF USE
               Padding(
-                padding: const EdgeInsets.only(top: 8),
+                padding: const EdgeInsets.only(top: 10),
                 child: BuildSettingsContainer(
                   selectedIcon: Icons.note_alt_rounded,
                   nameOfTheContainer: 'Terms of Use',
@@ -357,7 +359,7 @@ class AccountPageState extends State<AccountPage> {
 
               ///PRIVACY POLICY
               Padding(
-                padding: const EdgeInsets.only(top: 8),
+                padding: const EdgeInsets.only(top: 10),
                 child: BuildSettingsContainer(
                   selectedIcon: Icons.privacy_tip_rounded,
                   nameOfTheContainer: 'Privacy Policy',
@@ -378,7 +380,7 @@ class AccountPageState extends State<AccountPage> {
               const Padding(
                 padding: EdgeInsets.only(top: 15.0),
                 child: Divider(
-                  thickness: 1,
+                  thickness: 2,
                   color: DeckColors.primaryColor,
                 ),
               ),
@@ -386,7 +388,7 @@ class AccountPageState extends State<AccountPage> {
 
               ///LOG OUT
               Padding(
-                padding: const EdgeInsets.only(top: 10),
+                padding: const EdgeInsets.only(top: 15),
                 child: BuildSettingsContainer(
                   selectedIcon: DeckIcons.logout,
                   nameOfTheContainer: 'Log Out',
@@ -406,7 +408,7 @@ class AccountPageState extends State<AccountPage> {
                         return CustomConfirmDialog(
                           title: 'Logging Out?',
                           message: 'Are you sure you want to log out?',
-                          imagePath: 'assets/images/Deck_Dialogue4.png',
+                          imagePath: 'assets/images/Deck-Dialogue4.png',
                           button1: 'Log Out',
                           button2: 'Cancel',
                           onConfirm: () async {
@@ -428,7 +430,7 @@ class AccountPageState extends State<AccountPage> {
 
                               // Use the rootNavigator to ensure you navigate properly
                               Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-                                RouteGenerator.createRoute(const SignUpPage()),
+                                RouteGenerator.createRoute(const WelcomePage()),
                                     (Route<dynamic> route) => false,
                               );
                             }
@@ -469,7 +471,7 @@ class AccountPageState extends State<AccountPage> {
               const Padding(
                 padding: EdgeInsets.only(top: 15.0),
                 child: Divider(
-                  thickness: 1,
+                  thickness: 2,
                   color: DeckColors.primaryColor,
                 ),
               ),
@@ -477,7 +479,7 @@ class AccountPageState extends State<AccountPage> {
 
               ///DELETE ACCOUNT
               Padding(
-                padding: const EdgeInsets.only(top: 10),
+                padding: const EdgeInsets.only(top: 15),
                 child: BuildSettingsContainer(
                   selectedIcon: Icons.delete_forever_rounded,
                   nameOfTheContainer: 'Delete Account',
@@ -501,7 +503,7 @@ class AccountPageState extends State<AccountPage> {
                           message: 'Deleting your account will remove all your decks, tasks, '
                               'and progress permanently. Deck will surely miss you… '
                               'Are you sure you want to go?',
-                          imagePath: 'assets/images/Deck_Dialogue1.png',
+                          imagePath: 'assets/images/Deck-Dialogue1.png',
                           button1: 'Delete Account',
                           button2: 'Cancel',
                           onConfirm: () async {
@@ -517,7 +519,7 @@ class AccountPageState extends State<AccountPage> {
                               barrierDismissible: false,
                               builder: (BuildContext context) {
                                 return CustomAlertDialog(
-                                  imagePath: 'assets/images/Deck_Dialogue1.png',
+                                  imagePath: 'assets/images/Deck-Dialogue1.png',
                                   title: 'Goodbye, wanderer',
                                   message: 'Your account has been deleted. Thank you for '
                                       'being part of Deck. See you again someday!',

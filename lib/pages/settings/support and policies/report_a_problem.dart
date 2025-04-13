@@ -238,7 +238,7 @@ class _ReportAProblemState extends State<ReportAProblem> {
                               barrierDismissible: false,
                               builder: (BuildContext context) {
                                 return CustomAlertDialog(
-                                    imagePath: 'assets/images/Deck_Dialogue3.png',
+                                    imagePath: 'assets/images/Deck-Dialogue3.png',
                                     title: 'Report Submitted',
                                     message: 'Thanks for helping keep Deck a safe space for everyone.',
                                     button1: 'Ok',
@@ -264,7 +264,7 @@ class _ReportAProblemState extends State<ReportAProblem> {
                         ),
                       ),
                       Image.asset(
-                        'assets/images/Deck-Bottom-Image.png',
+                        'assets/images/Deck-Bottom-Image1.png',
                         fit: BoxFit.fitWidth,
                         width: MediaQuery.of(context).size.width,
                       ),

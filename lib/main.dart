@@ -81,10 +81,8 @@ class MainPage extends StatefulWidget {
   @override
   State<MainPage> createState() => _MainPageState();
 }
-
 class _MainPageState extends State<MainPage> {
   final GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
-
   int _currentIndex = 0;
 
   final screens = const [
@@ -94,73 +92,63 @@ class _MainPageState extends State<MainPage> {
     AccountPage(),
   ];
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (Provider.of<TaskProvider>(context, listen: false)
-          .checkIfDeadlineIsToday()) {
-        NotificationService().showNotification(
-            title: 'You have due tasks today!',
-            body: 'Finish them!',
-            payload: 'load');
-      }
-    });
-  }
-
-  ///  Navbar Icons and Label
-  final items = const [
-    CurvedNavigationBarItem(
-      child: Icon(
-        DeckIcons.home,
-        color: DeckColors.primaryColor,
+  /// _buildNavigationBarItems
+  /// Constructs a list of widgets representing the items
+  /// in the navigation bar. Each item consists of an icon and
+  /// a label. The label is conditionally displayed based on whether the
+  /// item is currently selected.
+  List<CurvedNavigationBarItem> _buildNavigationBarItems() {
+    return [
+      CurvedNavigationBarItem(
+        child: const Icon(
+          DeckIcons.home,
+          color: DeckColors.primaryColor,
+        ),
+        label: _currentIndex == 0 ? '' : 'Home',
+        labelStyle: const TextStyle(
+          color: DeckColors.primaryColor,
+          fontSize: 15,
+          fontFamily: 'Fraiche',
+        ),
       ),
-      label: 'Home',
-      labelStyle: TextStyle(
-        color: DeckColors.primaryColor,
-        fontSize: 10,
-        fontFamily: 'Fraiche',
+      CurvedNavigationBarItem(
+        child: const Icon(
+          DeckIcons.task,
+          color: DeckColors.primaryColor,
+        ),
+        label: _currentIndex == 1 ? '' : 'Tasks',
+        labelStyle: const TextStyle(
+          color: DeckColors.primaryColor,
+          fontSize: 15,
+          fontFamily: 'Fraiche',
+        ),
       ),
-    ),
-    CurvedNavigationBarItem(
-      child: Icon(
-        DeckIcons.task,
-        color: DeckColors.primaryColor,
-      ),
-      label: 'Tasks',
-      labelStyle: TextStyle(
-        color: DeckColors.primaryColor,
-        fontSize: 10,
-        fontFamily: 'Fraiche',
-      ),
-    ),
-    CurvedNavigationBarItem(
-      child: Center(
-        child: Icon(
+      CurvedNavigationBarItem(
+        child: const Icon(
           DeckIcons.flashcard,
           color: DeckColors.primaryColor,
         ),
+        label: _currentIndex == 2 ? '' : 'Flashcards',
+        labelStyle: const TextStyle(
+          color: DeckColors.primaryColor,
+          fontSize: 15,
+          fontFamily: 'Fraiche',
+        ),
       ),
-      label: 'Flashcards',
-      labelStyle: TextStyle(
-        color: DeckColors.primaryColor,
-        fontSize: 10,
-        fontFamily: 'Fraiche',
+      CurvedNavigationBarItem(
+        child: const Icon(
+          DeckIcons.account,
+          color: DeckColors.primaryColor,
+        ),
+        label: _currentIndex == 3 ? '' : 'Account',
+        labelStyle: const TextStyle(
+          color: DeckColors.primaryColor,
+          fontSize: 15,
+          fontFamily: 'Fraiche',
+        ),
       ),
-    ),
-    CurvedNavigationBarItem(
-      child: Icon(
-        DeckIcons.account,
-        color: DeckColors.primaryColor,
-      ),
-      label: 'Account',
-      labelStyle: TextStyle(
-        color: DeckColors.primaryColor,
-        fontSize: 10,
-        fontFamily: 'Fraiche',
-      ),
-    ),
-  ];
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -171,23 +159,23 @@ class _MainPageState extends State<MainPage> {
         extendBody: true,
         appBar: null,
         body: screens[_currentIndex],
-        bottomNavigationBar: curvedNavigationBar(),
+        bottomNavigationBar: CurvedNavigationBar(
+          key: _bottomNavigationKey,
+          backgroundColor: Colors.transparent,
+          buttonBackgroundColor: DeckColors.softGreen,
+          color: DeckColors.softGreen,
+          animationDuration: const Duration(milliseconds: 300),
+          animationCurve: Curves.easeInOut,
+          height: 70,
+          index: _currentIndex,
+          items: _buildNavigationBarItems(),
+          onTap: (index) {
+            setState(() {
+              _currentIndex = index;
+            });
+          },
+        ),
       ),
-    );
-  }
-
-  CurvedNavigationBar curvedNavigationBar() {
-    return CurvedNavigationBar(
-      key: _bottomNavigationKey,
-      backgroundColor: Colors.transparent,
-      buttonBackgroundColor: DeckColors.softGreen,
-      color: DeckColors.softGreen,
-      animationDuration: const Duration(milliseconds: 300),
-      animationCurve: Curves.easeInOut,
-      height: 80,
-      index: _currentIndex,
-      items: items,
-      onTap: (index) => setState(() => _currentIndex = index),
     );
   }
 }
