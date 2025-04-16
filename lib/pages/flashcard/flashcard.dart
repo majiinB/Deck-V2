@@ -46,7 +46,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = "";
 
-  bool _isSearchBoxVisible = false;
+  bool _isSearchBoxVisible = true;
 
   ///This keeps track of the deck's publish status
   bool isDeckPublished = false;
@@ -408,48 +408,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
                   DeckTile(
                       titleOfDeck: 'sample',
                       onDelete: () {
-                        /*Deck removedDeck = _filteredDecks[index];
-                        final String deletedTitle =
-                            removedDeck.title.toString();
-                        setState(() {
-                          _filteredDecks.removeAt(index);
-                          _decks.removeWhere(
-                              (card) => card.deckId == removedDeck.deckId);
-                        });
-                        showConfirmDialog(
-                            context,
-                            "assets/images/Deck_Dialogue1.png",
-                            "Delete Item?",
-                            "Are you sure you want to delete '$deletedTitle'?",
-                            "Delete Item",
-                          () async {
-                            try {
-                              if (await removedDeck
-                                  .updateDeleteStatus(true)) {
-                                if (_latestDeck != null) {
-                                  if (_latestDeck?.deckId ==
-                                      removedDeck.deckId) {
-                                    Deck? latest = await _flashcardService
-                                        .getLatestDeckLog(_user!.uid);
-                                    setState(() {
-                                      _latestDeck = latest;
-                                    });
-                                  }
-                                }
-                              }
-                            } catch (e) {
-                              print('Flash Card Page Deletion Error: $e');
-                              setState(() {
-                                _decks.insert(index, removedDeck);
-                              });
-                            }
-                          },
-                          onCancel: () {
-                            setState(() {
-                              _decks.insert(index, removedDeck);
-                            });
-                          },
-                        );*/
+
                       },
                       enableSwipeToRetrieve: false,
                       onTap: () {

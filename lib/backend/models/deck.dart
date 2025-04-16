@@ -57,14 +57,14 @@ class Deck{
 
   // Access subcollections method
   Future<List<Cards>> getCard() async {
-    List<Cards> questions = [];
+    List<Cards> flashcards = [];
 
     try {
       // Reference to the questions subcollection
       CollectionReference questionsCollection = _firestore
           .collection('decks')
           .doc(deckId)
-          .collection('questions');
+          .collection('flashcards');
 
       // Query the collection to get the documents
       QuerySnapshot querySnapshot = await questionsCollection
@@ -73,21 +73,21 @@ class Deck{
 
       // Iterate through the query snapshot to extract document data
       for (var doc in querySnapshot.docs) {
-        String question = (doc.data() as Map<String, dynamic>)['question'];
-        String answer = (doc.data() as Map<String, dynamic>)['answer'];
+        String term = (doc.data() as Map<String, dynamic>)['term'];
+        String definition = (doc.data() as Map<String, dynamic>)['definition'];
         bool isStarred = (doc.data() as Map<String, dynamic>)['is_starred'];
         bool isDeleted = (doc.data() as Map<String, dynamic>)['is_deleted'];
         String cardId = doc.id;
 
         // Create a new Question object and add it to the list
-        questions.add(Cards(question, answer, isStarred, cardId, isDeleted));
+        flashcards.add(Cards(term, definition, isStarred, cardId, isDeleted));
       }
     } catch (e) {
       // Handle any errors that might occur during the query
-      print('Error retrieving questions: $e');
+      print('Error retrieving flashcards: $e');
     }
 
-    return questions;
+    return flashcards;
   }
   Future<int> getCardCount() async {
     try {
@@ -95,7 +95,7 @@ class Deck{
       CollectionReference questionsCollection = _firestore
           .collection('decks')
           .doc(deckId)
-          .collection('questions');
+          .collection('flashcards');
 
       // Query the collection to get documents where is_deleted is false
       QuerySnapshot querySnapshot = await questionsCollection
@@ -117,12 +117,12 @@ class Deck{
       // Get the reference to the collection
       CollectionReference questionsRef = _firestore.collection('decks')
         .doc(_deckId)
-        .collection('questions');
+        .collection('flashcards');
 
       // Add the question to the collection
       DocumentReference docRef = await questionsRef.add({
-        'question': question,
-        'answer': answer,
+        'term': question,
+        'definition': answer,
         'is_deleted': false,
         'is_starred': false,
       });

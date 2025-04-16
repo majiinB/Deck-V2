@@ -19,7 +19,7 @@ class FlashcardService{
 
       // Query the collection for documents with the provided user ID
       QuerySnapshot querySnapshot = await deckCollection
-          .where('user_id', isEqualTo: userId)
+          .where('owner_id', isEqualTo: userId)
           .where('is_deleted', isEqualTo: false)
           .orderBy('title') // Sort decks alphabetically based on title
           .get();
@@ -28,7 +28,7 @@ class FlashcardService{
       for (var doc in querySnapshot.docs) {
         // Extract data from the document
         String title = _flashcardUtils.capitalizeFirstLetterOfWords(doc['title']);
-        String userId = doc['user_id'];
+        String userId = doc['owner_id'];
         String coverPhoto = doc['cover_photo'];
         bool isDeleted = doc['is_deleted'];
         bool isPrivate = doc['is_private'];
@@ -56,7 +56,7 @@ class FlashcardService{
 
       // Query the collection for documents with the provided user ID
       QuerySnapshot querySnapshot = await deckCollection
-          .where('user_id', isEqualTo: userId)
+          .where('owner_id', isEqualTo: userId)
           .where('is_deleted', isEqualTo: true)
           .orderBy('title') // Sort decks alphabetically based on title
           .get();
@@ -65,7 +65,7 @@ class FlashcardService{
       for (var doc in querySnapshot.docs) {
         // Extract data from the document
         String title = _flashcardUtils.capitalizeFirstLetterOfWords(doc['title']);
-        String userId = doc['user_id'];
+        String userId = doc['owner_id'];
         String coverPhoto = doc['cover_photo'];
         bool isDeleted = doc['is_deleted'];
         bool isPrivate = doc['is_private'];
@@ -93,7 +93,7 @@ class FlashcardService{
 
       // Query the collection for documents with the provided user ID
       QuerySnapshot querySnapshot = await deckCollection
-          .where('user_id', isEqualTo: userId)
+          .where('owner_id', isEqualTo: userId)
           .where('is_deleted', isEqualTo: false)
           .orderBy('created_at', descending: true) // Sort by created_at timestamp, newest first
           .limit(6) // Limit the results to 6 decks
@@ -103,7 +103,7 @@ class FlashcardService{
       for (var doc in querySnapshot.docs) {
         // Extract data from the document
         String title = _flashcardUtils.capitalizeFirstLetterOfWords(doc['title']);
-        String userId = doc['user_id'];
+        String userId = doc['owner_id'];
         String coverPhoto = doc['cover_photo'];
         bool isDeleted = doc['is_deleted'];
         bool isPrivate = doc['is_private'];
@@ -138,7 +138,7 @@ class FlashcardService{
         Map<String, dynamic> deckData = deckSnapshot.data() as Map<String, dynamic>;
 
         // Extract the fields
-        String deckUserId = deckData['user_id'];
+        String deckUserId = deckData['owner_id'];
         bool isDeleted = deckData['is_deleted'];
 
         // Check if the deck belongs to the user and is not deleted
@@ -172,7 +172,7 @@ class FlashcardService{
 
       // Query the collection for documents with the provided user ID and deck ID
       QuerySnapshot querySnapshot = await deckCollection
-          .where('user_id', isEqualTo: userId)
+          .where('owner_id', isEqualTo: userId)
           .orderBy('visited_at', descending: true)
           .limit(1)
           .get();
@@ -214,7 +214,7 @@ class FlashcardService{
       await deckLogs.add({
         'deck_id': deckId,
         'title': title,
-        'user_id': userId,
+        'owner_id': userId,
         'visited_at': visitedAt,
       });
 
@@ -235,7 +235,7 @@ class FlashcardService{
         'is_deleted': false,
         'is_private': false,
         'title': cleanTitle,
-        'user_id': userId,
+        'owner_id': userId,
         'cover_photo':coverPhoto
       });
 
@@ -321,7 +321,7 @@ class FlashcardService{
 
       // Query for documents where the title field matches the formatted title and user_id matches the provided userId
       QuerySnapshot querySnapshot = await decksRef
-          .where('user_id', isEqualTo: userId)
+          .where('owner_id', isEqualTo: userId)
           .where('title', isEqualTo: formattedTitle)
           .where('is_deleted', isEqualTo: false)
           .get();
