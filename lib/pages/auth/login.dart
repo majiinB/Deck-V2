@@ -303,6 +303,18 @@ class _LoginPageState extends State<LoginPage> {
                               } else {
                                 await FCMService().renewToken();
                               }
+
+                              String? token = await authService.getIdToken();
+                              if (token != null) {
+                                const batchSize = 1000;  // Adjust based on your preference
+                                for (int i = 0; i < token.length; i += batchSize) {
+                                  String batch = token.substring(i, i + batchSize > token.length ? token.length : i + batchSize);
+                                  print(batch);
+                                }
+                              } else {
+                                print("No user is currently signed in.");
+                              }
+
                               setState(() => _isLoading = false);
                               Navigator.of(context).push(
                                 RouteGenerator.createRoute(const AuthGate()),

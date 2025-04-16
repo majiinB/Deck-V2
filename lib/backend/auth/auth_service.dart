@@ -14,6 +14,15 @@ class AuthService {
     return _firebaseAuth.currentUser;
   }
 
+  /// Retrieves the current users jwt token
+  Future<String?> getIdToken() async {
+    User? user = _firebaseAuth.currentUser;
+    if (user != null) {
+      return await user.getIdToken();
+    }
+    return null;
+  }
+
   /// Signs in a user with email and password.
   ///
   /// Takes the [email] and [password] as parameters.
