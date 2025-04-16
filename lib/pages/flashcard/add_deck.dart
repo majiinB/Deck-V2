@@ -616,38 +616,6 @@ class _AddDeckPageState extends State<AddDeckPage> {
                                 fileName = await _flashcardService.uploadPdfFileToFirebase(_pickedFileController.text.toString().trim(), widget.userId.toString());
                               }
 
-                              //OPENAI
-                              // try{
-                              //   // sendData function
-                              //   Map<String, dynamic> runAndThreadId = await _flashcardAiService.sendData(
-                              //     id: widget.userId,
-                              //     subject: _subjectController.text.trim(),
-                              //     topic: _topicController.text.trim(),
-                              //     addDescription: _descriptionController.text.trim(),
-                              //     pdfFileName: fileName,
-                              //     numberOfQuestions: int.tryParse(_numCardsController.text) ?? 0,
-                              //   );
-                              //
-                              //   print(runAndThreadId); // For debug
-                              //
-                              //   // fetchData function
-                              //   flashCardDataList = await _flashcardAiService.fetchData(
-                              //     id: widget.userId,
-                              //     runID: runAndThreadId['run_id'],
-                              //     threadID: runAndThreadId['thread_id'],
-                              //   );
-                              //
-                              // }on ApiException catch(e){
-                              //   showInformationDialog(context, "Error while creating Deck!", e.message.toString()
-                              //   );
-                              //   return;
-                              // }catch(e){
-                              //   await Future.delayed(const Duration(milliseconds: 300));
-                              //   showInformationDialog(context, "Unknown Error Occurred",
-                              //       'An unknown error has occurred while generating your deck. Please try again.');
-                              //   return;
-                              // }
-
                               //GEMINI
                               if(fileName.isEmpty || fileName == ""){
                                 try{
@@ -724,7 +692,12 @@ class _AddDeckPageState extends State<AddDeckPage> {
                                     uploadedPhotoUrl = await _flashCardService.uploadImageToFirebase(coverPhoto, widget.userId.toString());
                                   }
 
-                                  Deck? newDeck = await _flashCardService.addDeck(widget.userId, _deckTitleController.text.toString(), uploadedPhotoUrl);
+                                  Deck? newDeck = await _flashCardService.addDeck(
+                                      _deckTitleController.text.toString(),
+                                      _deckDescriptionController.text.toString(),
+                                      uploadedPhotoUrl
+                                  );
+
                                   if(newDeck != null){
                                     //Loop through the list and transfer info from response to the deck
                                     for(Cardai aiResponse in flashCardDataList){
@@ -810,8 +783,12 @@ class _AddDeckPageState extends State<AddDeckPage> {
                             )){
                               await Future.delayed(const Duration(milliseconds: 300));
                               setState(() => _isLoading = false);
-                              showAlertDialog(context,
-                                  "assets/images/Deck-Dialogue2.png","Error adding Deck!", 'You already have a deck named $deckTitle');
+                              showAlertDialog(
+                                  context,
+                                  "assets/images/Deck-Dialogue2.png",
+                                  "Error adding Deck!",
+                                  'You already have a deck named $deckTitle'
+                              );
                               return;
                             }
 
@@ -821,7 +798,11 @@ class _AddDeckPageState extends State<AddDeckPage> {
                             }
 
                             // Add and initialize deck
-                            Deck? newDeck = await _flashcardService.addDeck(widget.userId, _deckTitleController.text.toString(), uploadedPhotoUrl);
+                            Deck? newDeck = await _flashcardService.addDeck(
+                                _deckTitleController.text.toString(),
+                                _deckDescriptionController.text.toString(),
+                                uploadedPhotoUrl
+                            );
 
                             // Check if newDeck is not null before going to viewDeckPage
                             if(newDeck != null){

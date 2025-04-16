@@ -6,6 +6,8 @@ import 'card.dart';
 
 class Deck{
   String title;
+  String description;
+  int flashcardCount;
   final String _userId;
   final String _deckId;
   String coverPhoto;
@@ -14,7 +16,17 @@ class Deck{
   DateTime createdAt;
 
   // Constructor
-  Deck(this.title, this._userId, this._deckId, this.isDeleted, this.isPrivate, this.createdAt, this.coverPhoto);
+  Deck(
+      this.title,
+      this.description,
+      this.flashcardCount,
+      this._userId, this._deckId,
+      this.isDeleted,
+      this.isPrivate,
+      this.createdAt,
+      this.coverPhoto
+      );
+
   String get userId => _userId;
   String get deckId => _deckId;
 

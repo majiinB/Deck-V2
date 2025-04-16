@@ -1,13 +1,17 @@
 
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:deck/backend/auth/auth_service.dart';
 import 'package:deck/backend/flashcard/flashcard_utils.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import '../models/deck.dart';
+import 'package:http/http.dart' as http;
 
 class FlashcardService{
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final String deckManagerAPIUrl = "https://deck-manager-api-taglvgaoma-uc.a.run.app";
   FlashcardUtils _flashcardUtils = FlashcardUtils();
 
   Future<List<Deck>> getDecksByUserId(String userId) async {
@@ -39,7 +43,7 @@ class FlashcardService{
         DateTime createdAt = createdAtTimestamp.toDate();
 
         // Create a new Deck object and add it to the list
-        decks.add(Deck(title, userId, deckId, isDeleted, isPrivate, createdAt, coverPhoto));
+        // decks.add(Deck(title, userId, deckId, isDeleted, isPrivate, createdAt, coverPhoto));
       }
     } catch (e) {
       // Handle errors
@@ -76,7 +80,7 @@ class FlashcardService{
         DateTime createdAt = createdAtTimestamp.toDate();
 
         // Create a new Deck object and add it to the list
-        decks.add(Deck(title, userId, deckId, isDeleted, isPrivate, createdAt, coverPhoto));
+        // decks.add(Deck(title, userId, deckId, isDeleted, isPrivate, createdAt, coverPhoto));
       }
     } catch (e) {
       // Handle errors
@@ -114,7 +118,7 @@ class FlashcardService{
         DateTime createdAt = createdAtTimestamp.toDate();
 
         // Create a new Deck object and add it to the list
-        decks.add(Deck(title, userId, deckId, isDeleted, isPrivate, createdAt, coverPhoto));
+        // decks.add(Deck(title, userId, deckId, isDeleted, isPrivate, createdAt, coverPhoto));
       }
     } catch (e) {
       // Handle errors
@@ -150,7 +154,7 @@ class FlashcardService{
           DateTime createdAt = createdAtTimestamp.toDate();
 
           // Create and return a Deck object
-          return Deck(title, userId, deckId, isDeleted, isPrivate, createdAt, coverPhoto);
+          // return Deck(title, userId, deckId, isDeleted, isPrivate, createdAt, coverPhoto);
         } else {
           // Deck does not belong to the user or is deleted
           return null;
@@ -223,26 +227,56 @@ class FlashcardService{
       print('Failed to add deck log record: $e');
     }
   }
-  Future<Deck?> addDeck(String userId, String title, String coverPhoto) async {
+  Future<Deck?> addDeck(String title, String description, String coverPhoto) async {
     try {
-      // Get the reference to the collection
-      CollectionReference questionsRef = _firestore.collection('decks');
-      String cleanTitle = _flashcardUtils.cleanSpaces(title.toLowerCase().trim());
-      String upperCaseTitle = _flashcardUtils.capitalizeFirstLetterOfWords(cleanTitle);
-      // Add the question to the collection
-      DocumentReference docRef = await questionsRef.add({
-        'created_at': DateTime.now(),
-        'is_deleted': false,
-        'is_private': false,
-        'title': cleanTitle,
-        'owner_id': userId,
-        'cover_photo':coverPhoto
-      });
+      String? token = await AuthService().getIdToken();
+      Map<String, dynamic> requestBody = {
+        'title': title,
+        'description': description,
+        'coverPhoto': coverPhoto
+      };
+      // Send a POST request to the API with the request body and headers.
+      final response = await http.post(
+        Uri.parse('$deckManagerAPIUrl/v1/decks/'), // API endpoint.
+        body: jsonEncode(requestBody), // JSON-encoded request body.
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $token',
+        },
 
-      String newDeckId = docRef.id;
+      );
+      print(response.statusCode);
+      print(response.body);
+      if(response.statusCode == 201){
+        var jsonData = jsonDecode(response.body) as Map<String, dynamic>;
+        print(jsonData); // Log parsed data for debugging.
 
-      print('Deck added successfully!');
-      return Deck(upperCaseTitle, userId, newDeckId, false, false, DateTime.now(), coverPhoto);
+        // If the JSON data is non-empty, process it.
+        if (jsonData.isNotEmpty) {
+          // Extract the list of questions from the JSON response.
+          Map<String, dynamic> deckData = jsonData["data"]["deck"];
+
+          Map<String, dynamic> createdAt = deckData["created_at"];
+          int seconds = createdAt["_seconds"];
+          int nanoseconds = createdAt["_nanoseconds"];
+
+          DateTime createdAtDateTime = DateTime.fromMillisecondsSinceEpoch(seconds * 1000);
+
+          return Deck(
+              deckData["title"],
+              deckData["description"],
+              deckData["flashcard_count"],
+              deckData["owner_id"],
+              deckData["id"],
+              deckData["is_deleted"],
+              deckData["is_private"],
+              createdAtDateTime,
+              deckData["cover_photo"]
+          );
+        }else{
+          return null;
+        }
+      }
     } catch (e) {
       print('Error adding deck: $e');
       return null;

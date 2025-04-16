@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:deck/backend/config/firebase_remote_config.dart';
 import 'package:deck/backend/config/gemini_config.dart';
 import 'package:deck/backend/custom_exceptions/api_exception.dart';
 import 'package:deck/backend/flashcard/flashcard_utils.dart';

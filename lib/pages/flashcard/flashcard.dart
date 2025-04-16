@@ -416,7 +416,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
                         Navigator.of(context).push(
                             RouteGenerator.createRoute(
                                 ViewDeckPage(
-                                    deck: Deck('A very long deck title that is more than 2 lines', '_userId', '_deckId', false, true, DateTime.now(), 'assets/images/Deck-Branding1.png'))
+                                    deck: Deck('A very long deck title that is more than 2 lines', 'description', 2, '_userId', '_deckId', false, true, DateTime.now(), 'assets/images/Deck-Branding1.png'))
                             )
                         );
 
