@@ -82,7 +82,7 @@ class TaskReminderNotification extends StatelessWidget {
                     ),
                   ),
                   TextButton(
-                    onPressed: onView,
+                    onPressed: onSnooze,
                     style: ButtonStyle(
                       overlayColor: MaterialStateProperty.all(DeckColors.softGray),
                       shape: MaterialStateProperty.all(
