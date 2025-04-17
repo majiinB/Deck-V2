@@ -11,18 +11,18 @@ class TaskReminderNotification extends StatelessWidget {
   final VoidCallback onDelete;
 
   const TaskReminderNotification({
-    Key? key,
+    super.key,
     required this.title,
     required this.message,
     required this.onView,
     required this.onSnooze,
     required this.onDelete,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.only(left: 30,right: 30,top: 10),
+        padding: const EdgeInsets.only(left: 30,right: 30,top: 10),
         decoration: const BoxDecoration(
           color: DeckColors.white,
           border: Border.symmetric(
