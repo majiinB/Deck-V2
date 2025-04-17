@@ -57,17 +57,18 @@ class DeckIntroPage extends StatelessWidget {
                 ),
               ),
               child: Padding(
-                padding: const EdgeInsets.only(left: 40,right: 40,top: 150),
+                padding: const EdgeInsets.only(left: 40,right: 40,top: 130),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Text(
+                    AutoSizeText(
                         title,
-                        style:const TextStyle(
+                        maxLines: hasButton ? 1 : 2,
+                        style: TextStyle(
                           height:1,
-                          fontSize: 40,
+                          fontSize: 35,
                           fontFamily: 'Fraiche',
                           color: DeckColors.softGreen,
                         )
@@ -77,13 +78,17 @@ class DeckIntroPage extends StatelessWidget {
                     ),
                     AutoSizeText(
                         subtitle,
-                        maxLines: 2,
-                        style:const TextStyle(
-                          height:1,
-                          fontSize: 20,
+                        maxLines: hasButton ? 2 : 3,
+                        minFontSize: 10,
+                        style: TextStyle(
+                          // height:1,
+                          fontSize: hasButton ? 15 : 20,
                           fontFamily: 'Nunito-SemiBold',
                           color: DeckColors.white,
                         )
+                    ),
+                    const SizedBox(
+                      height: 20,
                     ),
                     if(hasButton)SizedBox(
                         width: double.infinity,
@@ -114,6 +119,9 @@ class DeckIntroPage extends StatelessWidget {
                               ],
                             )
                         )
+                    ),
+                    const SizedBox(
+                      height: 5,
                     ),
                     if(hasButton)Row(
                       mainAxisAlignment: MainAxisAlignment.center,
