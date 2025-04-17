@@ -4,6 +4,9 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../misc/custom widgets/functions/intro_page.dart';
 import 'package:deck/pages/auth/welcome.dart';
 
+import '../misc/widget_method.dart';
+import 'create_account.dart';
+
 class IntroductoryPage extends StatefulWidget{
   const IntroductoryPage({super.key});
 
@@ -50,30 +53,95 @@ class _IntroductoryPageState extends State<IntroductoryPage> {
               ),
             ],
           ),
-          Container(
-              alignment: const Alignment(0,0.75),
-              child: Row(
-                children: [
-                  GestureDetector(
-                      onTap:(){
-                        _controller.jumpToPage(2);
-                      },
-                      child: const Text("")),
-                  SmoothPageIndicator(controller: _controller, count: 4,),
-                  onLastPage ?
-                  SizedBox() :
-                  GestureDetector(
-                      onTap:(){},
-                      child: const Text("Next",
-                          style: TextStyle(
-                            fontFamily: 'Nunito-Regular',
-                            fontSize: 16,
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+                // height: 50,
+                // width: MediaQuery.of(context).size.width,
+                padding: const EdgeInsets.symmetric( vertical: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                        onTap:onLastPage ?(){} : (){
+                          _controller.jumpToPage(3);
+                          },
+                        child: Container(
+                            color: Colors.transparent,
+                            padding: EdgeInsets.symmetric(vertical:20,horizontal: 30),
+                            child: Text(
+                                "Skip",
+                                style: TextStyle(
+                                  fontFamily: 'Nunito-Italic',
+                                  fontSize: 15,
+                                  color: onLastPage ? DeckColors.primaryColor : DeckColors.white,
+                                )
+                            )
+                        )
+                    ),
+                    const Expanded(
+                      child: SizedBox()
+                    ),
+                    SmoothPageIndicator(
+                      controller: _controller,
+                      count: 4,
+                      effect: CustomizableEffect(
+                        spacing: 10,
+                        activeDotDecoration: DotDecoration(
+                          width: 30,
+                          height: 15,
+                          color: DeckColors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          dotBorder: const DotBorder(
+                            width: 2,
                             color: DeckColors.white,
-                          )
-                      )
-                  ),
-                ],
-              )
+                          ),
+                        ),
+                        dotDecoration: DotDecoration(
+                          width: 20,
+                          height: 15,
+                          color: Colors.transparent,
+                          borderRadius: BorderRadius.circular(20),
+                          dotBorder: const DotBorder(
+                            width: 2,
+                            color: DeckColors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const Expanded(
+                        child: SizedBox()
+                    ),
+                    GestureDetector(
+                        onTap:(){
+                          if (onLastPage) {
+                              Navigator.of(context).push(
+                                RouteGenerator.createRoute(const CreateAccountPage()),
+                              );
+                            }
+                           else {
+                            _controller.nextPage(
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.easeIn,
+                            );
+                          }
+                        },
+                        child:  Container(
+                          color: Colors.transparent,
+                        padding: EdgeInsets.symmetric(vertical:20, horizontal: 30),
+                          child: Text(
+                              "Next",
+                              style: TextStyle(
+                                fontFamily: 'Nunito-Regular',
+                                fontSize: 15,
+                                color: DeckColors.white,
+                              )
+                          ),
+                        )
+                    ),
+                  ],
+                )
+            )
           )
         ],
       ),

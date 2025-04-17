@@ -80,7 +80,7 @@ class DeckIntroPage extends StatelessWidget {
                         maxLines: 2,
                         style:const TextStyle(
                           height:1,
-                          fontSize: 15,
+                          fontSize: 20,
                           fontFamily: 'Nunito-SemiBold',
                           color: DeckColors.white,
                         )
@@ -116,13 +116,14 @@ class DeckIntroPage extends StatelessWidget {
                         )
                     ),
                     if(hasButton)Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children:[
                         const Text(
                             "Have an account?",
-                            maxLines: 2,
+                            maxLines: 1,
                             style:TextStyle(
                               height:1,
-                              fontSize: 14,
+                              fontSize: 15,
                               fontFamily: 'Nunito-Regular',
                               color: DeckColors.white,
                             )
@@ -140,7 +141,7 @@ class DeckIntroPage extends StatelessWidget {
                               "Log In",
                               style: TextStyle(
                                 fontFamily: 'Nunito-Bold',
-                                fontSize: 10,
+                                fontSize: 15,
                                 color: DeckColors.softGreen,
                               ),
                             ),
