@@ -18,7 +18,7 @@ class DeckApprovalNotification extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 30,vertical: 10),
+      padding: EdgeInsets.only(left: 30,right: 30,top: 10),
       decoration: const BoxDecoration(
         color: DeckColors.white,
         border: Border.symmetric(
@@ -61,6 +61,14 @@ class DeckApprovalNotification extends StatelessWidget {
               children: [
                 TextButton(
                   onPressed: onView,
+                  style: ButtonStyle(
+                    overlayColor: MaterialStateProperty.all(DeckColors.softGray),
+                    shape: MaterialStateProperty.all(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(0),
+                      ),
+                    ),
+                  ),
                   child:  const AutoSizeText(
                       "View Deck",
                       style: TextStyle(
@@ -71,6 +79,14 @@ class DeckApprovalNotification extends StatelessWidget {
                 ),
                 TextButton(
                   onPressed: onDelete,
+                  style: ButtonStyle(
+                    overlayColor: MaterialStateProperty.all(DeckColors.softGray),
+                    shape: MaterialStateProperty.all(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(0),
+                      ),
+                    ),
+                  ),
                   child:  const AutoSizeText(
                       "Delete",
                       style: TextStyle(
