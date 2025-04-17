@@ -701,7 +701,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                                   if(newDeck != null){
                                     //Loop through the list and transfer info from response to the deck
                                     for(Cardai aiResponse in flashCardDataList){
-                                      newDeck.addQuestionToDeck(
+                                      newDeck.addFlashcardToDeck(
                                           aiResponse.question.toString(),
                                           aiResponse.answer.toString()
                                       );

@@ -42,8 +42,8 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
   @override
   void initState() {
     super.initState();
-    _descriptionOrAnswerController = TextEditingController(text: widget.card.answer.toString());
-    _questionOrTermController = TextEditingController(text: widget.card.question.toString());
+    _descriptionOrAnswerController = TextEditingController(text: widget.card.definition.toString());
+    _questionOrTermController = TextEditingController(text: widget.card.term.toString());
 
     ///add listeners to track changes
     _descriptionOrAnswerController.addListener(_onTextChanged);
@@ -53,8 +53,8 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
   ///This method is used to compare the current text in the controllers to the original values
   void _onTextChanged() {
     setState(() {
-      hasUnsavedChanges = _descriptionOrAnswerController.text.trim() != widget.card.answer.toString().trim() ||
-          _questionOrTermController.text.trim() != widget.card.question.toString().trim();
+      hasUnsavedChanges = _descriptionOrAnswerController.text.trim() != widget.card.definition.toString().trim() ||
+          _questionOrTermController.text.trim() != widget.card.term.toString().trim();
     });
   }
 
@@ -231,14 +231,14 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
                                         showAlertDialog(context, "assets/images/Deck-Dialogue1.png","Uh oh. Something went wrong","Input Error. This flash card requires a description/answer. Please try again.");
                                     return;
                                       }
-                                      if (widget.card.question.toString().trim() != _questionOrTermController.text.toString().trim()) {
+                                      if (widget.card.term.toString().trim() != _questionOrTermController.text.toString().trim()) {
                                         setState(() => _isLoading = true);
                                         await widget.card.updateQuestion(
                                           _questionOrTermController.text.toString().trim(),
                                           widget.deck.deckId,
                                         );
                                       }
-                                      if (widget.card.answer.toString() != _descriptionOrAnswerController.text.toString()) {
+                                      if (widget.card.definition.toString() != _descriptionOrAnswerController.text.toString()) {
                                         setState(() => _isLoading = true);
                                         await widget.card.updateAnswer(
                                           _descriptionOrAnswerController.text.toString().trim(),

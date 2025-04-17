@@ -22,12 +22,12 @@ class AddFlashcardPage extends StatefulWidget {
 
 class _AddFlashcardPageState extends State<AddFlashcardPage> {
   bool _isLoading = false;
-  final TextEditingController _descriptionOrAnswerController = TextEditingController();
+  final TextEditingController _definitionOrAnswerController = TextEditingController();
   final TextEditingController _questionOrTermController = TextEditingController();
 
   ///This is used to check if there are unsaved changes
   bool _hasUnsavedChanges() {
-    return _descriptionOrAnswerController.text.isNotEmpty ||
+    return _definitionOrAnswerController.text.isNotEmpty ||
         _questionOrTermController.text.isNotEmpty;
   }
 
@@ -75,7 +75,7 @@ class _AddFlashcardPageState extends State<AddFlashcardPage> {
       backgroundColor: DeckColors.backgroundColor,
       appBar: const AuthBar(
         automaticallyImplyLeading: true,
-        title: 'Manage Account',
+        title: 'Add Flashcard',
         color: DeckColors.primaryColor,
         fontSize: 24,
       ),
@@ -139,7 +139,7 @@ class _AddFlashcardPageState extends State<AddFlashcardPage> {
                     const Padding(
                       padding: EdgeInsets.only(top: 10.0),
                       child: Text(
-                        'Description',
+                        'Definition',
                         style: TextStyle(
                           fontFamily: 'Nunito-Bold',
                           color: DeckColors.primaryColor,
@@ -150,8 +150,8 @@ class _AddFlashcardPageState extends State<AddFlashcardPage> {
                     Padding(
                       padding: const EdgeInsets.only(top: 10),
                       child: BuildTextBox(
-                              controller: _descriptionOrAnswerController,
-                              hintText: 'Enter Description',
+                              controller: _definitionOrAnswerController,
+                              hintText: 'Enter Definition',
                               isMultiLine: true
                           ),
                     ),
@@ -160,68 +160,68 @@ class _AddFlashcardPageState extends State<AddFlashcardPage> {
                       child: BuildButton(
                         onPressed: () {
                           showConfirmDialog(
-                          context,
-                          "assets/images/Deck-Dialogue4.png",
-                          "Add Flash Card",
-                          "Are you sure you want to add this flash card on your deck?",
-                          "Add Flashcard",
-                                () async {
-                                  setState(() => _isLoading = true);
-                                  try {
-                                    if (_descriptionOrAnswerController.text.isNotEmpty &&
-                                        _questionOrTermController.text.isNotEmpty) {
-                                      Cards? card = await widget.deck.addQuestionToDeck(
-                                        _questionOrTermController.text.toString(),
-                                        _descriptionOrAnswerController.text.toString(),
-                                      );
-                                      if (card != null) {
-                                        await Future.delayed(const Duration(milliseconds: 300));
-                                        setState(() => _isLoading = false);
-                                        Navigator.pop(context, card);
-                                        showAlertDialog(context,
-                                          "assets/images/Deck-Dialogue3.png",
-                                          "Card Added Successfully", "You can now view this card in you deck");
-                                    }
-                                    } else {
-                                      Navigator.of(context).pop(); // Close the confirmation dialog
-                                      await Future.delayed(const Duration(milliseconds: 300)); // Ensure the dialog is fully closed
-                                      setState(() => _isLoading = false);
-                                      showAlertDialog(
-                                        context,"assets/images/Deck-Dialogue1.png",
-                                        "Input Error",
-                                        "Please fill out all of the input fields and try again.");
-                               // showDialog(
-                                      //   context: context,
-                                      //   builder: (BuildContext context) {
-                                      //     return AlertDialog(
-                                      //       title: const Text('Input Error'),
-                                      //       content: const Text('Please fill out all of the input fields.'),
-                                      //       actions: <Widget>[
-                                      //         TextButton(
-                                      //           onPressed: () {
-                                      //             Navigator.of(context).pop(); // Close the dialog
-                                      //           },
-                                      //           child: const Text(
-                                      //             'Close',
-                                      //             style: TextStyle(
-                                      //               color: Colors.red,
-                                      //             ),
-                                      //           ),
-                                      //         ),
-                                      //       ],
-                                      //     );
-                                      //   },
-                                      // );
-                                    }
-                                  } catch (e) {
-                                    print('add card error: $e');
+                            context,
+                            "assets/images/Deck-Dialogue4.png",
+                            "Add Flash Card",
+                            "Are you sure you want to add this flash card on your deck?",
+                            "Add Flashcard",
+                            () async {
+                              setState(() => _isLoading = true);
+                              try {
+                                if (_definitionOrAnswerController.text.isNotEmpty &&
+                                    _questionOrTermController.text.isNotEmpty) {
+                                  Cards? card = await widget.deck.addFlashcardToDeck(
+                                    _questionOrTermController.text.toString(),
+                                    _definitionOrAnswerController.text.toString(),
+                                  );
+                                  if (card != null) {
+                                    await Future.delayed(const Duration(milliseconds: 300));
                                     setState(() => _isLoading = false);
-                                    showAlertDialog(
-                                      context,"assets/images/Deck-Dialogue1.png",
-                                      "An error occured" ,
-                                      "An unknown error occured. Please try again.");
+                                    Navigator.pop(context, card);
+                                    showAlertDialog(context,
+                                      "assets/images/Deck-Dialogue3.png",
+                                      "Card Added Successfully", "You can now view this card in you deck");
                                   }
-                                },
+                                } else {
+                                  Navigator.of(context).pop(); // Close the confirmation dialog
+                                  await Future.delayed(const Duration(milliseconds: 300)); // Ensure the dialog is fully closed
+                                  setState(() => _isLoading = false);
+                                  showAlertDialog(
+                                    context,"assets/images/Deck-Dialogue1.png",
+                                    "Input Error",
+                                    "Please fill out all of the input fields and try again.");
+                           // showDialog(
+                                  //   context: context,
+                                  //   builder: (BuildContext context) {
+                                  //     return AlertDialog(
+                                  //       title: const Text('Input Error'),
+                                  //       content: const Text('Please fill out all of the input fields.'),
+                                  //       actions: <Widget>[
+                                  //         TextButton(
+                                  //           onPressed: () {
+                                  //             Navigator.of(context).pop(); // Close the dialog
+                                  //           },
+                                  //           child: const Text(
+                                  //             'Close',
+                                  //             style: TextStyle(
+                                  //               color: Colors.red,
+                                  //             ),
+                                  //           ),
+                                  //         ),
+                                  //       ],
+                                  //     );
+                                  //   },
+                                  // );
+                                }
+                              } catch (e) {
+                                print('add card error: $e');
+                                setState(() => _isLoading = false);
+                                showAlertDialog(
+                                  context,"assets/images/Deck-Dialogue1.png",
+                                  "An error occured" ,
+                                  "An unknown error occured. Please try again.");
+                              }
+                            },
                           );
                         },
                         buttonText: 'Add Card',
@@ -252,7 +252,7 @@ class _AddFlashcardPageState extends State<AddFlashcardPage> {
   }
   @override
   void dispose() {
-    _descriptionOrAnswerController.dispose();
+    _definitionOrAnswerController.dispose();
     _questionOrTermController.dispose();
     super.dispose();
   }

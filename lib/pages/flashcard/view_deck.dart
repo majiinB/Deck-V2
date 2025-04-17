@@ -92,14 +92,14 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
     setState(() {
       _filteredCardsCollection = _cardsCollection
           .where((card) =>
-              card.question.toLowerCase().contains(query) ||
-              card.answer.toLowerCase().contains(query))
+              card.term.toLowerCase().contains(query) ||
+              card.definition.toLowerCase().contains(query))
           .toList();
 
       _filteredStarredCardCollection = _starredCardCollection
           .where((card) =>
-              card.question.toLowerCase().contains(query) ||
-              card.answer.toLowerCase().contains(query))
+              card.term.toLowerCase().contains(query) ||
+              card.definition.toLowerCase().contains(query))
           .toList();
       FlashcardUtils().sortByQuestion(_filteredCardsCollection);
       FlashcardUtils().sortByQuestion(_filteredStarredCardCollection);
@@ -590,10 +590,10 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                         child: BuildContainerOfFlashCards(
                                           titleOfFlashCard:
                                               _filteredCardsCollection[index]
-                                                  .question,
+                                                  .term,
                                           contentOfFlashCard:
                                               _filteredCardsCollection[index]
-                                                  .answer,
+                                                  .definition,
                                           onDelete: isOwner ? () {
                                             /*Cards removedCard =
                                                 _filteredCardsCollection[
@@ -775,7 +775,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                             _filteredCardsCollection[
                                             index];
                                             final String deletedTitle =
-                                                removedCard.question;
+                                                removedCard.term;
                                             setState(() {
                                               _filteredCardsCollection
                                                   .removeAt(index);
@@ -939,11 +939,11 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                           titleOfFlashCard:
                                               _filteredStarredCardCollection[
                                                       index]
-                                                  .question,
+                                                  .term,
                                           contentOfFlashCard:
                                               _filteredStarredCardCollection[
                                                       index]
-                                                  .answer,
+                                                  .definition,
                                           onDelete: () {
                                             /*Cards removedCard =
                                                 _filteredStarredCardCollection[
@@ -1090,7 +1090,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                             _filteredStarredCardCollection[
                                             index];
                                             final String starredDeletedTitle =
-                                                removedCard.question;
+                                                removedCard.term;
                                             setState(() {
                                               _cardsCollection.removeWhere(
                                                       (card) =>

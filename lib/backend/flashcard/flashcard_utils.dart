@@ -42,7 +42,7 @@ class FlashcardUtils{
     return input.replaceAll(RegExp(r'\s+'), ' ');
   }
   void sortByQuestion(List<Cards> cards) {
-    cards.sort((a, b) => a.question.compareTo(b.question));
+    cards.sort((a, b) => a.term.compareTo(b.term));
   }
 
   String constructGoogleAIPrompt({

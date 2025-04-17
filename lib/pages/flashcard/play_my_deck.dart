@@ -85,10 +85,10 @@ class _PlayMyDeckPageState extends State<PlayMyDeckPage> {
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 15.0),
                     child: FlipCard(
-                      front: buildFlipCard(widget.cards[index].question,
+                      front: buildFlipCard(widget.cards[index].term,
                           DeckColors.primaryColor, 'Fraiche',
                           "Tap to see answer"),
-                      back: buildFlipCard(widget.cards[index].answer,
+                      back: buildFlipCard(widget.cards[index].definition,
                           DeckColors.primaryColor, 'Nunito',
                           "Tap to see description"),
                     ),

@@ -2,12 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Cards {
   final String _cardId;
-  String question;
-  String answer;
+  String term;
+  String definition;
   bool isStarred;
   bool isDeleted;
 
-  Cards(this.question, this.answer, this.isStarred, this._cardId, this.isDeleted);
+  Cards(this.term, this.definition, this.isStarred, this._cardId, this.isDeleted);
 
   String get cardId => _cardId;
 
@@ -59,7 +59,7 @@ class Cards {
 
       // Update only the 'title' field of the document
       await deckRef.update({'question': newQuestion});
-      question = newQuestion;
+      term = newQuestion;
       print('Card question updated successfully');
       return true;
     } catch (e) {
@@ -77,7 +77,7 @@ class Cards {
 
       // Update only the 'title' field of the document
       await deckRef.update({'answer': newAnswer});
-      answer = newAnswer;
+      definition = newAnswer;
       print('Card answer updated successfully');
       return true;
     } catch (e) {

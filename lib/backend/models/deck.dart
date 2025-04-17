@@ -1,7 +1,8 @@
 import 'dart:core';
-
+import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'package:http/http.dart' as http;
+import '../auth/auth_service.dart';
 import 'card.dart';
 
 class Deck{
@@ -14,6 +15,7 @@ class Deck{
   bool isDeleted;
   bool isPrivate;
   DateTime createdAt;
+  final String deckManagerAPIUrl = "https://deck-manager-api-taglvgaoma-uc.a.run.app";
 
   // Constructor
   Deck(
@@ -124,27 +126,57 @@ class Deck{
     }
   }
 
-  Future<Cards?> addQuestionToDeck(String question, String answer) async {
+  Future<Cards?> addFlashcardToDeck(String term, String definition) async {
     try {
-      // Get the reference to the collection
-      CollectionReference questionsRef = _firestore.collection('decks')
-        .doc(_deckId)
-        .collection('flashcards');
+      String? token = await AuthService().getIdToken();
+      List<Map<String, dynamic>> requestBody = [
+        {
+          'term':term,
+          'definition': definition
+        }
+      ];
+      // Send a POST request to the API with the request body and headers.
+      final response = await http.post(
+        Uri.parse('$deckManagerAPIUrl/v1/decks/$_deckId/flashcards'), // API endpoint.
+        body: jsonEncode(requestBody), // JSON-encoded request body.
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $token',
+        },
+      );
 
-      // Add the question to the collection
-      DocumentReference docRef = await questionsRef.add({
-        'term': question,
-        'definition': answer,
-        'is_deleted': false,
-        'is_starred': false,
-      });
+      print(response.statusCode);
+      print(response.body);
+      if(response.statusCode == 200){
+        var jsonData = jsonDecode(response.body) as Map<String, dynamic>;
+        print(jsonData); // Log parsed data for debugging.
 
-      String newQuestionId = docRef.id;
+        // If the JSON data is empty, return null.
+        if (jsonData.isEmpty) return null;
 
-      print('Question added successfully!');
-      return Cards(question, answer, false, newQuestionId, false);
+        // Extract the list of questions from the JSON response.
+        List<dynamic> flashcardData = jsonData["data"];
+
+        if(flashcardData.isEmpty) return null;
+
+        final Map<String, dynamic> firstFlashcard = flashcardData[0] as Map<String, dynamic>;
+
+        // Extract the info's
+        final String id = firstFlashcard['id'];
+        final bool isStarred = firstFlashcard['is_starred'];
+        final bool isDeleted = firstFlashcard['is_deleted'];
+
+        Map<String, dynamic> createdAt = firstFlashcard["created_at"];
+        int seconds = createdAt["_seconds"];
+        int nanoseconds = createdAt["_nanoseconds"];
+
+        // Convert created_at format
+        DateTime createdAtDateTime = DateTime.fromMillisecondsSinceEpoch(seconds * 1000);
+
+        return Cards(term, definition, isStarred, id, isDeleted);
+      }
     } catch (e) {
-      print('Error adding question: $e');
+      print('Error adding flashcards: $e');
       return null;
     }
   }
