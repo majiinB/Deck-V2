@@ -95,38 +95,39 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         resizeToAvoidBottomInset: false,
         backgroundColor: _isLoading ? DeckColors.accentColor : DeckColors.backgroundColor,
         body: _isLoading ? const DeckLoadingDialog()
-            : Column(
-            children: [
-            Stack(
+            : SingleChildScrollView(
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Image(
-                  image: AssetImage('assets/images/Deck-Header.png'),
-                  width: MediaQuery.of(context).size.width,
-                  fit: BoxFit.cover,
-                ),
-                const Positioned(
-                  left: 10,
-                  bottom: 0,
-                  child:Padding(
-                    padding: EdgeInsets.only(left:20.0),
-                    child: Text('Sign Up',
-                      style: TextStyle(
-                        fontFamily: 'Fraiche',
-                        color: DeckColors.primaryColor,
-                        fontSize: 56,
-                      ),
+                Stack(
+                  children: [
+                    Image(
+                      image: AssetImage('assets/images/Deck-Header.png'),
+                      width: MediaQuery.of(context).size.width,
+                      fit: BoxFit.cover,
                     ),
-                  ),
-                )
-              ],
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                  child: Padding(
-                    padding: EdgeInsets.only( left: 30, right: 30),
+
+                    const Positioned(
+                      left: 10,
+                      bottom: 0,
+                      child:Padding(
+                        padding: EdgeInsets.only(left:20.0),
+                        child: Text('Sign Up',
+                          style: TextStyle(
+                            fontFamily: 'Fraiche',
+                            color: DeckColors.primaryColor,
+                            fontSize: 56,
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+                Padding(
+                    padding: EdgeInsets.only( left: 30, right: 30, top:20),
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
+                        children:[
                           const Text(
                             'Email',
                             style: TextStyle(
@@ -268,7 +269,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                               borderWidth: 3,
                               borderColor: DeckColors.primaryColor
                           ),
-                          const SizedBox(height: 10),
+                          const SizedBox(height: 5),
 
                           Align(
                             alignment: Alignment.center,
@@ -322,7 +323,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                                 ),
 
                               ),
-                              Padding(
+                              const Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 16.0),
                                 child: Text(
                                   'or continue with',
@@ -429,19 +430,18 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                                     ),
                                   ]
                               )
-                          )
+                          ),
                         ]
-                    ),
-                  )
-              ),
-            ),
-            Image(
-              image: const AssetImage('assets/images/Deck-Bottom-Image3.png'),
-              width: MediaQuery.of(context).size.width,
-              height:80,
-              fit: BoxFit.fill,
-            ),
-          ],
+                    )
+                ),
+                Image(
+                  image: const AssetImage('assets/images/Deck-Bottom-Image3.png'),
+                  width: MediaQuery.of(context).size.width,
+                  height:80,
+                  fit: BoxFit.fill,
+                ),
+              ]
+          ),
         )
     );
   }
