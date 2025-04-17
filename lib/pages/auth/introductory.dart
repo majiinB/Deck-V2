@@ -33,22 +33,22 @@ class _IntroductoryPageState extends State<IntroductoryPage> {
               DeckIntroPage(
                 img: 'assets/images/Deck-Introduction2.png',
                 title: 'Stay on top of your\nto-dos.',
-                subtitle: 'Easily create, organize, and track your\ntasks with our intuitive to-do list feature.',
+                subtitle: 'Easily create, organize, and track your tasks with our intuitive to-do list feature.',
               ),
               DeckIntroPage(
                 img: 'assets/images/Deck-Introduction3.png',
                 title: 'Learn and revise\nefficiently.',
-                subtitle: 'Create flashcards manually or use our AI\nto generate them automatically from\nyour notes.',
+                subtitle: 'Create flashcards manually or use our AI to generate them automatically from your notes.',
               ),
               DeckIntroPage(
                 img: 'assets/images/Deck-Introduction4.png',
-                title: '',
-                subtitle: '',
+                title: 'Study. Quiz. Repeat.',
+                subtitle: 'Strengthen your memory with our seamless study and quiz modes.',
               ),
               DeckIntroPage(
                 img: 'assets/images/Deck-Introduction5.png',
-                title: '',
-                subtitle: '',
+                title: 'Get Started with Deck!',
+                subtitle: 'Let\'s begin your journey to a more organized and productive life with Deck.',
                 hasButton: true,
               ),
             ],
@@ -58,14 +58,18 @@ class _IntroductoryPageState extends State<IntroductoryPage> {
             child: Container(
                 // height: 50,
                 // width: MediaQuery.of(context).size.width,
-                padding: const EdgeInsets.symmetric( vertical: 20),
+                padding: const EdgeInsets.symmetric(vertical: 20),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     GestureDetector(
                         onTap:onLastPage ?(){} : (){
-                          _controller.jumpToPage(3);
-                          },
+                          _controller.animateToPage(
+                            3,
+                            duration: const Duration(milliseconds: 400),
+                            curve: Curves.easeIn,
+                          );
+                        },
                         child: Container(
                             color: Colors.transparent,
                             padding: EdgeInsets.symmetric(vertical:20,horizontal: 30),
