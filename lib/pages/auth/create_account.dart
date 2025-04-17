@@ -18,6 +18,7 @@ import '../misc/custom widgets/buttons/custom_buttons.dart';
 import '../misc/custom widgets/checkbox/checkbox.dart';
 import '../misc/custom widgets/dialogs/alert_dialog.dart';
 import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
+import '../misc/custom widgets/functions/loading.dart';
 import '../misc/custom widgets/textboxes/textboxes.dart';
 
 class CreateAccountPage extends StatefulWidget {
@@ -33,7 +34,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController =
   TextEditingController();
-  final DeckBox checkBox = DeckBox();
+  // final DeckBox checkBox = DeckBox();
 
   String getAdjective() {
     List<String> adjective = [
@@ -92,11 +93,10 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomInset: false,
-        backgroundColor: DeckColors.backgroundColor,
-        body: _isLoading ?  const Center(
-            child:CircularProgressIndicator()) :
-        Column(
-          children: [
+        backgroundColor: _isLoading ? DeckColors.accentColor : DeckColors.backgroundColor,
+        body: _isLoading ? const DeckLoadingDialog()
+            : Column(
+            children: [
             Stack(
               children: [
                 Image(

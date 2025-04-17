@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import '../../backend/auth/auth_service.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
 import '../misc/custom widgets/dialogs/alert_dialog.dart';
+import '../misc/custom widgets/functions/loading.dart';
 import '../misc/custom widgets/textboxes/textboxes.dart';
 
 /// The LoginPage widget allows users to log in with email/password or via Google.
@@ -37,12 +38,13 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
         resizeToAvoidBottomInset: false,
-      backgroundColor: DeckColors.backgroundColor,
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : Column(
+        backgroundColor: _isLoading ? DeckColors.accentColor : DeckColors.backgroundColor,
+        body: _isLoading
+            ? const DeckLoadingDialog()
+            : Column(
                 children: [
                    Stack(
                    children: [
