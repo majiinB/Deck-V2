@@ -31,11 +31,13 @@ class FlashcardService{
       // Iterate through the query snapshot to extract document data
       for (var doc in querySnapshot.docs) {
         // Extract data from the document
-        String title = _flashcardUtils.capitalizeFirstLetterOfWords(doc['title']);
-        String userId = doc['owner_id'];
-        String coverPhoto = doc['cover_photo'];
-        bool isDeleted = doc['is_deleted'];
-        bool isPrivate = doc['is_private'];
+        String title = _flashcardUtils.capitalizeFirstLetterOfWords(doc['title'] ?? '');
+        String userId = doc['owner_id'] ?? '';
+        String coverPhoto = doc['cover_photo'] ?? '';
+        String description = doc['description'] ?? ''; // Default to empty if missing
+        int flashcardCount = doc['flashcard_count'] ?? 0;
+        bool isDeleted = doc['is_deleted'] ?? false;
+        bool isPrivate = doc['is_private'] ?? true;
         String deckId = doc.id;
 
         // Extract created_at timestamp and convert it to DateTime
@@ -43,7 +45,7 @@ class FlashcardService{
         DateTime createdAt = createdAtTimestamp.toDate();
 
         // Create a new Deck object and add it to the list
-        // decks.add(Deck(title, userId, deckId, isDeleted, isPrivate, createdAt, coverPhoto));
+        decks.add(Deck(title, description, flashcardCount, userId, deckId, isDeleted, isPrivate, createdAt, coverPhoto));
       }
     } catch (e) {
       // Handle errors
