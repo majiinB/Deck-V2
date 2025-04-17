@@ -41,7 +41,7 @@ class _LoginPageState extends State<LoginPage> {
 
     return Scaffold(
         resizeToAvoidBottomInset: false,
-        backgroundColor: _isLoading ? DeckColors.accentColor : DeckColors.backgroundColor,
+        backgroundColor: _isLoading ? DeckColors.softGreen : DeckColors.backgroundColor,
         body: _isLoading
             ? const DeckLoadingDialog()
             : Column(
@@ -49,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
                    Stack(
                    children: [
                      Image(
-                       image: AssetImage('assets/images/Deck-Header.png'),
+                       image: const AssetImage('assets/images/Deck-Header.png'),
                        width: MediaQuery.of(context).size.width,
                        fit: BoxFit.cover,
                      ),
@@ -72,7 +72,7 @@ class _LoginPageState extends State<LoginPage> {
                   Expanded(
                       child:SingleChildScrollView(
                           child: Padding(
-                    padding: EdgeInsets.only( left: 30, right: 30),
+                    padding: const EdgeInsets.only( left: 30, right: 30),
                     child:Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -261,7 +261,7 @@ class _LoginPageState extends State<LoginPage> {
                               ),
 
                             ),
-                            Padding(
+                            const Padding(
                               padding: EdgeInsets.symmetric(horizontal: 16.0),
                               child: Text(
                                 'or continue with',
@@ -352,33 +352,33 @@ class _LoginPageState extends State<LoginPage> {
                         RichText(
                             textAlign: TextAlign.center,
                             text: TextSpan(
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontFamily: 'Nunito-Regular',
                                     fontSize: 12,
                                     color: DeckColors.primaryColor
                                 ),
                                 children: [
-                                  TextSpan(text: "By proceeding, you acknowledge that you have read, understood, and agree to our "),
+                                  const TextSpan(text: "By proceeding, you acknowledge that you have read, understood, and agree to our "),
                                   TextSpan(
                                     text: "Terms of Use",
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontFamily: 'Nunito-Bold',
                                         color: DeckColors.primaryColor, decoration: TextDecoration.underline),
                                     recognizer: TapGestureRecognizer()
                                       ..onTap = () {
-                                        Navigator.of(context).push(RouteGenerator.createRoute(TermsOfUsePage()),);
+                                        Navigator.of(context).push(RouteGenerator.createRoute(const TermsOfUsePage()),);
                                       },
                                   ),
-                                  TextSpan(text: " and "),
+                                  const TextSpan(text: " and "),
                                   TextSpan(
                                     text: "Privacy Policy.",
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontFamily: 'Nunito-Bold',
                                         color: DeckColors.primaryColor,
                                         decoration: TextDecoration.underline),
                                     recognizer: TapGestureRecognizer()
                                       ..onTap = () {
-                                        Navigator.of(context).push(RouteGenerator.createRoute(PrivacyPolicyPage()),);
+                                        Navigator.of(context).push(RouteGenerator.createRoute(const PrivacyPolicyPage()),);
                                       },
                                   ),
                                 ]

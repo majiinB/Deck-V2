@@ -20,7 +20,7 @@ class RecoverAccountPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: _isLoading ? DeckColors.accentColor : DeckColors.backgroundColor,
+      backgroundColor: _isLoading ? DeckColors.softGreen : DeckColors.backgroundColor,
       body: _isLoading ? const DeckLoadingDialog()
           : Column(
         children: [
