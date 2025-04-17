@@ -10,55 +10,52 @@ import '../models/deck.dart';
 import 'package:http/http.dart' as http;
 
 class FlashcardService{
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
+  final FlashcardUtils _flashcardUtils = FlashcardUtils();
   final String deckManagerAPIUrl = "https://deck-manager-api-taglvgaoma-uc.a.run.app";
-  FlashcardUtils _flashcardUtils = FlashcardUtils();
+  final String deckLocalAPIUrl = "http://10.0.2.2:5001/deck-f429c/us-central1/deck_manager_api";
 
-  Future<List<Deck>> getDecksByUserId(String userId) async {
-    List<Deck> decks = [];
-
+  Future<List<Deck>> getDecks() async {
+    List<Deck> deckList = [];
     try {
-      // Reference to the Firestore collection
-      CollectionReference deckCollection = _firestore.collection('decks');
+      String? token = await AuthService().getIdToken();
 
-      // Query the collection for documents with the provided user ID
-      QuerySnapshot querySnapshot = await deckCollection
-          .where('owner_id', isEqualTo: userId)
-          .where('is_deleted', isEqualTo: false)
-          .orderBy('title') // Sort decks alphabetically based on title
-          .get();
+      // Send a POST request to the API with the request body and headers.
+      final response = await http.get(
+        Uri.parse('$deckLocalAPIUrl/v1/decks'), // API endpoint.
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $token',
+        },
+      );
 
-      // Iterate through the query snapshot to extract document data
-      for (var doc in querySnapshot.docs) {
-        // Extract data from the document
-        String title = _flashcardUtils.capitalizeFirstLetterOfWords(doc['title'] ?? '');
-        String userId = doc['owner_id'] ?? '';
-        String coverPhoto = doc['cover_photo'] ?? '';
-        String description = doc['description'] ?? ''; // Default to empty if missing
-        int flashcardCount = doc['flashcard_count'] ?? 0;
-        bool isDeleted = doc['is_deleted'] ?? false;
-        bool isPrivate = doc['is_private'] ?? true;
-        String deckId = doc.id;
+      if(response.statusCode == 200) {
+        var jsonData = jsonDecode(response.body) as Map<String, dynamic>;
+        print(jsonData); // Log parsed data for debugging.
 
-        // Extract created_at timestamp and convert it to DateTime
-        Timestamp createdAtTimestamp = doc['created_at'];
-        DateTime createdAt = createdAtTimestamp.toDate();
+        // If the JSON data is empty, return null.
+        if (jsonData.isEmpty) return deckList;
 
-        // Create a new Deck object and add it to the list
-        decks.add(Deck(title, description, flashcardCount, userId, deckId, isDeleted, isPrivate, createdAt, coverPhoto));
+        // Extract the data from the JSON response.
+        Map<String, dynamic> deckData = jsonData["data"];
+        if (deckData.isEmpty) return deckList;
+
+        // Extract the list of decks from the JSON response.
+        List<dynamic> listOfDecks = deckData["decks"];
+        deckList = listOfDecks.map((decksJson) => Deck.fromJson(decksJson)).toList();
       }
     } catch (e) {
       // Handle errors
       print('Error retrieving decks: $e');
     }
-    return decks;
+    return deckList;
   }
   Future<List<Deck>> getDeletedDecksByUserId(String userId) async {
     List<Deck> decks = [];
 
     try {
       // Reference to the Firestore collection
-      CollectionReference deckCollection = _firestore.collection('decks');
+      CollectionReference deckCollection = _fireStore.collection('decks');
 
       // Query the collection for documents with the provided user ID
       QuerySnapshot querySnapshot = await deckCollection
@@ -95,7 +92,7 @@ class FlashcardService{
 
     try {
       // Reference to the Firestore collection
-      CollectionReference deckCollection = _firestore.collection('decks');
+      CollectionReference deckCollection = _fireStore.collection('decks');
 
       // Query the collection for documents with the provided user ID
       QuerySnapshot querySnapshot = await deckCollection
@@ -133,7 +130,7 @@ class FlashcardService{
   Future<Deck?> getDecksByUserIdAndDeckId(String userId, String deckId) async {
     try {
       // Reference to the Firestore collection
-      CollectionReference deckCollection = _firestore.collection('decks');
+      CollectionReference deckCollection = _fireStore.collection('decks');
 
       // Fetch the document with the specified deckId
       DocumentSnapshot deckSnapshot = await deckCollection.doc(deckId).get();
@@ -174,7 +171,7 @@ class FlashcardService{
 
   Future<Deck?> getLatestDeckLog(String userId) async {
     try {
-      CollectionReference deckCollection = _firestore.collection('deck_log');
+      CollectionReference deckCollection = _fireStore.collection('deck_log');
 
       // Query the collection for documents with the provided user ID and deck ID
       QuerySnapshot querySnapshot = await deckCollection
@@ -215,7 +212,7 @@ class FlashcardService{
     required DateTime visitedAt,
   }) async {
     try {
-      CollectionReference deckLogs = _firestore.collection('deck_log');
+      CollectionReference deckLogs = _fireStore.collection('deck_log');
 
       await deckLogs.add({
         'deck_id': deckId,
@@ -239,7 +236,7 @@ class FlashcardService{
       };
       // Send a POST request to the API with the request body and headers.
       final response = await http.post(
-        Uri.parse('$deckManagerAPIUrl/v1/decks/'), // API endpoint.
+        Uri.parse('$deckLocalAPIUrl/v1/decks/'), // API endpoint.
         body: jsonEncode(requestBody), // JSON-encoded request body.
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
@@ -334,7 +331,7 @@ class FlashcardService{
   Future<bool> deleteDeck(String deckId) async {
     try {
       // Reference to the specific document in the 'deck' collection
-      DocumentReference deckDoc = _firestore.collection('decks').doc(deckId);
+      DocumentReference deckDoc = _fireStore.collection('decks').doc(deckId);
 
       // Delete the document
       await deckDoc.delete();
@@ -350,7 +347,7 @@ class FlashcardService{
   Future<bool> checkIfDeckWithTitleExists(String userId, String title) async {
     try {
       // Get a reference to the decks collection
-      CollectionReference decksRef = _firestore.collection('decks');
+      CollectionReference decksRef = _fireStore.collection('decks');
 
       // Convert the provided title to lowercase and trim any trailing spaces
       String formattedTitle = title.toLowerCase().trim();

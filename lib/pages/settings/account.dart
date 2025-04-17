@@ -76,7 +76,7 @@ class AccountPageState extends State<AccountPage> {
     if (user != null) {
       String userId = user.uid;
       List<Deck> decks = await _flashcardService
-          .getDecksByUserId(userId); // Call method to fetch decks
+          .getDecks(); // Call method to fetch decks
       Map<String, int> deckCardCount = {};
       for (Deck deckCount in decks) {
         int count = await deckCount.getCardCount();

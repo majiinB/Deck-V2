@@ -14,6 +14,16 @@ class Cards {
   //Methods
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  factory Cards.fromJson(Map<String, dynamic> json) {
+    return Cards(
+      json['term'] ?? '',
+      json['definition'] ?? '',
+      json['is_starred'] ?? false,
+      json['id'] ?? '',
+      json['is_deleted'] ?? false,
+    );
+  }
+
   Future<bool> updateDeleteStatus(bool newStatus, String deckId) async {
     try {
       // Reference to the Firestore document

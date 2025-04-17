@@ -16,6 +16,7 @@ class Deck{
   bool isPrivate;
   DateTime createdAt;
   final String deckManagerAPIUrl = "https://deck-manager-api-taglvgaoma-uc.a.run.app";
+  final String deckLocalAPIUrl = "http://10.0.2.2:5001/deck-f429c/us-central1/deck_manager_api";
 
   // Constructor
   Deck(
@@ -33,6 +34,29 @@ class Deck{
   String get deckId => _deckId;
 
   // Methods
+  factory Deck.fromJson(Map<String, dynamic> json) {
+    // Handle Firestore-like timestamp conversion
+    final createdAtMap = json['created_at'] ?? {};
+    final seconds = createdAtMap['_seconds'] ?? 0;
+    final nanoseconds = createdAtMap['_nanoseconds'] ?? 0;
+
+    final createdAt = DateTime.fromMillisecondsSinceEpoch(
+      (seconds * 1000) + (nanoseconds ~/ 1000000),
+    );
+
+    return Deck(
+      json['title'] ?? '',
+      json['description'] ?? '',
+      json['flashcard_count'] ?? 0,
+      json['owner_id'] ?? '',
+      json['id'] ?? '',
+      json['is_deleted'] ?? false,
+      json['is_private'] ?? true,
+      createdAt,
+      json['cover_photo'] ?? '',
+    );
+  }
+
   // Change in field methods
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -72,35 +96,40 @@ class Deck{
   // Access subcollections method
   Future<List<Cards>> getCard() async {
     List<Cards> flashcards = [];
-
     try {
-      // Reference to the questions subcollection
-      CollectionReference questionsCollection = _firestore
-          .collection('decks')
-          .doc(deckId)
-          .collection('flashcards');
+      String? token = await AuthService().getIdToken();
 
-      // Query the collection to get the documents
-      QuerySnapshot querySnapshot = await questionsCollection
-          .where("is_deleted", isEqualTo: false )
-          .get();
+      // Send a POST request to the API with the request body and headers.
+      final response = await http.get(
+        Uri.parse('$deckLocalAPIUrl/v1/decks/$_deckId/flashcards'), // API endpoint.
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $token',
+        },
+      );
 
-      // Iterate through the query snapshot to extract document data
-      for (var doc in querySnapshot.docs) {
-        String term = (doc.data() as Map<String, dynamic>)['term'];
-        String definition = (doc.data() as Map<String, dynamic>)['definition'];
-        bool isStarred = (doc.data() as Map<String, dynamic>)['is_starred'];
-        bool isDeleted = (doc.data() as Map<String, dynamic>)['is_deleted'];
-        String cardId = doc.id;
+      print(response.statusCode);
+      print(response.body);
+      if(response.statusCode == 200) {
+        var jsonData = jsonDecode(response.body) as Map<String, dynamic>;
+        print(jsonData); // Log parsed data for debugging.
 
-        // Create a new Question object and add it to the list
-        flashcards.add(Cards(term, definition, isStarred, cardId, isDeleted));
+        // If the JSON data is empty, return null.
+        if (jsonData.isEmpty) return flashcards;
+
+        // Extract the data from the JSON response.
+        Map<String, dynamic> cardData = jsonData["data"];
+        if (cardData.isEmpty) return flashcards;
+
+        // Extract the list of decks from the JSON response.
+        List<dynamic> listOfFlashcards = cardData["flashcards"];
+        flashcards = listOfFlashcards.map((cardsJson) => Cards.fromJson(cardsJson)).toList();
+
       }
     } catch (e) {
-      // Handle any errors that might occur during the query
+      // Handle errors
       print('Error retrieving flashcards: $e');
     }
-
     return flashcards;
   }
   Future<int> getCardCount() async {

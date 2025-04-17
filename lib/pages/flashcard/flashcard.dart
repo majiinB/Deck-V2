@@ -73,7 +73,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
     if (user != null) {
       String userId = user.uid;
       List<Deck> decks = await _flashcardService
-          .getDecksByUserId(userId); // Call method to fetch decks
+          .getDecks(); // Call method to fetch decks
       Deck? latest = await _flashcardService.getLatestDeckLog(userId);
       if (!mounted) return;
       setState(() {
