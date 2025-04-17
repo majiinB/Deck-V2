@@ -1,3 +1,5 @@
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:deck/pages/misc/colors.dart';
 import 'package:flutter/material.dart';
 class DeckApprovalNotification extends StatelessWidget {
   final String title;
@@ -15,6 +17,72 @@ class DeckApprovalNotification extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(padding: EdgeInsets.zero);
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 30,vertical: 10),
+      decoration: const BoxDecoration(
+        color: DeckColors.white,
+        border: Border.symmetric(
+            horizontal: BorderSide(
+                color: DeckColors.primaryColor,
+                width: 3
+            )
+        ),
+      ),
+      child:  Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AutoSizeText(
+                title,
+                maxLines: 1,
+                minFontSize:15,
+                style: const TextStyle(
+                  overflow: TextOverflow.ellipsis,
+                  color:DeckColors.primaryColor,
+                  fontFamily: 'Nunito-Bold',
+                  fontSize: 20,
+                )
+            ),
+            const SizedBox(
+              height: 5,
+            ),
+            AutoSizeText(
+                message,
+                maxLines: 1,
+                minFontSize: 12,
+                style: const TextStyle(
+                  overflow: TextOverflow.ellipsis,
+                  color:DeckColors.primaryColor,
+                  fontFamily: 'Nunito-Regular',
+                  fontSize: 12,
+                )
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  onPressed: onView,
+                  child:  const AutoSizeText(
+                      "View Deck",
+                      style: TextStyle(
+                        color: DeckColors.primaryColor,
+                        fontSize: 10,
+                      )
+                  ),
+                ),
+                TextButton(
+                  onPressed: onDelete,
+                  child:  const AutoSizeText(
+                      "Delete",
+                      style: TextStyle(
+                        color: DeckColors.deckRed,
+                        fontSize: 10,
+                      )
+                  ),
+                ),
+              ],
+            )
+          ]
+      )
+    );
   }
 }
