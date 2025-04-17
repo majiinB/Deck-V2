@@ -20,6 +20,7 @@ class _IntroductoryPageState extends State<IntroductoryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: DeckColors.softGreen,
       body: Stack(
         children: [
           PageView(
