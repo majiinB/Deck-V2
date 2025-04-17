@@ -23,7 +23,13 @@ import 'notification.dart';
 import '../../main.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final Function(int) onNavigateToIndex;
+
+  const HomePage({
+    Key? key,
+    required this.onNavigateToIndex
+  }) : super(key: key);
+
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -71,9 +77,11 @@ class _HomePageState extends State<HomePage> {
       });
     }
   }
+
   void _initUserTasks(User? user) async {
     await Provider.of<TaskProvider>(context, listen: false).loadTasks();
   }
+
   void _initGreeting() {
     String firstName = "Longusername";
 
@@ -113,6 +121,7 @@ class _HomePageState extends State<HomePage> {
     String formattedTime = DateFormat("hh:mm a").format(dateTime);
     return "$formattedDate || $formattedTime";
   }
+
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<TaskProvider>(context);
@@ -475,7 +484,6 @@ class _HomePageState extends State<HomePage> {
                             'Now’s the perfect time to get ahead. Start adding new tasks and stay on top of your game!',
                           )
                         else if(taskToday.isNotEmpty) ...[
-
                           ...taskToday.take(3).map((task) =>
                               Padding(
                                 padding: EdgeInsets.only(bottom: 10),
@@ -483,7 +491,29 @@ class _HomePageState extends State<HomePage> {
                                   folderName: task['folderName'],//task.folderName
                                   taskName: task['taskName'],// task.taskName
                                   deadline: getDeadline(selectedDay),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        RouteGenerator.createRoute(
+                                          ViewTaskPage(
+                                              task: Task(
+                                        '0000',
+                                        'title',
+                                        'description',
+                                        'priority',
+                                        'user_id',
+                                        false,
+                                        false,
+                                        DateTime.now(),
+                                        DateTime.now(),
+                                        false,
+                                        DateTime.now(),
+                                      ),
+                                              isEditable: false
+                                          )
+                                        )
+                                    );
+                                  },
                                   priority: task['priority'],//task.priority
                                 ),
                               )
@@ -492,7 +522,8 @@ class _HomePageState extends State<HomePage> {
                           SizedBox(
                               width: double.infinity,
                               child:TextButton(
-                              onPressed: () {},
+                                // onPressed:(){},
+                              onPressed: ()  =>  widget.onNavigateToIndex(1),
                               style: TextButton.styleFrom(
                                 backgroundColor: DeckColors.softGray,
                                 shape: RoundedRectangleBorder(
