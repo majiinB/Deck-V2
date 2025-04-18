@@ -22,7 +22,7 @@ class FlashcardService{
 
       // Send a POST request to the API with the request body and headers.
       final response = await http.get(
-        Uri.parse('$deckLocalAPIUrl/v1/decks'), // API endpoint.
+        Uri.parse('$deckManagerAPIUrl/v1/decks'), // API endpoint.
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $token',
@@ -50,6 +50,43 @@ class FlashcardService{
     }
     return deckList;
   }
+
+  Future<Deck?> getSpecificDeck(String deckID) async {
+    try {
+      String? token = await AuthService().getIdToken();
+
+      // Send a POST request to the API with the request body and headers.
+      final response = await http.get(
+        Uri.parse('$deckManagerAPIUrl/v1/decks/$deckID'), // API endpoint.
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if(response.statusCode == 200) {
+        var jsonData = jsonDecode(response.body) as Map<String, dynamic>;
+        print(jsonData); // Log parsed data for debugging.
+
+        // If the JSON data is empty, return null.
+        if (jsonData.isEmpty) return null;
+
+        // Extract the data from the JSON response.
+        Map<String, dynamic> deckData = jsonData["data"];
+        if (deckData.isEmpty) return null;
+
+        // Extract the list of decks from the JSON response.
+        Map<String, dynamic> responseDeck = deckData["deck"];
+
+        return Deck.fromJson(responseDeck);
+      }
+    } catch (e) {
+      // Handle errors
+      print('Error retrieving specific deck: $e');
+    }
+    return null;
+  }
+
   Future<List<Deck>> getDeletedDecksByUserId(String userId) async {
     List<Deck> decks = [];
 
@@ -236,7 +273,7 @@ class FlashcardService{
       };
       // Send a POST request to the API with the request body and headers.
       final response = await http.post(
-        Uri.parse('$deckLocalAPIUrl/v1/decks/'), // API endpoint.
+        Uri.parse('$deckManagerAPIUrl/v1/decks/'), // API endpoint.
         body: jsonEncode(requestBody), // JSON-encoded request body.
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
@@ -255,23 +292,7 @@ class FlashcardService{
           // Extract the list of questions from the JSON response.
           Map<String, dynamic> deckData = jsonData["data"]["deck"];
 
-          Map<String, dynamic> createdAt = deckData["created_at"];
-          int seconds = createdAt["_seconds"];
-          int nanoseconds = createdAt["_nanoseconds"];
-
-          DateTime createdAtDateTime = DateTime.fromMillisecondsSinceEpoch(seconds * 1000);
-
-          return Deck(
-              deckData["title"],
-              deckData["description"],
-              deckData["flashcard_count"],
-              deckData["owner_id"],
-              deckData["id"],
-              deckData["is_deleted"],
-              deckData["is_private"],
-              createdAtDateTime,
-              deckData["cover_photo"]
-          );
+          return Deck.fromJson(deckData);
         }else{
           return null;
         }

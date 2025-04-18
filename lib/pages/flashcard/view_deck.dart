@@ -410,17 +410,10 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                   MaterialPageRoute(
                                       builder: (context) => AddFlashcardPage(
                                             deck: widget.deck,
-                                          )),
+                                      )),
                                 );
                                 if (newCard != null) {
-                                  setState(() {
-                                    _cardsCollection.add(newCard);
-                                    if (newCard.isStarred) {
-                                      _starredCardCollection.add(newCard);
-                                    }
-                                    _filterFlashcards();
-                                    numberOfCards = _cardsCollection.length;
-                                  });
+                                  _initDeckCards();
                                 }
                               },
                               buttonText: 'Add',

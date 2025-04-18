@@ -1,6 +1,7 @@
 import 'dart:core';
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:deck/backend/flashcard/flashcard_service.dart';
 import 'package:http/http.dart' as http;
 import '../auth/auth_service.dart';
 import 'card.dart';
@@ -8,6 +9,7 @@ import 'card.dart';
 class Deck{
   String title;
   String description;
+  String deckOwnerName;
   int flashcardCount;
   final String _userId;
   final String _deckId;
@@ -22,6 +24,7 @@ class Deck{
   Deck(
       this.title,
       this.description,
+      this.deckOwnerName,
       this.flashcardCount,
       this._userId, this._deckId,
       this.isDeleted,
@@ -47,6 +50,7 @@ class Deck{
     return Deck(
       json['title'] ?? '',
       json['description'] ?? '',
+      json['owner_name'] ?? '',
       json['flashcard_count'] ?? 0,
       json['owner_id'] ?? '',
       json['id'] ?? '',
@@ -101,7 +105,7 @@ class Deck{
 
       // Send a POST request to the API with the request body and headers.
       final response = await http.get(
-        Uri.parse('$deckLocalAPIUrl/v1/decks/$_deckId/flashcards'), // API endpoint.
+        Uri.parse('$deckManagerAPIUrl/v1/decks/$_deckId/flashcards'), // API endpoint.
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $token',

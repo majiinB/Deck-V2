@@ -8,56 +8,15 @@ import 'package:deck/backend/models/cardAi.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:http/http.dart' as http;
 
+import '../auth/auth_service.dart';
+import '../models/deck.dart';
+import 'flashcard_service.dart';
+
 class FlashcardAiService {
+  final String deckAIAPIUrl = "https://deck-ai-api-taglvgaoma-uc.a.run.app";
+  final String deckAILocalAPIUrl = "http://10.0.2.2:5001/deck-f429c/us-central1/deck_ai_api";
+  final FlashcardService _flashcardService = FlashcardService();
 
-  Future<List<Cardai>> promptGeminiInApp({
-    required String subject,         // Subject of the flashcards.
-    required String topic,           // Topic within the subject.
-    required String addDescription,  // Additional description or context.
-    required int numberOfQuestions,  // Number of questions to generate.
-  }) async{
-    // Initialize utils
-    FlashcardUtils utils = FlashcardUtils();
-    // Initialize gemini config
-    GeminiConfig geminiConfig = GeminiConfig();
-
-    await geminiConfig.init();
-    // Get gemini model
-    GenerativeModel model = geminiConfig.model;
-    // Call the method using the instance
-    List<Cardai> flashCards = [];
-
-    String prompt = utils.constructGoogleAIPrompt(
-      topic: topic,
-      subject: subject,
-      addDescription: addDescription,
-      numberOfQuestions: numberOfQuestions
-    );
-
-    final result = await model.generateContent([Content.text(prompt)]);
-    Map<String, dynamic> jsonData = utils.extractGoogleAIJsonFromText(result.text);
-
-    if (jsonData.isNotEmpty) {
-      try {
-        // Extract the list of questions from the JSON response.
-        List<dynamic> questionsList = jsonData['questions'];
-
-        // Create [Cardai] objects from the question-answer pairs.
-        for (var questionAnswerPair in questionsList) {
-          String question = questionAnswerPair['question'];
-          String answer = questionAnswerPair['answer'];
-          Cardai flashcard = Cardai(question: question, answer: answer);
-          flashCards.add(flashcard); // Add to the list.
-        }
-      } catch (e) {
-        print(e); // Log any errors during processing.
-        return flashCards; // Return any flashcards created so far.
-      }
-    }else{
-      throw ApiException(400, 'Error: The AI did not respond please try again');
-    }
-    return flashCards;
-  }
   /// Checks if the API is available.
   ///
   /// Returns:
@@ -95,101 +54,103 @@ class FlashcardAiService {
   /// - [numberOfQuestions]: The number of flashcard questions to generate. If invalid or 0, no cards will be generated.
   ///
   /// Returns:
-  /// - A `Future` that resolves to a list of [Cardai] objects representing the generated flashcards.
+  /// - A `Future` that resolves to a list of [Deck?] objects representing the generated flashcards.
   ///
   /// Throws:
   /// - [ApiException]: If the API request fails with a specific status code.
   /// - [IncompleteRequestBodyException], [NumberOfCardsException], [TextExtractionException],
   ///   [FileDeletionException], [NoInformationException], [MessageRouteException],
   ///   [InternalServerErrorException]: Specific exceptions based on different status codes.
-  Future<List<Cardai>> sendAndRequestDataToGemini({
-    required String id,              // Unique identifier for the API request.
+  Future<Deck?> sendAndRequestDataToGemini({
+    required String deckTitle,
+    required String deckDescription,
     required String subject,         // Subject of the flashcards.
     required String topic,           // Topic within the subject.
-    required String addDescription,  // Additional description or context.
-    required String pdfFileName,     // Name of the associated PDF file.
-    required String pdfFileExtension, // File extension of the PDF (e.g., '.pdf').
-    required int numberOfQuestions,  // Number of questions to generate.
+    required int numberOfFlashcards,  // Number of questions to generate.
+    String addDescription = "",      // Additional description or context.
+    String pdfFileName = "",        // Name of the associated PDF file.
+    String pdfFileExtension = "",   // File extension of the PDF (e.g., '.pdf').
   }) async {
-
-    // Check if the API is available before sending the request.
-    if (!await checkAPIAvailability()) {
-      throw ApiException(500, 'Error: API unavailable');
-    }
 
     // Construct the request body in JSON format.
     Map<String, dynamic> requestBody = {
+      'title': deckTitle,
+      'description': deckDescription,
       'subject': subject,
       'topic': topic,
-      'numberOfQuestions': numberOfQuestions,
-      'fileName': pdfFileName,
-      'addDescription': addDescription,
-      'fileExtension': pdfFileExtension
+      'numberOfFlashcards': numberOfFlashcards,
     };
 
-    // Send a POST request to the API with the request body and headers.
-    final response = await http.post(
-      Uri.parse('https://zdt8v319-3000.asse.devtunnels.ms/prompt/v2/gemini/$id'), // API endpoint.
-      body: jsonEncode(requestBody), // JSON-encoded request body.
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8', // Specify content type as JSON.
-      },
-    );
-    print(response.statusCode); // Log the status code for debugging.
+    if(addDescription.trim().isNotEmpty){
+      requestBody['addDescription'] = addDescription;
+    }
 
-    // Check if the response was successful (status code 200).
-    if (response.statusCode == 200) {
-      List<Cardai> flashCards = []; // List to store flashcards.
+    if(pdfFileName.trim().isNotEmpty){
+      requestBody['fileName'] = pdfFileName;
+    }
 
-      // Parse the response body as a JSON object.
-      var jsonData = jsonDecode(response.body) as Map<String, dynamic>;
-      print(jsonData); // Log parsed data for debugging.
+    if(pdfFileExtension.trim().isNotEmpty){
+      requestBody['fileExtension'] = pdfFileExtension;
+    }
 
-      // If the JSON data is non-empty, process it.
-      if (jsonData.isNotEmpty) {
-        try {
-          // Extract the list of questions from the JSON response.
-          List<dynamic> questionsList = jsonData['questions'];
+    try{
+      String? token = await AuthService().getIdToken();
 
-          // Create [Cardai] objects from the question-answer pairs.
-          for (var questionAnswerPair in questionsList) {
-            String question = questionAnswerPair['question'];
-            String answer = questionAnswerPair['answer'];
-            Cardai flashcard = Cardai(question: question, answer: answer);
-            flashCards.add(flashcard); // Add to the list.
-          }
-        } catch (e) {
-          print(e); // Log any errors during processing.
-          return flashCards; // Return any flashcards created so far.
+      // Send a POST request to the API with the request body and headers.
+      final response = await http.post(
+        Uri.parse('$deckAILocalAPIUrl/v2/deck/generate/flashcards/'), // API endpoint.
+        body: jsonEncode(requestBody), // JSON-encoded request body.
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8', // Specify content type as JSON.
+          'Authorization': 'Bearer $token',
+        },
+      );
+      print(response.statusCode); // Log the status code for debugging.
+
+      // Check if the response was successful (status code 200).
+      if (response.statusCode == 200) {
+        // Parse the response body as a JSON object.
+        var jsonData = jsonDecode(response.body) as Map<String, dynamic>;
+        print(jsonData); // Log parsed data for debugging.
+
+        // If the JSON data is empty, return null.
+        if (jsonData.isEmpty) return null;
+
+        // Extract the data from the JSON response.
+        String deckID = jsonData["data"]["deck_id"];
+
+        if (deckID.isEmpty) return null;
+
+        Deck? deckResponse = await _flashcardService.getSpecificDeck(deckID);
+        return deckResponse; // Return the generated flashcards.
+      } else {
+        // Handle errors based on status codes using a switch-case.
+        switch (response.statusCode) {
+          case 418:
+            throw IncompleteRequestBodyException('Incomplete request body: ${response.body}');
+          case 420:
+            throw NumberOfCardsException('Unknown number of cards: ${response.body}');
+          case 421:
+            throw TextExtractionException('Text Extraction error: ${response.body}');
+          case 422:
+            throw FileDeletionException('File was not deleted: ${response.body}');
+          case 423:
+            throw NoInformationException('Incomplete request body: ${response.body}');
+          case 424:
+            throw MessageRouteException('Internal server error: ${response.body}');
+          case 425:
+            throw RequestException('Internal server: ${response.body}');
+          case 500:
+          case 501:
+            throw InternalServerErrorException('Internal server error: ${response.body}');
+          default:
+            print(response.statusCode); // Log unexpected status codes.
+            throw ApiException(response.statusCode, 'Error: ${response.body}'); // Generic error handling.
         }
       }
-
-      return flashCards; // Return the generated flashcards.
-
-    } else {
-      // Handle errors based on status codes using a switch-case.
-      switch (response.statusCode) {
-        case 418:
-          throw IncompleteRequestBodyException('Incomplete request body: ${response.body}');
-        case 420:
-          throw NumberOfCardsException('Unknown number of cards: ${response.body}');
-        case 421:
-          throw TextExtractionException('Text Extraction error: ${response.body}');
-        case 422:
-          throw FileDeletionException('File was not deleted: ${response.body}');
-        case 423:
-          throw NoInformationException('Incomplete request body: ${response.body}');
-        case 424:
-          throw MessageRouteException('Internal server error: ${response.body}');
-        case 425:
-          throw RequestException('Internal server: ${response.body}');
-        case 500:
-        case 501:
-          throw InternalServerErrorException('Internal server error: ${response.body}');
-        default:
-          print(response.statusCode); // Log unexpected status codes.
-          throw ApiException(response.statusCode, 'Error: ${response.body}'); // Generic error handling.
-      }
+    }catch(error){
+      print ('AI ERROR: ${error}');
+      return null;
     }
   }
 

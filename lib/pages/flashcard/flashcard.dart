@@ -52,7 +52,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
   bool isDeckPublished = false;
 
   ///this is used sana to check if the currently signed-in is the owner
-  bool isOwner = true;
+  // bool isOwner = true;
 
   int correct = 0;
   int total = 0;
@@ -165,9 +165,10 @@ class _FlashcardPageState extends State<FlashcardPage> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      AddDeckPage(decks: _decks, userId: userId)),
+                                      AddDeckPage(decks: _decks, userId: userId)
+                              ),
                             );
-                            _onSearchChanged();
+                            _initUserDecks(_user);
                           } catch (e) {
                             print('error in navigating add deck $e');
                           }
@@ -219,27 +220,6 @@ class _FlashcardPageState extends State<FlashcardPage> {
                           fontSize: 30,
                           color: DeckColors.primaryColor,
                           fontWeight: FontWeight.bold)
-                  ),
-                ),
-              if (_decks.isEmpty)
-                SizedBox(
-                  height: 150.0,
-                  child:
-                  ListView.builder( //TODO Change datas here using data from db
-                    scrollDirection: Axis.horizontal,
-                    itemCount: 15, //_decks.length
-                    itemBuilder:(context, index){
-                      return Padding(
-                          padding: EdgeInsets.only(left: index == 0 ? 30 : 10, right: 10) ,
-                          child: HomeDeckTile(
-                            titleOfDeck: 'yee',
-                            ownerOfDeck: 'sample',
-                            numberOfCards: 100,
-                            onDelete: () {  },
-                            onTap: () {  },
-                          )
-                      );
-                    },
                   ),
                 ),
               Padding(padding: EdgeInsets.symmetric( horizontal: 30),
@@ -404,187 +384,6 @@ class _FlashcardPageState extends State<FlashcardPage> {
                         ),
                       ),
                     ),
-                  //TODO DELETE THIS SAMLPLE
-                  DeckTile(
-                      titleOfDeck: 'sample',
-                      onDelete: () {
-
-                      },
-                      enableSwipeToRetrieve: false,
-                      onTap: () {
-                        print("Clicked");
-                        Navigator.of(context).push(
-                            RouteGenerator.createRoute(
-                                ViewDeckPage(
-                                    deck: Deck('A very long deck title that is more than 2 lines', 'description', 2, '_userId', '_deckId', false, true, DateTime.now(), 'assets/images/Deck-Branding1.png'))
-                            )
-                        );
-
-                      },
-                      numberOfCards: numOfCards,
-                      ownerOfDeck: 'sample user',
-                      items: isOwner?
-                      [isDeckPublished ? 'Unpublish Deck' : 'Publish Deck', 'Edit Deck Info', 'Delete Deck']///Owner
-                          : ['Unsave Deck', 'Report'],///Not Owner
-                      icons: isOwner?
-                      [isDeckPublished? Icons.undo_rounded: Icons.publish_rounded, DeckIcons.pencil, DeckIcons.trash_bin]///Owner
-                          : [Icons.remove_circle, Icons.report],///Not Owner
-                      ///START FOR LOGIC OF POP UP MENU BUTTON (ung three dots)
-                      onItemsSelected: (index) {
-                        ///If owner, show these options in the popup menu
-                        if(isOwner) {
-                          if (index == 0) {
-                            ///Show the confirmation dialog for Publish/Unpublish
-                            showDialog<bool>(
-                              context: context,
-                              barrierDismissible: false,
-                              builder: (BuildContext context) {
-                                return CustomConfirmDialog(
-                                  title: isDeckPublished
-                                      ? 'Unpublish Deck?'
-                                      : 'Publish Deck?',
-                                  message: isDeckPublished
-                                      ? 'Are you sure you want to unpublish this deck?'
-                                      : 'Are you sure you want to publish this deck?',
-                                  imagePath: 'assets/images/Deck-Dialogue4.png',
-                                  button1: isDeckPublished
-                                      ? 'Unpublish Deck'
-                                      : 'Publish Deck',
-                                  button2: 'Cancel',
-                                  onConfirm: () async {
-                                    setState(() {
-                                      isDeckPublished = !isDeckPublished;
-                                      Navigator.of(context).pop();
-                                    });
-                                  },
-                                  onCancel: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                );
-                              },
-                            );
-                          }
-                          ///E D I T  D E C K
-                          else if (index == 1) {
-                            Navigator.of(context).push(
-                              RouteGenerator.createRoute(const EditDeck()),
-                            );
-                          }
-
-                          ///D E L E T E  D E C K
-                          else if (index == 2) {
-                            showDialog<bool>(
-                                context: context,
-                                barrierDismissible: false,
-                                builder: (BuildContext context) {
-                                  return CustomConfirmDialog(
-                                    title: 'Delete this deck?',
-                                    message: 'Once deleted, this deck will no longer be playable. '
-                                        'But do not worry, you can still retrieve it in the trash bin.',
-                                    imagePath: 'assets/images/Deck-Dialogue4.png',
-                                    button1: 'Delete Account',
-                                    button2: 'Cancel',
-                                    onConfirm: () async {
-                                      Deck removedDeck = _filteredDecks[index];
-                                      final String deletedTitle =
-                                      removedDeck.title.toString();
-                                      setState(() {
-                                        _filteredDecks.removeAt(index);
-                                        _decks.removeWhere(
-                                                (card) =>
-                                            card.deckId == removedDeck.deckId);
-                                      });
-                                      showConfirmDialog(
-                                        context,
-                                        "assets/images/Deck-Dialogue1.png",
-                                        "Delete Item?",
-                                        "Are you sure you want to delete '$deletedTitle'?",
-                                        "Delete Item",
-                                            () async {
-                                          try {
-                                            if (await removedDeck
-                                                .updateDeleteStatus(true)) {
-                                              if (_latestDeck != null) {
-                                                if (_latestDeck?.deckId ==
-                                                    removedDeck.deckId) {
-                                                  Deck? latest = await _flashcardService
-                                                      .getLatestDeckLog(
-                                                      _user!.uid);
-                                                  setState(() {
-                                                    _latestDeck = latest;
-                                                  });
-                                                }
-                                              }
-                                            }
-                                          } catch (e) {
-                                            print(
-                                                'Flash Card Page Deletion Error: $e');
-                                            setState(() {
-                                              _decks.insert(index, removedDeck);
-                                            });
-                                          }
-                                        },
-                                        onCancel: () {
-                                          setState(() {
-                                            _decks.insert(index, removedDeck);
-                                          });
-                                        },
-                                      );
-                                      Navigator.of(context).pop();
-                                    },
-                                    onCancel: () {
-                                      Navigator.of(context).pop(
-                                          false); // Close the first dialog on cancel
-                                    },
-                                  );
-                                }
-                            );
-                          }
-                        }
-                        ///--------- E N D  O F  O W N E R -----------
-
-                        ///If not owner, show these options
-                        ///S A V E  D E C K
-                        else {
-                          if(index == 0){
-                            showDialog<bool>(
-                              context: context,
-                              barrierDismissible: false,
-                              builder: (BuildContext context) {
-                                return CustomConfirmDialog(
-                                  title:'Unsave Deck?',
-                                  message: 'Are you sure you want to unsave this deck?',
-                                  imagePath: 'assets/images/Deck-Dialogue4.png',
-                                  button1: isDeckPublished ? 'Unsave Deck' : 'Save Deck',
-                                  button2: 'Cancel',
-                                  onConfirm: () async {
-                                    setState(() {
-                                      Navigator.of(context).pop();
-                                    });
-                                  },
-                                  onCancel: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                );
-                              },
-                            );
-                          }
-                          ///R E P O R T  P A G E
-                          else if (index == 1) {
-                            setState(() {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const ReportAProblem(sourcePage: 'FlashcardPage'),
-                                ),
-                              );
-                            });
-                          }
-                        }
-                        ///----- E N D  O F  N O T  O W N E R -----------
-                      }
-                    ///------- E N D ---------------
-                  ),
                   if (_decks.isNotEmpty)
                     Padding(
                       padding: const EdgeInsets.only(top: 10.0),
@@ -603,54 +402,11 @@ class _FlashcardPageState extends State<FlashcardPage> {
                       itemBuilder: (context, index) {
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 7.0),
-                          child: DeckTile( //TODO CHANGE OWNER IF DATABASE IS OK
+                          child: DeckTile(
                               deckCoverPhotoUrl: _filteredDecks[index].coverPhoto,
                               titleOfDeck: _filteredDecks[index].title,
-                              ownerOfDeck: 'sample owner',//_filteredDecks[index].owner,
-                              onDelete: () {
-                                /*Deck removedDeck = _filteredDecks[index];
-                        final String deletedTitle =
-                            removedDeck.title.toString();
-                        setState(() {
-                          _filteredDecks.removeAt(index);
-                          _decks.removeWhere(
-                              (card) => card.deckId == removedDeck.deckId);
-                        });
-                        showConfirmDialog(
-                            context,
-                            "assets/images/Deck_Dialogue1.png",
-                            "Delete Item?",
-                            "Are you sure you want to delete '$deletedTitle'?",
-                            "Delete Item",
-                          () async {
-                            try {
-                              if (await removedDeck
-                                  .updateDeleteStatus(true)) {
-                                if (_latestDeck != null) {
-                                  if (_latestDeck?.deckId ==
-                                      removedDeck.deckId) {
-                                    Deck? latest = await _flashcardService
-                                        .getLatestDeckLog(_user!.uid);
-                                    setState(() {
-                                      _latestDeck = latest;
-                                    });
-                                  }
-                                }
-                              }
-                            } catch (e) {
-                              print('Flash Card Page Deletion Error: $e');
-                              setState(() {
-                                _decks.insert(index, removedDeck);
-                              });
-                            }
-                          },
-                          onCancel: () {
-                            setState(() {
-                              _decks.insert(index, removedDeck);
-                            });
-                          },
-                        );*/
-                              },
+                              ownerOfDeck: _filteredDecks[index].deckOwnerName,
+                              onDelete: () {},
                               enableSwipeToRetrieve: false,
                               onTap: () {
                                 print("Clicked");
@@ -659,19 +415,23 @@ class _FlashcardPageState extends State<FlashcardPage> {
                                       ViewDeckPage(deck: _filteredDecks[index])),
                                 );
                               },
-                              numberOfCards: numOfCards,
-                              items: isOwner?
-                              [isDeckPublished ? 'Unpublish Deck' : 'Publish Deck', 'Edit Deck Info', 'Delete Deck']///Owner
-                                  : ['Unsave Deck', 'Report'],///Not Owner
-
-                              icons: isOwner?
+                              numberOfCards: _filteredDecks[index].flashcardCount,
+                              // Checks if the user is the owner of the deck
+                              items: (_filteredDecks[index].userId == _user!.uid)? [
+                                // Check if the deck is private (not published)
+                                _filteredDecks[index].isPrivate ? 'Unpublish Deck' :
+                                'Publish Deck',
+                                'Edit Deck Info',
+                                'Delete Deck'
+                              ] : ['Unsave Deck', 'Report'],
+                              icons: (_filteredDecks[index].userId == _user!.uid)?
                               [isDeckPublished? Icons.undo_rounded: Icons.publish_rounded, DeckIcons.pencil, DeckIcons.trash_bin]///Owner
                                   : [Icons.remove_circle, Icons.report],///Not Owner
 
                               ///START FOR LOGIC OF POP UP MENU BUTTON (ung three dots)
                               onItemsSelected: (index) {
                                 ///If owner, show these options in the popup menu
-                                if(isOwner) {
+                                if(_filteredDecks[index].userId == _user!.uid) {
                                   if (index == 0) {
                                     ///Show the confirmation dialog for Publish/Unpublish
                                     showDialog<bool>(
@@ -722,28 +482,26 @@ class _FlashcardPageState extends State<FlashcardPage> {
                                             message: 'Once deleted, this deck will no longer be playable. '
                                                 'But do not worry, you can still retrieve it in the trash bin.',
                                             imagePath: 'assets/images/Deck-Dialogue4.png',
-                                            button1: 'Delete Account',
+                                            button1: 'Delete Deck',
                                             button2: 'Cancel',
                                             onConfirm: () async {
                                               Deck removedDeck = _filteredDecks[index];
                                               final String deletedTitle =
                                               removedDeck.title.toString();
-                                              setState(() {
-                                                _filteredDecks.removeAt(index);
-                                                _decks.removeWhere(
-                                                        (card) =>
-                                                    card.deckId == removedDeck.deckId);
-                                              });
                                               showConfirmDialog(
                                                 context,
                                                 "assets/images/Deck-Dialogue1.png",
                                                 "Delete Item?",
                                                 "Are you sure you want to delete '$deletedTitle'?",
                                                 "Delete Item",
-                                                    () async {
+                                                () async {
                                                   try {
-                                                    if (await removedDeck
-                                                        .updateDeleteStatus(true)) {
+                                                    setState(() {
+                                                      _filteredDecks.removeAt(index);
+                                                      _decks.removeWhere(
+                                                              (card) => card.deckId == removedDeck.deckId);
+                                                    });
+                                                    if (await removedDeck.updateDeleteStatus(true)) {
                                                       if (_latestDeck != null) {
                                                         if (_latestDeck?.deckId ==
                                                             removedDeck.deckId) {
@@ -835,7 +593,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
                       'Try adjusting your search to \nfind what your looking for.',
                       ifCollectionEmptyHeight:
                       MediaQuery.of(context).size.height * 0.4,
-                    ),
+                    )
                 ],
               ),)
             ],
