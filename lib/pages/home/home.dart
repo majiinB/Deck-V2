@@ -13,6 +13,7 @@ import '../../backend/flashcard/flashcard_service.dart';
 import '../../backend/models/deck.dart';
 import '../../backend/task/task_provider.dart';
 import '../flashcard/flashcard.dart';
+import '../misc/custom widgets/functions/loading.dart';
 import '../misc/custom widgets/tiles/home_deck_tile.dart';
 import '../task/main_task.dart';
 import '../misc/custom widgets/functions/if_collection_empty.dart';
@@ -170,7 +171,7 @@ class _HomePageState extends State<HomePage> {
           bottom: false,
           left: true,
           right: true,
-          child:SingleChildScrollView(
+          child: SingleChildScrollView(
             padding: const EdgeInsets.only(bottom: 100),
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
