@@ -10,8 +10,8 @@ import 'package:deck/pages/misc/widget_method.dart';
 
 class TaskFolderTile extends StatelessWidget{
   final String? folderName;
-  final int? taskDone;
-  final int? taskTotal;
+  final int? totalCompleted;
+  final int? totalTask;
   final int? folderBackground;
   final VoidCallback? onPressed;
 
@@ -19,14 +19,14 @@ class TaskFolderTile extends StatelessWidget{
     super.key,
     required this.folderName,
     required this.folderBackground,
-    required this.taskDone,
-    required this.taskTotal,
+    required this.totalCompleted,
+    required this.totalTask,
     required this.onPressed,
   });
 
   @override
   Widget build(BuildContext context) {
-    double progress = (taskTotal != 0) ? (taskDone ?? 0) / taskTotal! : 0.0;
+    double progress = (totalTask != 0) ? (totalCompleted ?? 0) / totalTask! : 0.0;
     String? backgroundImage;
     switch(folderBackground){
       case 1:
@@ -90,7 +90,7 @@ class TaskFolderTile extends StatelessWidget{
                         SizedBox(
                           width: double.infinity,
                           child: AutoSizeText(
-                              '$taskDone/$taskTotal',
+                              '$totalCompleted/$totalTask',
                               maxLines:1,
                               textAlign: TextAlign.end,
                               overflow: TextOverflow.ellipsis,

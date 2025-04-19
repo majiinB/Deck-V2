@@ -1,17 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:deck/pages/auth/login.dart';
 import 'package:deck/pages/misc/colors.dart';
-import 'package:deck/pages/misc/deck_icons.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-// import 'package:google_fonts/google_fonts.dart';
-import 'package:msh_checkbox/msh_checkbox.dart';
-import 'package:provider/provider.dart';
-
 import '../../../auth/create_account.dart';
 import '../../widget_method.dart';
-
 
 class DeckIntroPage extends StatelessWidget {
   final String img;
@@ -57,17 +49,18 @@ class DeckIntroPage extends StatelessWidget {
                 ),
               ),
               child: Padding(
-                padding: const EdgeInsets.only(left: 40,right: 40,top: 150),
+                padding: const EdgeInsets.only(left: 40,right: 40,top: 130),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Text(
+                    AutoSizeText(
                         title,
-                        style:const TextStyle(
+                        maxLines: hasButton ? 1 : 2,
+                        style: const TextStyle(
                           height:1,
-                          fontSize: 40,
+                          fontSize: 35,
                           fontFamily: 'Fraiche',
                           color: DeckColors.softGreen,
                         )
@@ -77,13 +70,17 @@ class DeckIntroPage extends StatelessWidget {
                     ),
                     AutoSizeText(
                         subtitle,
-                        maxLines: 2,
-                        style:const TextStyle(
-                          height:1,
-                          fontSize: 15,
+                        maxLines: hasButton ? 2 : 3,
+                        minFontSize: 10,
+                        style: TextStyle(
+                          // height:1,
+                          fontSize: hasButton ? 15 : 20,
                           fontFamily: 'Nunito-SemiBold',
                           color: DeckColors.white,
                         )
+                    ),
+                    const SizedBox(
+                      height: 20,
                     ),
                     if(hasButton)SizedBox(
                         width: double.infinity,
@@ -115,14 +112,18 @@ class DeckIntroPage extends StatelessWidget {
                             )
                         )
                     ),
+                    const SizedBox(
+                      height: 5,
+                    ),
                     if(hasButton)Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children:[
                         const Text(
                             "Have an account?",
-                            maxLines: 2,
+                            maxLines: 1,
                             style:TextStyle(
                               height:1,
-                              fontSize: 14,
+                              fontSize: 15,
                               fontFamily: 'Nunito-Regular',
                               color: DeckColors.white,
                             )
@@ -140,7 +141,7 @@ class DeckIntroPage extends StatelessWidget {
                               "Log In",
                               style: TextStyle(
                                 fontFamily: 'Nunito-Bold',
-                                fontSize: 10,
+                                fontSize: 15,
                                 color: DeckColors.softGreen,
                               ),
                             ),

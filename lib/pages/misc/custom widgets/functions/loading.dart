@@ -1,34 +1,42 @@
+/// DeckLoadingDialog - A reusable loading widget with a spinner and branded SVG.
+///
+/// This widget can be shown using `showDialog` to indicate background processing,
+/// such as loading, submitting, or fetching data.
+///
+/// how to use
+/// const DeckLoadingDialog(),
 import 'package:deck/pages/misc/colors.dart';
-import 'package:deck/pages/misc/deck_icons.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-// import 'package:google_fonts/google_fonts.dart';
-import 'package:msh_checkbox/msh_checkbox.dart';
-import 'package:provider/provider.dart';
+import '../../deck_icons2.dart';
 
+class DeckLoadingDialog extends StatelessWidget {
+  const DeckLoadingDialog({super.key});
 
-///
-/// M E T H O D  T O  C A L L  L O A D I N G
-///
-
-void showLoad(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return const Center(
-        child: CircularProgressIndicator(
-          color: DeckColors.primaryColor,
-        ),
-      );
-    },
-  );
-}
-
-///
-/// M E T H O D  T O  H I D E  L O A D I N G
-///
-
-void hideLoad(BuildContext context) {
-  Navigator.of(context).pop();
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          SizedBox(
+            // width: 10,
+            width:MediaQuery.of(context).size.width/3,
+            height:MediaQuery.of(context).size.width/3,
+            child: const CircularProgressIndicator(
+              color: DeckColors.primaryColor,
+              strokeWidth: 8.0,
+            ),
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: Icon(
+              DeckIcons2.hat,
+              size: 50,
+              color: DeckColors.primaryColor,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

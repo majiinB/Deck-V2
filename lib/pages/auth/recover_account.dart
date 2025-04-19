@@ -7,19 +7,22 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
 import '../misc/custom widgets/dialogs/alert_dialog.dart';
+import '../misc/custom widgets/functions/loading.dart';
 import '../misc/custom widgets/textboxes/textboxes.dart';
 
 class RecoverAccountPage extends StatelessWidget {
   RecoverAccountPage({super.key});
+  bool _isLoading = false;
 
   final emailController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: DeckColors.backgroundColor,
       resizeToAvoidBottomInset: false,
-      body: Column(
+      backgroundColor: _isLoading ? DeckColors.softGreen : DeckColors.backgroundColor,
+      body: _isLoading ? const DeckLoadingDialog()
+          : Column(
         children: [
           Stack(
             children: [

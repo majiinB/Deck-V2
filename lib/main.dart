@@ -82,15 +82,27 @@ class MainPage extends StatefulWidget {
   State<MainPage> createState() => _MainPageState();
 }
 class _MainPageState extends State<MainPage> {
-  final GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
   int _currentIndex = 0;
 
-  final screens = const [
-    HomePage(),
-    TaskPage(),
-    FlashcardPage(),
-    AccountPage(),
-  ];
+  final GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
+
+  late final List<Widget> screens;
+
+  void initState(){
+    super.initState();
+    screens = [
+      HomePage(onNavigateToIndex: _navigateToIndex),
+      TaskPage(),
+      FlashcardPage(),
+      AccountPage(),
+    ];
+  }
+  void _navigateToIndex(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+    _bottomNavigationKey.currentState?.setPage(index);
+  }
 
   /// _buildNavigationBarItems
   /// Constructs a list of widgets representing the items

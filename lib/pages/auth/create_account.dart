@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:deck/backend/auth/auth_gate.dart';
 import 'package:deck/backend/auth/auth_service.dart';
 import 'package:deck/backend/fcm/fcm_service.dart';
-import 'package:deck/backend/models/deck.dart';
 import 'package:deck/pages/auth/login.dart';
 import 'package:deck/pages/auth/privacy_policy.dart';
 import 'package:deck/pages/auth/terms_of_use.dart';
@@ -12,12 +11,10 @@ import 'package:deck/pages/misc/widget_method.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 import '../misc/custom widgets/buttons/custom_buttons.dart';
-import '../misc/custom widgets/checkbox/checkbox.dart';
 import '../misc/custom widgets/dialogs/alert_dialog.dart';
-import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
+import '../misc/custom widgets/functions/loading.dart';
 import '../misc/custom widgets/textboxes/textboxes.dart';
 
 class CreateAccountPage extends StatefulWidget {
@@ -33,7 +30,6 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController =
   TextEditingController();
-  final DeckBox checkBox = DeckBox();
 
   String getAdjective() {
     List<String> adjective = [
@@ -92,41 +88,41 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomInset: false,
-        backgroundColor: DeckColors.backgroundColor,
-        body: _isLoading ?  const Center(
-            child:CircularProgressIndicator()) :
-        Column(
-          children: [
-            Stack(
+        backgroundColor: _isLoading ? DeckColors.softGreen : DeckColors.backgroundColor,
+        body: _isLoading ? const DeckLoadingDialog()
+            : SingleChildScrollView(
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Image(
-                  image: AssetImage('assets/images/Deck-Header.png'),
-                  width: MediaQuery.of(context).size.width,
-                  fit: BoxFit.cover,
-                ),
-                const Positioned(
-                  left: 10,
-                  bottom: 0,
-                  child:Padding(
-                    padding: EdgeInsets.only(left:20.0),
-                    child: Text('Sign Up',
-                      style: TextStyle(
-                        fontFamily: 'Fraiche',
-                        color: DeckColors.primaryColor,
-                        fontSize: 56,
-                      ),
+                Stack(
+                  children: [
+                    Image(
+                      image: const AssetImage('assets/images/Deck-Header.png'),
+                      width: MediaQuery.of(context).size.width,
+                      fit: BoxFit.cover,
                     ),
-                  ),
-                )
-              ],
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                  child: Padding(
-                    padding: EdgeInsets.only( left: 30, right: 30),
+
+                    const Positioned(
+                      left: 10,
+                      bottom: 0,
+                      child:Padding(
+                        padding: EdgeInsets.only(left:20.0),
+                        child: Text('Sign Up',
+                          style: TextStyle(
+                            fontFamily: 'Fraiche',
+                            color: DeckColors.primaryColor,
+                            fontSize: 56,
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+                Padding(
+                    padding: const EdgeInsets.only( left: 30, right: 30, top:20),
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
+                        children:[
                           const Text(
                             'Email',
                             style: TextStyle(
@@ -177,7 +173,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                             showPassword: true,
                             controller: confirmPasswordController,
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
 
                           //Sign up button
                           BuildButton(
@@ -268,7 +264,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                               borderWidth: 3,
                               borderColor: DeckColors.primaryColor
                           ),
-                          const SizedBox(height: 10),
+                          const SizedBox(height: 5),
 
                           Align(
                             alignment: Alignment.center,
@@ -322,7 +318,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                                 ),
 
                               ),
-                              Padding(
+                              const Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 16.0),
                                 child: Text(
                                   'or continue with',
@@ -398,50 +394,49 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                           RichText(
                               textAlign: TextAlign.center,
                               text: TextSpan(
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       fontFamily: 'Nunito-Regular',
                                       fontSize: 12,
                                       color: DeckColors.primaryColor
                                   ),
                                   children: [
-                                    TextSpan(text: "By proceeding, you acknowledge that you have read, understood, and agree to our "),
+                                    const TextSpan(text: "By proceeding, you acknowledge that you have read, understood, and agree to our "),
                                     TextSpan(
                                       text: "Terms of Use",
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           fontFamily: 'Nunito-Bold',
                                           color: DeckColors.primaryColor, decoration: TextDecoration.underline),
                                       recognizer: TapGestureRecognizer()
                                         ..onTap = () {
-                                          Navigator.of(context).push(RouteGenerator.createRoute(TermsOfUsePage()),);
+                                          Navigator.of(context).push(RouteGenerator.createRoute(const TermsOfUsePage()),);
                                         },
                                     ),
-                                    TextSpan(text: " and "),
+                                    const TextSpan(text: " and "),
                                     TextSpan(
                                       text: "Privacy Policy.",
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           fontFamily: 'Nunito-Bold',
                                           color: DeckColors.primaryColor,
                                           decoration: TextDecoration.underline),
                                       recognizer: TapGestureRecognizer()
                                         ..onTap = () {
-                                          Navigator.of(context).push(RouteGenerator.createRoute(PrivacyPolicyPage()),);
+                                          Navigator.of(context).push(RouteGenerator.createRoute(const PrivacyPolicyPage()),);
                                         },
                                     ),
                                   ]
                               )
-                          )
+                          ),
                         ]
-                    ),
-                  )
-              ),
-            ),
-            Image(
-              image: const AssetImage('assets/images/Deck-Bottom-Image3.png'),
-              width: MediaQuery.of(context).size.width,
-              height:80,
-              fit: BoxFit.fill,
-            ),
-          ],
+                    )
+                ),
+                Image(
+                  image: const AssetImage('assets/images/Deck-Bottom-Image3.png'),
+                  width: MediaQuery.of(context).size.width,
+                  height:80,
+                  fit: BoxFit.fill,
+                ),
+              ]
+          ),
         )
     );
   }

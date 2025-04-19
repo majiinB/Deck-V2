@@ -25,7 +25,12 @@ import 'add_task_folder.dart';
 // import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
 
 class TaskPage extends StatefulWidget {
-  const TaskPage({super.key});
+  final bool openViewTask;
+
+  const TaskPage({
+    super.key,
+    this.openViewTask = false,
+  });
   @override
   _TaskPageState createState() => _TaskPageState();
 }
@@ -42,6 +47,15 @@ class _TaskPageState extends State<TaskPage> {
   @override
   void initState() {
     super.initState();
+    if (widget.openViewTask) {
+      // Delay to ensure the widget is built
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ViewTaskFolderPage(title: 'sample',)),//TODO change title
+        );
+      });
+    }
     _getTasks();
   }
   //
@@ -161,13 +175,13 @@ class _TaskPageState extends State<TaskPage> {
                                   padding: EdgeInsets.only(left: index == 0 ? 30 : 10, right: 10) ,
                                     child: TaskFolderTile(
                                       folderName: taskFolder.name, //TODO: CHANGE PLACEHOLDERS
-                                      taskDone: taskFolder.tasksDone,
-                                      taskTotal: taskFolder.totalTasks,
+                                      totalCompleted: taskFolder.tasksDone,
+                                      totalTask: taskFolder.totalTasks,
                                       folderBackground: taskFolder.folderBackground,
                                       onPressed: () {
                                         Navigator.push(
                                           context,
-                                          RouteGenerator.createRoute(ViewTaskFolderPage()),//TODO ADD THE INDEX OF THE FOLDER HERE
+                                          RouteGenerator.createRoute(ViewTaskFolderPage(title: taskFolder.name,)),//TODO change title and ADD THE INDEX OF THE FOLDER HERE
                                         );
                                       },
                                   )
@@ -177,12 +191,12 @@ class _TaskPageState extends State<TaskPage> {
                       ),
                       if (taskFolders.isNotEmpty || taskToday.isNotEmpty)
                         Padding(
-                        padding:  EdgeInsets.only(left:30, right:30, top: 20.0),
+                        padding:  const EdgeInsets.only(left:30, right:30, top: 20.0),
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                               Text(
+                               const Text(
                                   'Upcoming Deadlines',
                                   style: TextStyle(
                                       fontFamily: 'Fraiche',
@@ -194,7 +208,7 @@ class _TaskPageState extends State<TaskPage> {
                               ListView.builder(
                                 shrinkWrap: true,
                                 itemCount:sampleTasks.length,
-                                physics: NeverScrollableScrollPhysics(),
+                                physics: const NeverScrollableScrollPhysics(),
                                 itemBuilder: (context,index){
                                   final task = sampleTasks[index];
                                   return Padding(
@@ -234,5 +248,10 @@ class TaskFolder {
   final int tasksDone;
   final int totalTasks;
 
-  TaskFolder({required this.name, required this.tasksDone, required this.totalTasks, required this.folderBackground});
+  TaskFolder({
+    required this.name,
+    required this.tasksDone,
+    required this.totalTasks,
+    required this.folderBackground
+  });
 }
