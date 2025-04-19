@@ -46,6 +46,12 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
   int totalPending = 0;
   int totalProgress = 0;
   int totalCompleted = 0;
+  int totalHighPrio = 0;
+  int totalMidPrio = 0;
+  int totalLowPrio = 0;
+  late final Map<String, double> workloadData;
+  late final Map<String, double> priorityData;
+
   /// function to get the total number of all task, pending task, tasks in progress, completed task
   /// this will be used for the overview tab
   /// this need to be set again if user changes something for the new info to be displayed
@@ -55,6 +61,19 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
       totalPending = 10;
       totalProgress = 10;
       totalCompleted = 80;
+      totalHighPrio = 50;
+      totalMidPrio = 30;
+      totalLowPrio = 20;
+      workloadData = {
+        "$totalPending - Pending": totalPending.toDouble(),
+        "$totalProgress - In Progress": totalProgress.toDouble(),
+        "$totalLowPrio - Completed": totalCompleted.toDouble(),
+      };
+      priorityData = {
+        "$totalHighPrio - Pending": totalPending.toDouble(),
+        "$totalMidPrio - In Progress": totalProgress.toDouble(),
+        "$totalCompleted - Completed": totalCompleted.toDouble(),
+      };
     });
 
     // switch (task.status) {
@@ -177,16 +196,12 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
     super.initState();
     _getTasks();
     _getOverview();
+
   }
   double progressValue = 0;
   String progressLabel ='';
 
-  Map<String, double> dataMap = {
-    "Flutter": 5,
-    "React": 3,
-    "Xamarin": 2,
-    "Ionic": 2,
-  };
+
   Widget buildOverviewTab( int? total, int? complete){
     progressValue = (total != 0) ? (complete ?? 0) / total! : 0.0;
     progressLabel = "$complete / $total";
@@ -240,7 +255,7 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
                 ],
               )
           ),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
           Container(
@@ -265,12 +280,12 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
                     ),
                   ),
                   PieChart(
-                    dataMap: dataMap,
+                    dataMap: workloadData,
+                    emptyColor: DeckColors.softGray,
                     animationDuration: const Duration(milliseconds: 800),
                     chartLegendSpacing: 32,
                     chartRadius: MediaQuery.of(context).size.width / 3.2,
                     initialAngleInDegree: 0,
-                    chartType: ChartType.ring,
                     legendOptions: const LegendOptions(
                       showLegendsInRow: false,
                       legendPosition: LegendPosition.right,
@@ -279,7 +294,7 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
                       legendTextStyle: TextStyle(
                         height:1,
                         fontFamily: 'Fraiche',
-                        fontSize: 30,
+                        fontSize: 20,
                         color: DeckColors.primaryColor,
                       ),
                     ),
@@ -321,10 +336,34 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
                       color: DeckColors.primaryColor,
                     ),
                   ),
-                  Row(
-                    children: [
-                    ],
-                  ),
+                  PieChart(
+                    dataMap: priorityData,
+                    animationDuration: const Duration(milliseconds: 800),
+                    chartLegendSpacing: 32,
+                    chartRadius: MediaQuery.of(context).size.width / 3.2,
+                    initialAngleInDegree: 0,
+                    legendOptions: const LegendOptions(
+                      showLegendsInRow: false,
+                      legendPosition: LegendPosition.right,
+                      showLegends: true,
+                      legendShape: BoxShape.rectangle,
+                      legendTextStyle: TextStyle(
+                        height:1,
+                        fontFamily: 'Fraiche',
+                        fontSize: 20,
+                        color: DeckColors.primaryColor,
+                      ),
+                    ),
+                    chartValuesOptions: const ChartValuesOptions(
+                      showChartValueBackground: false,
+                      showChartValues: false,
+                      showChartValuesInPercentage: false,
+                      showChartValuesOutside: false,
+                      decimalPlaces: 1,
+                    ),
+                    // gradientList: ---To add gradient colors---
+                    // emptyColorGradient: ---Empty Color gradient---
+                  )
                 ],
               )
           ),
