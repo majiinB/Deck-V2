@@ -178,7 +178,6 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
             //   },
             // ),
           );
-          // Return an empty widget if conditions are not met
         },
       );
     // }
@@ -196,7 +195,6 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
     super.initState();
     _getTasks();
     _getOverview();
-
   }
   double progressValue = 0;
   String progressLabel ='';
