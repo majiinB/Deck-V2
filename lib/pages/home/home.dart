@@ -36,6 +36,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
   final AuthService _authService = AuthService();
   final FlashcardService _flashcardService = FlashcardService();
   List<Deck> _decks = [];

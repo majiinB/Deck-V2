@@ -1,17 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:deck/pages/auth/login.dart';
 import 'package:deck/pages/misc/colors.dart';
-import 'package:deck/pages/misc/deck_icons.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-// import 'package:google_fonts/google_fonts.dart';
-import 'package:msh_checkbox/msh_checkbox.dart';
-import 'package:provider/provider.dart';
-
 import '../../../auth/create_account.dart';
 import '../../widget_method.dart';
-
 
 class DeckIntroPage extends StatelessWidget {
   final String img;
@@ -66,7 +58,7 @@ class DeckIntroPage extends StatelessWidget {
                     AutoSizeText(
                         title,
                         maxLines: hasButton ? 1 : 2,
-                        style: TextStyle(
+                        style: const TextStyle(
                           height:1,
                           fontSize: 35,
                           fontFamily: 'Fraiche',
