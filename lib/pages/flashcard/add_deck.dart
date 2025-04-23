@@ -597,7 +597,6 @@ class _AddDeckPageState extends State<AddDeckPage> {
 
                               // Clean input of spaces eg "Hello    World" => "Hello World"
                               String deckTitle = FlashcardUtils().cleanSpaces(_deckTitleController.text.toString().trim());
-
                               // Check if the title of the the flashcard exists in the database
                               if(await flashcardService.checkIfDeckWithTitleExists(
                                   widget.userId,
@@ -610,65 +609,52 @@ class _AddDeckPageState extends State<AddDeckPage> {
                                     "Title Already Exist", 'You already have a deck named $deckTitle');
                                 return;
                               }
-
                               //GEMINI
-                              if(fileName.isEmpty || fileName == ""){
-                                try{
-                                  //Send and retrieve ai
-                                  newDeck = await flashcardAiService.sendAndRequestDataToGemini(
-                                      deckTitle: _deckTitleController.text.toString(),
-                                      deckDescription: _deckDescriptionController.text.toString(),
-                                      subject: _subjectController.text.trim(),
-                                      topic: _topicController.text.trim(),
-                                      numberOfFlashcards: int.tryParse(_numCardsController.text) ?? 0,
-                                      addDescription: _descriptionController.text.trim()
-                                  );
-                                }catch(e){
-                                  print(e);
-                                  await Future.delayed(const Duration(milliseconds: 300));
-                                  setState(() => _isLoading = false);
-                                  showAlertDialog(context,
-                                      "assets/images/Deck-Dialogue2.png",
-                                      "Unknown Error Occurred",
-                                      'An unknown error has occurred while generating your deck. Please try again.');
-                                  return;
+                              try{
+                                // Check if conditions are met before uploading file
+                                if (_pickedFileController.text.toString().trim().isNotEmpty) {
+                                  fileName = await flashcardService.uploadPdfFileToFirebase(_pickedFileController.text.toString().trim(), widget.userId.toString());
                                 }
-                              }else{
-                                try{
-                                  // Check if conditions are met before uploading file
-                                  if (_pickedFileController.text.toString().trim().isNotEmpty) {
-                                    fileName = await flashcardService.uploadPdfFileToFirebase(_pickedFileController.text.toString().trim(), widget.userId.toString());
-                                  }
+                                FlashcardService flashCardService = FlashcardService();
+                                // Default cover photo in firebase
+                                String uploadedPhotoUrl = 'https://firebasestorage.googleapis.com/v0/b/deck-f429c.appspot.com/o/deckCovers%2Fdefault%2FdeckDefault.png?alt=media&token=de6ac50d-13d0-411c-934e-fbeac5b9f6e0';
 
-                                  //Send and retrieve ai
-                                  newDeck = await flashcardAiService.sendAndRequestDataToGemini(
-                                      deckTitle: _deckTitleController.text.toString(),
-                                      deckDescription: _deckDescriptionController.text.toString(),
-                                      subject: _subjectController.text.trim(),
-                                      topic: _topicController.text.trim(),
-                                      numberOfFlashcards: int.tryParse(_numCardsController.text) ?? 0,
-                                      addDescription: _descriptionController.text.trim(),
-                                      pdfFileName: fileName.toString(),
-                                      pdfFileExtension: '.pdf' // TODO: Retrieve the actual file extension of the file
-                                  );
-                                }on ApiException catch(e){
-                                  setState(() => _isLoading = false);
-                                  showAlertDialog(context,
-                                      "assets/images/Deck-Dialogue2.png",
-                                      "Error while creating Deck!", e.message.toString());
-                                  return;
-                                }catch(e){
-                                  print(e);
-                                  await Future.delayed(const Duration(milliseconds: 300));
-                                  setState(() => _isLoading = false);
-                                  showAlertDialog(
-                                      context,
-                                      "assets/images/Deck-Dialogue2.png",
-                                      "Unknown Error Occurred",
-                                      "An unknown error has occurred while generating your deck. Please try again."
-                                  );
-                                  return;
+                                if(coverPhoto != 'no_photo'){
+                                  uploadedPhotoUrl = await flashCardService.uploadImageToFirebase(coverPhoto, widget.userId.toString());
                                 }
+
+                                print(10);
+                                print("pdf filename in add deck" + fileName.toString());
+                                //Send and retrieve ai
+                                newDeck = await flashcardAiService.sendAndRequestDataToGemini(
+                                    deckTitle: _deckTitleController.text.toString(),
+                                    deckDescription: _deckDescriptionController.text.toString(),
+                                    subject: _subjectController.text.trim(),
+                                    topic: _topicController.text.trim(),
+                                    numberOfFlashcards: int.tryParse(_numCardsController.text) ?? 0,
+                                    coverPhoto: uploadedPhotoUrl,
+                                    addDescription: _descriptionController.text.trim(),
+                                    pdfFileName: fileName.toString(),
+                                    pdfFileExtension: '.pdf' // TODO: Retrieve the actual file extension of the file
+                                );
+
+                              }on ApiException catch(e){
+                                setState(() => _isLoading = false);
+                                showAlertDialog(context,
+                                    "assets/images/Deck-Dialogue2.png",
+                                    "Error while creating Deck!", e.message.toString());
+                                return;
+                              }catch(e){
+                                print(e);
+                                await Future.delayed(const Duration(milliseconds: 300));
+                                setState(() => _isLoading = false);
+                                showAlertDialog(
+                                    context,
+                                    "assets/images/Deck-Dialogue2.png",
+                                    "Unknown Error Occurred",
+                                    "An unknown error has occurred while generating your deck. Please try again."
+                                );
+                                return;
                               }
 
                               if (newDeck == null) {
@@ -688,15 +674,6 @@ class _AddDeckPageState extends State<AddDeckPage> {
                                 return;
                               } else {
                                 // If sendData is successful, navigate to ViewDeckPage
-                                FlashcardService flashCardService = FlashcardService();
-
-                                // Default cover photo in firebase
-                                String uploadedPhotoUrl = 'https://firebasestorage.googleapis.com/v0/b/deck-f429c.appspot.com/o/deckCovers%2Fdefault%2FdeckDefault.png?alt=media&token=de6ac50d-13d0-411c-934e-fbeac5b9f6e0';
-
-                                if(coverPhoto != 'no_photo'){
-                                  uploadedPhotoUrl = await flashCardService.uploadImageToFirebase(coverPhoto, widget.userId.toString());
-                                }
-
                                 Navigator.pop(context, newDeck);
                                 widget.decks.add(newDeck);
 

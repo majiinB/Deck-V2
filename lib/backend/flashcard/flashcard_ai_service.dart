@@ -67,6 +67,7 @@ class FlashcardAiService {
     required String subject,         // Subject of the flashcards.
     required String topic,           // Topic within the subject.
     required int numberOfFlashcards,  // Number of questions to generate.
+    required String coverPhoto,
     String addDescription = "",      // Additional description or context.
     String pdfFileName = "",        // Name of the associated PDF file.
     String pdfFileExtension = "",   // File extension of the PDF (e.g., '.pdf').
@@ -79,14 +80,17 @@ class FlashcardAiService {
       'subject': subject,
       'topic': topic,
       'numberOfFlashcards': numberOfFlashcards,
+      'coverPhoto': coverPhoto
     };
 
     if(addDescription.trim().isNotEmpty){
       requestBody['addDescription'] = addDescription;
     }
 
-    if(pdfFileName.trim().isNotEmpty){
+    print("pdf filename:" + pdfFileName);
+    if(pdfFileName.trim().isNotEmpty || pdfFileName != ""){
       requestBody['fileName'] = pdfFileName;
+      print("pdf filename:" + pdfFileName);
     }
 
     if(pdfFileExtension.trim().isNotEmpty){
@@ -98,7 +102,7 @@ class FlashcardAiService {
 
       // Send a POST request to the API with the request body and headers.
       final response = await http.post(
-        Uri.parse('$deckAIAPIUrl/v2/deck/generate/flashcards/'), // API endpoint.
+        Uri.parse('$deckAILocalAPIUrl/v2/deck/generate/flashcards/'), // API endpoint.
         body: jsonEncode(requestBody), // JSON-encoded request body.
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8', // Specify content type as JSON.
