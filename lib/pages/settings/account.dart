@@ -5,7 +5,6 @@ import 'package:deck/pages/auth/privacy_policy.dart';
 import 'package:deck/pages/auth/welcome.dart';
 import 'package:deck/pages/auth/terms_of_use.dart';
 import 'package:deck/pages/misc/custom%20widgets/dialogs/alert_dialog.dart';
-import 'package:deck/pages/settings/change_password.dart';
 import 'package:deck/pages/settings/edit_profile.dart';
 import 'package:deck/pages/settings/recently_deleted.dart';
 import 'package:deck/pages/settings/support%20and%20policies/report_a_problem.dart';
@@ -19,9 +18,6 @@ import 'package:deck/pages/misc/deck_icons.dart';
 import 'package:deck/pages/misc/widget_method.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
-import '../../backend/flashcard/flashcard_service.dart';
-import '../../backend/flashcard/flashcard_utils.dart';
-import '../../backend/models/deck.dart';
 import '../../backend/profile/profile_provider.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
 import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
@@ -39,9 +35,6 @@ class AccountPageState extends State<AccountPage> {
   bool _isLoading = false;
   String name = '';
   final AuthService _authService = AuthService();
-  final FlashcardService _flashcardService = FlashcardService();
-  List<Deck> _decks = [];
-  Map<String, int> _deckCardCount = {};
   late User? _user;
   late Image? coverUrl;
 
@@ -50,18 +43,11 @@ class AccountPageState extends State<AccountPage> {
     coverUrl = null;
     getCoverUrl();
     super.initState();
-    FlashcardUtils.updateSettingsNeeded.addListener(_updateAccountPage);
     _user = _authService.getCurrentUser();
-    _initUserDecks(_user);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<ProfileProvider>(context, listen: false)
-          .addListener(_updateAccountPage);
-    });
   }
 
   @override
   void dispose() {
-    FlashcardUtils.updateSettingsNeeded.removeListener(_updateAccountPage);
     super.dispose();
   }
 
@@ -70,32 +56,6 @@ class AccountPageState extends State<AccountPage> {
     setState(() {
       print(coverUrl);
     });
-  }
-
-  void _initUserDecks(User? user) async {
-    if (user != null) {
-      String userId = user.uid;
-      List<Deck> decks = await _flashcardService
-          .getDecks(); // Call method to fetch decks
-      Map<String, int> deckCardCount = {};
-      for (Deck deckCount in decks) {
-        int count = await deckCount.getCardCount();
-        deckCardCount[deckCount.deckId] = count;
-      }
-      setState(() {
-        _decks = decks; // Update state with fetched decks
-        _deckCardCount = deckCardCount; // Update state with fetched decks count
-      });
-    }
-  }
-
-  void _updateAccountPage() {
-    if (FlashcardUtils.updateSettingsNeeded.value) {
-      setState(() {
-        _initUserDecks(_user);
-      });
-      FlashcardUtils.updateSettingsNeeded.value = false; // Reset the notifier
-    }
   }
 
   @override
@@ -199,14 +159,6 @@ class AccountPageState extends State<AccountPage> {
                                 final result = await Navigator.of(context).push(
                                   RouteGenerator.createRoute(const EditProfile()),
                                 );
-                                if (result != null && result['updated'] == true) {
-                                  _updateAccountPage();
-                                  Provider.of<ProfileProvider>(context, listen: false)
-                                      .addListener(_updateAccountPage);
-                                  setState(() {
-                                    coverUrl = result['file'];
-                                  });
-                                }
                               },
                               buttonText: 'edit profile',
                               height: 40,
