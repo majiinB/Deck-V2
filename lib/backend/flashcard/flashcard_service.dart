@@ -15,14 +15,16 @@ class FlashcardService{
   final String deckManagerAPIUrl = "https://deck-manager-api-taglvgaoma-uc.a.run.app";
   final String deckLocalAPIUrl = "http://10.0.2.2:5001/deck-f429c/us-central1/deck_manager_api";
 
-  Future<List<Deck>> getDecks() async {
+  Future<Map<String, dynamic>> getDecks() async {
     List<Deck> deckList = [];
+    String nextPageTokenRetrieved = "";
     try {
       String? token = await AuthService().getIdToken();
+      String url = '$deckLocalAPIUrl/v1/decks?limit=10';
 
       // Send a POST request to the API with the request body and headers.
       final response = await http.get(
-        Uri.parse('$deckManagerAPIUrl/v1/decks'), // API endpoint.
+        Uri.parse(url), // API endpoint.
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $token',
@@ -31,14 +33,10 @@ class FlashcardService{
 
       if(response.statusCode == 200) {
         var jsonData = jsonDecode(response.body) as Map<String, dynamic>;
-        print(jsonData); // Log parsed data for debugging.
-
-        // If the JSON data is empty, return null.
-        if (jsonData.isEmpty) return deckList;
 
         // Extract the data from the JSON response.
         Map<String, dynamic> deckData = jsonData["data"];
-        if (deckData.isEmpty) return deckList;
+        nextPageTokenRetrieved = deckData["nextPageToken"];
 
         // Extract the list of decks from the JSON response.
         List<dynamic> listOfDecks = deckData["decks"];
@@ -48,7 +46,55 @@ class FlashcardService{
       // Handle errors
       print('Error retrieving decks: $e');
     }
-    return deckList;
+    return {
+      'decks' : deckList,
+      'nextPageToken' : nextPageTokenRetrieved
+    };
+  }
+
+  Future<Map<String, dynamic>> getDecksNextPage({String nextPageToken = "no_pageToken"}) async {
+    List<Deck> deckList = [];
+    String nextPageTokenRetrieved = "";
+    try {
+      if(nextPageToken.isEmpty ||
+          nextPageToken.trim() == "" ||
+          nextPageToken == "no_pageToken"){
+        return {
+          "decks" : deckList,
+          "nextPageToken" : nextPageTokenRetrieved
+        };
+      }
+      String? token = await AuthService().getIdToken();
+      String url = '$deckLocalAPIUrl/v1/decks?limit=10&nextPageToken=$nextPageToken';
+
+      // Send a POST request to the API with the request body and headers.
+      final response = await http.get(
+        Uri.parse(url), // API endpoint.
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if(response.statusCode == 200) {
+        var jsonData = jsonDecode(response.body) as Map<String, dynamic>;
+
+        // Extract the data from the JSON response.
+        Map<String, dynamic> deckData = jsonData["data"];
+        nextPageTokenRetrieved = deckData["nextPageToken"];
+
+        // Extract the list of decks from the JSON response.
+        List<dynamic> listOfDecks = deckData["decks"];
+        deckList = listOfDecks.map((decksJson) => Deck.fromJson(decksJson)).toList();
+      }
+    } catch (e) {
+      // Handle errors
+      print('Error retrieving decks: $e');
+    }
+    return {
+      'decks' : deckList,
+      'nextPageToken' : nextPageTokenRetrieved
+    };
   }
 
   Future<Deck?> getSpecificDeck(String deckID) async {

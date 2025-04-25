@@ -213,4 +213,9 @@ class Deck{
       return null;
     }
   }
+
+  @override
+  String toString() {
+    return 'Deck(id: $_deckId, title: $title, numOfCards: $flashcardCount)';
+  }
 }

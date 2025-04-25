@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ffi';
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -37,11 +38,14 @@ class FlashcardPage extends StatefulWidget {
 class _FlashcardPageState extends State<FlashcardPage> {
   final AuthService _authService = AuthService();
   final FlashcardService _flashcardService = FlashcardService();
+  final ScrollController _scrollController = ScrollController();
   Deck? _latestDeck;
   List<Deck> _decks = [];
   List<Deck> _filteredDecks = [];
   late User? _user;
   int numOfCards = 0;
+  String _nextPageToken = "";
+  bool isFetchingMore = false;
 
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = "";
@@ -64,6 +68,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
     super.initState();
     _user = _authService.getCurrentUser();
     FlashcardUtils.updateLatestReview.addListener(_updateLatestReview);
+    _scrollController.addListener(_onScroll);
     _initUserDecks(_user);
     _initScore();
     _searchController.addListener(_onSearchChanged);
@@ -71,15 +76,19 @@ class _FlashcardPageState extends State<FlashcardPage> {
 
   void _initUserDecks(User? user) async {
     if (user != null) {
+      print("initialize deck");
       String userId = user.uid;
-      List<Deck> decks = await _flashcardService
-          .getDecks(); // Call method to fetch decks
+      var result = await _flashcardService.getDecks(); // Call method to fetch decks
+      List<Deck> decks = result['decks'];
+      String nextPageToken = result['nextPageToken'];
+
       Deck? latest = await _flashcardService.getLatestDeckLog(userId);
       if (!mounted) return;
       setState(() {
         _decks = decks; // Update state with fetched decks
         _filteredDecks = decks; // Initialize filtered decks
         _latestDeck = latest;
+        _nextPageToken = nextPageToken;
       });
     }
   }
@@ -130,6 +139,37 @@ class _FlashcardPageState extends State<FlashcardPage> {
     });
   }
 
+  Future<void> _onScroll() async {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200) {
+
+      if(isFetchingMore) return;
+      if(_nextPageToken == "" || _nextPageToken.isEmpty) return;
+      isFetchingMore = true;
+
+      var result = await _flashcardService.getDecksNextPage(nextPageToken: _nextPageToken);
+      List<Deck> decks = result['decks'];
+      String nextPageToken = result['nextPageToken'];
+      print('next page token from on scroll result: ${nextPageToken}');
+      print('current next page token from on scroll ${_nextPageToken}');
+      print(decks.map((deck) => deck.toString()).toList());
+
+      if(decks.isNotEmpty){
+        print("umabot dito");
+        setState(() {
+          _nextPageToken = nextPageToken;
+          print('current next page token from on scroll being set ${_nextPageToken}');
+          _decks.addAll(decks);
+        });
+      }else{
+        setState(() {
+          _nextPageToken = "";
+        });
+      }
+      isFetchingMore = false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -141,6 +181,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
         right: true,
         child:  SingleChildScrollView(
           padding: const EdgeInsets.only(bottom: 100),
+          controller: _scrollController,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -406,16 +447,15 @@ class _FlashcardPageState extends State<FlashcardPage> {
                               deckCoverPhotoUrl: _filteredDecks[index].coverPhoto,
                               titleOfDeck: _filteredDecks[index].title,
                               ownerOfDeck: _filteredDecks[index].deckOwnerName,
+                              numberOfCards: _filteredDecks[index].flashcardCount,
                               onDelete: () {},
                               enableSwipeToRetrieve: false,
                               onTap: () {
-                                print("Clicked");
                                 Navigator.of(context).push(
                                   RouteGenerator.createRoute(
                                       ViewDeckPage(deck: _filteredDecks[index])),
                                 );
                               },
-                              numberOfCards: _filteredDecks[index].flashcardCount,
                               // Checks if the user is the owner of the deck
                               items: (_filteredDecks[index].userId == _user!.uid)? [
                                 // Check if the deck is private (not published)
@@ -429,10 +469,10 @@ class _FlashcardPageState extends State<FlashcardPage> {
                                   : [Icons.remove_circle, Icons.report],///Not Owner
 
                               ///START FOR LOGIC OF POP UP MENU BUTTON (ung three dots)
-                              onItemsSelected: (index) {
+                              onItemsSelected: (selectedIndex) {
                                 ///If owner, show these options in the popup menu
                                 if(_filteredDecks[index].userId == _user!.uid) {
-                                  if (index == 0) {
+                                  if (selectedIndex == 0) {
                                     ///Show the confirmation dialog for Publish/Unpublish
                                     showDialog<bool>(
                                       context: context,
@@ -465,14 +505,14 @@ class _FlashcardPageState extends State<FlashcardPage> {
                                   }
 
                                   ///E D I T  D E C K
-                                  else if (index == 1) {
+                                  else if (selectedIndex == 1) {
                                     Navigator.of(context).push(
                                       RouteGenerator.createRoute(const EditDeck()),
                                     );
                                   }
 
                                   ///D E L E T E  D E C K
-                                  else if (index == 2) {
+                                  else if (selectedIndex == 2) {
                                     showDialog<bool>(
                                         context: context,
                                         barrierDismissible: false,
@@ -488,46 +528,39 @@ class _FlashcardPageState extends State<FlashcardPage> {
                                               Deck removedDeck = _filteredDecks[index];
                                               final String deletedTitle =
                                               removedDeck.title.toString();
-                                              showConfirmDialog(
-                                                context,
-                                                "assets/images/Deck-Dialogue1.png",
-                                                "Delete Item?",
-                                                "Are you sure you want to delete '$deletedTitle'?",
-                                                "Delete Item",
-                                                () async {
-                                                  try {
-                                                    setState(() {
-                                                      _filteredDecks.removeAt(index);
-                                                      _decks.removeWhere(
-                                                              (card) => card.deckId == removedDeck.deckId);
-                                                    });
-                                                    if (await removedDeck.updateDeleteStatus(true)) {
-                                                      if (_latestDeck != null) {
-                                                        if (_latestDeck?.deckId ==
-                                                            removedDeck.deckId) {
-                                                          Deck? latest = await _flashcardService
-                                                              .getLatestDeckLog(
-                                                              _user!.uid);
-                                                          setState(() {
-                                                            _latestDeck = latest;
-                                                          });
-                                                        }
-                                                      }
+                                              try {
+                                                setState(() {
+                                                  _filteredDecks.removeAt(index);
+                                                  _decks.removeWhere(
+                                                          (card) => card.deckId == removedDeck.deckId);
+                                                });
+                                                if (await removedDeck.updateDeleteStatus(true)) {
+                                                  if (_latestDeck != null) {
+                                                    if (_latestDeck?.deckId ==
+                                                        removedDeck.deckId) {
+                                                      Deck? latest = await _flashcardService
+                                                          .getLatestDeckLog(
+                                                          _user!.uid);
+                                                      setState(() {
+                                                        _latestDeck = latest;
+                                                      });
                                                     }
-                                                  } catch (e) {
-                                                    print(
-                                                        'Flash Card Page Deletion Error: $e');
-                                                    setState(() {
-                                                      _decks.insert(index, removedDeck);
-                                                    });
                                                   }
-                                                },
-                                                onCancel: () {
-                                                  setState(() {
-                                                    _decks.insert(index, removedDeck);
-                                                  });
-                                                },
-                                              );
+                                                }
+                                              } catch (e) {
+                                                print(
+                                                    'Flash Card Page Deletion Error: $e');
+                                                setState(() {
+                                                  _decks.insert(index, removedDeck);
+                                                });
+                                              }
+
+
+                                                  // setState(() {
+                                                  //   _decks.insert(index, removedDeck);
+                                                  // });
+
+
                                               Navigator.of(context).pop();
                                             },
                                             onCancel: () {
@@ -544,7 +577,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
                                 ///If not owner, show these options
                                 ///S A V E  D E C K
                                 else {
-                                  if(index == 0){
+                                  if(selectedIndex == 0){
                                     showDialog<bool>(
                                       context: context,
                                       barrierDismissible: false,
@@ -568,7 +601,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
                                     );
                                   }
                                   ///R E P O R T  P A G E
-                                  else if (index == 1) {
+                                  else if (selectedIndex == 1) {
                                     setState(() {
                                       Navigator.push(
                                         context,
