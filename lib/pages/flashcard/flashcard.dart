@@ -14,7 +14,6 @@ import 'package:deck/pages/misc/custom%20widgets/menus/pop_up_menu.dart';
 import 'package:deck/pages/misc/deck_icons.dart';
 import 'package:deck/pages/misc/deck_icons2.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:deck/pages/misc/widget_method.dart';
 // import 'package:google_fonts/google_fonts.dart';
@@ -640,7 +639,9 @@ class _FlashcardPageState extends State<FlashcardPage> {
   void dispose() {
     _searchController.removeListener(_onSearchChanged);
     FlashcardUtils.updateLatestReview.removeListener(_updateLatestReview);
+    _scrollController.removeListener(_onScroll);
     _searchController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 }

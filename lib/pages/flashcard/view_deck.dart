@@ -27,6 +27,7 @@ class ViewDeckPage extends StatefulWidget {
   final Deck deck;
   const ViewDeckPage({super.key, required this.deck});
 
+
   @override
   _ViewDeckPageState createState() => _ViewDeckPageState();
 }
@@ -35,29 +36,24 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
   String coverPhoto = "no_photo";
   String username = '';
   String description = '';
+  int numberOfCards = 0;
+  bool isSaved = false;
+  bool isFetchingMore = false;
   List<Cards> _cardsCollection = [];
   List<Cards> _starredCardCollection = [];
   List<Cards> _filteredCardsCollection = [];
   List<Cards> _filteredStarredCardCollection = [];
-  int numberOfCards = 0;
-  final TextEditingController _searchController = TextEditingController();
   User? currentUser;
-
-  ///This keeps track of the deck's publish status
-  bool isDeckPublished = false;
-
-  ///this is used sana to check if the currently signed-in is the owner
-  bool isOwner = true;
-
-  bool isSaved = false;
-
+  final TextEditingController _searchController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
     _initDeckCards();
-    _searchController.addListener(_filterFlashcards);
     _getCurrentUser();
+    _scrollController.addListener(_onScroll);
+    _searchController.addListener(_filterFlashcards);
   }
 
   void _initDeckCards() async {
@@ -102,9 +98,42 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
     });
   }
 
+  Future<void> _onScroll() async {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200) {
+
+      if(isFetchingMore) return;
+      // if(_nextPageToken == "" || _nextPageToken.isEmpty) return;
+      // isFetchingMore = true;
+      //
+      // var result = await _flashcardService.getDecksNextPage(nextPageToken: _nextPageToken);
+      // List<Deck> decks = result['decks'];
+      // String nextPageToken = result['nextPageToken'];
+      // print('next page token from on scroll result: ${nextPageToken}');
+      // print('current next page token from on scroll ${_nextPageToken}');
+      // print(decks.map((deck) => deck.toString()).toList());
+      //
+      // if(decks.isNotEmpty){
+        print("umabot dito");
+      //   setState(() {
+      //     _nextPageToken = nextPageToken;
+      //     print('current next page token from on scroll being set ${_nextPageToken}');
+      //     _decks.addAll(decks);
+      //   });
+      // }else{
+      //   setState(() {
+      //     _nextPageToken = "";
+      //   });
+      // }
+      // isFetchingMore = false;
+    }
+  }
+
   @override
   void dispose() {
     _searchController.dispose();
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -112,6 +141,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
   void _getCurrentUser() {
     setState(() {
       currentUser = FirebaseAuth.instance.currentUser;
+      isSaved = (widget.deck.userId == currentUser!.uid);
     });
   }
 
@@ -130,12 +160,12 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
         color: DeckColors.primaryColor,
         fontSize: 24,
           showPopMenu: true,
-          items: isOwner
-              ? [isDeckPublished ? 'Unpublish Deck' : 'Publish Deck', 'Edit Deck Info',  'Report Deck', 'Delete Deck'] ///Owner
+          items: (widget.deck.userId == currentUser!.uid)
+              ? [widget.deck.isPrivate ? 'Unpublish Deck' : 'Publish Deck', 'Edit Deck Info',  'Report Deck', 'Delete Deck'] ///Owner
               : [isSaved ? 'Unsave Deck' : 'Save Deck', 'Report Deck'], ///Not owner
-          icons: isOwner
+          icons: (widget.deck.userId == currentUser!.uid)
               ? [
-            isDeckPublished ? Icons.undo_rounded : Icons.publish_rounded,
+            widget.deck.isPrivate ? Icons.undo_rounded : Icons.publish_rounded,
             DeckIcons.pencil,
             Icons.report,
             DeckIcons.trash_bin,
@@ -148,7 +178,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
           ///START FOR LOGIC OF POP UP MENU BUTTON (ung three dots)
           /// If owner, show these options in the popup menu
           onItemsSelected: (index) {
-            if (isOwner) {
+            if (widget.deck.userId == currentUser!.uid) {
               ///P U B L I S H  D E C K
               if (index == 0) {
                 //Show the confirmation dialog for Publish/Unpublish
@@ -157,16 +187,16 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                   barrierDismissible: false,
                   builder: (BuildContext context) {
                     return CustomConfirmDialog(
-                      title: isDeckPublished ? 'Unpublish Deck?' : 'Publish Deck?',
-                      message: isDeckPublished
+                      title: widget.deck.isPrivate ? 'Unpublish Deck?' : 'Publish Deck?',
+                      message: widget.deck.isPrivate
                           ? 'Are you sure you want to unpublish this deck?'
                           : 'Are you sure you want to publish this deck?',
                       imagePath: 'assets/images/Deck-Dialogue4.png',
-                      button1: isDeckPublished ? 'Unpublish Deck' : 'Publish Deck',
+                      button1: widget.deck.isPrivate ? 'Unpublish Deck' : 'Publish Deck',
                       button2: 'Cancel',
                       onConfirm: () async {
                         setState(() {
-                          isDeckPublished = !isDeckPublished;
+                          widget.deck.isPrivate = !widget.deck.isPrivate;
                           Navigator.of(context).pop();
                         });
                       },
@@ -235,7 +265,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                           ? 'Are you sure you want to save this deck?'
                           : 'Are you sure you want to unsave this deck?',
                       imagePath: 'assets/images/Deck-Dialogue4.png',
-                      button1: isDeckPublished ? 'Unsave Deck' : 'Save Deck',
+                      button1: widget.deck.isPrivate ? 'Unsave Deck' : 'Save Deck',
                       button2: 'Cancel',
                       onConfirm: () async {
                         setState(() {
@@ -396,7 +426,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                           ),
                         ),
                         Spacer(),
-                        if(isOwner)
+                        if(widget.deck.userId == currentUser!.uid)
                         Padding(
                           padding: const EdgeInsets.only(right: 8.0),
                           child: BuildButton(
@@ -565,13 +595,13 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                             Padding(
                               padding: const EdgeInsets.only(right: 8.0),
                               child: SingleChildScrollView(
+                                controller: _scrollController,
                                 child: Padding(
                                   padding: const EdgeInsets.only(top: 20.0),
                                   child: ListView.builder(
                                     shrinkWrap: true,
                                     physics: const NeverScrollableScrollPhysics(),
-                                    itemCount:
-                                        _filteredCardsCollection.length,
+                                    itemCount: _filteredCardsCollection.length,
                                     itemBuilder: (context, index) {
                                       return Padding(
                                         padding: const EdgeInsets.symmetric(
@@ -583,7 +613,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                           contentOfFlashCard:
                                               _filteredCardsCollection[index]
                                                   .definition,
-                                          onDelete: isOwner ? () {
+                                          onDelete: widget.deck.userId == currentUser!.uid ? () {
                                             /*Cards removedCard =
                                                 _filteredCardsCollection[
                                                     index];
@@ -873,7 +903,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                           );
                                           },
                                           showStar: true,
-                                          showIcon: isOwner,
+                                          showIcon: (widget.deck.userId == currentUser!.uid),
 
                                         ),
                                       );
@@ -1183,7 +1213,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                             );
                                           },
                                           showStar: true,
-                                          showIcon: isOwner,
+                                          showIcon: (widget.deck.userId == currentUser!.uid),
                                         ),
                                       );
                                     },
