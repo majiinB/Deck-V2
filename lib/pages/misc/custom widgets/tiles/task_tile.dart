@@ -1,30 +1,28 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:deck/pages/misc/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../functions/swipe_to_delete_and_retrieve.dart';
 
-
-///
-/// ------------ D E C K  T A S K T I L E ----------------------
-/// a custom widget that is used in the task page
 class TaskTile extends StatefulWidget {
-  final String title;
-  final String deadline;
+  final String taskName;
+  final DateTime deadline;
   final String priority; // high, medium, low
-  String progressStatus;
+  String progressStatus; // pending, progress, completed
   final VoidCallback onDelete;
-  final VoidCallback? onRetrieve, onTap;
+  final VoidCallback? onRetrieve, onPressed;
   final bool enableRetrieve;
 
   TaskTile({
     super.key,
-    required this.title,
+    required this.taskName,
     required this.deadline,
     required this.priority,
-    this.progressStatus = 'to do',
+    this.progressStatus = 'pending',
     required this.onDelete,
     this.onRetrieve,
     this.enableRetrieve = false,
-    this.onTap,
+    this.onPressed,
   });
 
   @override
@@ -39,11 +37,54 @@ class DeckTaskTileState extends State<TaskTile> {
     super.initState();
     _updatePriorityColor(); // Set initial color based on priority
   }
+  Row getDeadline(DateTime dateTime){
+    /// formats a givenDateTime objecr into a readable string.
+    ///
+    /// The output format is: `"Month Day, Year'
+    /// The output format is: ' HH:MM AM/PM"`
+    /// Example: `"March 02, 2025 || 12:40 AM"`
+    ///
+    /// - [dateTime]: The DateTime to be formatted
+    String formattedDate = DateFormat("MMMM dd, yyyy").format(dateTime);
+    String formattedTime = DateFormat("hh:mm a").format(dateTime);
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+
+        AutoSizeText(
+          formattedDate,
+          textAlign: TextAlign.start,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(
+            fontFamily: 'Nunito-SemiBold',
+            fontSize: 14,
+            color: DeckColors.primaryColor,
+          ),
+        ),
+        const Expanded(
+            child: SizedBox()
+        ),
+        AutoSizeText(
+          formattedTime,
+          textAlign: TextAlign.start,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(
+            fontFamily: 'Nunito-SemiBold',
+            fontSize: 14,
+            color: DeckColors.primaryColor,
+          ),
+        ),
+      ],
+    );
+  }
 
   // Function to change icon based on task status
   IconData _getProgressIcon() {
     switch (widget.progressStatus.toLowerCase()) {
-      case 'to do':
+      case 'pending':
         return Icons.circle_outlined;
       case 'in progress':
         return Icons.circle;
@@ -57,14 +98,14 @@ class DeckTaskTileState extends State<TaskTile> {
   // Function to set the container color based on priority level
   Color _updatePriorityColor() {
     switch (widget.priority.toLowerCase()) {
-      case "high":
-        return Colors.red;
-      case "medium":
-        return Colors.yellow;
-      case "low":
-        return Colors.blue;
+      case 0:
+        return DeckColors.deckRed;
+      case 1:
+        return DeckColors.deckYellow;
+      case 2:
+        return DeckColors.deckBlue;
       default:
-        return Colors.grey;
+        return DeckColors.white;
     }
   }
 
@@ -76,85 +117,65 @@ class DeckTaskTileState extends State<TaskTile> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTapDown: (_) {
-        setState(() {
-          if (widget.onTap != null) {
-            _containerColor = DeckColors.accentColor.withOpacity(0.7);
-          }
-        });
-      },
-      onTapUp: (_) {
-        _containerColor = DeckColors.accentColor;
-        widget.onTap?.call();
-      },
-      onTapCancel: () {
-        _containerColor = DeckColors.accentColor;
-      },
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 20),
-        child: SwipeToDeleteAndRetrieve(
-          onRetrieve: widget.enableRetrieve ? widget.onRetrieve : null,
-          enableRetrieve: widget.enableRetrieve,
-          onDelete: widget.onDelete,
-          child: Stack(
-            children: [
-              Container(
-                padding:
-                const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15.0),
-                  color: _containerColor,
-                ),
-                child: Row(
-                  children: [
-                    SizedBox(width: 15),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            widget.title,
-                            style: const TextStyle(
-                              fontFamily: 'Fraiche',
-                              fontSize: 20,
-                              color: DeckColors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            widget.deadline,
-                            style: const TextStyle(
-                              fontFamily: 'Nunito-Bold',
-                              fontSize: 15,
-                              color: DeckColors.white,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Positioned(
-                right: 0,
-                top: 0,
-                bottom: 0,
-                child: Container(
-                  width: 30,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(15.0),
-                      bottomRight: Radius.circular(15.0),
-                    ),
-                    color: _updatePriorityColor(),
-                  ),
-                ),
-              ),
-            ],
+    return Material(
+      borderRadius: BorderRadius.circular(15.0),
+      color: DeckColors.white,
+      child: InkWell(
+          borderRadius: BorderRadius.circular(15.0),
+          onTap: () {
+            if (widget.onPressed != null) {
+              widget.onPressed!();
+            }
+          },
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: DeckColors.primaryColor, width: 3),
+            borderRadius: BorderRadius.circular(15.0),
           ),
-        ),
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+             children: [
+               const SizedBox(width: 10),
+               Expanded(
+                 child:Padding(
+                   padding: const EdgeInsets.symmetric(vertical: 10),
+                   child: Column(
+                     crossAxisAlignment:
+                     CrossAxisAlignment.start,
+                     children: [
+                       getDeadline(DateTime.now()),
+                       AutoSizeText(
+                         widget.taskName,
+                         maxLines: 1,
+                         overflow: TextOverflow.ellipsis,
+                         style: const TextStyle(
+                           fontFamily: 'fraiche',
+                           fontSize: 20,
+                           color: DeckColors.primaryColor,
+                         ),
+                       ),
+                     ],
+                   ),
+                 ),
+               ),
+               Container(
+                   width: 20,
+                   height: 80,
+                   decoration: BoxDecoration(
+                       color: _updatePriorityColor(),
+                       borderRadius: const BorderRadius.horizontal(
+                           right: Radius.circular(12)
+                       )
+                   )
+               ),
+
+             ],
+            )
+          ),
+        )
       ),
     );
   }

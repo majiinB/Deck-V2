@@ -39,17 +39,6 @@ class TaskList extends StatelessWidget{
     this.isHome = false,
   }) : super(key: key);
 
-  String getDeadline(DateTime dateTime){
-    /// formats a givenDateTime objecr into a readable string.
-    ///
-    /// The output format is: `"Month Day, Year || HH:MM AM/PM"`
-    /// Example: `"March 02, 2025 || 12:40 AM"`
-    ///
-    /// - [dateTime]: The DateTime to be formatted
-    String formattedDate = DateFormat("MMMM dd, yyyy").format(dateTime);
-    String formattedTime = DateFormat("hh:mm a").format(dateTime);
-    return "$formattedDate || $formattedTime";
-  }
   int getPriorityIndex(String priority) {
     switch (priority) {
       case 'High':
@@ -77,7 +66,7 @@ class TaskList extends StatelessWidget{
                 folderName: "sample folder",//task.folderName, //TODO: UPDATE
                 taskName: task.title,
                 priority:  getPriorityIndex(task.priority),
-                deadline: getDeadline(task.deadline),
+                deadline: task.deadline,
                 onPressed: (){
                   print("Clicked task tile!");
                   print(
@@ -93,8 +82,8 @@ class TaskList extends StatelessWidget{
             )
                 :
             TaskTile(
-              title: task.title,
-              deadline: TaskProvider.getNameDate(task.deadline),
+              taskName: task.title,
+              deadline: DateTime.now(),//TaskProvider.getNameDate(task.deadline),
               priority: task.priority,
               progressStatus: 'to do',
               onDelete: () {
@@ -112,7 +101,7 @@ class TaskList extends StatelessWidget{
                 );
               },
               enableRetrieve: false,
-              onTap: () {
+              onPressed: () {
                 print("Clicked task tile!");
                 print(
                     'Task: ${task.title}, IsDone: ${task.getIsDone}, IsActive: ${task.getIsActive}, Deadline: ${task.deadline}');
