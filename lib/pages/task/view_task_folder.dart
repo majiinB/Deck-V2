@@ -417,7 +417,7 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
                     );
                   }
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Container(
