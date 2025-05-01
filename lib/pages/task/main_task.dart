@@ -216,7 +216,7 @@ class _TaskPageState extends State<TaskPage> {
                                     child:HomeTaskTile(//TODO: update
                                       folderName: task['folderName'],//task.folderName
                                       taskName: task['taskName'],// task.taskName
-                                      deadline: getDeadline(selectedDay),
+                                      deadline: selectedDay,
                                       onPressed: () {},
                                       priority: task['priority'],//task.priority
                                     ),

@@ -1,6 +1,7 @@
 import 'package:deck/pages/misc/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:intl/intl.dart';
 
 /// HomeTaskTile is a widget that represents a task item in the home screen.
 ///
@@ -24,7 +25,7 @@ class HomeTaskTile extends StatelessWidget {
   final String folderName;
   final String taskName;
   final int priority;
-  final String deadline;
+  final DateTime deadline;
   // final double cardWidth;
   //final File? deckImage;
   final VoidCallback? onPressed;
@@ -39,6 +40,19 @@ class HomeTaskTile extends StatelessWidget {
 
   });
 
+  String getDeadline(DateTime dateTime){
+    /// formats a givenDateTime objecr into a readable string.
+    ///
+    /// The output format is: `"Month Day, Year || HH:MM AM/PM"`
+    /// Example: `"March 02, 2025 || 12:40 AM"`
+    ///
+    /// - [dateTime]: The DateTime to be formatted
+    String formattedDate = DateFormat("MMMM dd, yyyy").format(dateTime);
+    String formattedTime = DateFormat("hh:mm a").format(dateTime);
+    return "$formattedDate || $formattedTime";
+  }
+
+  // Function to set the container color based on priority level
   Color getColor(int priority){
     Color color = DeckColors.white;
     if(priority == 0) { color = DeckColors.deckRed;}
@@ -97,7 +111,7 @@ class HomeTaskTile extends StatelessWidget {
                         ),
                       ),
                       AutoSizeText(
-                        deadline,
+                        getDeadline(deadline),
                         textAlign: TextAlign.start,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,

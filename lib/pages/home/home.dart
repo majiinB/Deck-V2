@@ -13,23 +13,20 @@ import '../../backend/flashcard/flashcard_service.dart';
 import '../../backend/models/deck.dart';
 import '../../backend/task/task_provider.dart';
 import '../flashcard/flashcard.dart';
-import '../misc/custom widgets/functions/loading.dart';
 import '../misc/custom widgets/tiles/home_deck_tile.dart';
 import '../task/main_task.dart';
 import '../misc/custom widgets/functions/if_collection_empty.dart';
-import '../misc/custom widgets/tiles/task_tile.dart';
 import '../misc/custom widgets/tiles/home_task_tile.dart';
 import '../task/view_task.dart';
 import 'notification.dart';
-import '../../main.dart';
 
 class HomePage extends StatefulWidget {
   final Function(int) onNavigateToIndex;
 
   const HomePage({
-    Key? key,
+    super.key,
     required this.onNavigateToIndex
-  }) : super(key: key);
+  });
 
 
   @override
@@ -40,7 +37,7 @@ class _HomePageState extends State<HomePage> {
 
   final AuthService _authService = AuthService();
   final FlashcardService _flashcardService = FlashcardService();
-  List<Deck> _decks = [];
+  final List<Deck> _decks = [];
   late User? _user;
 
   //Initial values
@@ -112,18 +109,6 @@ class _HomePageState extends State<HomePage> {
       score = "$correct/$total";});
   }
 
-  String getDeadline(DateTime dateTime){
-    /// formats a givenDateTime objecr into a readable string.
-    ///
-    /// The output format is: `"Month Day, Year || HH:MM AM/PM"`
-    /// Example: `"March 02, 2025 || 12:40 AM"`
-    ///
-    /// - [dateTime]: The DateTime to be formatted
-    String formattedDate = DateFormat("MMMM dd, yyyy").format(dateTime);
-    String formattedTime = DateFormat("hh:mm a").format(dateTime);
-    return "$formattedDate || $formattedTime";
-  }
-
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<TaskProvider>(context);
@@ -192,7 +177,7 @@ class _HomePageState extends State<HomePage> {
                           icon: hasUnreadNotif ?
                           Stack(
                             children: [
-                              Icon(Icons.notifications,  color: DeckColors.primaryColor),
+                              const Icon(Icons.notifications,  color: DeckColors.primaryColor),
                               // Red dot badge (Unread indicator)
                               Positioned(
                                 right: 0,
@@ -490,27 +475,28 @@ class _HomePageState extends State<HomePage> {
                               Padding(
                                 padding: EdgeInsets.only(bottom: 10),
                                 child: HomeTaskTile(
+                                  //TODO change datas here
                                   folderName: task['folderName'],//task.folderName
                                   taskName: task['taskName'],// task.taskName
-                                  deadline: getDeadline(selectedDay),
+                                  deadline: selectedDay,
                                   onPressed: () {
                                     Navigator.push(
                                         context,
                                         RouteGenerator.createRoute(
                                           ViewTaskPage(
                                               task: Task(
-                                        '0000',
-                                        'title',
-                                        'description',
-                                        'priority',
-                                        'user_id',
-                                        false,
-                                        false,
-                                        DateTime.now(),
-                                        DateTime.now(),
-                                        false,
-                                        DateTime.now(),
-                                      ),
+                                                '0000',
+                                                'title',
+                                                'description',
+                                                'priority',
+                                                'user_id',
+                                                false,
+                                                false,
+                                                DateTime.now(),
+                                                DateTime.now(),
+                                                false,
+                                                DateTime.now(),
+                                              ),
                                               isEditable: false
                                           )
                                         )
@@ -535,7 +521,10 @@ class _HomePageState extends State<HomePage> {
                                   //     color: DeckColors.primaryColor
                                   // ),
                                 ),
-                                padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 5,
+                                    horizontal: 5
+                                ),
                               ),
                               child: const Text(
                                 "See more",
