@@ -10,6 +10,7 @@ class DeckIntroPage extends StatelessWidget {
   final String title;
   final String subtitle;
   final bool hasButton;
+  final double topPadding;
 
   const DeckIntroPage({
     super.key,
@@ -17,6 +18,7 @@ class DeckIntroPage extends StatelessWidget {
     required this.title,
     required this.subtitle,
     this.hasButton = false,
+    this.topPadding = 130,
   });
   @override
   Widget build(BuildContext context) {
@@ -49,7 +51,7 @@ class DeckIntroPage extends StatelessWidget {
                 ),
               ),
               child: Padding(
-                padding: const EdgeInsets.only(left: 40,right: 40,top: 130),
+                padding: EdgeInsets.only(left: 40,right: 40,top: topPadding),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,

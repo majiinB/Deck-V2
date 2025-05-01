@@ -51,6 +51,7 @@ class _IntroductoryPageState extends State<IntroductoryPage> {
                 title: 'Get Started with Deck!',
                 subtitle: 'Let\'s begin your journey to a more organized and productive life with Deck.',
                 hasButton: true,
+                topPadding:50,
               ),
             ],
           ),
