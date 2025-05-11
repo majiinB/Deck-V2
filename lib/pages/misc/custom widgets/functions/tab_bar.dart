@@ -1,13 +1,25 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:deck/pages/misc/colors.dart';
-import 'package:deck/pages/misc/deck_icons.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-// import 'package:google_fonts/google_fonts.dart';
-import 'package:msh_checkbox/msh_checkbox.dart';
-import 'package:provider/provider.dart';
 
+/// BuildTabBar is a widget that displays a tabbed interface with optional icons and content views.
+/// Parameters:
+/// - `titles`: A list of strings representing the titles of each tab.
+/// - `length`: The number of tabs.
+/// - `tabContent`: A list of widgets corresponding to the content displayed for each tab.
+/// - `icons`: (Optional) A list of [IconData] to display alongside each tab title.
+/// - `color`: (Optional) The color of the selected tab indicator and label. Defaults to [DeckColors.accentColor].
+/// - `hasContentPadding`: (Optional) A boolean indicating whether to apply horizontal padding to the tab bar. Defaults to true.
+///
+/// how to call
+/// BuildTabBar(
+///   titles: ['Home', 'Settings'],
+///   length: 2,
+///   tabContent: [HomeWidget(), SettingsWidget()],
+///   icons: [Icons.home, Icons.settings],
+///   color: Colors.blue,
+///   hasContentPadding: false,
+/// )
 
 class BuildTabBar extends StatelessWidget {
   final List<String> titles;
@@ -45,6 +57,8 @@ class BuildTabBar extends StatelessWidget {
                   color: DeckColors.softGray,
                 ),
                 child: TabBar(
+                  padding: EdgeInsets.zero,
+                  labelPadding: EdgeInsets.zero,
                   overlayColor: MaterialStateProperty.all(Colors.transparent),
                   indicatorSize: TabBarIndicatorSize.tab,
                   dividerColor: Colors.transparent,
@@ -80,6 +94,7 @@ class BuildTabBar extends StatelessWidget {
 
   Widget buildContentTabBar({required String title, IconData? icon}) {
     return Tab(
+      iconMargin: const EdgeInsets.all(0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -94,11 +109,12 @@ class BuildTabBar extends StatelessWidget {
           AutoSizeText(
             title,
             maxLines: 1,
-            minFontSize: 8,
+            minFontSize: 5,
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(
               fontFamily: 'Fraiche',
               fontSize: 15,
+              height: 1,
             ),
           ),
         ],
