@@ -193,7 +193,7 @@ class _LoginPageState extends State<LoginPage> {
                                   context,
                                   "assets/images/Deck-Dialogue1.png",
                                   "Uh oh. Something went wrong.",
-                                  "Error signing up! A problem occurred while signing in.Please try again.",
+                                  "Error signing up! A problem occurred while signing in. Please try again.",
                                 );
                               }
                             }
@@ -330,7 +330,7 @@ class _LoginPageState extends State<LoginPage> {
                                 context,
                                 "assets/images/Deck-Dialogue1.png",
                                 "Uh oh. Something went wrong.",
-                                "Error signing up! A problem occurred while signing in.Please try again.",
+                                "Error signing up! A problem occurred while signing in. Please try again.",
                               );
                             }
                           },
