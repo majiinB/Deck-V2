@@ -4,14 +4,37 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../functions/swipe_to_delete_and_retrieve.dart';
 
+/// TaskTile is a widget that represents an individual task item in the task page.
+/// note that this is different from hometasktile
+/// Parameters:
+/// - `taskName`: The title of the task.
+/// - `deadline`: The due date and time of the task.
+/// - `priority`: An integer representing the task's priority level (0 = High, 1 = Medium, 2 = Low).
+/// - `progressStatus`: A string indicating the current progress status of the task. Expected values are 'pending', 'in progress', or 'completed'.
+/// - `onDelete`: A callback function triggered when the task is deleted.
+/// - `onPressed`: (Optional) A callback function triggered when the tile is tapped.
+///
+/// how to call
+/// TaskTile(
+///   taskName: 'Design Meeting',
+///   deadline: DateTime.now().add(Duration(days: 2)),
+///   priority: 1,
+///   progressStatus: 'in progress',
+///   onDelete: () {
+///     // Handle delete action
+///   },
+///   onPressed: () {
+///     // Handle tap action
+///   },
+/// )
+
 class TaskTile extends StatefulWidget {
   final String taskName;
   final DateTime deadline;
-  final String priority; // high, medium, low
+  final int priority; // high, medium, low
   String progressStatus; // pending, progress, completed
   final VoidCallback onDelete;
-  final VoidCallback? onRetrieve, onPressed;
-  final bool enableRetrieve;
+  final VoidCallback? onPressed;
 
   TaskTile({
     super.key,
@@ -20,8 +43,6 @@ class TaskTile extends StatefulWidget {
     required this.priority,
     this.progressStatus = 'pending',
     required this.onDelete,
-    this.onRetrieve,
-    this.enableRetrieve = false,
     this.onPressed,
   });
 
@@ -56,10 +77,11 @@ class DeckTaskTileState extends State<TaskTile> {
           formattedDate,
           textAlign: TextAlign.start,
           maxLines: 1,
+          minFontSize: 8,
           overflow: TextOverflow.ellipsis,
           style: const TextStyle(
             fontFamily: 'Nunito-SemiBold',
-            fontSize: 14,
+            fontSize: 10,
             color: DeckColors.primaryColor,
           ),
         ),
@@ -87,7 +109,7 @@ class DeckTaskTileState extends State<TaskTile> {
       case 'pending':
         return Icons.circle_outlined;
       case 'in progress':
-        return Icons.circle;
+        return Icons.radio_button_checked_rounded;
       case 'completed':
         return Icons.check_circle;
       default:
@@ -97,7 +119,7 @@ class DeckTaskTileState extends State<TaskTile> {
 
   // Function to set the container color based on priority level
   Color _updatePriorityColor() {
-    switch (widget.priority.toLowerCase()) {
+    switch (widget.priority) {
       case 0:
         return DeckColors.deckRed;
       case 1:
@@ -128,53 +150,56 @@ class DeckTaskTileState extends State<TaskTile> {
             }
           },
         child: Container(
+          padding: EdgeInsets.only(left: 10),
           decoration: BoxDecoration(
             border: Border.all(color: DeckColors.primaryColor, width: 3),
             borderRadius: BorderRadius.circular(15.0),
           ),
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-             children: [
-               const SizedBox(width: 10),
-               Expanded(
-                 child:Padding(
-                   padding: const EdgeInsets.symmetric(vertical: 10),
-                   child: Column(
-                     crossAxisAlignment:
-                     CrossAxisAlignment.start,
-                     children: [
-                       getDeadline(DateTime.now()),
-                       AutoSizeText(
-                         widget.taskName,
-                         maxLines: 1,
-                         overflow: TextOverflow.ellipsis,
-                         style: const TextStyle(
-                           fontFamily: 'fraiche',
-                           fontSize: 20,
-                           color: DeckColors.primaryColor,
-                         ),
-                       ),
-                     ],
-                   ),
-                 ),
-               ),
-               Container(
-                   width: 20,
-                   height: 80,
-                   decoration: BoxDecoration(
-                       color: _updatePriorityColor(),
-                       borderRadius: const BorderRadius.horizontal(
-                           right: Radius.circular(12)
-                       )
-                   )
-               ),
-
-             ],
-            )
-          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(
+                _getProgressIcon(),
+                color: _updatePriorityColor(),
+                size:20,
+                weight:2,
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child:Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: Column(
+                    crossAxisAlignment:
+                    CrossAxisAlignment.start,
+                    children: [
+                      getDeadline(DateTime.now()),
+                      AutoSizeText(
+                        widget.taskName,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontFamily: 'fraiche',
+                          fontSize: 20,
+                          color: DeckColors.primaryColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Container(
+                  width: 20,
+                  decoration: BoxDecoration(
+                      color: _updatePriorityColor(),
+                      borderRadius: const BorderRadius.horizontal(
+                          right: Radius.circular(12)
+                      )
+                  )
+              ),
+            ],
+          )
         )
       ),
     );
