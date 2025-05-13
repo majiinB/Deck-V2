@@ -23,10 +23,12 @@ class AddTaskPage extends StatefulWidget {
 class _AddTaskPageState extends State<AddTaskPage> {
   bool isLoading = false;
   late String _selectedPriority = "High";
-  final TextEditingController _dateController = TextEditingController();
+  final TextEditingController _startDateController = TextEditingController();
+  final TextEditingController _endDateController = TextEditingController();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
+  
   Future<void> _selectDate(BuildContext context) async {
     DateTime? pickedDate = await showDatePicker(
       context: context,
@@ -93,7 +95,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
     );
 
     if (pickedDate != null) {
-      _dateController.text = pickedDate
+      _endDateController.text = pickedDate
           .toString()
           .split(" ")[0]; // Update text in the controller with selected date
     }
@@ -160,7 +162,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                         BuildTextBox(
                           hintText: "Enter Start Date",
                           onTap: () => _selectDate(context), // Pass context to _selectDate method
-                          controller: _dateController,
+                          controller: _startDateController,
                           isReadOnly: true,
                           rightIcon: Icons.calendar_today_outlined,
                         ), //TODO create new date controller
@@ -181,7 +183,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                         BuildTextBox(
                           hintText: "Enter Due Date",
                           onTap: () => _selectDate(context), // Pass context to _selectDate method
-                          controller: _dateController,
+                          controller: _endDateController,
                           isReadOnly: true,
                           rightIcon: Icons.calendar_today_outlined,
                         ),
@@ -245,7 +247,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                               ///loading dialog
                               setState(() => isLoading = true);
                               await Future.delayed(const Duration(milliseconds: 300));
-                              if(_dateController.text.isEmpty || _titleController.text.isEmpty || _descriptionController.text.isEmpty){
+                              if(_endDateController.text.isEmpty || _startDateController.text.isEmpty || _titleController.text.isEmpty || _descriptionController.text.isEmpty){
                                 /// stop loading
                                 setState(() => isLoading = false);
                                 ///display error
@@ -257,9 +259,10 @@ class _AddTaskPageState extends State<AddTaskPage> {
                                 );
                                 return;
                               }
-                              print(DateTime.parse(_dateController.text));
+                              print(DateTime.parse(_endDateController.text));
+                              print(DateTime.parse(_startDateController.text));
                               print(DateTime.now());
-                              if(DateTime.parse(_dateController.text).add(const Duration(hours: 23, minutes: 59, seconds: 59)).isBefore(DateTime.now())){
+                              if(DateTime.parse(_endDateController.text).add(const Duration(hours: 23, minutes: 59, seconds: 59)).isBefore(DateTime.now())){
                                 /// stop loading
                                 setState(() => isLoading = false);
                                 ///display error
@@ -279,7 +282,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                                 "is_done": false,
                                 "is_active": false,
                                 "set_date": DateTime.now(),
-                                "end_date": DateTime.parse(_dateController.text).add(const Duration(hours: 23, minutes: 59, seconds: 59)),
+                                "end_date": DateTime.parse(_endDateController.text).add(const Duration(hours: 23, minutes: 59, seconds: 59)),
                                 "is_deleted": false,
                                 "done_date": DateTime.now(),
                               };
