@@ -374,22 +374,26 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
                     SingleChildScrollView(
                       padding: EdgeInsets.only(top: 20,bottom:100),
                       child:
-                      // TaskTile(
-                      //   taskName: 'an exeample of a very long'
-                      //       'task tiele that should trigger t he ellipsis',
-                      //   deadline: DateTime.now(),//TaskProvider.getNameDate(task.deadline),
-                      //   priority: 0,
-                      //   progressStatus: 'to do',
-                      //   onDelete: () {
-                      //   },
-                      //   onPressed: () {
-                      //     print("Clicked task tile!");
-                      //   },
-                      // ),
-                      TaskList(
-                        tasks: [],
-                        filter: (task) => !task.getIsDone,
-                      )
+                      TaskTile(
+                        taskName: 'an exeample of a very long'
+                            'task tiele that should trigger t he ellipsis',
+                        deadline: DateTime.now(),//TaskProvider.getNameDate(task.deadline),
+                        priority: 0,
+                        progressStatus: 'to do',
+                        onDelete: () {
+                        },
+                        onPressed: () {
+                          print("Clicked task tile!");
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => ViewTaskPage(task: Task("0000", "_title", "_description", "0", "jkghjh", false, true, DateTime.now(), DateTime.now(), false, DateTime.now()), isEditable: true,)),//TODO change title
+                          );
+                        },
+                      ),
+                      // TaskList(
+                      //   tasks: [],
+                      //   filter: (task) => !task.getIsDone,
+                      // )
 
                     ),
                     SingleChildScrollView(
@@ -542,7 +546,6 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
               Text(
                   DateFormat('yyyy').format(focusedDay),
                   style: const TextStyle(
