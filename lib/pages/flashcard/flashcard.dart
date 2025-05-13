@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:ffi';
 
@@ -45,6 +46,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
   int numOfCards = 0;
   String _nextPageToken = "";
   bool isFetchingMore = false;
+  Timer? _debounce; // Debouncer
 
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = "";
@@ -93,12 +95,26 @@ class _FlashcardPageState extends State<FlashcardPage> {
   }
 
   void _onSearchChanged() {
-    setState(() {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 1200), () async {
       _searchQuery = _searchController.text;
-      _filteredDecks = _decks
-          .where((deck) =>
-              deck.title.toLowerCase().contains(_searchQuery.toLowerCase()))
-          .toList();
+      List<Deck> searchedDecks = [];
+      if(_searchQuery.trim().isNotEmpty){
+        var result = await _flashcardService.searchDecks(_searchQuery, true);
+        searchedDecks = result['decks'];
+        setState(() {
+          _filteredDecks = searchedDecks;
+        });
+      }else{
+        var result = await _flashcardService.getDecks(); // Call method to fetch decks
+        searchedDecks = result['decks'];
+        String nextPageToken = result['nextPageToken'];
+        setState(() {
+          _decks = searchedDecks;
+          _filteredDecks = _decks;
+          _nextPageToken = nextPageToken;
+        });
+      }
     });
   }
 
@@ -139,8 +155,10 @@ class _FlashcardPageState extends State<FlashcardPage> {
   }
 
   Future<void> _onScroll() async {
+    if (_searchQuery.trim().isNotEmpty) return;
+
     if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - 200) {
+        _scrollController.position.maxScrollExtent - 300) {
 
       if(isFetchingMore) return;
       if(_nextPageToken == "" || _nextPageToken.isEmpty) return;
@@ -641,6 +659,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
     FlashcardUtils.updateLatestReview.removeListener(_updateLatestReview);
     _scrollController.removeListener(_onScroll);
     _searchController.dispose();
+    _debounce?.cancel();
     _scrollController.dispose();
     super.dispose();
   }

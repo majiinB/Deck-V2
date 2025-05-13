@@ -20,7 +20,7 @@ class FlashcardService{
     String nextPageTokenRetrieved = "";
     try {
       String? token = await AuthService().getIdToken();
-      String url = '$deckLocalAPIUrl/v1/decks?limit=10';
+      String url = '$deckManagerAPIUrl/v1/decks?limit=10';
 
       // Send a POST request to the API with the request body and headers.
       final response = await http.get(
@@ -65,7 +65,7 @@ class FlashcardService{
         };
       }
       String? token = await AuthService().getIdToken();
-      String url = '$deckLocalAPIUrl/v1/decks?limit=10&nextPageToken=$nextPageToken';
+      String url = '$deckManagerAPIUrl/v1/decks?limit=10&nextPageToken=$nextPageToken';
 
       // Send a POST request to the API with the request body and headers.
       final response = await http.get(
@@ -131,6 +131,41 @@ class FlashcardService{
       print('Error retrieving specific deck: $e');
     }
     return null;
+  }
+
+  Future<Map<String, dynamic>> searchDecks(String query, bool searchForOwnDeck) async {
+    List<Deck> deckList = [];
+    String nextPageTokenRetrieved = "";
+    try {
+      String? token = await AuthService().getIdToken();
+      String url = '$deckManagerAPIUrl/v1/decks/search?searchQuery=$query&searchOwnDeck=$searchForOwnDeck';
+
+      // Send a GET request to the API with the request body and headers.
+      final response = await http.get(
+        Uri.parse(url), // API endpoint.
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if(response.statusCode == 200) {
+        var jsonData = jsonDecode(response.body) as Map<String, dynamic>;
+
+        // Extract the data from the JSON response.
+        Map<String, dynamic> deckData = jsonData["data"];
+
+        // Extract the list of decks from the JSON response.
+        List<dynamic> listOfDecks = deckData["decks"];
+        deckList = listOfDecks.map((decksJson) => Deck.fromJson(decksJson)).toList();
+      }
+    } catch (e) {
+      // Handle errors
+      print('Error searching decks: $e');
+    }
+    return {
+      'decks' : deckList
+    };
   }
 
   Future<List<Deck>> getDeletedDecksByUserId(String userId) async {
