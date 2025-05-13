@@ -140,7 +140,7 @@ class _MainPageState extends State<MainPage> {
           DeckIcons.flashcard,
           color: DeckColors.primaryColor,
         ),
-        label: _currentIndex == 2 ? '' : 'Flashcards',
+        label: _currentIndex == 2 ? '' : 'Decks',
         labelStyle: const TextStyle(
           color: DeckColors.primaryColor,
           fontSize: 15,
