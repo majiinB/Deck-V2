@@ -25,18 +25,15 @@ import '../functions/if_collection_empty.dart';
 /// Parameters:
 /// - tasks: A list of Task objects to be displayed.
 /// - filter: A function that determines which tasks should be shown.
-/// - isHome: A boolean that determine if HomeTaskTile will be used or DeckTaskTile.
 
 class TaskList extends StatelessWidget{
   final List<Task> tasks;
   final bool Function(Task) filter;
-  final bool isHome;
 
   const TaskList({
     Key? key,
     required this.tasks,
     required this.filter,
-    this.isHome = false,
   }) : super(key: key);
 
   int getPriorityIndex(String priority) {
@@ -56,35 +53,17 @@ class TaskList extends StatelessWidget{
     final filteredTasks = tasks.where(filter).toList();
     if (filteredTasks.isNotEmpty) {
       return ListView.builder(
+        shrinkWrap:  true, // Allow the ListView to wrap its content
+        physics: const NeverScrollableScrollPhysics(),
         itemCount: filteredTasks.length,
         itemBuilder: (context, index) {
           Task task = filteredTasks[index];
           return Padding(
-            padding: const EdgeInsets.only(top: 5),
-            child: isHome ?
-            HomeTaskTile(
-                folderName: "sample folder",//task.folderName, //TODO: UPDATE
-                taskName: task.title,
-                priority:  getPriorityIndex(task.priority),
-                deadline: task.deadline,
-                onPressed: (){
-                  print("Clicked task tile!");
-                  print(
-                      'Task: ${task.title}, IsDone: ${task.getIsDone}, IsActive: ${task.getIsActive}, Deadline: ${task.deadline}');
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          ViewTaskPage(task: task, isEditable: true),
-                    ),
-                  );
-                }//task.onPressed
-            )
-                :
-            TaskTile(
+            padding: EdgeInsets.only(bottom:10),
+            child: TaskTile(
               taskName: task.title,
               deadline: DateTime.now(),//TaskProvider.getNameDate(task.deadline),
-              priority: task.priority,
+              priority: getPriorityIndex(task.priority),
               progressStatus: 'to do',
               onDelete: () {
                 final String deletedTitle = task.title;
@@ -100,18 +79,17 @@ class TaskList extends StatelessWidget{
                   },
                 );
               },
-              enableRetrieve: false,
               onPressed: () {
                 print("Clicked task tile!");
-                print(
-                    'Task: ${task.title}, IsDone: ${task.getIsDone}, IsActive: ${task.getIsActive}, Deadline: ${task.deadline}');
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        ViewTaskPage(task: task, isEditable: true),
-                  ),
-                );
+                // print(
+                // 'Task: ${task.title}, IsDone: ${task.getIsDone}, IsActive: ${task.getIsActive}, Deadline: ${task.deadline}'
+                // );
+
+                // Navigator.push(
+                // context,
+                // MaterialPageRoute(
+                //   builder: (context) => ViewTaskPage(  task: tasks[index],  isEditable: true,)),
+                // );
               },
             ),
           );
@@ -120,9 +98,9 @@ class TaskList extends StatelessWidget{
     } else {
       return IfCollectionEmpty(
         ifCollectionEmptyText:
-        'Seems like there aren’t any\n task for today, wanderer!',
+        'Seems like there aren’t any task for today, wanderer!',
         ifCollectionEmptySubText:
-        'Now’s the perfect time to get ahead. Start\nadding new tasks and stay \non top of your game!',
+        'Now’s the perfect time to get ahead. Start adding new tasks and stay on top of your game!',
         ifCollectionEmptyHeight: MediaQuery.of(context).size.height / 2,
       );
     }

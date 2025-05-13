@@ -25,6 +25,7 @@ import 'package:pie_chart/pie_chart.dart';
 import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
 import '../misc/custom widgets/functions/if_collection_empty.dart';
 import '../misc/custom widgets/functions/tab_bar.dart';
+import '../misc/custom widgets/tiles/task_list.dart';
 import '../misc/custom widgets/tiles/task_tile.dart';
 import '../misc/deck_icons.dart';
 import '../misc/deck_icons2.dart';
@@ -119,81 +120,11 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
   }
 
   bool showAllTask = false;
-  @override
   void _getTasks() async {
     await Provider.of<TaskProvider>(context, listen: false).loadTasks();
   }
 
-  Widget _buildTaskList(List<Task> tasks, bool Function(Task) filter) {
-    final filteredTasks = tasks.where(filter).toList();
-    if(filteredTasks.isNotEmpty) {
-    return ListView.builder(
-      itemCount: filteredTasks.length,
-      itemBuilder: (context, index) {
-        Task task = filteredTasks[index]; // Access the Task model directly
-        // Check if the task should be displayed based on the conditions
-        return const Padding(
-          padding: EdgeInsets.only(top:5),
-          // child: HomeTaskTile(
-          //   folderName: task['folderName'],//task.folderName
-          //   taskName: task['taskName'],// task.title
-          //   deadline: getDeadline(selectedDay),//TaskProvider.getNameDate(task.deadline)
-          //   onPressed: () {
-          //     print("Clicked task tile!");
-          //     print('Task: ${task.title}, IsDone: ${task.getIsDone}, IsActive: ${task.getIsActive}, Deadline: ${task.deadline}');
-          //     Navigator.push(
-          //       context,
-          //       MaterialPageRoute(
-          //         builder: (context) => ViewTaskPage(task: task, isEditable: true),
-          //       ),
-          //     );
-          //   },
-          //   priority: task['priority'],//task.priority
-          // ),
-          // DeckTaskTile(
-          //   title: task.title,
-          //   deadline: TaskProvider.getNameDate(task.deadline),
-          //   priority: task.priority, // You can customize this if needed
-          //   progressStatus: 'to do',
-          //   onDelete: () {
-          //     final String deletedTitle = task.title;
-          //     showConfirmDialog(
-          //         context,
-          //         "assets/images/Deck-Dialogue1.png",
-          //         "Delete Item",
-          //         "Are you sure you want to delete '$deletedTitle'?",
-          //         "Delete Item",
-          //             () {Provider.of<TaskProvider>(context, listen: false).deleteTask(task.uid);},
-          //         // "Cancel",
-          //         //     () {setState(() {}); // You may need to handle state updates accordingly
-          //     // }
-          //     );
-          //   },
-          //   enableRetrieve: false,
-          //   onTap: () {
-          //     print("Clicked task tile!");
-          //     print('Task: ${task.title}, IsDone: ${task.getIsDone}, IsActive: ${task.getIsActive}, Deadline: ${task.deadline}');
-          //     Navigator.push(
-          //       context,
-          //       MaterialPageRoute(
-          //         builder: (context) => ViewTaskPage(task: task, isEditable: true),
-          //       ),
-          //     );
-          //   },
-          // ),
-        );
-      },
-    );
-    } else {
-      return IfCollectionEmpty(
-        ifCollectionEmptyText: 'Seems like there aren’t any\n task for today, wanderer!',
-        ifCollectionEmptySubText:
-        'Now’s the perfect time to get ahead. Start\nadding new tasks and stay \non top of your game!',
-        ifCollectionEmptyHeight: MediaQuery.of(context).size.height/2,
-      );
-    }
-  }
-
+  @override
   void initState() {
     super.initState();
     _getTasks();
@@ -205,15 +136,22 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
   List<Color> priorityColorList =[DeckColors.deckRed,DeckColors.deckYellow,DeckColors.deckBlue];
 
   Widget buildOverviewTab( int? total, int? complete){
+
+    /// buildOverviewTab is a widget designed to present a comprehensive overview of task progress
+    /// and distribution within the folder .
+    /// It displays three primary sections:
+    ///   overall progress,
+    ///   workload by status,
+    ///   and priority breakdown.
+
     progressValue = (total != 0) ? (complete ?? 0) / total! : 0.0;
     progressLabel = "$complete / $total";
-
     return  SingleChildScrollView(
-      padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
       child: Column(
         children: [
           Container(
-              padding: EdgeInsets.all(20),
+              padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 border: Border.all(color: DeckColors.primaryColor, width: 3),
                 color: DeckColors.white,
@@ -314,7 +252,7 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
                 ],
               )
           ),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
           Container(
@@ -378,6 +316,12 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
   }
 
   Widget buildListTab(){
+    /// buildListTab is a widget designed to present a list of all the task
+    /// It  organizes tasks into different categories using tabs:
+    ///   pedning
+    ///   in progress
+    ///   completed
+
     return  Container(
         padding: EdgeInsets.only(left: 30,right: 30, top:30),
         decoration: const BoxDecoration(
@@ -420,56 +364,76 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
               const SizedBox(
                 height: 10,
               ),
-              Container(
+              SizedBox(
                 width: MediaQuery.of(context).size.width,
                 height: 500,
                 child:BuildTabBar(
                   titles: ['Pending', 'In Progress', 'Completed'],
                   length: 3,
                   tabContent: [
+                    SingleChildScrollView(
+                      padding: EdgeInsets.only(top: 20,bottom:100),
+                      child:
+                      // TaskTile(
+                      //   taskName: 'an exeample of a very long'
+                      //       'task tiele that should trigger t he ellipsis',
+                      //   deadline: DateTime.now(),//TaskProvider.getNameDate(task.deadline),
+                      //   priority: 0,
+                      //   progressStatus: 'to do',
+                      //   onDelete: () {
+                      //   },
+                      //   onPressed: () {
+                      //     print("Clicked task tile!");
+                      //   },
+                      // ),
+                      TaskList(
+                        tasks: [],
+                        filter: (task) => !task.getIsDone,
+                      )
 
-                    Container(
-                      child:  SingleChildScrollView(
-                        padding: EdgeInsets.only(top: 20),
-                        child:
-                        ListView.builder(
-                          shrinkWrap:  true, // Allow the ListView to wrap its content
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: 10 /*tasks.length*/,
-                          itemBuilder: (context, index) {
-                            return TaskTile(
-                              taskName: 'a high priority task',
-                              deadline: DateTime.now(),
-                              priority: 'medium',
-                              progressStatus: 'to do',
-                              // title: tasks[index]['title'],
-                              // deadline: tasks[index]['deadline'],
-                              // priority: tasks[index]['priority'],
-                              // progressStatus: tasks[index]['progressStatus'],
-                              onDelete: () {
-                                // final String deletedTitle = tasks[index].title;
-                                // showConfirmationDialog(
-                                //   context, "Delete Item",
-                                //   "Are you sure you want to delete '$deletedTitle'?",() {
-                                //     Provider.of<TaskProvider>(context,listen: false).deleteTask(tasks[index].uid);},() { setState(() {}); },
-                                // );
-                              },
-                              enableRetrieve: false,
-                              onPressed: () {
-                                print("Clicked task tile!");
-                                // Navigator.push(
-                                // context,
-                                // MaterialPageRoute(
-                                //   builder: (context) => ViewTaskPage(  task: tasks[index],  isEditable: true,)),
-                                // );
-                              },
-                            );
-                          },
-                        ),
-                      ),
                     ),
-                    Container(),
-                    Container(),
+                    SingleChildScrollView(
+                        padding: EdgeInsets.only(top: 20,bottom:100),
+                        child:
+                        // TaskTile(
+                        //   taskName: 'an exeample of a very long'
+                        //       'task tiele that should trigger t he ellipsis',
+                        //   deadline: DateTime.now(),//TaskProvider.getNameDate(task.deadline),
+                        //   priority: 0,
+                        //   progressStatus: 'to do',
+                        //   onDelete: () {
+                        //   },
+                        //   onPressed: () {
+                        //     print("Clicked task tile!");
+                        //   },
+                        // ),
+                        TaskList(
+                          tasks: [],
+                          filter: (task) => !task.getIsDone,
+                        )
+
+                    ),
+                    SingleChildScrollView(
+                        padding: EdgeInsets.only(top: 20,bottom:100),
+                        child:
+                        // TaskTile(
+                        //   taskName: 'an exeample of a very long'
+                        //       'task tiele that should trigger t he ellipsis',
+                        //   deadline: DateTime.now(),//TaskProvider.getNameDate(task.deadline),
+                        //   priority: 0,
+                        //   progressStatus: 'to do',
+                        //   onDelete: () {
+                        //   },
+                        //   onPressed: () {
+                        //     print("Clicked task tile!");
+                        //   },
+                        // ),
+                        TaskList(
+                          tasks: [],
+                          filter: (task) => !task.getIsDone,
+                        )
+
+                    ),
                     // _buildTaskList(tasks, (task) => !task.getIsDone && !task.getIsActive),
                     // _buildTaskList(tasks, (task) => task.getIsActive && !task.getIsDone),
                     // _buildTaskList(tasks, (task) => task.getIsDone && !task.getIsActive)
@@ -561,9 +525,14 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
 
   Widget buildCalendarTab(){
     return  Container(
-        padding: EdgeInsets.only(left: 30,right: 30, top:30),
-        decoration: BoxDecoration(
-            border: Border.all(color: DeckColors.primaryColor, width: 3),
+        padding: const EdgeInsets.only(left: 30,right: 30, top:30),
+        decoration: const BoxDecoration(
+            border: Border(
+              left: BorderSide(color: DeckColors.primaryColor, width: 3),
+              right: BorderSide(color: DeckColors.primaryColor, width: 3),
+              top: BorderSide(color: DeckColors.primaryColor, width: 3),
+              bottom: BorderSide.none,
+            ),
             color: DeckColors.white,
             borderRadius: BorderRadius.vertical(
                 top: Radius.circular(50)
@@ -571,22 +540,16 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
         ),
         child: SingleChildScrollView(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+
               Text(
                   DateFormat('yyyy').format(focusedDay),
                   style: const TextStyle(
                       fontFamily: 'Fraiche',
-                      fontSize: 30,
-                      color: DeckColors.primaryColor,
-                      fontWeight: FontWeight.bold)
-              ),
-              Text(
-                  DateFormat('MMMM dd').format(focusedDay),
-                  style: const TextStyle(
-                      fontFamily: 'Fraiche',
-                      fontSize: 56,
-                      color: DeckColors.primaryColor,
-                      fontWeight: FontWeight.bold)
+                      fontSize: 20,
+                      color: DeckColors.accentColor,
+                      )
               ),
               // Container(
               //   height: (MediaQuery.of(context).size.height/2),
@@ -683,9 +646,10 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
                 lastDay: DateTime.utc(DateTime.now().year + 5, 1, 1),
                 onDaySelected: _onDaySelected,
                 selectedDayPredicate: (day) => isSameDay(day, focusedDay),
-                rowHeight: 40,
-                daysOfWeekHeight: 40,
+                rowHeight: 35,
+                daysOfWeekHeight: 20,
                 calendarStyle: CalendarStyle(
+                  cellMargin: EdgeInsets.all(2),
                   canMarkersOverflow: false,
                   markersMaxCount: 1,
                   markerDecoration: const BoxDecoration(
@@ -694,65 +658,84 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
                   defaultTextStyle: const TextStyle(
                     color: DeckColors.primaryColor,
                     fontFamily: 'Nunito-Regular',
-                    fontSize: 16,
+                    fontSize: 15,
                   ),
                   weekNumberTextStyle: const TextStyle(
                     color: DeckColors.primaryColor,
                     fontFamily: 'Nunito-Regular',
-                    fontSize: 16,
+                    fontSize: 15,
                   ),
                   weekendTextStyle: const TextStyle(
                     color: DeckColors.primaryColor,
                     fontFamily: 'Nunito-Regular',
-                    fontSize: 16,
+                    fontSize: 15,
                   ),
-                  selectedDecoration: BoxDecoration(
+                  selectedTextStyle: const TextStyle(
+                    color: DeckColors.white,
+                    fontFamily: 'Nunito-Regular',
+                    fontSize: 15,
+                  ),
+                  selectedDecoration: const BoxDecoration(
+                    color: DeckColors.accentColor ,
+                    // border: Border.all(
+                    //   color: DeckColors.primaryColor,
+                    //   width: 2,
+                    // ),
+                    shape: BoxShape.circle,
+                  ),
+                  todayTextStyle:const TextStyle(
                     color: DeckColors.primaryColor,
+                    fontFamily: 'Nunito-Regular',
+                    fontSize: 15,
+                  ),
+                  todayDecoration: BoxDecoration(
+                    color: Colors.transparent,
+                    shape: BoxShape.circle,
                     border: Border.all(
                       color: DeckColors.primaryColor,
                       width: 2,
                     ),
-                    shape: BoxShape.circle,
-                  ),
-                  todayDecoration: const BoxDecoration(
-                    color: Colors.transparent,
-                    shape: BoxShape.circle,
                   ),
                   outsideDaysVisible: true,
                   outsideTextStyle: const TextStyle(
-                    color: DeckColors.primaryColor,
+                    color: DeckColors.softGray,
                     fontFamily: 'Nunito-Regular',
-                    fontSize: 16,
+                    fontSize: 15,
                   ),
                 ),
                 headerStyle: HeaderStyle(
+                  headerPadding: EdgeInsets.zero,
                   titleTextFormatter: (date, locale) {
-                    return DateFormat('MMMM').format(date);
+                    return DateFormat('MMMM DDD').format(date);
                   },
-                  leftChevronIcon: const Icon(Icons.arrow_back_ios_rounded,
-                      color: DeckColors.primaryColor),
+                  leftChevronIcon: const Icon(
+                      Icons.arrow_left_rounded,
+                      color: DeckColors.primaryColor
+                  ),
                   leftChevronMargin: const EdgeInsets.only(right: 10),
-                  leftChevronPadding: const EdgeInsets.all(10),
-                  rightChevronIcon: const Icon(Icons.arrow_forward_ios_rounded,
-                      color: DeckColors.primaryColor),
-                  rightChevronPadding: const EdgeInsets.all(10),
+                  leftChevronPadding: const EdgeInsets.only(right: 10),
+                  rightChevronIcon: const Icon(
+                      Icons.arrow_right_rounded,
+                      color: DeckColors.primaryColor
+                  ),
+                  rightChevronPadding: const EdgeInsets.only(left: 10),
                   rightChevronMargin: EdgeInsets.zero,
                   formatButtonVisible: false,
                   titleTextStyle: const TextStyle(
-                    color: DeckColors.primaryColor,
-                    fontSize: 20,
+                    color: DeckColors.accentColor,
+                    fontSize: 40,
                     fontFamily: 'Fraiche',
                   ),
                 ),
                 daysOfWeekStyle: const DaysOfWeekStyle(
                   weekdayStyle: TextStyle(
                     color: DeckColors.primaryColor,
-                    fontSize: 20,
+                    fontSize:  15,
                     fontFamily: 'Fraiche',
                   ),
                   weekendStyle: TextStyle(
                     color: DeckColors.primaryColor,
-                    fontSize: 20,
+                    fontSize: 15,
                     fontFamily: 'Fraiche',
                   ),
                 ),
@@ -791,6 +774,47 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
                       RouteGenerator.createRoute(const AddTaskPage()),
                     );              }
               ),
+              const SizedBox(
+                height: 10,
+              ),
+              SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  height: 500,
+                  child:BuildTabBar(
+                    titles: ['Pending', 'In Progress', 'Completed'],
+                    length: 3,
+                    tabContent: [
+                      SingleChildScrollView(
+                          padding: EdgeInsets.only(top: 20,bottom:100),
+                          child:
+                          TaskList(
+                            tasks: [],
+                            filter: (task) => !task.getIsDone,
+                          )
+
+                      ),
+                      SingleChildScrollView(
+                          padding: EdgeInsets.only(top: 20,bottom:100),
+                          child:
+                          TaskList(
+                            tasks: [],
+                            filter: (task) => !task.getIsDone,
+                          )
+
+                      ),
+                      SingleChildScrollView(
+                          padding: EdgeInsets.only(top: 20,bottom:100),
+                          child:
+                          TaskList(
+                            tasks: [],
+                            filter: (task) => !task.getIsDone,
+                          )
+
+                      ),
+
+                    ],
+                  )
+              )
             ],
           ),
         )
@@ -907,7 +931,8 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
                       tabContent: [
                         SizedBox(
                           width: MediaQuery.of(context).size.width,
-                          child: buildOverviewTab(totalTask,totalCompleted),
+                          child:
+                          buildOverviewTab(totalTask,totalCompleted),
                         ),
                         Container(
                           width: MediaQuery.of(context).size.width,

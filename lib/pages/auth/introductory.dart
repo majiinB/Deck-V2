@@ -2,7 +2,6 @@ import 'package:deck/pages/misc/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../misc/custom widgets/functions/intro_page.dart';
-import 'package:deck/pages/auth/welcome.dart';
 
 import '../misc/widget_method.dart';
 import 'create_account.dart';
@@ -51,7 +50,7 @@ class _IntroductoryPageState extends State<IntroductoryPage> {
                 title: 'Get Started with Deck!',
                 subtitle: 'Let\'s begin your journey to a more organized and productive life with Deck.',
                 hasButton: true,
-                topPadding:50,
+                topPadding:110,
               ),
             ],
           ),
@@ -74,7 +73,7 @@ class _IntroductoryPageState extends State<IntroductoryPage> {
                         },
                         child: Container(
                             color: Colors.transparent,
-                            padding: EdgeInsets.symmetric(vertical:20,horizontal: 30),
+                            padding: const EdgeInsets.symmetric(vertical:20,horizontal: 30),
                             child: Text(
                                 "Skip",
                                 style: TextStyle(
@@ -135,7 +134,7 @@ class _IntroductoryPageState extends State<IntroductoryPage> {
                         child:  Container(
                           color: Colors.transparent,
                         padding: EdgeInsets.symmetric(vertical:20, horizontal: 30),
-                          child: Text(
+                          child: const Text(
                               "Next",
                               style: TextStyle(
                                 fontFamily: 'Nunito-Regular',

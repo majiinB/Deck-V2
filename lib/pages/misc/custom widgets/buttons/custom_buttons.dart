@@ -13,7 +13,8 @@ import 'package:provider/provider.dart';
 class BuildButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String buttonText;
-  final double height, width, radius, fontSize, borderWidth;
+  final double? height;
+  final double width, radius, fontSize, borderWidth;
   final Color backgroundColor, textColor, borderColor;
   final IconData? icon;
   final String? svg;
@@ -24,7 +25,7 @@ class BuildButton extends StatelessWidget {
     super.key,
     required this.onPressed,
     required this.buttonText,
-    required this.height,
+    this.height,
     required this.width,
     required this.radius,
     required this.backgroundColor,
@@ -43,7 +44,7 @@ class BuildButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: height,
+      height: height ?? null,
       width: width,
       child: TextButton(
         onPressed: onPressed,
