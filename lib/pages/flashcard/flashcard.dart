@@ -53,9 +53,6 @@ class _FlashcardPageState extends State<FlashcardPage> {
 
   bool _isSearchBoxVisible = true;
 
-  ///This keeps track of the deck's publish status
-  bool isDeckPublished = false;
-
   ///this is used sana to check if the currently signed-in is the owner
   // bool isOwner = true;
 
@@ -476,14 +473,16 @@ class _FlashcardPageState extends State<FlashcardPage> {
                               // Checks if the user is the owner of the deck
                               items: (_filteredDecks[index].userId == _user!.uid)? [
                                 // Check if the deck is private (not published)
-                                _filteredDecks[index].isPrivate ? 'Unpublish Deck' :
-                                'Publish Deck',
+                                _filteredDecks[index].isPrivate ? 'Publish Deck' :
+                                'Unpublish Deck',
                                 'Edit Deck Info',
                                 'Delete Deck'
                               ] : ['Unsave Deck', 'Report'],
-                              icons: (_filteredDecks[index].userId == _user!.uid)?
-                              [isDeckPublished? Icons.undo_rounded: Icons.publish_rounded, DeckIcons.pencil, DeckIcons.trash_bin]///Owner
-                                  : [Icons.remove_circle, Icons.report],///Not Owner
+                              icons: (_filteredDecks[index].userId == _user!.uid) ? [
+                                _filteredDecks[index].isPrivate! ? Icons.undo_rounded : Icons.publish_rounded,
+                                DeckIcons.pencil,
+                                DeckIcons.trash_bin
+                              ] : [Icons.remove_circle, Icons.report],///Not Owner
 
                               ///START FOR LOGIC OF POP UP MENU BUTTON (ung three dots)
                               onItemsSelected: (selectedIndex) {
@@ -496,22 +495,21 @@ class _FlashcardPageState extends State<FlashcardPage> {
                                       barrierDismissible: false,
                                       builder: (BuildContext context) {
                                         return CustomConfirmDialog(
-                                          title: isDeckPublished
-                                              ? 'Unpublish Deck?'
-                                              : 'Publish Deck?',
-                                          message: isDeckPublished
-                                              ? 'Are you sure you want to unpublish this deck?'
-                                              : 'Are you sure you want to publish this deck?',
+                                          title: _filteredDecks[index].isPrivate
+                                              ? 'Publish Deck?'
+                                              : 'Unpublish Deck?',
+                                          message: _filteredDecks[index].isPrivate
+                                              ? 'Are you sure you want to publish this deck?'
+                                              : 'Are you sure you want to unpublish this deck?',
                                           imagePath: 'assets/images/Deck-Dialogue4.png',
-                                          button1: isDeckPublished
-                                              ? 'Unpublish Deck'
-                                              : 'Publish Deck',
+                                          button1: _filteredDecks[index].isPrivate
+                                              ? 'Publish Deck'
+                                              : 'Unpublish Deck',
                                           button2: 'Cancel',
                                           onConfirm: () async {
-                                            setState(() {
-                                              isDeckPublished = !isDeckPublished;
-                                              Navigator.of(context).pop();
-                                            });
+                                            await _filteredDecks[index].publishDeck();
+                                            setState(() {});
+                                            Navigator.of(context).pop();
                                           },
                                           onCancel: () {
                                             Navigator.of(context).pop();
@@ -603,7 +601,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
                                           title:'Unsave Deck?',
                                           message: 'Are you sure you want to unsave this deck?',
                                           imagePath: 'assets/images/Deck-Dialogue4.png',
-                                          button1: isDeckPublished ? 'Unsave Deck' : 'Save Deck',
+                                          button1: _filteredDecks[index].isPrivate ? 'Unsave Deck' : 'Save Deck',
                                           button2: 'Cancel',
                                           onConfirm: () async {
                                             setState(() {

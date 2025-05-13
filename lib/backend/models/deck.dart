@@ -81,6 +81,46 @@ class Deck{
       return false;
     }
   }
+
+  Future<bool> publishDeck() async {
+    try {
+      String? token = await AuthService().getIdToken();
+      if (isPrivate == null) {
+        print('isPrivate is null');
+        return false;
+      }
+
+      bool newPrivacyValue = !isPrivate;
+      Map<String, dynamic> requestBody = {
+        'isPrivate': newPrivacyValue,
+      };
+
+      // Send a PUT request to the API with the request body and headers.
+      final response = await http.put(
+        Uri.parse('$deckLocalAPIUrl/v1/decks/$_deckId'), // API endpoint.
+        body: jsonEncode(requestBody), // JSON-encoded request body.
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $token',
+        },
+
+      );
+      print(response.statusCode);
+      print(response.body);
+      if(response.statusCode == 200){
+        var jsonData = jsonDecode(response.body) as Map<String, dynamic>;
+        print(jsonData); // Log parsed data for debugging.
+        isPrivate = newPrivacyValue;
+        // If the JSON data is non-empty, process it.
+        if (jsonData.isNotEmpty) return true;
+        return true;
+      }
+      return false;
+    } catch (e) {
+      print('Error adding deck: $e');
+      return false;
+    }
+  }
   Future<bool> updateDeleteStatus(bool newStatus) async {
     try {
       // Reference to the Firestore document
@@ -106,7 +146,7 @@ class Deck{
 
       // Send a POST request to the API with the request body and headers.
       final response = await http.get(
-        Uri.parse('$deckManagerAPIUrl/v1/decks/$_deckId/flashcards'), // API endpoint.
+        Uri.parse('$deckLocalAPIUrl/v1/decks/$_deckId/flashcards'), // API endpoint.
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $token',
@@ -171,7 +211,7 @@ class Deck{
       ];
       // Send a POST request to the API with the request body and headers.
       final response = await http.post(
-        Uri.parse('$deckManagerAPIUrl/v1/decks/$_deckId/flashcards'), // API endpoint.
+        Uri.parse('$deckLocalAPIUrl/v1/decks/$_deckId/flashcards'), // API endpoint.
         body: jsonEncode(requestBody), // JSON-encoded request body.
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',

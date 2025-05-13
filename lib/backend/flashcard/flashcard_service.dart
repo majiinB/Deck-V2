@@ -20,7 +20,7 @@ class FlashcardService{
     String nextPageTokenRetrieved = "";
     try {
       String? token = await AuthService().getIdToken();
-      String url = '$deckManagerAPIUrl/v1/decks?limit=10';
+      String url = '$deckLocalAPIUrl/v1/decks?limit=10';
 
       // Send a POST request to the API with the request body and headers.
       final response = await http.get(
@@ -103,7 +103,7 @@ class FlashcardService{
 
       // Send a POST request to the API with the request body and headers.
       final response = await http.get(
-        Uri.parse('$deckManagerAPIUrl/v1/decks/$deckID'), // API endpoint.
+        Uri.parse('$deckLocalAPIUrl/v1/decks/$deckID'), // API endpoint.
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $token',
@@ -138,7 +138,7 @@ class FlashcardService{
     String nextPageTokenRetrieved = "";
     try {
       String? token = await AuthService().getIdToken();
-      String url = '$deckManagerAPIUrl/v1/decks/search?searchQuery=$query&searchOwnDeck=$searchForOwnDeck';
+      String url = '$deckLocalAPIUrl/v1/decks/search?searchQuery=$query&searchOwnDeck=$searchForOwnDeck';
 
       // Send a GET request to the API with the request body and headers.
       final response = await http.get(
@@ -243,7 +243,6 @@ class FlashcardService{
     }
     return decks;
   }
-
 
   Future<Deck?> getDecksByUserIdAndDeckId(String userId, String deckId) async {
     try {
@@ -446,6 +445,7 @@ class FlashcardService{
       return false;
     }
   }
+
   Future<bool> checkIfDeckWithTitleExists(String userId, String title) async {
     try {
       // Get a reference to the decks collection
