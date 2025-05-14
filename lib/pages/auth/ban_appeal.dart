@@ -87,7 +87,7 @@ class _BanAppealPageState extends State<BanAppealPage> {
       child: Scaffold(
         appBar: const AuthBar(
           automaticallyImplyLeading: true,
-          title: 'Report A Problem',
+          title: 'Account Ban Appeal',
           color: DeckColors.primaryColor,
           fontSize: 24,
         ),
@@ -154,7 +154,7 @@ class _BanAppealPageState extends State<BanAppealPage> {
                 ),
                 const Padding(
                   padding: EdgeInsets.only(top:10, left: 15.0, right: 15.0),
-                  child: Text('Don’t include any sensitive information such as you password in your message.',
+                  child: Text('Don’t include any sensitive information such as your password in your message.',
                     style: TextStyle(
                       fontFamily: 'Nunito-Regular',
                       color: DeckColors.primaryColor,
@@ -253,8 +253,8 @@ class _BanAppealPageState extends State<BanAppealPage> {
                         builder: (BuildContext context) {
                           return CustomAlertDialog(
                               imagePath: 'assets/images/Deck-Dialogue3.png',
-                              title: 'Report Submitted',
-                              message: 'Thanks for helping keep Deck a safe space for everyone.',
+                              title: 'Appeal Submitted',
+                              message: 'Thanks for taking the time to submit an appeal. We’ll look into your case and get back to you soon.',
                               button1: 'Ok',
                               onConfirm: () {
                                 ///Pop twice: first, close the dialog, then navigate back to the previous page
