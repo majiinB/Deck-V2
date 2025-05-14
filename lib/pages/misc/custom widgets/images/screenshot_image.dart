@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../buttons/icon_button.dart';
 import 'dart:async';
+
+import '../dialogs/alert_dialog.dart';
 class BuildScreenshotImage extends StatefulWidget {
   final Function(bool) onImageUploadChange;
 
@@ -68,18 +70,11 @@ class BuildScreenshotImageState extends State<BuildScreenshotImage> {
 
   Future<void> _pickImage() async {
     if (uploadedImagesName.length >= 3) {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Upload Limit Reached'),
-          content: const Text('You can only upload up to 3 images.'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('OK'),
-            ),
-          ],
-        ),
+      showAlertDialog(
+        context,
+        "assets/images/Deck-Dialogue2.png",
+        "Upload Limit Reached",
+        "You can only upload up to 3 images.",
       );
       return;
     }
