@@ -1,7 +1,3 @@
-import 'package:deck/pages/settings/support%20and%20policies/selected%20issue%20content/ai_generated_content.dart';
-import 'package:deck/pages/settings/support%20and%20policies/selected%20issue%20content/bug_issues.dart';
-import 'package:deck/pages/settings/support%20and%20policies/selected%20issue%20content/someone_deck_content.dart';
-import 'package:deck/pages/settings/support%20and%20policies/selected%20issue%20content/something_else.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
