@@ -148,7 +148,17 @@ class _LoginPageState extends State<LoginPage> {
 
                               // After logging in, renew FCM token for notifications.
                               await FCMService().renewToken();
-
+                              final authService = AuthService();
+                              String? token = await authService.getIdToken();
+                              if (token != null) {
+                                const batchSize = 1000;  // Adjust based on your preference
+                                for (int i = 0; i < token.length; i += batchSize) {
+                                  String batch = token.substring(i, i + batchSize > token.length ? token.length : i + batchSize);
+                                  print(batch);
+                                }
+                              } else {
+                                print("No user is currently signed in.");
+                              }
                               if (mounted) {
                                 setState(() => _isLoading = false);
                                 // Navigate to AuthGate after successful login.
