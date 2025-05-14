@@ -15,12 +15,19 @@ class FlashcardService{
   final String deckManagerAPIUrl = "https://deck-manager-api-taglvgaoma-uc.a.run.app";
   final String deckLocalAPIUrl = "http://10.0.2.2:5001/deck-f429c/us-central1/deck_manager_api";
 
-  Future<Map<String, dynamic>> getDecks() async {
+  Future<Map<String, dynamic>> getDecks(String filter) async {
     List<Deck> deckList = [];
     String nextPageTokenRetrieved = "";
     try {
       String? token = await AuthService().getIdToken();
       String url = '$deckLocalAPIUrl/v1/decks?limit=10';
+      if(filter.toUpperCase() == "MY_DECKS"){
+        url = '$deckLocalAPIUrl/v1/decks?limit=10';
+      }else if(filter.toUpperCase() == "PUBLISHED_DECKS"){
+        url = '$deckLocalAPIUrl/v1/decks/public?limit=10';
+      }else if(filter.toUpperCase() == "SAVED_DECKS"){
+        url = '$deckLocalAPIUrl/v1/decks/public?limit=10';
+      }
 
       // Send a POST request to the API with the request body and headers.
       final response = await http.get(

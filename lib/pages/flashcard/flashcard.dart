@@ -46,6 +46,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
   int numOfCards = 0;
   String _nextPageToken = "";
   bool isFetchingMore = false;
+  String filter = "MY_DECKS";
   Timer? _debounce; // Debouncer
 
   final TextEditingController _searchController = TextEditingController();
@@ -76,7 +77,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
     if (user != null) {
       print("initialize deck");
       String userId = user.uid;
-      var result = await _flashcardService.getDecks(); // Call method to fetch decks
+      var result = await _flashcardService.getDecks(filter); // Call method to fetch decks
       List<Deck> decks = result['decks'];
       String nextPageToken = result['nextPageToken'];
 
@@ -103,7 +104,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
           _filteredDecks = searchedDecks;
         });
       }else{
-        var result = await _flashcardService.getDecks(); // Call method to fetch decks
+        var result = await _flashcardService.getDecks(filter); // Call method to fetch decks
         searchedDecks = result['decks'];
         String nextPageToken = result['nextPageToken'];
         setState(() {
@@ -233,20 +234,27 @@ class _FlashcardPageState extends State<FlashcardPage> {
                     ///F O R  F I L T E R  B U T T O N
                     PopupMenu(
                       icon: const Icon(Icons.filter_list_alt, color: DeckColors.primaryColor),
-                      items: const ['My Decks', 'Saved Decks', 'All'],
+                      items: const ['My Decks', 'Saved Decks', 'Published Decks'],
                       icons: const [DeckIcons.flashcard, Icons.save, Icons.align_horizontal_left_rounded],
                       onItemSelected: (index) {
+                        String currentFilter = filter;
                         /// M Y  D E C K S
                         if (index == 0){
-
+                          filter = "MY_DECKS";
+                          if(filter == currentFilter) return;
+                          _initUserDecks(_user);
                         }
                         /// S A V E D  D E C K S
                         else if (index == 1) {
-
+                          filter = "SAVED_DECKS";
+                          if(filter == currentFilter) return;
+                          _initUserDecks(_user);
                         }
-                        ///A L L
+                        /// PUBLISHED DECKS
                         else if (index == 2) {
-
+                          filter = "PUBLISHED_DECKS";
+                          if(filter == currentFilter) return;
+                          _initUserDecks(_user);
                         }
                       },
                     )
@@ -508,7 +516,12 @@ class _FlashcardPageState extends State<FlashcardPage> {
                                           button2: 'Cancel',
                                           onConfirm: () async {
                                             await _filteredDecks[index].publishDeck();
-                                            setState(() {});
+                                            setState(() {
+                                              if(filter == "PUBLISHED_DECKS"){
+                                                _filteredDecks.removeWhere((d) => d.deckId == _filteredDecks[index].deckId);
+                                              }
+                                            });
+
                                             Navigator.of(context).pop();
                                           },
                                           onCancel: () {
