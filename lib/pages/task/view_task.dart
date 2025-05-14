@@ -7,8 +7,10 @@ import 'package:deck/pages/misc/widget_method.dart';
 // import 'package:deck/pages/task/edit_task.dart';
 import 'package:provider/provider.dart';
 
+import '../misc/custom widgets/appbar/auth_bar.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
 import '../misc/custom widgets/buttons/radio_button_group.dart';
+import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
 import '../misc/custom widgets/textboxes/textboxes.dart';
 
 class ViewTaskPage extends StatefulWidget {
@@ -23,20 +25,25 @@ class ViewTaskPage extends StatefulWidget {
 class _ViewTaskPageState extends State<ViewTaskPage> {
   late int _selectedStatus;
   //initial values
-  late final TextEditingController _dateController;
+  late final TextEditingController _endDateController;
+  late final TextEditingController _startDateController;
   late final TextEditingController _descriptionController;
   late Task _task;
   late String title,description,deadline;
   late int _priorityIndex;
+  late bool isEditable;
+
   @override
   void initState() {
     super.initState();
+    isEditable = false;
     _task = widget.task;
     title = _task.title;
     _priorityIndex = TaskProvider.getPriorityIndex(_task.priority);
     deadline = TaskProvider.getNameDate(_task.deadline);
     _descriptionController = TextEditingController(text: widget.task.description.toString());
-    _dateController = TextEditingController(text: widget.task.deadline.toString().split(" ")[0]);
+    _startDateController = TextEditingController(text: widget.task.deadline.toString().split(" ")[0]);
+    _endDateController = TextEditingController(text: widget.task.deadline.toString().split(" ")[0]);
     _selectedStatus = determineStatusIndex(widget.task);
   }
 
@@ -67,34 +74,51 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
       _priorityIndex = TaskProvider.getPriorityIndex(_task.priority);
       deadline = TaskProvider.getNameDate(_task.deadline);
       _descriptionController.text = _task.description;
-      _dateController.text = _task.deadline.toString().split(" ")[0];
+      _startDateController.text = _task.deadline.toString().split(" ")[0];//todo
+      _endDateController.text = _task.deadline.toString().split(" ")[0];
       _selectedStatus = determineStatusIndex(updatedTask);
     });
   }
-
+  Color getPriorityColor(int priority){
+    Color color = DeckColors.white;
+    if(priority == 0) { color = DeckColors.deckRed;}
+    else if(priority == 1) { color = DeckColors.deckYellow;}
+    else if(priority == 2) { color = DeckColors.deckBlue;}
+    else{color = DeckColors.white;}
+    return color;
+  }
+  String getPriorityText(int priority){
+    String prio = "";
+    if(priority == 0) { prio = "High";}
+    else if(priority == 1) { prio = "Medium";}
+    else if(priority == 2) {prio = "Low";}
+    else{prio = "";}
+    return prio;
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: DeckBar(
-      //   title: "Task",
-      //   color: DeckColors.white,
-      //   fontSize: 24,
-      //   icon: widget.isEditable ? Icons.edit : null,
-      //   // icon: DeckIcons.pencil,
-      //   iconColor: Colors.white,
-      //   onPressed: () async {
-      //     // Navigate to the second page
-      //     final updatedTask = await Navigator.push(
-      //       context,
-      //       MaterialPageRoute(builder: (context) => EditTaskPage(task: _task)),
-      //     );
-      //     if (updatedTask != null) {
-      //       _updateTask(updatedTask);
-      //       await Provider.of<TaskProvider>(context,listen: false).loadTasks();
-      //     }
-      //   },
-      // ),
-
+      appBar: AuthBar(
+        title: "View task",
+        automaticallyImplyLeading: true,
+        color: DeckColors.primaryColor,
+        fontSize: 24,
+        rightIcon: isEditable ? Icons.close_rounded : Icons.edit,
+        onRightIconPressed: () async {
+          setState(() {
+            isEditable = !isEditable;
+          });
+          // // Navigate to the second page
+          // final updatedTask = await Navigator.push(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => EditTaskPage(task: _task)),
+          // );
+          // if (updatedTask != null) {
+          //   _updateTask(updatedTask);
+          //   await Provider.of<TaskProvider>(context,listen: false).loadTasks();
+          // }
+        },
+      ),
       body: SafeArea(
           top: true,
           bottom: false,
@@ -105,134 +129,155 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Image(
-                    image: AssetImage('assets/images/AddDeck_Header.png'),
-                    fit: BoxFit.cover,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 30.0),
-                    child: IconButton(
-                      icon: const Icon(
-                        DeckIcons2.pencil,
-                        color: DeckColors.white,
-                        size: 24),
-                      onPressed: () async {
-                          // final updatedTask = await Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(builder: (context) => EditTaskPage(task: _task)),
-                          // );
-                          // if (updatedTask != null) {
-                          //   _updateTask(updatedTask);
-                          //   await Provider.of<TaskProvider>(context,listen: false).loadTasks();
-                          //   print(updatedTask.priority);
-                          //   print(_selectedStatus);
-                          //   setState((){
-                          //     _priorityIndex = TaskProvider.getPriorityIndex(updatedTask.priority);
-                          //     _selectedStatus = determineStatusIndex(updatedTask);
-                          //   });
-                          //   print(_selectedStatus);
-                          // }
-                        })
-                      ,
-                    ),
-                  // const Divider(
-                  //   color: DeckColors.white,
-                  //   thickness: 2,
-                  // ),
                   Padding(
                     padding: const EdgeInsets.only(left:40.0,right:40.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Padding(padding: const EdgeInsets.only(top: 0),
-                          child:
-                          Text( title, // title of task
-
-                            style: const TextStyle(
-                              fontFamily: 'Fraiche',
+                        if(isEditable) ... {
+                          const Text(
+                            'View A Task',
+                            style: TextStyle(
+                              fontFamily: 'Nunito-Bold',
                               color: DeckColors.primaryColor,
-                              fontSize: 52,
-                              fontWeight: FontWeight.w900,
+                              fontSize: 16,
                             ),
                           ),
+                        }
+                        else ... {
+                          const Text(
+                            'Edit Mode',
+                            style: TextStyle(
+                              fontFamily: 'Nunito-Bold',
+                              color: DeckColors.primaryColor,
+                              fontSize: 16,
+                            ),
+                          ),
+                        },
+                        const SizedBox(
+                          height: 20,
                         ),
-
-                        const Padding(
-                            padding: EdgeInsets.only(top: 20,bottom: 10),
-                            child:
-                            Text(
-                              'Due Date',
-                              style: TextStyle(
-                                fontFamily: 'Nunito-Bold',
-                                color: DeckColors.primaryColor,
-                                fontSize: 16,
-                              ),
-                            )
+                        const Text(
+                          'Title',
+                          style: TextStyle(
+                            fontFamily: 'Nunito-Bold',
+                            color: DeckColors.primaryColor,
+                            fontSize: 16,
+                          ),
+                        ),
+                        BuildTextBox(
+                          hintText: title,
+                          isReadOnly: isEditable,
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        const Text(
+                          'Due Date',
+                          style: TextStyle(
+                            fontFamily: 'Nunito-Bold',
+                            color: DeckColors.primaryColor,
+                            fontSize: 16,
+                          ),
+                        ),
+                        BuildTextBox(
+                          hintText: deadline,
+                          isReadOnly: isEditable,
+                          rightIcon: Icons.calendar_today_outlined,
+                        ),
+                        const Text(
+                          'Due Date',
+                          style: TextStyle(
+                            fontFamily: 'Nunito-Bold',
+                            color: DeckColors.primaryColor,
+                            fontSize: 16,
+                          ),
                         ),
                         BuildTextBox(
                           hintText: deadline,
                           isReadOnly: true,
                           rightIcon: Icons.calendar_today_outlined,
                         ),
-                        const Padding(
-                            padding: EdgeInsets.only(top: 20,bottom: 10),
-                            child:
-                            Text(
-                              'Description',
-                              style: TextStyle(
-                                fontFamily: 'Nunito-Bold',
-                                color: DeckColors.primaryColor,
-                                fontSize: 16,
-                              ),
-                            )
+                        const Text(
+                          'Description',
+                          style: TextStyle(
+                            fontFamily: 'Nunito-Bold',
+                            color: DeckColors.primaryColor,
+                            fontSize: 16,
+                          ),
                         ),
                         BuildTextBox(
                           controller: _descriptionController,
-                          hintText: "Enter Task Description",
+                          hintText: "Task Description",
                           showPassword: false,
                           isMultiLine: true,
-                          isReadOnly: true,
+                          isReadOnly: isEditable,
                         ),
-                        const Padding(
-                            padding: EdgeInsets.only(top: 20,bottom: 10),
-                            child:
-                            Text(
+                        if(isEditable)... {
+                          const Text(
 
-                              'Priority',
-                              style: TextStyle(
-                                fontFamily: 'Nunito-Bold',
-                                color: DeckColors.primaryColor,
-                                fontSize: 16,
-                              ),
-                            )
-                        ),
-                        RadioButtonGroup(
+                            'Priority',
+                            style: TextStyle(
+                              fontFamily: 'Nunito-Bold',
+                              color: DeckColors.primaryColor,
+                              fontSize: 16,
+                            ),
+                          ),
+                          RadioButtonGroup(
                           buttonLabels: const ['High', 'Medium', 'Low'],
-                          buttonColors: const [Colors.red, Colors.yellow, Colors.blue],
-                          isClickable: false,
+                          buttonColors: const [DeckColors.deckRed, DeckColors.deckYellow, DeckColors.deckBlue],
+                          isClickable: isEditable,
                           initialSelectedIndex: _priorityIndex,
                           onChange: (label, index) {
                             setState(() {
                               _priorityIndex = index; // Update _priorityIndex when user interacts with it
                             });
                           },
-                        ),
-                        const Padding(
-                            padding: EdgeInsets.only(top: 20,bottom: 10),
-                            child:
-                            Text(
-                              'Task Status',
-                              style: TextStyle(
-                                fontFamily: 'Nunito-Bold',
-                                color: DeckColors.primaryColor,
-                                fontSize: 16,
+                        )}
+                        else... {
+                          Row(
+                            children: [
+                              const Text(
+
+                                'Priority',
+                                style: TextStyle(
+                                  fontFamily: 'Nunito-Bold',
+                                  color: DeckColors.primaryColor,
+                                  fontSize: 16,
+                                ),
                               ),
-                            )
+                              const Spacer(),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                                decoration: BoxDecoration(
+                                  color: getPriorityColor(_priorityIndex),
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(color: DeckColors.primaryColor, width: 2),
+                                ),
+                                child: Text(
+                                  getPriorityText(_priorityIndex),
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: DeckColors.primaryColor,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                        }
+                        ,
+                        const Text(
+                          'Status',
+                          style: TextStyle(
+                            fontFamily: 'Nunito-Bold',
+                            color: DeckColors.primaryColor,
+                            fontSize: 16,
+                          ),
                         ),
                         RadioButtonGroup(
-                          buttonLabels: const ['To Do', 'Active', 'Done'],
-                          buttonColors: const [ Colors.blue,  Colors.blue, Colors.blue],
-                          isClickable: false,
+                          buttonLabels: const ['Pending', 'In Progress', 'Complete'],
+                          buttonColors: const [ DeckColors.primaryColor, DeckColors.primaryColor, DeckColors.primaryColor],
+                          isClickable: true,
                           initialSelectedIndex: _selectedStatus,
                           onChange: (label, index) {
                             setState((){
@@ -240,26 +285,54 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                             });
                           }
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 50),
-                          child:
-                          BuildButton(
-                            buttonText: "Back",
+                        if(isEditable)BuildButton(
+                            buttonText: "Save Task",
                             height: 50,
                             width: MediaQuery.of(context).size.width,
                             radius: 10,
-                            backgroundColor: Colors.transparent,
-                            textColor: DeckColors.white,
+                            backgroundColor: DeckColors.accentColor,
+                            textColor: DeckColors.primaryColor,
                             size: 16,
                             fontSize: 16,
                             borderWidth: 2,
-                            borderColor: DeckColors.white,
+                            borderColor: DeckColors.primaryColor,
                             onPressed: () {
-                              print("Back button clicked");
-                              Navigator.pop(context);
+                              print("Save button pressed");
+                              showConfirmDialog(
+                                  context,
+                                  "assets/images/Deck-Dialogue4.png",
+                                  "Save Task?",
+                                  "",
+                                  "Save",
+                                      () {
+                                  });
                             },
                           ),
-
+                        BuildButton(
+                          buttonText: "Delete Task",
+                          height: 50,
+                          width: MediaQuery.of(context).size.width,
+                          radius: 10,
+                          backgroundColor: DeckColors.deckRed,
+                          textColor: DeckColors.primaryColor,
+                          size: 16,
+                          fontSize: 16,
+                          borderWidth: 2,
+                          borderColor: DeckColors.primaryColor,
+                          onPressed: () {
+                            print("delete button pressed");
+                            showConfirmDialog(
+                                context,
+                                "assets/images/Deck-Dialogue4.png",
+                                "Delete Task?",
+                                "Are you sure you want to delete ?",
+                                "Delete Task",
+                                    () {
+                                  // Provider.of<TaskProvider>(context,
+                                  //     listen: false)
+                                  //     .deleteTask(tasks[index].uid);
+                                });
+                          },
                         ),
                       ],
                     ),

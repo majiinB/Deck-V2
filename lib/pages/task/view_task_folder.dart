@@ -323,7 +323,7 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
     ///   completed
 
     return  Container(
-        padding: EdgeInsets.only(left: 30,right: 30, top:30),
+        padding: EdgeInsets.only(left: 30,right: 30),
         decoration: const BoxDecoration(
             border: Border(
               left: BorderSide(color: DeckColors.primaryColor, width: 3),
@@ -339,6 +339,9 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
+              const SizedBox(
+                height: 30,
+              ),
               BuildButton(
                   icon: Icons.add_rounded,
                   buttonText: "Add task",
@@ -386,7 +389,7 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
                           print("Clicked task tile!");
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => ViewTaskPage(task: Task("0000", "_title", "_description", "0", "jkghjh", false, true, DateTime.now(), DateTime.now(), false, DateTime.now()), isEditable: true,)),//TODO change title
+                            RouteGenerator.createRoute(ViewTaskPage(task: Task("0000", "_title", "_description", "0", "jkghjh", false, true, DateTime.now(), DateTime.now(), false, DateTime.now()), isEditable: true,)),//TODO change title
                           );
                         },
                       ),
@@ -529,7 +532,7 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
 
   Widget buildCalendarTab(){
     return  Container(
-        padding: const EdgeInsets.only(left: 30,right: 30, top:30),
+        padding: const EdgeInsets.only(left: 30,right: 30),
         decoration: const BoxDecoration(
             border: Border(
               left: BorderSide(color: DeckColors.primaryColor, width: 3),
@@ -546,6 +549,9 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              const SizedBox(
+                height: 30,
+              ),
               Text(
                   DateFormat('yyyy').format(focusedDay),
                   style: const TextStyle(
