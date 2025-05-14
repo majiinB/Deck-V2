@@ -6,6 +6,7 @@ import 'package:deck/pages/auth/privacy_policy.dart';
 import 'package:deck/pages/auth/recover_account.dart';
 import 'package:deck/pages/auth/terms_of_use.dart';
 import 'package:deck/pages/misc/colors.dart';
+import 'package:deck/pages/misc/custom%20widgets/dialogs/confirmation_dialog.dart';
 import 'package:deck/pages/misc/widget_method.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
@@ -15,6 +16,7 @@ import '../misc/custom widgets/buttons/custom_buttons.dart';
 import '../misc/custom widgets/dialogs/alert_dialog.dart';
 import '../misc/custom widgets/functions/loading.dart';
 import '../misc/custom widgets/textboxes/textboxes.dart';
+import 'ban_appeal.dart';
 
 /// The LoginPage widget allows users to log in with email/password or via Google.
 /// It includes input fields for email and password, and buttons for login
@@ -32,6 +34,7 @@ class LoginPage extends StatefulWidget {
 /// Firebase for authentication services.
 class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
+  bool _isBanned = false;
   // Controllers to handle input from the email and password text fields.
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -141,6 +144,34 @@ class _LoginPageState extends State<LoginPage> {
                         BuildButton(
                           onPressed: () async {
                             setState(() => _isLoading = true);
+
+                            ///FOR TESTING ONLY, FAKE EMAIL!!
+                            ///Input the fake email 'banneduser@example.com' to show the ban popup
+                            ///If user is banned, show popup
+                            final testEmail = emailController.text.trim();
+                            if (testEmail == 'banneduser@example.com') {
+                              setState(() => _isLoading = false);
+                              showConfirmDialog(
+                                context,
+                                "assets/images/Deck-Dialogue2.png",
+                                "Access Denied",
+                                "Your account has been banned. Would you like to submit an appeal?",
+                                "Yes",
+                                    () {
+                                  Navigator.of(context).pop();
+                                  Navigator.of(context).push(
+                                    RouteGenerator.createRoute(BanAppealPage()),
+                                  );
+                                },
+                                button2: "No",
+                                onCancel: () {
+                                  Navigator.of(context).pop();
+                                },
+                              );
+                              return;
+                            }
+                            ///if user is not banned, proceed
+                            // setState(() => _isLoading = true);
                             try {
                               // Authenticate using email and password.
                               await AuthService().signInWithEmail(

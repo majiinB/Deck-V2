@@ -87,8 +87,7 @@ class TaskList extends StatelessWidget{
 
                 // Navigator.push(
                 // context,
-                // MaterialPageRoute(
-                //   builder: (context) => ViewTaskPage(  task: tasks[index],  isEditable: true,)),
+                //  RouteGenerator.createRoute( ViewTaskPage(  task: tasks[index],  isEditable: true,)),
                 // );
               },
             ),
