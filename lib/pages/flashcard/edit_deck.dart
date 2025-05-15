@@ -6,6 +6,7 @@ import 'package:deck/pages/misc/custom%20widgets/dialogs/alert_dialog.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
+import '../../backend/models/deck.dart';
 import '../misc/custom widgets/appbar/auth_bar.dart';
 import '../misc/custom widgets/buttons/icon_button.dart';
 import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
@@ -14,7 +15,8 @@ import '../misc/custom widgets/textboxes/textboxes.dart';
 import '../misc/custom widgets/tiles/bottom_sheet.dart';
 import '../misc/deck_icons.dart';
 class EditDeck extends StatefulWidget {
-  const EditDeck({super.key});
+  final Deck deck;
+  const EditDeck({super.key, required this.deck});
 
   @override
   _EditDeckState createState() => _EditDeckState();

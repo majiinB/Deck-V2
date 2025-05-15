@@ -98,7 +98,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
       _searchQuery = _searchController.text;
       List<Deck> searchedDecks = [];
       if(_searchQuery.trim().isNotEmpty){
-        var result = await _flashcardService.searchDecks(_searchQuery, true);
+        var result = await _flashcardService.searchDecks(_searchQuery, filter);
         searchedDecks = result['decks'];
         setState(() {
           _filteredDecks = searchedDecks;
@@ -485,7 +485,10 @@ class _FlashcardPageState extends State<FlashcardPage> {
                                 'Unpublish Deck',
                                 'Edit Deck Info',
                                 'Delete Deck'
-                              ] : ['Unsave Deck', 'Report'],
+                              ] : [
+                              filter == "SAVED_DECKS" ? 'Unsave Deck' : "Save Deck",
+                                'Report'
+                              ],
                               icons: (_filteredDecks[index].userId == _user!.uid) ? [
                                 _filteredDecks[index].isPrivate! ? Icons.undo_rounded : Icons.publish_rounded,
                                 DeckIcons.pencil,
@@ -535,7 +538,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
                                   ///E D I T  D E C K
                                   else if (selectedIndex == 1) {
                                     Navigator.of(context).push(
-                                      RouteGenerator.createRoute(const EditDeck()),
+                                      RouteGenerator.createRoute(EditDeck(deck: _filteredDecks[index])),
                                     );
                                   }
 
@@ -553,42 +556,10 @@ class _FlashcardPageState extends State<FlashcardPage> {
                                             button1: 'Delete Deck',
                                             button2: 'Cancel',
                                             onConfirm: () async {
-                                              Deck removedDeck = _filteredDecks[index];
-                                              final String deletedTitle =
-                                              removedDeck.title.toString();
-                                              try {
-                                                setState(() {
-                                                  _filteredDecks.removeAt(index);
-                                                  _decks.removeWhere(
-                                                          (card) => card.deckId == removedDeck.deckId);
-                                                });
-                                                if (await removedDeck.updateDeleteStatus(true)) {
-                                                  if (_latestDeck != null) {
-                                                    if (_latestDeck?.deckId ==
-                                                        removedDeck.deckId) {
-                                                      Deck? latest = await _flashcardService
-                                                          .getLatestDeckLog(
-                                                          _user!.uid);
-                                                      setState(() {
-                                                        _latestDeck = latest;
-                                                      });
-                                                    }
-                                                  }
-                                                }
-                                              } catch (e) {
-                                                print(
-                                                    'Flash Card Page Deletion Error: $e');
-                                                setState(() {
-                                                  _decks.insert(index, removedDeck);
-                                                });
-                                              }
-
-
-                                                  // setState(() {
-                                                  //   _decks.insert(index, removedDeck);
-                                                  // });
-
-
+                                              await _filteredDecks[index].updateDeleteStatus(true);
+                                              setState(() {
+                                                _filteredDecks.removeWhere((d) => d.deckId == _filteredDecks[index].deckId);
+                                              });
                                               Navigator.of(context).pop();
                                             },
                                             onCancel: () {
@@ -610,16 +581,23 @@ class _FlashcardPageState extends State<FlashcardPage> {
                                       context: context,
                                       barrierDismissible: false,
                                       builder: (BuildContext context) {
+                                        String saveOrUnsave = (filter == "SAVED_DECKS") ? 'unsave' : 'save';
                                         return CustomConfirmDialog(
-                                          title:'Unsave Deck?',
-                                          message: 'Are you sure you want to unsave this deck?',
+                                          title:(filter == "SAVED_DECKS") ? 'Unsave Deck?' : 'Save Deck?',
+                                          message: 'Are you sure you want to $saveOrUnsave this deck?',
                                           imagePath: 'assets/images/Deck-Dialogue4.png',
-                                          button1: _filteredDecks[index].isPrivate ? 'Unsave Deck' : 'Save Deck',
+                                          button1: (filter == "SAVED_DECKS") ? 'Unsave Deck' : 'Save Deck',
                                           button2: 'Cancel',
                                           onConfirm: () async {
-                                            setState(() {
-                                              Navigator.of(context).pop();
-                                            });
+                                            if(filter == "SAVED_DECKS"){
+                                              await _filteredDecks[index].unsaveDeck();
+                                              setState(() {
+                                                _filteredDecks.removeWhere((d) => d.deckId == _filteredDecks[index].deckId);
+                                              });
+                                            }else{
+                                              await _filteredDecks[index].saveDeck();
+                                            }
+                                            Navigator.of(context).pop();
                                           },
                                           onCancel: () {
                                             Navigator.of(context).pop();

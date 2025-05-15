@@ -121,19 +121,96 @@ class Deck{
       return false;
     }
   }
-  Future<bool> updateDeleteStatus(bool newStatus) async {
-    try {
-      // Reference to the Firestore document
-      DocumentReference deckRef = _firestore.collection('decks').doc(_deckId);
 
-      // Update only the 'title' field of the document
-      await deckRef.update({'is_deleted': newStatus});
-      isDeleted = newStatus;
-      print('Deck status updated successfully');
-      return true;
+  Future<bool> saveDeck() async {
+    try {
+      String? token = await AuthService().getIdToken();
+
+      // Send a POST request to the API with the request body and headers.
+      final response = await http.post(
+        Uri.parse('$deckLocalAPIUrl/v1/decks/save/$_deckId'), // API endpoint.
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $token',
+        },
+      );
+      print(response.statusCode);
+      print(response.body);
+
+      if(response.statusCode == 200){
+        var jsonData = jsonDecode(response.body) as Map<String, dynamic>;
+        print(jsonData); // Log parsed data for debugging.
+        if (jsonData.isNotEmpty) return true;
+      }
+      return false;
     } catch (e) {
-      // Handle any errors that might occur during the update
-      print('Error updating deck status: $e');
+      print('Error adding deck: $e');
+      return false;
+    }
+  }
+
+  Future<bool> unsaveDeck() async {
+    try {
+      String? token = await AuthService().getIdToken();
+
+      // Send a POST request to the API with the request body and headers.
+      final response = await http.post(
+        Uri.parse('$deckLocalAPIUrl/v1/decks/unsave/$_deckId'), // API endpoint.
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $token',
+        },
+      );
+      print(response.statusCode);
+      print(response.body);
+
+      if(response.statusCode == 200){
+        var jsonData = jsonDecode(response.body) as Map<String, dynamic>;
+        print(jsonData); // Log parsed data for debugging.
+        if (jsonData.isNotEmpty) return true;
+      }
+      return false;
+    } catch (e) {
+      print('Error adding deck: $e');
+      return false;
+    }
+  }
+
+  Future<bool> updateDeleteStatus(bool value) async {
+    try {
+      String? token = await AuthService().getIdToken();
+      if (isDeleted == null) {
+        print('isDeleted is null');
+        return false;
+      }
+
+      Map<String, dynamic> requestBody = {
+        'isDeleted': value,
+      };
+
+      // Send a PUT request to the API with the request body and headers.
+      final response = await http.put(
+        Uri.parse('$deckLocalAPIUrl/v1/decks/$_deckId'), // API endpoint.
+        body: jsonEncode(requestBody), // JSON-encoded request body.
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $token',
+        },
+
+      );
+      print(response.statusCode);
+      print(response.body);
+      if(response.statusCode == 200){
+        var jsonData = jsonDecode(response.body) as Map<String, dynamic>;
+        print(jsonData); // Log parsed data for debugging.
+        isDeleted = value;
+        // If the JSON data is non-empty, process it.
+        if (jsonData.isNotEmpty) return true;
+        return true;
+      }
+      return false;
+    } catch (e) {
+      print('Error deleting deck: $e');
       return false;
     }
   }
@@ -146,7 +223,7 @@ class Deck{
 
       // Send a POST request to the API with the request body and headers.
       final response = await http.get(
-        Uri.parse('$deckLocalAPIUrl/v1/decks/$_deckId/flashcards'), // API endpoint.
+        Uri.parse('$deckLocalAPIUrl/v1/decks/$_deckId/flashcards?limit=100'), // API endpoint.
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $token',

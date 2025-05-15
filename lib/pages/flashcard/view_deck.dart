@@ -216,7 +216,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
               ///E D I T  D E C K
               else if (index == 1) {
                 Navigator.of(context).push(
-                    RouteGenerator.createRoute(const EditDeck()),
+                    RouteGenerator.createRoute(EditDeck(deck: widget.deck,)),
                 );
               }
               ///R E P O R T  D E C K
@@ -423,7 +423,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                     child: Row(
                       children: [
                         Text(
-                          '$numberOfCards cards',
+                          '${widget.deck.flashcardCount} cards',
                           overflow: TextOverflow.visible,
                           style: const TextStyle(
                             fontFamily: 'Nunito-Regular',
