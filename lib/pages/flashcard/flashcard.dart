@@ -496,7 +496,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
                               ] : [Icons.remove_circle, Icons.report],///Not Owner
 
                               ///START FOR LOGIC OF POP UP MENU BUTTON (ung three dots)
-                              onItemsSelected: (selectedIndex) {
+                              onItemsSelected: (selectedIndex) async {
                                 ///If owner, show these options in the popup menu
                                 if(_filteredDecks[index].userId == _user!.uid) {
                                   if (selectedIndex == 0) {
@@ -537,9 +537,10 @@ class _FlashcardPageState extends State<FlashcardPage> {
 
                                   ///E D I T  D E C K
                                   else if (selectedIndex == 1) {
-                                    Navigator.of(context).push(
+                                    await Navigator.of(context).push(
                                       RouteGenerator.createRoute(EditDeck(deck: _filteredDecks[index])),
                                     );
+                                    setState(() {});
                                   }
 
                                   ///D E L E T E  D E C K

@@ -82,6 +82,44 @@ class Deck{
     }
   }
 
+  Future<bool> updateDeckInfo(Map<String, dynamic> requestBody) async {
+    try {
+      String? token = await AuthService().getIdToken();
+      
+      // Send a PUT request to the API with the request body and headers.
+      final response = await http.put(
+        Uri.parse('$deckLocalAPIUrl/v1/decks/$_deckId'), // API endpoint.
+        body: jsonEncode(requestBody), // JSON-encoded request body.
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $token',
+        },
+
+      );
+      print(response.statusCode);
+      print(response.body);
+      if(response.statusCode == 200){
+        var jsonData = jsonDecode(response.body) as Map<String, dynamic>;
+        print(jsonData); // Log parsed data for debugging.
+
+        if(requestBody.containsKey('deckTitle')){
+          title = requestBody['deckTitle'];
+        }else if(requestBody.containsKey('deckDescription')){
+          description = requestBody['deckDescription'];
+        }else if(requestBody.containsKey('coverPhoto')){
+          coverPhoto = requestBody['coverPhoto'];
+        }
+        // If the JSON data is non-empty, process it.
+        if (jsonData.isNotEmpty) return true;
+        return true;
+      }
+      return false;
+    } catch (e) {
+      print('Error deleting deck: $e');
+      return false;
+    }
+  }
+
   Future<bool> publishDeck() async {
     try {
       String? token = await AuthService().getIdToken();

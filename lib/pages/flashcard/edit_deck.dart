@@ -6,6 +6,7 @@ import 'package:deck/pages/misc/custom%20widgets/dialogs/alert_dialog.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
+import '../../backend/flashcard/flashcard_service.dart';
 import '../../backend/models/deck.dart';
 import '../misc/custom widgets/appbar/auth_bar.dart';
 import '../misc/custom widgets/buttons/icon_button.dart';
@@ -53,11 +54,9 @@ class _EditDeckState extends State<EditDeck> {
   @override
   void initState() {
     super.initState();
-
-    //store initial values
-    originalDeckTitle = deckTitleController.text;
-    originalDeckDescription = deckDescriptionController.text;
-    originalCoverPhoto = coverPhoto;
+    // seed the controllers with the existing deck data
+    deckTitleController.text       = widget.deck.title;
+    deckDescriptionController.text = widget.deck.description ?? '';
     //add listener to the controllers to monitor changes made by the user in the textfields
     deckTitleController.addListener(() => _onDeckTitleChanged(deckTitleController.text));
     deckDescriptionController.addListener(() => _onDeckDescriptionChanged(deckDescriptionController.text));
@@ -66,13 +65,13 @@ class _EditDeckState extends State<EditDeck> {
   ///Define the change detection methods
   void _onDeckTitleChanged(String value) {
     setState(() {
-      _isDeckTitleChanged = value.trim() != originalDeckTitle.trim();
+      _isDeckTitleChanged = value.trim() != widget.deck.title.trim();
     });
   }
 
   void _onDeckDescriptionChanged(String value) {
     setState(() {
-      _isDeckDescriptionChanged = value.trim() != originalDeckDescription.trim();
+      _isDeckDescriptionChanged = value.trim() != widget.deck.description.trim();
     });
   }
 
@@ -158,7 +157,7 @@ class _EditDeckState extends State<EditDeck> {
                     ),
                     BuildTextBox(
                         controller: deckTitleController,
-                        hintText: 'Enter Deck Title',
+                        hintText: widget.deck.title,
                         onChanged: _onDeckTitleChanged,
                     ),
                     const Padding(
@@ -180,6 +179,7 @@ class _EditDeckState extends State<EditDeck> {
                       borderRadiusContainer: 10,
                       borderRadiusImage: 10,
                       isHeader: false,
+                      imageUrl: widget.deck.coverPhoto,
                     ),
                     Positioned(
                         top: 140,
@@ -229,29 +229,8 @@ class _EditDeckState extends State<EditDeck> {
                                                 showAlertDialog(
                                                     context,"assets/images/Deck-Dialogue1.png",
                                                     "Error in selecting files",
-                                                    "There was an error in selecting the file. Please try again.");
-                                                // showDialog(
-                                                //   context: context,
-                                                //   builder: (BuildContext context) {
-                                                //     return AlertDialog(
-                                                //       title: const Text('File Selection Error'),
-                                                //       content: const Text('There was an error in selecting the file. Please try again.'),
-                                                //       actions: <Widget>[
-                                                //         TextButton(
-                                                //           onPressed: () {
-                                                //             Navigator.of(context).pop(); // Close the dialog
-                                                //           },
-                                                //           child: const Text(
-                                                //             'Close',
-                                                //             style: TextStyle(
-                                                //               color: Colors.red,
-                                                //             ),
-                                                //           ),
-                                                //         ),
-                                                //       ],
-                                                //     );
-                                                //   },
-                                                // );
+                                                    "There was an error in selecting the file. Please try again."
+                                                );
                                               }
                                               Navigator.pop(context);
                                             },
@@ -312,7 +291,7 @@ class _EditDeckState extends State<EditDeck> {
                     ),
                     BuildTextBox(
                       controller: deckDescriptionController,
-                      hintText: 'Describe the flashcards you want to create.',
+                      hintText: widget.deck.description,
                       isMultiLine: true,
                       wordLimit: 201,
                       onChanged: (text) {
@@ -331,7 +310,32 @@ class _EditDeckState extends State<EditDeck> {
                     Padding(
                       padding: const EdgeInsets.only(top: 15.0),
                       child: BuildButton(
-                          onPressed: () {},
+                          onPressed: () async {
+                            print('clicked save deck');
+                            Map<String, dynamic> requestBody = {};
+                            if(_isDeckTitleChanged){
+                              requestBody['deckTitle'] = deckTitleController.text;
+                            }
+                            if(_isDeckDescriptionChanged){
+                              requestBody['deckDescription'] = deckDescriptionController.text;
+                            }
+                            if(coverPhoto != 'no_photo'){
+                              FlashcardService flashcardService = FlashcardService();
+                              String uploadedPhotoUrl = await flashcardService.uploadImageToFirebase(
+                                  coverPhoto,
+                                  widget.deck.userId.toString()
+                              );
+                              requestBody['coverPhoto'] = uploadedPhotoUrl;
+                            }
+
+                            await widget.deck.updateDeckInfo(requestBody);
+                            showAlertDialog(
+                                context,
+                                'assets/images/Deck-Dialogue3.png',
+                                'Deck Successfully Updated',
+                                'Deck was successfully updated and will be reflected now on the list'
+                            );
+                          },
                           buttonText: 'Save Deck',
                           height: 50.0,
                           width: MediaQuery.of(context).size.width,
