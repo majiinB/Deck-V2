@@ -120,7 +120,7 @@ class Deck{
     }
   }
 
-  Future<bool> publishDeck() async {
+  Future<bool> publishOrUnpublishDeck() async {
     try {
       String? token = await AuthService().getIdToken();
       if (isPrivate == null) {

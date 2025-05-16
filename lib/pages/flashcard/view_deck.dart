@@ -25,7 +25,8 @@ import '../settings/support and policies/report_a_problem.dart';
 
 class ViewDeckPage extends StatefulWidget {
   final Deck deck;
-  const ViewDeckPage({super.key, required this.deck});
+  final String filter;
+  const ViewDeckPage({super.key, required this.deck, this.filter = "MY_DECKS"});
 
 
   @override
@@ -40,106 +41,95 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
   bool isSaved = false;
   bool isFetchingMore = false;
   List<Cards> _cardsCollection = [];
+  List<Cards> _starredCards = [];
+  List<Cards> _filteredCards = [];
+  List<Cards> _filteredStarredCards = [];
+  bool _canToggleStar = true;
   User? currentUser;
   final TextEditingController _searchController = TextEditingController();
-  final ScrollController _scrollController = ScrollController();
-
-  // List<Cards> _cardsCollection = [];
-  // List<Cards> _cardsCollection = [];
-  // List<Cards> _cardsCollection = [];
+  static const _toggleCooldown = Duration(milliseconds: 1000);
 
   @override
   void initState() {
     super.initState();
+    isSaved = widget.filter.toString() == "SAVED_DECKS";
     _initDeckCards();
     _getCurrentUser();
-    _scrollController.addListener(_onScroll);
-
-    // Commented out: will switch to api calls
-    // _searchController.addListener(_filterFlashcards);
+    _searchController.addListener(_filterFlashcards);
   }
 
   /// Initialized the flashcards of the deck
   /// Retrieves the flashcards under the given deck
   void _initDeckCards() async {
     List<Cards> cards = await widget.deck.getCard();
-    // TODO: retrieve starred flashcards here
 
+    // Loop through cards and add those with isStarred == true to starredCards
+    List<Cards> starredCards = [];
+    for (var card in cards) {
+      if (card.isStarred) {
+        starredCards.add(card);
+      }
+    }
+
+    // Assigns the fetched flashcards to the collection
     setState(() {
-      // Assigns the fetched flashcards to the collection
       _cardsCollection = cards;
-
-      // Comment out TODO: Make endpoint to retrieve the starred flashcards
-      // _cardsCollection = starredCards;
-
-      // Comment out, Used for the search function done in the client side
-      // TODO: Make and endpoint that will retrieve the flashcard searched based on user query
-      // _cardsCollection = List.from(cards);
-
-      // Comment out, Used for the search function done in the client side
-      // TODO: Make and endpoint that will retrieve the flashcard searched based on user query
-      // _cardsCollection = List.from(starredCards);
+      _filteredCards = _cardsCollection;
+      _starredCards = starredCards;
+      _filteredStarredCards = _starredCards;
     });
   }
 
-  // Removed: used for client side search. Will switch to api function call
-  // void _filterFlashcards() {
-  //   String query = _searchController.text.toLowerCase();
-  //   setState(() {
-  //     _cardsCollection = _cardsCollection
-  //         .where((card) =>
-  //             card.term.toLowerCase().contains(query) ||
-  //             card.definition.toLowerCase().contains(query))
-  //         .toList();
-  //
-  //     _cardsCollection = _cardsCollection
-  //         .where((card) =>
-  //             card.term.toLowerCase().contains(query) ||
-  //             card.definition.toLowerCase().contains(query))
-  //         .toList();
-  //     FlashcardUtils().sortByQuestion(_cardsCollection);
-  //     FlashcardUtils().sortByQuestion(_cardsCollection);
-  //   });
-  // }
+  Future<void> _toggleStar(Cards card, bool starred) async {
+    if (!_canToggleStar) return;
+    _canToggleStar = false;
 
-  /// Function that listens for the user scroll
-  /// Will retrieve more flashcards once the user reaches a certain scroll limit
-  Future<void> _onScroll() async {
-    if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - 200) {
+    try{
+      // 1) update the database
+      await card.updateStarredStatus(starred, widget.deck.deckId);
 
-      if(isFetchingMore) return;
-      // if(_nextPageToken == "" || _nextPageToken.isEmpty) return;
-      // isFetchingMore = true;
-      //
-      // var result = await _flashcardService.getDecksNextPage(nextPageToken: _nextPageToken);
-      // List<Deck> decks = result['decks'];
-      // String nextPageToken = result['nextPageToken'];
-      // print('next page token from on scroll result: ${nextPageToken}');
-      // print('current next page token from on scroll ${_nextPageToken}');
-      // print(decks.map((deck) => deck.toString()).toList());
-      //
-      // if(decks.isNotEmpty){
-        print("umabot dito");
-      //   setState(() {
-      //     _nextPageToken = nextPageToken;
-      //     print('current next page token from on scroll being set ${_nextPageToken}');
-      //     _decks.addAll(decks);
-      //   });
-      // }else{
-      //   setState(() {
-      //     _nextPageToken = "";
-      //   });
-      // }
-      // isFetchingMore = false;
+      setState(() {
+        // 2) update the in-memory flag
+        card.isStarred = starred;
+
+        // 3) rebuild your starred master list
+        _starredCards = _cardsCollection.where((c) => c.isStarred).toList();
+
+        // 4) re-filter everything
+        _filterFlashcards();
+      });
+    }catch(error){
+      Future.delayed(_toggleCooldown, () {
+        if (mounted) setState(() => _canToggleStar = true);
+      });
+    }finally{
+
     }
+  }
+
+  // Removed: used for client side search. Will switch to api function call
+  void _filterFlashcards() {
+    String query = _searchController.text.toLowerCase();
+    setState(() {
+      _filteredCards = _cardsCollection
+          .where((card) =>
+      card.term.toLowerCase().contains(query) ||
+          card.definition.toLowerCase().contains(query))
+          .toList();
+      FlashcardUtils().sortByTerm(_filteredCards);
+
+      _filteredStarredCards = _starredCards
+          .where((card) =>
+      card.term.toLowerCase().contains(query) ||
+          card.definition.toLowerCase().contains(query))
+          .toList();
+      FlashcardUtils().sortByTerm(_filteredCards);
+    });
   }
 
   @override
   void dispose() {
     _searchController.dispose();
-    _scrollController.removeListener(_onScroll);
-    _scrollController.dispose();
     super.dispose();
   }
 
@@ -167,10 +157,9 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
         fontSize: 24,
           showPopMenu: true,
           items: (widget.deck.userId == currentUser!.uid)
-              ? [widget.deck.isPrivate ? 'Unpublish Deck' : 'Publish Deck', 'Edit Deck Info',  'Report Deck', 'Delete Deck'] ///Owner
+              ? [widget.deck.isPrivate ? 'Publish Deck' : 'Unpublish Deck', 'Edit Deck Info',  'Report Deck', 'Delete Deck'] ///Owner
               : [isSaved ? 'Unsave Deck' : 'Save Deck', 'Report Deck'], ///Not owner
-          icons: (widget.deck.userId == currentUser!.uid)
-              ? [
+          icons: (widget.deck.userId == currentUser!.uid) ? [
             widget.deck.isPrivate ? Icons.undo_rounded : Icons.publish_rounded,
             DeckIcons.pencil,
             Icons.report,
@@ -183,7 +172,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
 
           ///START FOR LOGIC OF POP UP MENU BUTTON (ung three dots)
           /// If owner, show these options in the popup menu
-          onItemsSelected: (index) {
+          onItemsSelected: (index) async {
             if (widget.deck.userId == currentUser!.uid) {
               ///P U B L I S H  D E C K
               if (index == 0) {
@@ -193,18 +182,17 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                   barrierDismissible: false,
                   builder: (BuildContext context) {
                     return CustomConfirmDialog(
-                      title: widget.deck.isPrivate ? 'Unpublish Deck?' : 'Publish Deck?',
+                      title: widget.deck.isPrivate ? 'Publish Deck?' : 'Unpublish Deck?',
                       message: widget.deck.isPrivate
-                          ? 'Are you sure you want to unpublish this deck?'
-                          : 'Are you sure you want to publish this deck?',
+                          ? 'Are you sure you want to publish this deck?'
+                          : 'Are you sure you want to unpublish this deck?',
                       imagePath: 'assets/images/Deck-Dialogue4.png',
-                      button1: widget.deck.isPrivate ? 'Unpublish Deck' : 'Publish Deck',
+                      button1: widget.deck.isPrivate ? 'Publish Deck' : 'Unpublish Deck',
                       button2: 'Cancel',
                       onConfirm: () async {
-                        setState(() {
-                          widget.deck.isPrivate = !widget.deck.isPrivate;
-                          Navigator.of(context).pop();
-                        });
+                        await widget.deck.publishOrUnpublishDeck();
+                        Navigator.of(context).pop();
+                        setState(() {});
                       },
                       onCancel: () {
                         Navigator.of(context).pop();
@@ -215,9 +203,10 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
               }
               ///E D I T  D E C K
               else if (index == 1) {
-                Navigator.of(context).push(
+                await Navigator.of(context).push(
                     RouteGenerator.createRoute(EditDeck(deck: widget.deck,)),
                 );
+                setState(() {});
               }
               ///R E P O R T  D E C K
               else if (index == 2){
@@ -241,14 +230,17 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                         message: 'Once deleted, this deck will no longer be playable. '
                             'But do not worry, you can still retrieve it in the trash bin.',
                         imagePath: 'assets/images/Deck-Dialogue4.png',
-                        button1: 'Delete Account',
+                        button1: 'Delete Deck',
                         button2: 'Cancel',
                         onConfirm: () async {
-                          Navigator.of(context).pop();
+                          // Grab the NavigatorState once.
+                          final navigator = Navigator.of(context);
+                          navigator.pop(); // Pop the pop-up
+                          await widget.deck.updateDeleteStatus(true);
+                          navigator.pop(); // pop to the next frame
                         },
                         onCancel: () {
-                          Navigator.of(context).pop(
-                              false); // Close the first dialog on cancel
+                          Navigator.of(context).pop(false); // Close the first dialog on cancel
                         },
                       );
                     }
@@ -271,9 +263,14 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                           ? 'Are you sure you want to save this deck?'
                           : 'Are you sure you want to unsave this deck?',
                       imagePath: 'assets/images/Deck-Dialogue4.png',
-                      button1: widget.deck.isPrivate ? 'Unsave Deck' : 'Save Deck',
+                      button1: isSaved ? 'Unsave Deck' : 'Save Deck',
                       button2: 'Cancel',
                       onConfirm: () async {
+                        if(isSaved){
+                          await widget.deck.unsaveDeck();
+                        }else{
+                          await widget.deck.saveDeck();
+                        }
                         setState(() {
                           isSaved = !isSaved;
                           Navigator.of(context).pop();
@@ -302,32 +299,6 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
           }
           ///-------- E N D  O F  P O P  U P  M E N U  B U T T O N -------------
       ),
-      /*floatingActionButton: DeckFAB(
-        text: "Add FlashCard",
-        fontSize: 12,
-        icon: Icons.add,
-        foregroundColor: DeckColors.primaryColor,
-        backgroundColor: DeckColors.gray,
-        onPressed: () async {
-          final newCard = await Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => AddFlashcardPage(
-                      deck: widget.deck,
-                    )),
-          );
-          if (newCard != null) {
-            setState(() {
-              _cardsCollection.add(newCard);
-              if (newCard.isStarred) {
-                _cardsCollection.add(newCard);
-              }
-              _filterFlashcards();
-              numberOfCards = _cardsCollection.length;
-            });
-          }
-        },
-      ),*/
       body: SingleChildScrollView(
         //padding: const EdgeInsets.all(20),
         child: Column(
@@ -398,7 +369,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                     ),
                   ),
                   Text(
-                    'By: $username',
+                    'By: ${widget.deck.deckOwnerName}',
                     overflow: TextOverflow.visible,
                     style: const TextStyle(
                       fontFamily: 'Nunito-Bold',
@@ -465,7 +436,9 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                           opacity: numberOfCards == 0 ? 0.5 : 1.0,
                           child: BuildButton(
                             onPressed:numberOfCards == 0
-                                ? () {}
+                                ? () {
+                                  print("This is for learn");
+                                }
                                 : () {
                               showDialog(
                                 context: context,
@@ -473,70 +446,6 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                 builder: (BuildContext context) => const LearnModeDialog(),
                               );
                             },
-                            /*onPressed: () async {
-                              var cards = await widget.deck.getCard();
-                              var starredCards = [];
-                              var noStarCard = [];
-                              var joinedCards = [];
-
-                              for (int i = 0; i < cards.length; i++) {
-                                if (cards[i].isStarred) {
-                                  starredCards.add(cards[i]);
-                                } else {
-                                  noStarCard.add(cards[i]);
-                                }
-                              }
-
-                              FlashcardUtils _flashcardUtils = FlashcardUtils();
-
-                              // Shuffle cards
-                              if (starredCards.isNotEmpty)
-                                _flashcardUtils.shuffleList(starredCards);
-                              if (noStarCard.isNotEmpty)
-                                _flashcardUtils.shuffleList(noStarCard);
-
-                              joinedCards = starredCards + noStarCard;
-
-                              if (joinedCards.isNotEmpty) {
-                                AuthService _authService = AuthService();
-                                User? user = _authService.getCurrentUser();
-                                if (user != null) {
-                                  try {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => PlayMyDeckPage(
-                                            cards: joinedCards,
-                                            deck: widget.deck,
-                                          )),
-                                    );
-
-                                    FlashcardService _flashCardService =
-                                    FlashcardService();
-                                    await _flashCardService.addDeckLogRecord(
-                                        deckId: widget.deck.deckId.toString(),
-                                        title: widget.deck.title.toString(),
-                                        userId: user.uid.toString(),
-                                        visitedAt: DateTime.now());
-                                    FlashcardUtils.updateLatestReview.value = true;
-                                  } catch (e) {
-                                    print('View Deck Error: $e');
-
-                                    ///display error
-                                    showAlertDialog(
-                                  context,
-                                  "assets/images/Deck_Dialogue1.png",
-                                  "Error viewing deck",
-                                  "A problem occured while trying to view deck. Please try again.");
-                            }
-                                }
-                              } else {
-                                ///display error
-                                showAlertDialog(context,
-                              "assets/images/Deck_Dialogue1.png","Error viewing deck",
-                              "The deck has no card please add a card first before playing.");
-                        }
-                            },*/
                             buttonText: 'Learn',
                             height: 35,
                             width: 110,
@@ -573,10 +482,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                         titles: ['All', 'Starred'],
                         length: 2,
                         tabContent: [
-                          ///
-                          ///
                           /// ------------------------- START OF TAB 'ALL' CONTENT ----------------------------
-
                           if (_cardsCollection.isEmpty)
                             IfCollectionEmpty(
                               ifCollectionEmptyText:
@@ -587,56 +493,26 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                               ifCollectionEmptyHeight:
                                   MediaQuery.of(context).size.height * 0.3,
                             )
-                          // else if (_cardsCollection.isNotEmpty)
-                          //   IfCollectionEmpty(
-                          //     ifCollectionEmptyText: 'No Results Found',
-                          //     ifCollectionEmptySubText:
-                          //         'Try adjusting your search to \nfind what your looking for.',
-                          //     ifCollectionEmptyHeight:
-                          //         MediaQuery.of(context).size.height * 0.4,
-                          //   )
                           else
                             Padding(
                               padding: const EdgeInsets.only(right: 8.0),
                               child: SingleChildScrollView(
-                                controller: _scrollController,
                                 child: Padding(
                                   padding: const EdgeInsets.only(top: 20.0),
                                   child: ListView.builder(
                                     shrinkWrap: true,
                                     physics: const NeverScrollableScrollPhysics(),
-                                    itemCount: _cardsCollection.length,
+                                    itemCount: _filteredCards.length,
                                     itemBuilder: (context, index) {
                                       return Padding(
                                         padding: const EdgeInsets.symmetric(
                                             vertical: 6.0),
                                         child: BuildContainerOfFlashCards(
-                                          titleOfFlashCard: _cardsCollection[index].term,
-                                          contentOfFlashCard: _cardsCollection[index].definition,
+                                          titleOfFlashCard: _filteredCards[index].term,
+                                          contentOfFlashCard: _filteredCards[index].definition,
                                           onDelete: widget.deck.userId == currentUser!.uid ? () {
-                                            /*Cards removedCard =
-                                                _cardsCollection[
-                                                    index];
-                                            final String deletedTitle =
-                                                removedCard.question;
-                                            setState(() {
-                                              _cardsCollection
-                                                  .removeAt(index);
-                                              _cardsCollection.removeWhere(
-                                                  (card) =>
-                                                      card.cardId ==
-                                                      removedCard.cardId);
-                                              _cardsCollection
-                                                  .removeWhere((card) =>
-                                                      card.cardId ==
-                                                      removedCard.cardId);
-                                              _cardsCollection
-                                                  .removeWhere((card) =>
-                                                      card.cardId ==
-                                                      removedCard.cardId);
-                                              numberOfCards =
-                                                  _cardsCollection.length;
-                                            });
+                                            Cards removedCard = _filteredCards[index];
+                                            final String deletedTitle = removedCard.term;
                                             showConfirmDialog(
                                                 context,
                                                 "assets/images/Deck_Dialogue1.png",
@@ -645,76 +521,25 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                 "Delete Item",
                                               () async {
                                                 try {
-                                                  await removedCard
-                                                      .updateDeleteStatus(
-                                                          true,
-                                                          widget.deck.deckId);
-                                                } catch (e) {
-                                                  print(
-                                                      'View Deck Error: $e');
-                                                  showAlertDialog(
-                                                        context,
-                                                        "assets/images/Deck_Dialogue1.png",
-                                                        "Card Deletion Unsuccessful",
-                                                        "An error occurred during the deletion process please try again");
+                                                  await removedCard.updateDeleteStatus(true, widget.deck.deckId);
                                                   setState(() {
-                                                    _cardsCollection
-                                                        .add(removedCard);
-                                                    FlashcardUtils()
-                                                        .sortByQuestion(
-                                                            _cardsCollection);
-                                                    _cardsCollection
-                                                        .add(removedCard);
-                                                    FlashcardUtils()
-                                                        .sortByQuestion(
-                                                            _cardsCollection);
-                                                    if (removedCard
-                                                        .isStarred) {
-                                                      _cardsCollection
-                                                          .add(removedCard);
-                                                      FlashcardUtils()
-                                                          .sortByQuestion(
-                                                              _cardsCollection);
-                                                      _cardsCollection
-                                                          .add(removedCard);
-                                                      FlashcardUtils()
-                                                          .sortByQuestion(
-                                                              _cardsCollection);
-                                                    }
-                                                    numberOfCards =
-                                                        _cardsCollection
-                                                            .length;
+                                                    _filteredCards.removeAt(index);
+                                                    _cardsCollection.removeWhere((card) => card.cardId == removedCard.cardId);
+                                                    _starredCards.removeWhere((card) => card.cardId == removedCard.cardId);
+                                                    _filteredStarredCards.removeWhere((card) => card.cardId == removedCard.cardId);
+                                                    numberOfCards = _filteredCards.length;
                                                   });
+                                                } catch (e) {
+                                                  print('View Deck Error: $e');
+                                                  showAlertDialog(
+                                                    context,
+                                                    "assets/images/Deck_Dialogue1.png",
+                                                    "Card Deletion Unsuccessful",
+                                                    "An error occurred during the deletion process please try again"
+                                                  );
                                                 }
                                               },
-                                              () {
-                                                setState(() {
-                                                  _cardsCollection
-                                                      .add(removedCard);
-                                                  FlashcardUtils()
-                                                      .sortByQuestion(
-                                                          _cardsCollection);
-                                                  _cardsCollection
-                                                      .add(removedCard);
-                                                  FlashcardUtils().sortByQuestion(
-                                                      _cardsCollection);
-                                                  if (removedCard.isStarred) {
-                                                    _cardsCollection
-                                                        .add(removedCard);
-                                                    FlashcardUtils()
-                                                        .sortByQuestion(
-                                                            _cardsCollection);
-                                                    _cardsCollection
-                                                        .add(removedCard);
-                                                    FlashcardUtils()
-                                                        .sortByQuestion(
-                                                            _cardsCollection);
-                                                  }
-                                                  numberOfCards =
-                                                      _cardsCollection.length;
-                                                });
-                                              },
-                                            );*/
+                                            );
                                           }
                                           : null,
                                           enableSwipeToRetrieve: false,
@@ -730,148 +555,48 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                       )),
                                             );
                                           },
-                                          isStarShaded: _cardsCollection[index].isStarred,
-                                          onStarShaded: () {
-                                            setState(() {
-                                              try {
-                                                _cardsCollection[index].updateStarredStatus(
-                                                    true,
-                                                    widget.deck.deckId
-                                                );
-                                                _cardsCollection.add(_cardsCollection[index]);
-                                                _cardsCollection.add(
-                                                    _cardsCollection[index]
-                                                );
-                                                _cardsCollection[index].isStarred = true;
-                                              } catch (e) {
-                                                print('star shaded error: $e');
-                                              }
-                                            });
-                                          },
-                                          onStarUnshaded: () {
-                                            setState(() {
-                                              try {
-                                                _cardsCollection[index].updateStarredStatus(
-                                                    false,
-                                                    widget.deck.deckId
-                                                );
-                                                _cardsCollection.removeWhere(
-                                                        (card) => card.cardId == _cardsCollection[index].cardId
-                                                );
-                                                _cardsCollection.removeWhere(
-                                                        (card) => card.cardId == _cardsCollection[index].cardId
-                                                );
-                                                _cardsCollection[index].isStarred = false;
-                                              } catch (e) {
-                                                print('star unshaded error: $e');
-                                              }
-                                            });
-                                          },
+                                          isStarShaded: _filteredCards[index].isStarred,
+                                          onStarShaded: () => _toggleStar(_filteredCards[index], true),
+                                          onStarUnshaded: () => _toggleStar(_filteredCards[index], false),
                                           ///Delete Icon
                                           iconOnPressed: () {
-                                            print("Recognized");
-                                            Cards removedCard = _cardsCollection[index];
-                                            final String deletedTitle = removedCard.term;
-                                            setState(() {
-                                              _cardsCollection.removeAt(index);
-                                              _cardsCollection.removeWhere(
-                                                      (card) => card.cardId == removedCard.cardId
-                                              );
-                                              _cardsCollection.removeWhere(
-                                                      (card) => card.cardId == removedCard.cardId
-                                              );
-                                              _cardsCollection.removeWhere(
-                                                      (card) => card.cardId == removedCard.cardId
-                                              );
-                                              numberOfCards = _cardsCollection.length;
-                                            });
-                                          showDialog<bool>(
-                                          context: context,
-                                          barrierDismissible: false,
-                                          builder: (BuildContext context) {
-                                             return CustomConfirmDialog(
-                                                imagePath: 'assets/images/Deck-Dialogue4.png',
-                                                title: 'Delete this flashcard?',
-                                                message: 'Are you sure you want to delete ${deletedTitle}?',
-                                                button1: 'Delete Flashcard',
-                                                button2: 'Cancel',
-                                                onConfirm: () async {
-                                                  try {
-                                                    await removedCard.updateDeleteStatus(
-                                                        true,
-                                                        widget.deck.deckId
-                                                    );
-                                                  } catch (e) {
-                                                    print(
-                                                        'View Deck Error: $e');
-                                                    showAlertDialog(
-                                                      context,
-                                                      "assets/images/Deck-Dialogue2.png",
-                                                      "Changed flash card information!",
-                                                      "Successfully changed flash card information.",
-                                                    );
-                                                    setState(() {
-                                                      _cardsCollection
-                                                          .add(removedCard);
-                                                      FlashcardUtils()
-                                                          .sortByQuestion(
-                                                          _cardsCollection);
-                                                      _cardsCollection.add(removedCard);
-                                                      FlashcardUtils()
-                                                          .sortByQuestion(
-                                                          _cardsCollection);
-                                                      if (removedCard
-                                                          .isStarred) {
-                                                        _cardsCollection
-                                                            .add(removedCard);
-                                                        FlashcardUtils()
-                                                            .sortByQuestion(
-                                                            _cardsCollection);
-                                                        _cardsCollection
-                                                            .add(removedCard);
-                                                        FlashcardUtils()
-                                                            .sortByQuestion(
-                                                            _cardsCollection);
-                                                      }
-                                                      numberOfCards =
-                                                          _cardsCollection
-                                                              .length;
-                                                    });
-                                                }
-                                                  Navigator.of(context).pop(true);
-                                                },
-                                                onCancel: () {
-                                                  setState(() {
-                                                    _cardsCollection
-                                                        .add(removedCard);
-                                                    FlashcardUtils()
-                                                        .sortByQuestion(
-                                                        _cardsCollection);
-                                                    _cardsCollection
-                                                        .add(removedCard);
-                                                    FlashcardUtils()
-                                                        .sortByQuestion(
-                                                        _cardsCollection);
-                                                    if (removedCard.isStarred) {
-                                                      _cardsCollection
-                                                          .add(removedCard);
-                                                      FlashcardUtils()
-                                                          .sortByQuestion(
-                                                          _cardsCollection);
-                                                      _cardsCollection
-                                                          .add(removedCard);
-                                                      FlashcardUtils()
-                                                          .sortByQuestion(
-                                                          _cardsCollection);
+                                            showDialog<bool>(
+                                            context: context,
+                                            barrierDismissible: false,
+                                            builder: (BuildContext context) {
+                                              Cards removedCard = _filteredCards[index];
+                                              final String deletedTitle = removedCard.term;
+                                               return CustomConfirmDialog(
+                                                  imagePath: 'assets/images/Deck-Dialogue4.png',
+                                                  title: 'Delete this flashcard?',
+                                                  message: 'Are you sure you want to delete?',
+                                                  button1: 'Delete Flashcard',
+                                                  button2: 'Cancel',
+                                                  onConfirm: () async {
+                                                    try {
+                                                      await removedCard.updateDeleteStatus(true, widget.deck.deckId);
+                                                      setState(() {
+                                                        _filteredCards.removeAt(index);
+                                                        _cardsCollection.removeWhere((card) => card.cardId == removedCard.cardId);
+                                                        _starredCards.removeWhere((card) => card.cardId == removedCard.cardId);
+                                                        _filteredStarredCards.removeWhere((card) => card.cardId == removedCard.cardId);
+                                                        numberOfCards = _cardsCollection.length;
+                                                      });
+                                                    } catch (e) {
+                                                      print('View Deck Delete Error: $e');
+                                                      showAlertDialog(
+                                                        context,
+                                                        "assets/images/Deck-Dialogue2.png",
+                                                        "Changed flash card information!",
+                                                        "Successfully changed flash card information.",
+                                                      );
                                                     }
-                                                    numberOfCards =
-                                                        _cardsCollection.length;
-                                                  });
-                                                  Navigator.of(context).pop(true);
-                                                },
-                                             );
-                                            },
-                                          );
+                                                    Navigator.of(context).pop(true);
+                                                  },
+                                                  onCancel: () {},
+                                               );
+                                              },
+                                            );
                                           },
                                           showStar: true,
                                           showIcon: (widget.deck.userId == currentUser!.uid),
@@ -900,15 +625,6 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                               ifCollectionEmptyHeight:
                                   MediaQuery.of(context).size.height * 0.3,
                             )
-                          // else if (_cardsCollection.isNotEmpty &&
-                          //     _cardsCollection.isEmpty)
-                          //   IfCollectionEmpty(
-                          //     ifCollectionEmptyText: 'No Results Found',
-                          //     ifCollectionEmptySubText:
-                          //         'Try adjusting your search to \nfind what your looking for.',
-                          //     ifCollectionEmptyHeight:
-                          //         MediaQuery.of(context).size.height * 0.4,
-                          //   )
                           else
                             Padding(
                               padding: const EdgeInsets.only(right: 8.0),
@@ -917,116 +633,46 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                   padding: const EdgeInsets.only(top: 20.0),
                                   child: ListView.builder(
                                     shrinkWrap: true,
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    itemCount:
-                                        _cardsCollection.length,
+                                    physics: const NeverScrollableScrollPhysics(),
+                                    itemCount: _filteredStarredCards.length,
                                     itemBuilder: (context, index) {
                                       return Padding(
                                         padding: const EdgeInsets.symmetric(
                                             vertical: 6.0),
                                         child: BuildContainerOfFlashCards(
-                                          titleOfFlashCard:
-                                              _cardsCollection[
-                                                      index]
-                                                  .term,
-                                          contentOfFlashCard:
-                                              _cardsCollection[
-                                                      index]
-                                                  .definition,
-                                          onDelete: () {
-                                            /*Cards removedCard =
-                                                _cardsCollection[
-                                                    index];
-                                            final String starredDeletedTitle =
-                                                removedCard.question;
-                                            setState(() {
-                                              _cardsCollection.removeWhere(
-                                                  (card) =>
-                                                      card.cardId ==
-                                                      removedCard.cardId);
-                                              _cardsCollection
-                                                  .removeWhere((card) =>
-                                                      card.cardId ==
-                                                      removedCard.cardId);
-                                              _cardsCollection
-                                                  .removeAt(index);
-                                              _cardsCollection
-                                                  .removeWhere((card) =>
-                                                      card.cardId ==
-                                                      removedCard.cardId);
-                                              numberOfCards =
-                                                  _cardsCollection.length;
-                                            });
-                                            showConfirmationDialog(
+                                          titleOfFlashCard: _filteredStarredCards[index].term,
+                                          contentOfFlashCard: _filteredStarredCards[index].definition,
+                                          onDelete: widget.deck.userId == currentUser!.uid ? () {
+                                            Cards removedCard = _filteredStarredCards[index];
+                                            final String deletedTitle = removedCard.term;
+                                            showConfirmDialog(
                                               context,
+                                              "assets/images/Deck_Dialogue1.png",
+                                              "Delete Item?",
+                                              "Are you sure you want to delete '$deletedTitle'?",
                                               "Delete Item",
-                                              "Are you sure you want to delete '$starredDeletedTitle'?",
-                                              () async {
+                                                  () async {
                                                 try {
-                                                  await removedCard
-                                                      .updateDeleteStatus(
-                                                          true,
-                                                          widget.deck.deckId);
-                                                } catch (e) {
-                                                  print(
-                                                      'View Deck Error: $e');
-                                                  showInformationDialog(
-                                                      context,
-                                                      'Card Deletion Unsuccessful',
-                                                      'An error occurred during the deletion process please try again');
+                                                  await removedCard.updateDeleteStatus(true, widget.deck.deckId);
                                                   setState(() {
-                                                    _cardsCollection
-                                                        .add(removedCard);
-                                                    FlashcardUtils()
-                                                        .sortByQuestion(
-                                                            _cardsCollection);
-                                                    _cardsCollection
-                                                        .add(removedCard);
-                                                    FlashcardUtils()
-                                                        .sortByQuestion(
-                                                            _cardsCollection);
-                                                    _cardsCollection
-                                                        .add(removedCard);
-                                                    FlashcardUtils()
-                                                        .sortByQuestion(
-                                                            _cardsCollection);
-                                                    _cardsCollection
-                                                        .add(removedCard);
-                                                    FlashcardUtils()
-                                                        .sortByQuestion(
-                                                            _cardsCollection);
-                                                    numberOfCards =
-                                                        _cardsCollection
-                                                            .length;
+                                                    _filteredCards.removeAt(index);
+                                                    _cardsCollection.removeWhere((card) => card.cardId == removedCard.cardId);
+                                                    _starredCards.removeWhere((card) => card.cardId == removedCard.cardId);
+                                                    _filteredStarredCards.removeWhere((card) => card.cardId == removedCard.cardId);
+                                                    numberOfCards = _cardsCollection.length;
                                                   });
+                                                } catch (e) {
+                                                  print('View Deck Error: $e');
+                                                  showAlertDialog(
+                                                      context,
+                                                      "assets/images/Deck_Dialogue1.png",
+                                                      "Card Deletion Unsuccessful",
+                                                      "An error occurred during the deletion process please try again"
+                                                  );
                                                 }
                                               },
-                                              () {
-                                                setState(() {
-                                                  _cardsCollection
-                                                      .add(removedCard);
-                                                  FlashcardUtils()
-                                                      .sortByQuestion(
-                                                          _cardsCollection);
-                                                  _cardsCollection
-                                                      .add(removedCard);
-                                                  FlashcardUtils().sortByQuestion(
-                                                      _cardsCollection);
-                                                  _cardsCollection
-                                                      .add(removedCard);
-                                                  FlashcardUtils().sortByQuestion(
-                                                      _cardsCollection);
-                                                  _cardsCollection
-                                                      .add(removedCard);
-                                                  FlashcardUtils().sortByQuestion(
-                                                      _cardsCollection);
-                                                  numberOfCards =
-                                                      _cardsCollection.length;
-                                                });
-                                              },
-                                            );*/
-                                          },
+                                            );
+                                          } : null,
                                           enableSwipeToRetrieve: false,
                                           onTap: () {
                                             print("Clicked");
@@ -1036,9 +682,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                   builder: (context) =>
                                                       EditFlashcardPage(
                                                         deck: widget.deck,
-                                                        card:
-                                                            _cardsCollection[
-                                                                index],
+                                                        card: _filteredStarredCards[index],
                                                       )),
                                             );
                                           },
@@ -1046,139 +690,42 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                           onStarShaded: () {
                                             // No action because it's always shaded here
                                           },
-                                          onStarUnshaded: () {
-                                            setState(() {
-                                              try {
-                                                _cardsCollection[
-                                                        index]
-                                                    .updateStarredStatus(
-                                                        false,
-                                                        widget.deck.deckId);
-                                                _cardsCollection[
-                                                        index]
-                                                    .isStarred = false;
-                                                _cardsCollection
-                                                    .removeWhere((card) =>
-                                                        card.cardId ==
-                                                        _cardsCollection[
-                                                                index]
-                                                            .cardId);
-                                                _cardsCollection
-                                                    .removeWhere((card) =>
-                                                        card.cardId ==
-                                                        _cardsCollection[
-                                                                index]
-                                                            .cardId);
-                                              } catch (e) {
-                                                print(
-                                                    'star unshaded error: $e');
-                                              }
-                                            });
-                                          },
+                                          onStarUnshaded: () => _toggleStar(_filteredStarredCards[index], false),
                                           iconOnPressed: () {
-                                            Cards removedCard =
-                                            _cardsCollection[
-                                            index];
-                                            final String starredDeletedTitle =
-                                                removedCard.term;
-                                            setState(() {
-                                              _cardsCollection.removeWhere(
-                                                      (card) =>
-                                                  card.cardId ==
-                                                      removedCard.cardId);
-                                              _cardsCollection
-                                                  .removeWhere((card) =>
-                                              card.cardId ==
-                                                  removedCard.cardId);
-                                              _cardsCollection
-                                                  .removeAt(index);
-                                              _cardsCollection
-                                                  .removeWhere((card) =>
-                                              card.cardId ==
-                                                  removedCard.cardId);
-                                              numberOfCards =
-                                                  _cardsCollection.length;
-                                            });
                                             showDialog<bool>(
                                               context: context,
                                               barrierDismissible: false,
                                               builder: (BuildContext context) {
+                                                Cards removedCard = _filteredStarredCards[index];
+                                                final String deletedTitle = removedCard.term;
                                                 return CustomConfirmDialog(
                                                   imagePath: 'assets/images/Deck-Dialogue4.png',
                                                   title: 'Delete this flashcard?',
-                                                  message: 'Are you sure you want to delete ${starredDeletedTitle}?',
+                                                  message: 'Are you sure you want to delete?',
                                                   button1: 'Delete Flashcard',
                                                   button2: 'Cancel',
                                                   onConfirm: () async {
                                                     try {
-                                                      await removedCard
-                                                          .updateDeleteStatus(
-                                                          true,
-                                                          widget.deck.deckId);
-                                                    } catch (e) {
-                                                      print(
-                                                          'View Deck Error: $e');
-                                                      showAlertDialog(
-                                                          context, '',
-                                                          'Card Deletion Unsuccessful',
-                                                          'An error occurred during the deletion process please try again'
-                                                      );
+                                                      await removedCard.updateDeleteStatus(true, widget.deck.deckId);
                                                       setState(() {
-                                                        _cardsCollection
-                                                            .add(removedCard);
-                                                        FlashcardUtils()
-                                                            .sortByQuestion(
-                                                            _cardsCollection);
-                                                        _cardsCollection
-                                                            .add(removedCard);
-                                                        FlashcardUtils()
-                                                            .sortByQuestion(
-                                                            _cardsCollection);
-                                                        _cardsCollection
-                                                            .add(removedCard);
-                                                        FlashcardUtils()
-                                                            .sortByQuestion(
-                                                            _cardsCollection);
-                                                        _cardsCollection
-                                                            .add(removedCard);
-                                                        FlashcardUtils()
-                                                            .sortByQuestion(
-                                                            _cardsCollection);
-                                                        numberOfCards =
-                                                            _cardsCollection
-                                                                .length;
+                                                        _filteredStarredCards.removeAt(index);
+                                                        _cardsCollection.removeWhere((card) => card.cardId == removedCard.cardId);
+                                                        _starredCards.removeWhere((card) => card.cardId == removedCard.cardId);
+                                                        _filteredCards.removeWhere((card) => card.cardId == removedCard.cardId);
+                                                        numberOfCards = _filteredCards.length;
                                                       });
+                                                    } catch (e) {
+                                                      print('View Deck Delete Error: $e');
+                                                      showAlertDialog(
+                                                        context,
+                                                        "assets/images/Deck-Dialogue2.png",
+                                                        "Changed flash card information!",
+                                                        "Successfully changed flash card information.",
+                                                      );
                                                     }
                                                     Navigator.of(context).pop(true);
                                                   },
-                                                  onCancel: () {
-                                                    setState(() {
-                                                      _cardsCollection
-                                                          .add(removedCard);
-                                                      FlashcardUtils()
-                                                          .sortByQuestion(
-                                                          _cardsCollection);
-                                                      _cardsCollection
-                                                          .add(removedCard);
-                                                      FlashcardUtils()
-                                                          .sortByQuestion(
-                                                          _cardsCollection);
-                                                      _cardsCollection
-                                                          .add(removedCard);
-                                                      FlashcardUtils()
-                                                          .sortByQuestion(
-                                                          _cardsCollection);
-                                                      _cardsCollection
-                                                          .add(removedCard);
-                                                      FlashcardUtils()
-                                                          .sortByQuestion(
-                                                          _cardsCollection);
-                                                      numberOfCards =
-                                                          _cardsCollection
-                                                              .length;
-                                                    });
-                                                    Navigator.of(context).pop(true);
-                                                  },
+                                                  onCancel: () {},
                                                 );
                                               },
                                             );

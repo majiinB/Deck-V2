@@ -404,7 +404,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
                                       print("Continue Learning Button Clicked");
                                       Navigator.of(context).push(
                                         RouteGenerator.createRoute(
-                                            ViewDeckPage(deck: _latestDeck!)
+                                            ViewDeckPage(deck: _latestDeck!, filter: filter)
                                         ),
                                       );
                                     },
@@ -472,11 +472,14 @@ class _FlashcardPageState extends State<FlashcardPage> {
                               numberOfCards: _filteredDecks[index].flashcardCount,
                               onDelete: () {},
                               enableSwipeToRetrieve: false,
-                              onTap: () {
-                                Navigator.of(context).push(
+                              onTap: () async {
+                                await Navigator.of(context).push(
                                   RouteGenerator.createRoute(
-                                      ViewDeckPage(deck: _filteredDecks[index])),
+                                      ViewDeckPage(deck: _filteredDecks[index], filter: filter)),
                                 );
+                                setState(() {
+                                  _onSearchChanged();
+                                });
                               },
                               // Checks if the user is the owner of the deck
                               items: (_filteredDecks[index].userId == _user!.uid)? [
@@ -518,7 +521,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
                                               : 'Unpublish Deck',
                                           button2: 'Cancel',
                                           onConfirm: () async {
-                                            await _filteredDecks[index].publishDeck();
+                                            await _filteredDecks[index].publishOrUnpublishDeck();
                                             setState(() {
                                               if(filter == "PUBLISHED_DECKS"){
                                                 _filteredDecks.removeWhere((d) => d.deckId == _filteredDecks[index].deckId);

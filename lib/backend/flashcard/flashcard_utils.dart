@@ -41,7 +41,7 @@ class FlashcardUtils{
     // Use a regular expression to replace multiple consecutive spaces with a single space
     return input.replaceAll(RegExp(r'\s+'), ' ');
   }
-  void sortByQuestion(List<Cards> cards) {
+  void sortByTerm(List<Cards> cards) {
     cards.sort((a, b) => a.term.compareTo(b.term));
   }
 
