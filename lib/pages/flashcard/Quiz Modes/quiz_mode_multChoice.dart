@@ -7,11 +7,14 @@ import 'package:deck/pages/misc/custom%20widgets/buttons/custom_buttons.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:deck/pages/misc/custom widgets/dialogs/confirmation_dialog.dart';
 
+import '../../../backend/models/deck.dart';
+import '../../../backend/models/quiz.dart';
 import '../../misc/widget_method.dart';
 import '../quiz_results.dart';
 
 class QuizMultChoice extends StatefulWidget {
-  const QuizMultChoice({super.key});
+  final List<Quiz?> questions;
+  const QuizMultChoice({super.key, required this.questions});
 
   @override
   _QuizMultChoiceState createState() => _QuizMultChoiceState();

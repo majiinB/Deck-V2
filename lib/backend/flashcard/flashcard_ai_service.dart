@@ -10,6 +10,7 @@ import 'package:http/http.dart' as http;
 
 import '../auth/auth_service.dart';
 import '../models/deck.dart';
+import '../models/quiz.dart';
 import 'flashcard_service.dart';
 
 class FlashcardAiService {
@@ -102,7 +103,7 @@ class FlashcardAiService {
 
       // Send a POST request to the API with the request body and headers.
       final response = await http.post(
-        Uri.parse('$deckAIAPIUrl/v2/deck/generate/flashcards/'), // API endpoint.
+        Uri.parse('$deckAILocalAPIUrl/v2/deck/generate/flashcards/'), // API endpoint.
         body: jsonEncode(requestBody), // JSON-encoded request body.
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8', // Specify content type as JSON.
@@ -154,6 +155,65 @@ class FlashcardAiService {
       }
     }catch(error){
       print ('AI ERROR: ${error}');
+      return null;
+    }
+  }
+
+  Future<Quiz?> retrieveQuizForDeck({required String deckId,}) async {
+    Map<String, dynamic> requestBody = {
+      'deckId': deckId,
+    };
+
+    try {
+      String? token = await AuthService().getIdToken();
+
+      final response = await http.post(
+        Uri.parse('$deckAILocalAPIUrl/v2/deck/generate/quiz/'),
+        body: jsonEncode(requestBody),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        var jsonData = jsonDecode(response.body) as Map<String, dynamic>;
+
+        if (jsonData.isEmpty) return null;
+
+        // Check if there's quizContent in the response
+        if (jsonData['data'] != null && jsonData['data']['quizContent'] != null) {
+          Quiz quiz = Quiz.fromJson(jsonData['data']['quizContent']);
+          return quiz;
+        } else {
+          // Optionally handle deck_id-only responses here
+          return null;
+        }
+      } else {
+        switch (response.statusCode) {
+          case 418:
+            throw IncompleteRequestBodyException('Incomplete request body: ${response.body}');
+          case 420:
+            throw NumberOfCardsException('Unknown number of cards: ${response.body}');
+          case 421:
+            throw TextExtractionException('Text Extraction error: ${response.body}');
+          case 422:
+            throw FileDeletionException('File was not deleted: ${response.body}');
+          case 423:
+            throw NoInformationException('Incomplete request body: ${response.body}');
+          case 424:
+            throw MessageRouteException('Internal server error: ${response.body}');
+          case 425:
+            throw RequestException('Internal server: ${response.body}');
+          case 500:
+          case 501:
+            throw InternalServerErrorException('Internal server error: ${response.body}');
+          default:
+            throw ApiException(response.statusCode, 'Error: ${response.body}');
+        }
+      }
+    } catch (error) {
+      print('AI ERROR: $error');
       return null;
     }
   }

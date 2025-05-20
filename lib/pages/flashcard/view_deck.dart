@@ -103,7 +103,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
         if (mounted) setState(() => _canToggleStar = true);
       });
     }finally{
-
+      _canToggleStar = true;
     }
   }
 
@@ -433,17 +433,15 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                               borderColor: DeckColors.primaryColor),
                         ),
                         Opacity(
-                          opacity: numberOfCards == 0 ? 0.5 : 1.0,
+                          opacity: widget.deck.flashcardCount == 0 ? 0.5 : 1.0,
                           child: BuildButton(
-                            onPressed:numberOfCards == 0
-                                ? () {
-                                  print("This is for learn");
-                                }
-                                : () {
+                            onPressed:widget.deck.flashcardCount == 0 ? () {
+                              // Do nothing
+                            } : () {
                               showDialog(
                                 context: context,
                                 barrierDismissible: false,
-                                builder: (BuildContext context) => const LearnModeDialog(),
+                                builder: (BuildContext context) => LearnModeDialog(deck: widget.deck),
                               );
                             },
                             buttonText: 'Learn',

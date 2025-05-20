@@ -88,7 +88,7 @@ class Deck{
       
       // Send a PUT request to the API with the request body and headers.
       final response = await http.put(
-        Uri.parse('$deckLocalAPIUrl/v1/decks/$_deckId'), // API endpoint.
+        Uri.parse('$deckManagerAPIUrl/v1/decks/$_deckId'), // API endpoint.
         body: jsonEncode(requestBody), // JSON-encoded request body.
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
@@ -135,7 +135,7 @@ class Deck{
 
       // Send a PUT request to the API with the request body and headers.
       final response = await http.put(
-        Uri.parse('$deckLocalAPIUrl/v1/decks/$_deckId'), // API endpoint.
+        Uri.parse('$deckManagerAPIUrl/v1/decks/$_deckId'), // API endpoint.
         body: jsonEncode(requestBody), // JSON-encoded request body.
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
@@ -166,7 +166,7 @@ class Deck{
 
       // Send a POST request to the API with the request body and headers.
       final response = await http.post(
-        Uri.parse('$deckLocalAPIUrl/v1/decks/save/$_deckId'), // API endpoint.
+        Uri.parse('$deckManagerAPIUrl/v1/decks/save/$_deckId'), // API endpoint.
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $token',
@@ -193,7 +193,7 @@ class Deck{
 
       // Send a POST request to the API with the request body and headers.
       final response = await http.post(
-        Uri.parse('$deckLocalAPIUrl/v1/decks/unsave/$_deckId'), // API endpoint.
+        Uri.parse('$deckManagerAPIUrl/v1/decks/unsave/$_deckId'), // API endpoint.
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $token',
@@ -228,7 +228,7 @@ class Deck{
 
       // Send a PUT request to the API with the request body and headers.
       final response = await http.put(
-        Uri.parse('$deckLocalAPIUrl/v1/decks/$_deckId'), // API endpoint.
+        Uri.parse('$deckManagerAPIUrl/v1/decks/$_deckId'), // API endpoint.
         body: jsonEncode(requestBody), // JSON-encoded request body.
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
@@ -261,7 +261,7 @@ class Deck{
 
       // Send a POST request to the API with the request body and headers.
       final response = await http.get(
-        Uri.parse('$deckLocalAPIUrl/v1/decks/$_deckId/flashcards?limit=100'), // API endpoint.
+        Uri.parse('$deckManagerAPIUrl/v1/decks/$_deckId/flashcards?limit=100'), // API endpoint.
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $token',
@@ -326,7 +326,7 @@ class Deck{
       ];
       // Send a POST request to the API with the request body and headers.
       final response = await http.post(
-        Uri.parse('$deckLocalAPIUrl/v1/decks/$_deckId/flashcards'), // API endpoint.
+        Uri.parse('$deckManagerAPIUrl/v1/decks/$_deckId/flashcards'), // API endpoint.
         body: jsonEncode(requestBody), // JSON-encoded request body.
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',

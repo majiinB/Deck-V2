@@ -20,13 +20,13 @@ class FlashcardService{
     String nextPageTokenRetrieved = "";
     try {
       String? token = await AuthService().getIdToken();
-      String url = '$deckLocalAPIUrl/v1/decks?limit=10';
+      String url = '$deckManagerAPIUrl/v1/decks?limit=10';
       if(filter.toUpperCase() == "MY_DECKS"){
-        url = '$deckLocalAPIUrl/v1/decks?limit=10';
+        url = '$deckManagerAPIUrl/v1/decks?limit=10';
       }else if(filter.toUpperCase() == "PUBLISHED_DECKS"){
-        url = '$deckLocalAPIUrl/v1/decks/public?limit=10';
+        url = '$deckManagerAPIUrl/v1/decks/public?limit=10';
       }else if(filter.toUpperCase() == "SAVED_DECKS"){
-        url = '$deckLocalAPIUrl/v1/decks/saved?limit=10';
+        url = '$deckManagerAPIUrl/v1/decks/saved?limit=10';
       }
 
       // Send a POST request to the API with the request body and headers.
@@ -111,7 +111,7 @@ class FlashcardService{
 
       // Send a POST request to the API with the request body and headers.
       final response = await http.get(
-        Uri.parse('$deckLocalAPIUrl/v1/decks/$deckID'), // API endpoint.
+        Uri.parse('$deckManagerAPIUrl/v1/decks/$deckID'), // API endpoint.
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $token',
@@ -146,7 +146,7 @@ class FlashcardService{
     String nextPageTokenRetrieved = "";
     try {
       String? token = await AuthService().getIdToken();
-      String url = '$deckLocalAPIUrl/v1/decks/search?searchQuery=$query&filter=$filter';
+      String url = '$deckManagerAPIUrl/v1/decks/search?searchQuery=$query&filter=$filter';
 
       // Send a GET request to the API with the request body and headers.
       final response = await http.get(

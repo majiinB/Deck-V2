@@ -43,7 +43,7 @@ class Cards {
       };
 
       final response = await http.put(
-        Uri.parse('$deckLocalAPIUrl/v1/decks/$deckId/flashcards/$cardId'), // API endpoint.
+        Uri.parse('$deckManagerAPIUrl/v1/decks/$deckId/flashcards/$cardId'), // API endpoint.
         body: jsonEncode(requestBody), // JSON-encoded request body.
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
@@ -83,7 +83,7 @@ class Cards {
       };
 
       final response = await http.put(
-        Uri.parse('$deckLocalAPIUrl/v1/decks/$deckId/flashcards/$cardId'), // API endpoint.
+        Uri.parse('$deckManagerAPIUrl/v1/decks/$deckId/flashcards/$cardId'), // API endpoint.
         body: jsonEncode(requestBody), // JSON-encoded request body.
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',

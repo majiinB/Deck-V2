@@ -1,3 +1,4 @@
+import 'package:deck/backend/flashcard/flashcard_ai_service.dart';
 import 'package:deck/pages/flashcard/Quiz%20Modes/quiz_mode_identification.dart';
 import 'package:deck/pages/misc/colors.dart';
 import 'package:deck/pages/misc/custom%20widgets/buttons/learn_mode_buttons.dart';
@@ -6,6 +7,8 @@ import 'package:deck/pages/misc/custom%20widgets/textboxes/textboxes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import '../../../../backend/models/deck.dart';
+import '../../../../backend/models/quiz.dart';
 import '../../../flashcard/Quiz Modes/quiz_mode_multChoice.dart';
 import '../../widget_method.dart';
 import '../buttons/custom_buttons.dart';
@@ -27,9 +30,9 @@ import '../buttons/custom_buttons.dart';
 ///
 
 class LearnModeDialog extends StatefulWidget {
-
+  final Deck deck;
   const LearnModeDialog({
-    super.key,
+    super.key, required this.deck
   });
 
   @override
@@ -231,13 +234,17 @@ class _LearnModeDialogState extends State<LearnModeDialog> {
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 10.0),
                   child: BuildButton(
-                    onPressed: (){
+                    onPressed: () async {
 
                       ///If user clicks quiz
                         if(showQuizOptions){
                           if(quizType == "Multiple Choice"){
-                            Navigator.of(context).push(
-                              RouteGenerator.createRoute(const QuizMultChoice()),
+                            FlashcardAiService aiService = new FlashcardAiService();
+                            // List<Quiz?> questions = await aiService.retrieveQuizForDeck(deckId: widget.deck.deckId);
+                            List<Quiz?> questions = [];
+                            print(questions);
+                            await Navigator.of(context).push(
+                              RouteGenerator.createRoute(QuizMultChoice(questions: questions,)),
                             ).then((_) {
                               Navigator.of(context).pop(); ///Close the dialog after navigating
                             });
