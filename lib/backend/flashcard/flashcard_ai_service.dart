@@ -103,7 +103,7 @@ class FlashcardAiService {
 
       // Send a POST request to the API with the request body and headers.
       final response = await http.post(
-        Uri.parse('$deckAILocalAPIUrl/v2/deck/generate/flashcards/'), // API endpoint.
+        Uri.parse('$deckAIAPIUrl/v2/deck/generate/flashcards/'), // API endpoint.
         body: jsonEncode(requestBody), // JSON-encoded request body.
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8', // Specify content type as JSON.
@@ -168,7 +168,7 @@ class FlashcardAiService {
       String? token = await AuthService().getIdToken();
 
       final response = await http.post(
-        Uri.parse('$deckAILocalAPIUrl/v2/deck/generate/quiz/'),
+        Uri.parse('$deckAIAPIUrl/v2/deck/generate/quiz/'),
         body: jsonEncode(requestBody),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',

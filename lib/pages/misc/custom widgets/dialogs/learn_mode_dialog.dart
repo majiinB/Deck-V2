@@ -240,8 +240,8 @@ class _LearnModeDialogState extends State<LearnModeDialog> {
                         if(showQuizOptions){
                           if(quizType == "Multiple Choice"){
                             FlashcardAiService aiService = new FlashcardAiService();
-                            // List<Quiz?> questions = await aiService.retrieveQuizForDeck(deckId: widget.deck.deckId);
-                            List<Quiz?> questions = [];
+                            Quiz? quiz = await aiService.retrieveQuizForDeck(deckId: widget.deck.deckId);
+                            List<QuizQuestion>? questions = quiz!.questions;
                             print(questions);
                             await Navigator.of(context).push(
                               RouteGenerator.createRoute(QuizMultChoice(questions: questions,)),

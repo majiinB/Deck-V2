@@ -13,7 +13,7 @@ import '../../misc/widget_method.dart';
 import '../quiz_results.dart';
 
 class QuizMultChoice extends StatefulWidget {
-  final List<Quiz?> questions;
+  final List<QuizQuestion?> questions;
   const QuizMultChoice({super.key, required this.questions});
 
   @override
@@ -38,29 +38,14 @@ class _QuizMultChoiceState extends State<QuizMultChoice> {
   void initState() {
     super.initState();
 
-    // Defining the set of questions and choices
-    questions = [
-      {
-        'question': 'sino project manager ng group odyssey',
-        'choices': ['richmond', 'ar2r', 'leila', 'pole'],
-        'correct': 'richmond',
-      },
-      {
-        'question': 'ano ang unang project ng group oydssey',
-        'choices': ['through the woods', 'deck', 'archivary', 'through the woofs'],
-        'correct': 'archivary',
-      },
-      {
-        'question': 'sino front end sa choices',
-        'choices': ['si jam ng acsad hahahahaha', 'richmond', 'ar2r', 'pole'],
-        'correct': 'pole',
-      },
-      {
-        'question': 'ano unang pangalan ng grp odyssey',
-        'choices': ['basta', 'maiteam', 'teamawa', 'teamba'],
-        'correct': 'maiteam',
-      },
-    ];
+    questions = widget.questions.map((quizQuestion) {
+      return {
+        'question': quizQuestion!.question,
+        'choices': quizQuestion.choices.map((choice) => choice.text).toList(),
+        'correct': quizQuestion.choices.firstWhere((choice) => choice.isCorrect).text,
+      };
+    }).toList();
+
 
     loadQuestion(currentQuestionIndex);
   }
@@ -182,7 +167,7 @@ class _QuizMultChoiceState extends State<QuizMultChoice> {
               child: Column(
                 children: [
                   Text(
-                    title.isNotEmpty ? title : 'A Very long deck title that is more than 2 lines',
+                    '',
                     overflow: TextOverflow.visible,
                     style: const TextStyle(
                       fontFamily: 'Fraiche',
