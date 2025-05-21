@@ -618,11 +618,15 @@ class _HomePageState extends State<HomePage> {
                                 ownerOfDeck: _decks[index].deckOwnerName,
                                 numberOfCards: _decks[index].flashcardCount,
                                 onDelete: () {  },
-                                onTap: () {
-                                  Navigator.of(context).push(
+                                onTap: () async {
+                                  await Navigator.of(context).push(
                                     RouteGenerator.createRoute(
                                         ViewDeckPage(deck: _decks[index], filter: "MY_DECKS")),
                                   );
+
+                                  setState(() {
+                                    _initUserDecks(_user);
+                                  });
                                 },
                               )
                           );

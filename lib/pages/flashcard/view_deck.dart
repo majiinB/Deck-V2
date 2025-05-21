@@ -60,7 +60,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
 
   /// Initialized the flashcards of the deck
   /// Retrieves the flashcards under the given deck
-  void _initDeckCards() async {
+  Future<void> _initDeckCards() async {
     List<Cards> cards = await widget.deck.getCard();
 
     // Loop through cards and add those with isStarred == true to starredCards
@@ -77,6 +77,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
       _filteredCards = _cardsCollection;
       _starredCards = starredCards;
       _filteredStarredCards = _starredCards;
+      numberOfCards = widget.deck.flashcardCount;
     });
   }
 
@@ -394,7 +395,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                     child: Row(
                       children: [
                         Text(
-                          '${widget.deck.flashcardCount} cards',
+                          '${_cardsCollection.length} cards',
                           overflow: TextOverflow.visible,
                           style: const TextStyle(
                             fontFamily: 'Nunito-Regular',
@@ -408,16 +409,13 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                           padding: const EdgeInsets.only(right: 8.0),
                           child: BuildButton(
                               onPressed: () async {
-                                final newCard = await Navigator.push(
+                                await Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => AddFlashcardPage(
-                                            deck: widget.deck,
-                                      )),
+                                    builder: (context) => AddFlashcardPage(deck: widget.deck),
+                                  ),
                                 );
-                                if (newCard != null) {
-                                  _initDeckCards();
-                                }
+                                await _initDeckCards();
                               },
                               buttonText: 'Add',
                               icon: Icons.add,
@@ -525,7 +523,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                     _cardsCollection.removeWhere((card) => card.cardId == removedCard.cardId);
                                                     _starredCards.removeWhere((card) => card.cardId == removedCard.cardId);
                                                     _filteredStarredCards.removeWhere((card) => card.cardId == removedCard.cardId);
-                                                    numberOfCards = _filteredCards.length;
+                                                    numberOfCards = _cardsCollection.length;
                                                   });
                                                 } catch (e) {
                                                   print('View Deck Error: $e');
