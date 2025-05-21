@@ -213,7 +213,7 @@ class FlashcardService{
     }
     return decks;
   }
-  Future<List<Deck>> getDecksByUserIdNewestFirst(String userId) async {
+  Future<List<Deck>> getDecksByUserIdNewestFirst(String userId, String userName) async {
     List<Deck> decks = [];
 
     try {
@@ -234,16 +234,29 @@ class FlashcardService{
         String title = _flashcardUtils.capitalizeFirstLetterOfWords(doc['title']);
         String userId = doc['owner_id'];
         String coverPhoto = doc['cover_photo'];
+        String description = doc['description'];
         bool isDeleted = doc['is_deleted'];
         bool isPrivate = doc['is_private'];
         String deckId = doc.id;
+        int flashcardCount = doc['flashcard_count'];
 
         // Extract created_at timestamp and convert it to DateTime
         Timestamp createdAtTimestamp = doc['created_at'];
         DateTime createdAt = createdAtTimestamp.toDate();
 
         // Create a new Deck object and add it to the list
-        // decks.add(Deck(title, userId, deckId, isDeleted, isPrivate, createdAt, coverPhoto));
+        decks.add(Deck(
+          title,
+          description,
+          userName,
+          flashcardCount,
+          userId,
+          deckId,
+          isDeleted,
+          isPrivate,
+          createdAt,
+          coverPhoto
+        ));
       }
     } catch (e) {
       // Handle errors

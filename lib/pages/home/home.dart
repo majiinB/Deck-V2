@@ -37,7 +37,7 @@ class _HomePageState extends State<HomePage> {
 
   final AuthService _authService = AuthService();
   final FlashcardService _flashcardService = FlashcardService();
-  final List<Deck> _decks = [];
+  late List<Deck> _decks = [];
   late User? _user;
 
   //Initial values
@@ -69,10 +69,13 @@ class _HomePageState extends State<HomePage> {
   void _initUserDecks(User? user) async {
     if (user != null) {
       String userId = user.uid;
+      String? firstName = _user?.displayName?.split(" ").first;
+      String? lastName = _user?.displayName?.split(" ").last;
+      String? firstNameAndLastName = '${firstName ?? "User"} ${lastName ?? ""}';
       List<Deck> decks = await _flashcardService
-          .getDecksByUserIdNewestFirst(userId); // Call method to fetch decks
+          .getDecksByUserIdNewestFirst(userId, firstNameAndLastName); // Call method to fetch decks
       setState(() {
-        // _decks = decks; // Update state with fetched decks
+        _decks = decks; // Update state with fetched decks
       });
     }
   }
@@ -82,10 +85,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _initGreeting() {
-    String firstName = "Longusername";
-
-    //   _user?.reload();
-    //   String? firstName = _user?.displayName?.split(" ").first ?? 'User';
+      _user?.reload();
+      String? firstName = _user?.displayName?.split(" ").first ?? 'User';
     setState(() {
       greeting = "Hello, $firstName!";
     });
@@ -593,30 +594,36 @@ class _HomePageState extends State<HomePage> {
                           const IfCollectionEmpty(
                             hasIcon: false,
                             hasBackground: true,
-                            ifCollectionEmptyText: 'YIPEE! No upcoming deadlines! ',
+                            ifCollectionEmptyText: 'No Recent Decks Yet!',
                             ifCollectionEmptySubText:
-                            'Now’s the perfect time to get ahead. Start adding new tasks and stay on top of your game!',
+                            'Discover new decks or create your own to keep learning.',
                           ),
                       ],
                     ),
                   ),
 
-                  // if (_decks.isNotEmpty) //TODO uncomment this if ok na database
+                  if (_decks.isNotEmpty)
                   SizedBox(
                     height: 150.0,
                     child:
-                    ListView.builder( //TODO Change datas here using data from db
+                    ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      itemCount: 15, //_decks.length
+                      itemCount: _decks.length,
                       itemBuilder:(context, index){
                           return Padding(
                               padding: EdgeInsets.only(left: index == 0 ? 30 : 10, right: 10) ,
                               child: HomeDeckTile(
-                                titleOfDeck: 'yee',
-                                ownerOfDeck: 'sample',
-                                numberOfCards: 100,
+                                deckCoverPhotoUrl: _decks[index].coverPhoto,
+                                titleOfDeck: _decks[index].title,
+                                ownerOfDeck: _decks[index].deckOwnerName,
+                                numberOfCards: _decks[index].flashcardCount,
                                 onDelete: () {  },
-                                onTap: () {  },
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    RouteGenerator.createRoute(
+                                        ViewDeckPage(deck: _decks[index], filter: "MY_DECKS")),
+                                  );
+                                },
                               )
                           );
                       },
