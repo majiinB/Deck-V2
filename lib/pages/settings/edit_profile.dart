@@ -262,7 +262,7 @@ class EditProfileState extends State<EditProfile> {
               children: [
                 Expanded(
                   child: SingleChildScrollView(
-                      padding: const EdgeInsets.only(left: 15, right: 15, bottom: 20),
+                      padding: const EdgeInsets.only(top:10),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -275,7 +275,7 @@ class EditProfileState extends State<EditProfile> {
                               //   left: 10,
                               Center(
                                 child: Padding(
-                                  padding: const EdgeInsets.only(top: 20),
+                                  padding: const EdgeInsets.only(top: 20, left: 15.0, right: 15.0),
                                   child: BuildProfileImage(photoUrl, height: 200,),
                                 ),
                               ),
@@ -426,7 +426,7 @@ class EditProfileState extends State<EditProfile> {
                             ],
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(top: 20.0),
+                            padding: const EdgeInsets.only(top: 20.0, left: 15.0, right: 15.0),
                             child: Center(
                               child: Text (
                                 '${firstNameController.text}${lastNameController.text}',
@@ -484,7 +484,7 @@ class EditProfileState extends State<EditProfile> {
                           // ),
                           Padding(
                             padding:
-                                const EdgeInsets.only(top: 10.0),
+                                const EdgeInsets.only(top: 10.0, left: 15.0, right: 15.0),
                             child:!AuthService()
                                 .getCurrentUser()!
                                 .providerData[0]
@@ -499,7 +499,7 @@ class EditProfileState extends State<EditProfile> {
                                 : const SizedBox()),
                           Padding(
                               padding:
-                                  const EdgeInsets.only(top: 10),
+                                  const EdgeInsets.only(top: 10, left: 15.0, right: 15.0),
                               child: !AuthService()
                                       .getCurrentUser()!
                                       .providerData[0]
@@ -523,7 +523,7 @@ class EditProfileState extends State<EditProfile> {
                             children: [
                               const Padding(
                                 padding:
-                                EdgeInsets.only(top: 20.0),
+                                EdgeInsets.only(top: 20.0, left: 15.0, right: 15.0),
                                 child: Text(
                                   'Change Password',
                                   style: TextStyle(
@@ -534,7 +534,7 @@ class EditProfileState extends State<EditProfile> {
                                 ),
                               ),
                               Padding(
-                                  padding: const EdgeInsets.only(top: 10),
+                                  padding: const EdgeInsets.only(top: 10, left: 15.0, right: 15.0),
                                 child: BuildSettingsContainer(
                                   selectedIcon: DeckIcons.lock,
                                   nameOfTheContainer: 'Change Password',
@@ -560,7 +560,7 @@ class EditProfileState extends State<EditProfile> {
                           )
                               : const SizedBox(height: 160),
                           const Padding(
-                            padding: EdgeInsets.only(top: 20.0),
+                            padding: EdgeInsets.only(top: 20.0, left: 15.0, right: 15.0),
                               child: Divider(
                                 thickness: 1,
                                 color: DeckColors.primaryColor,
@@ -568,7 +568,7 @@ class EditProfileState extends State<EditProfile> {
                           ),
                           Padding(
                             padding:
-                                const EdgeInsets.only(top: 20),
+                                const EdgeInsets.only(top: 20, left: 15.0, right: 15.0),
                             child: BuildButton(
                               onPressed: () {
                                 print(
@@ -604,14 +604,15 @@ class EditProfileState extends State<EditProfile> {
                               borderColor: Colors.transparent,
                             ),
                           ),
+                          const SizedBox(height: 50),
+                          Image.asset(
+                            'assets/images/Deck-Bottom-Image1.png',
+                            fit: BoxFit.fitWidth,
+                            width: MediaQuery.of(context).size.width,
+                          ),
                         ],
                       ),
                     ),
-                ),
-                Image.asset(
-                  'assets/images/Deck-Bottom-Image1.png',
-                  fit: BoxFit.fitWidth,
-                  width: MediaQuery.of(context).size.width,
                 ),
               ],
             ),

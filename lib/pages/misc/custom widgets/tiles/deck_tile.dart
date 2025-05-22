@@ -149,8 +149,7 @@ class DeckTileState extends State<DeckTile> {
                 children: [
                   Row(
                     children: [
-                      SizedBox(
-                        width: 250,
+                      Expanded(
                         child: Text(
                           widget.titleOfDeck,
                           maxLines: 1,
