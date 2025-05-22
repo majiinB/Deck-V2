@@ -26,6 +26,8 @@ class CreateAccountPage extends StatefulWidget {
 
 class _CreateAccountPageState extends State<CreateAccountPage> {
   bool _isLoading = false;
+  final TextEditingController firstNameController = TextEditingController();
+  final TextEditingController lastNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController =
@@ -123,6 +125,38 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children:[
+                          const Text(
+                            'First Name',
+                            style: TextStyle(
+                                fontFamily: 'Nunito-Bold',
+                                fontSize: 16,
+                                color: DeckColors.primaryColor
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          BuildTextBox(
+                            hintText: 'Enter First Name',
+                            controller: firstNameController,
+                          ),
+                          const SizedBox(height: 20,),
+                          const Text(
+                            'Last Name',
+                            style: TextStyle(
+                                fontFamily: 'Nunito-Bold',
+                                fontSize: 16,
+                                color: DeckColors.primaryColor
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          BuildTextBox(
+                            hintText: 'Enter Last Name',
+                            controller: lastNameController,
+                          ),
+                          const SizedBox(height: 20,),
                           const Text(
                             'Email',
                             style: TextStyle(

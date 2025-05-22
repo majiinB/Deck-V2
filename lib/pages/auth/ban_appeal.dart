@@ -14,33 +14,26 @@ import '../misc/widget_method.dart';
 
 
 class BanAppealPage extends StatefulWidget {
+  final String adminReason;
 
-  const BanAppealPage({super.key});
+  const BanAppealPage({super.key,
+    required this.adminReason});
 
   @override
   _BanAppealPageState createState() => _BanAppealPageState();
 }
 class _BanAppealPageState extends State<BanAppealPage> {
-  final appealTitle = TextEditingController();
+  final appealReason = TextEditingController();
   final appealDetails = TextEditingController();
-  bool hasUploadedImages = false;
 
-  ///This tracks if images are uploaded
-  void _onImageUploadChange(bool hasImages) {
-    setState(() {
-      hasUploadedImages = hasImages;
-    });
-  }
 
   ///This tracks if there are unsaved changes
   bool _hasUnsavedChanges() {
-    return appealTitle.text.isNotEmpty || appealDetails.text.isNotEmpty ||
-        hasUploadedImages;
+    return appealDetails.text.isNotEmpty;
   }
   ///This disposes controllers to free resources and prevent memory leaks
   @override
   void dispose() {
-    appealTitle.dispose();
     appealDetails.dispose();
     super.dispose();
   }
@@ -98,13 +91,23 @@ class _BanAppealPageState extends State<BanAppealPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 const Padding(
-                  padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 20.0),
-                  child: Text('Something on Deck that doesn’t seem right? '
-                      'Account got banned for no reason? Help us improve Deck by appealing it.',
-                    textAlign: TextAlign.justify,
+                  padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 10.0),
+                  child: Text('Your account has been banned!',
                     style: TextStyle(
+                      fontFamily: 'Fraiche',
+                      color: DeckColors.primaryColor,
+                      fontSize: 32,
+                      height: 1.1,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 10.0),
+                  child: Text(
+                      widget.adminReason,
+                    textAlign: TextAlign.justify,
+                    style: const TextStyle(
                       fontFamily: 'Nunito-Regular',
                       color: DeckColors.primaryColor,
                       fontSize: 16,
@@ -114,27 +117,8 @@ class _BanAppealPageState extends State<BanAppealPage> {
                 ),
                 const Padding(
                   padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 20.0),
-                  child: Text('Title of your Appeal',
-                    style: TextStyle(
-                      fontFamily: 'Fraiche',
-                      color: DeckColors.primaryColor,
-                      fontSize: 32,
-                      height: 1.1,
-                    ),
-                  ),
-                ),
-                ///Title of your appeal textbox
-                Padding(
-                  padding: const EdgeInsets.only(top:10, left: 15.0, right: 15.0),
-                  child: BuildTextBox(
-                    hintText: 'Enter title of your appeal',
-                      controller: appealTitle,
-                  ),
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 20.0),
                   child: Text(
-                    'Tell us why you believe your account was wrongfully banned.',
+                    'Provide the reason for your appeal',
                     style: TextStyle(
                       fontFamily: 'Fraiche',
                       color: DeckColors.primaryColor,
@@ -147,7 +131,7 @@ class _BanAppealPageState extends State<BanAppealPage> {
                 Padding(
                   padding: const EdgeInsets.only(top:10, left: 15.0, right: 15.0),
                   child: BuildTextBox(
-                    hintText: 'Enter any relevant details',
+                    hintText: 'Enter relevant details',
                     isMultiLine: true,
                     controller: appealDetails,
                   ),
@@ -164,43 +148,9 @@ class _BanAppealPageState extends State<BanAppealPage> {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                const Padding(
-                  padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 20.0),
-                  child: Text(
-                    'Attach a screenshot of the evidence you’re reporting',
-                    style: TextStyle(
-                      fontFamily: 'Fraiche',
-                      color: DeckColors.primaryColor,
-                      fontSize: 32,
-                      height: 1.1,
-                    ),
-                  ),
-                ),
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top:10, left: 15.0, right: 15.0),
-                    ///This calls the screen shot images containers
-                    child: BuildScreenshotImage(
-                      onImageUploadChange: _onImageUploadChange,
-                    ),
-                  ),
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(bottom: 15.0),
-                  child: Center(
-                    child: Text('Upload up to 3 PNG or JPG files. Max file size 10 MB.',
-                      style: TextStyle(
-                        fontFamily: 'Nunito-Regular',
-                        color: DeckColors.primaryColor,
-                        fontSize: 12,
-                        height: 1,
-                      ),
-                    ),
-                  ),
-                ),
                 ///this section informs the user about the consequences or actions that will occur upon submitting the form.
                 Padding(
-                  padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                  padding: const EdgeInsets.only(top:20, left: 15.0, right: 15.0),
                   child: Wrap(
                     alignment: WrapAlignment.start,
                     children: [

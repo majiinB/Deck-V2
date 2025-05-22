@@ -86,10 +86,7 @@ class _SuggestImprovementState extends State<SuggestImprovement> {
                     children: [
                       const Padding(
                         padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 20.0),
-                        child: Text('We’d love to know what you want to see in the'
-                            ' future or what could be improved. '
-                            'We may contact you about the feedback you’ve shared '
-                            'and research opportunities related to your feedback.',
+                        child: Text('Share feedback! Help us improve Deck together',
                         textAlign: TextAlign.justify,
                         style: TextStyle(
                           fontFamily: 'Nunito-Regular',

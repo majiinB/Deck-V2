@@ -149,14 +149,17 @@ class DeckTileState extends State<DeckTile> {
                 children: [
                   Row(
                     children: [
-                      AutoSizeText(
-                        widget.titleOfDeck,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontFamily: 'Fraiche',
-                          fontSize: 20,
-                          color: DeckColors.primaryColor,
+                      SizedBox(
+                        width: 250,
+                        child: Text(
+                          widget.titleOfDeck,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontFamily: 'Fraiche',
+                            fontSize: 20,
+                            color: DeckColors.primaryColor,
+                          ),
                         ),
                       ),
                       const Spacer(),

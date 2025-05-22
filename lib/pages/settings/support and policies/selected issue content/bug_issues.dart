@@ -81,9 +81,7 @@ class BugIssues extends StatefulWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'Tell us what you were doing in Deck when you saw the bug, '
-                    'and what you expected to happen instead. Include as much '
-                    'detail as possible.',
+                'Describe what happened, and what you expected instead',
                 style: TextStyle(
                   fontFamily: 'Fraiche',
                   fontSize: 24,
@@ -112,39 +110,6 @@ class BugIssues extends StatefulWidget {
                     height: 1,
                   ),
                   textAlign: TextAlign.center,
-                ),
-              ),
-              const Padding(
-                padding: EdgeInsets.only(top: 10.0),
-                child: Text(
-                  'Attach a screenshot of the content you’re reporting',
-                  style: TextStyle(
-                    fontFamily: 'Fraiche',
-                    fontSize: 24,
-                    color: DeckColors.primaryColor,
-                  ),
-                ),
-              ),
-               Center(
-                child: Padding(
-                  padding: EdgeInsets.only(top: 10),
-                  ///This calls the screen shot images containers
-                  child: BuildScreenshotImage(
-                    onImageUploadChange: _onImageUploadChange,
-                  ),
-                ),
-              ),
-              const Padding(
-                padding: EdgeInsets.only(bottom: 15.0),
-                child: Center(
-                  child: Text('Upload up to 3 PNG or JPG files. Max file size 10 MB.',
-                    style: TextStyle(
-                      fontFamily: 'Nunito-Regular',
-                      color: DeckColors.primaryColor,
-                      fontSize: 12,
-                      height: 1,
-                    ),
-                  ),
                 ),
               ),
             ],

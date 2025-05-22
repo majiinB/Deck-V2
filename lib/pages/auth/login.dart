@@ -39,6 +39,8 @@ class _LoginPageState extends State<LoginPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
+
+
   @override
   Widget build(BuildContext context) {
 
@@ -160,7 +162,7 @@ class _LoginPageState extends State<LoginPage> {
                                     () {
                                   Navigator.of(context).pop();
                                   Navigator.of(context).push(
-                                    RouteGenerator.createRoute(BanAppealPage()),
+                                    RouteGenerator.createRoute(BanAppealPage(adminReason: "Your account has been temporarily banned due to violating our community guidelines. We have noticed multiple infractions, including but not limited to inappropriate behavior, spamming, or abusive language. We take these violations seriously in order to maintain a positive and safe environment for all users.")),
                                   );
                                 },
                                 button2: "No",
