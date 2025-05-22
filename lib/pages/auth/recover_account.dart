@@ -60,9 +60,9 @@ class RecoverAccountPage extends StatelessWidget {
                     fontSize: 56,
                   ),
                 ),
-                SizedBox(height: 20,),
+
                 const Text(
-                  'Enter your email address below, and we\'ll send you a link to reset your password. Follow the instructions in the email to regain access to your account.',
+                  'Enter your email to receive a password reset link',
                   textAlign: TextAlign.justify,
                   style: TextStyle(
                       fontFamily: 'Nunito-Regular',
@@ -70,7 +70,7 @@ class RecoverAccountPage extends StatelessWidget {
                       fontSize: 16
                   ),
                 ),
-                const SizedBox(height: 10,),
+                const SizedBox(height: 20,),
                 const Text(
                   'Enter Email',
                   style: TextStyle(

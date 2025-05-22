@@ -7,9 +7,11 @@ import 'package:deck/pages/misc/custom%20widgets/textboxes/textboxes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import '../../../../backend/models/card.dart';
 import '../../../../backend/models/deck.dart';
 import '../../../../backend/models/quiz.dart';
 import '../../../flashcard/Quiz Modes/quiz_mode_multChoice.dart';
+import '../../../flashcard/play_my_deck.dart';
 import '../../widget_method.dart';
 import '../buttons/custom_buttons.dart';
 
@@ -49,6 +51,13 @@ class _LearnModeDialogState extends State<LearnModeDialog> {
   bool showQuizOptions = true;
   bool showStudyOptions = false;
 
+  List<Cards> sampleCards = [
+    Cards('Card 1 Term', 'Definition of Card 1', false, 'card1_id', false),
+    Cards('Card 2 Term', 'Definition of Card 2', true, 'card2_id', false),
+    Cards('Card 3 Term', 'Definition of Card 3', false, 'card3_id', true),
+    Cards('Card 4 Term', 'Definition of Card 4', true, 'card4_id', false),
+    Cards('Card 5 Term', 'Definition of Card 5', false, 'card5_id', false),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -210,15 +219,15 @@ class _LearnModeDialogState extends State<LearnModeDialog> {
                             buttonColors: [DeckColors.deckYellow, DeckColors.deckYellow, DeckColors.deckYellow],
                             isClickable: true,
                             onChange: (label, index){
-                              if (index == 0){
-                                cardOrientation = "Term";
-                              }
-                              else if (index == 1){
-                                cardOrientation = "Definition";
-                              }
-                              else if (index == 2){
-                                cardOrientation = "Shuffled";
-                              }
+                              setState(() {
+                                if (index == 0){
+                                  cardOrientation = "Term";
+                                } else if (index == 1){
+                                  cardOrientation = "Definition";
+                                } else if (index == 2){
+                                  cardOrientation = "Shuffled";
+                                }
+                              });
                             },
                           )
                       ),
@@ -260,8 +269,32 @@ class _LearnModeDialogState extends State<LearnModeDialog> {
 
                         ///If user clicks study (flashcard mode)
                         else if (showStudyOptions){
-                          if(cardOrientation.isNotEmpty){
-                            print("Starting study with: $cardOrientation");
+                          ///this choice is for term orientation
+                          if(cardOrientation == "Term"){
+                            Navigator.of(context).push(
+                              RouteGenerator.createRoute(PlayMyDeckPage(
+                                cards: sampleCards,
+                                deck:  widget.deck,)
+                              ),
+                            );
+                          }
+                          ///this choice is for definition orientation
+                          else if (cardOrientation == "Definition"){
+                            Navigator.of(context).push(
+                              RouteGenerator.createRoute(PlayMyDeckPage(
+                                cards: sampleCards,
+                                deck:  widget.deck,)
+                              ),
+                            );
+                          }
+                          ///this choice is for both orientation
+                          else if (cardOrientation == "Shuffled"){
+                            Navigator.of(context).push(
+                              RouteGenerator.createRoute(PlayMyDeckPage(
+                                cards: sampleCards,
+                                deck:  widget.deck,)
+                              ),
+                            );
                           }
                         }
                     },

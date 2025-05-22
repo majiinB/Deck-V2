@@ -106,19 +106,7 @@ class _QuizMultChoiceState extends State<QuizMultChoice> {
           barrierDismissible: false,
           builder: (context){
             return CustomAlertDialog(
-              /*title: const Text('Quiz Finished'),
-              content: const Text('Congratulations! You have finished the quiz!'),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    Navigator.of(context).push(
-                      RouteGenerator.createRoute(const QuizResults()),
-                    );
-                  },
-                  child: Text('OK'),
-                ),
-              ],*/ imagePath: 'assets/images/Deck-Dialogue3.png',
+             imagePath: 'assets/images/Deck-Dialogue3.png',
               title: 'Quiz Finished!',
               message: 'Congratulations, wanderer! You\'ve completed the quiz! Let\'s now take a look at your results!',
               button1: 'Ok',
@@ -205,19 +193,17 @@ class _QuizMultChoiceState extends State<QuizMultChoice> {
                               padding: const EdgeInsets.all(15.0),
                               child: Container(
                                 height: 100,
-                                child: Center(
-                                  child: SingleChildScrollView(
-                                    child: Text(
-                                      question.isNotEmpty
-                                          ? question
-                                          : 'A very long sample description of a terminology that should reach 3 lines in this card.',
-                                      style: const TextStyle(
-                                        fontFamily: 'Nunito-Regular',
-                                        color: DeckColors.primaryColor,
-                                        fontSize: 16,
-                                      ),
-                                      textAlign: TextAlign.center,
+                                child: SingleChildScrollView(
+                                  child: Text(
+                                    question.isNotEmpty
+                                        ? question
+                                        : 'A very long sample description of a terminology that should reach 3 lines in this card.',
+                                    style: const TextStyle(
+                                      fontFamily: 'Nunito-Regular',
+                                      color: DeckColors.primaryColor,
+                                      fontSize: 16,
                                     ),
+                                    textAlign: TextAlign.center,
                                   ),
                                 ),
                               ),

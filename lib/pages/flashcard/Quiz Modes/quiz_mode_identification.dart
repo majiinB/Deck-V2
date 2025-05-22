@@ -7,6 +7,7 @@ import 'package:deck/pages/misc/custom%20widgets/textboxes/textboxes.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../../misc/custom widgets/dialogs/alert_dialog.dart';
 import '../../misc/custom widgets/dialogs/confirmation_dialog.dart';
 import '../../misc/widget_method.dart';
 import '../quiz_results.dart';
@@ -72,20 +73,17 @@ class _QuizIdentificationState extends State<QuizIdentification> {
           context: context,
           barrierDismissible: false,
           builder: (context){
-            return AlertDialog(
-              title: const Text('Quiz Finished'),
-              content: const Text('Congratulations! You have finished the quiz!'),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    Navigator.of(context).push(
-                      RouteGenerator.createRoute(const QuizResults()),
-                    );
-                  },
-                  child: Text('OK'),
-                ),
-              ],
+            return CustomAlertDialog(
+              imagePath: 'assets/images/Deck-Dialogue3.png',
+              title: 'Quiz Finished!',
+              message: 'Congratulations, wanderer! You\'ve completed the quiz! Let\'s now take a look at your results!',
+              button1: 'Ok',
+              onConfirm: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).push(
+                  RouteGenerator.createRoute(const QuizResults()),
+                );
+              },
             );
           }
       );
@@ -139,6 +137,7 @@ class _QuizIdentificationState extends State<QuizIdentification> {
                         Padding(
                           padding: const EdgeInsets.only(top: 15.0),
                           child: Container(
+                            height: 400,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(15.0),
                               color: DeckColors.white,
@@ -174,6 +173,7 @@ class _QuizIdentificationState extends State<QuizIdentification> {
                                       ),
                                     ),
                                   ),
+                                  Spacer(),
                                   const Divider(
                                     color: DeckColors.primaryColor,
                                     thickness: 2,

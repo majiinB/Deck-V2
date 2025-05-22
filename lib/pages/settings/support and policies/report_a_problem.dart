@@ -130,9 +130,8 @@ class _ReportAProblemState extends State<ReportAProblem> {
                         ),
                       ),
                       const Padding(
-                        padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 20.0),
-                        child: Text('Found something on Deck that doesn’t '
-                            'seem right? Help us improve Deck by reporting it.',
+                        padding: EdgeInsets.only(left: 15.0, right: 15.0),
+                        child: Text('Found an issue on Deck? Report it here.',
                           textAlign: TextAlign.justify,
                           style: TextStyle(
                             fontFamily: 'Nunito-Regular',
@@ -186,7 +185,7 @@ class _ReportAProblemState extends State<ReportAProblem> {
 
                       ///this section informs the user about the consequences or actions that will occur upon submitting the form.
                       Padding(
-                        padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                        padding: const EdgeInsets.only(top: 10, left: 15.0, right: 15.0),
                         child: Wrap(
                           alignment: WrapAlignment.start,
                           children: [

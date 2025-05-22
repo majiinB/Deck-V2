@@ -367,6 +367,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                       fontFamily: 'Fraiche',
                       color: DeckColors.primaryColor,
                       fontSize: 32,
+
                     ),
                   ),
                   Text(
