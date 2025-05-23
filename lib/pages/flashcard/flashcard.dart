@@ -75,7 +75,6 @@ class _FlashcardPageState extends State<FlashcardPage> {
 
   void _initUserDecks(User? user) async {
     if (user != null) {
-      print("initialize deck");
       String userId = user.uid;
       var result = await _flashcardService.getDecks(filter); // Call method to fetch decks
       List<Deck> decks = result['decks'];

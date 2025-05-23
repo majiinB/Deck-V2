@@ -237,11 +237,18 @@ class _LearnModeDialogState extends State<LearnModeDialog> {
                   padding: const EdgeInsets.symmetric(vertical: 10.0),
                   child: BuildButton(
                     onPressed: () async {
+                      ///this choice is for term orientation
+                      final raw = numberOfCards.text.trim();
+                      final parsed = int.tryParse(raw);
+                      if (raw.isNotEmpty && parsed != null && parsed > 0 ) {
+                        numOfCards = parsed;
+                      }
                       ///If user clicks quiz
                         if(showQuizOptions){
+                          ///this choice is for term orientation
                           if(quizType == "Multiple Choice"){
                             FlashcardAiService aiService = new FlashcardAiService();
-                            Quiz? quiz = await aiService.retrieveQuizForDeck(deckId: widget.deck.deckId);
+                            Quiz? quiz = await aiService.retrieveQuizForDeck(deckId: widget.deck.deckId, numOfQuiz: numOfCards);
                             List<QuizQuestion>? questions = quiz!.questions;
                             await Navigator.of(context).push(
                               RouteGenerator.createRoute(QuizMultChoice(
@@ -254,7 +261,6 @@ class _LearnModeDialogState extends State<LearnModeDialog> {
                           }
                           else if(quizType == "Identification") {
                             List<Cards> randomizedCards = await widget.deck.getCardRandom(numOfCards);
-                            print(randomizedCards);
                             await Navigator.of(context).push(
                               RouteGenerator.createRoute(QuizIdentification(
                                 cards: randomizedCards,
@@ -264,16 +270,9 @@ class _LearnModeDialogState extends State<LearnModeDialog> {
                               Navigator.of(context).pop(); ///Close the dialog after navigating
                             });
                           }
-                          }
-
+                        }
                         ///If user clicks study (flashcard mode)
                         else if (showStudyOptions){
-                          ///this choice is for term orientation
-                          final raw = numberOfCards.text.trim();
-                          final parsed = int.tryParse(raw);
-                          if (raw.isNotEmpty && parsed != null && parsed > 0 ) {
-                            numOfCards = parsed;
-                          }
                           if(cardOrientation == "Term"){
                             Navigator.of(context).push(
                               RouteGenerator.createRoute(PlayMyDeckPage(
