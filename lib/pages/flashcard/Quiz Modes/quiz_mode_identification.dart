@@ -7,13 +7,20 @@ import 'package:deck/pages/misc/custom%20widgets/textboxes/textboxes.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../../../backend/models/deck.dart';
 import '../../misc/custom widgets/dialogs/alert_dialog.dart';
 import '../../misc/custom widgets/dialogs/confirmation_dialog.dart';
 import '../../misc/widget_method.dart';
 import '../quiz_results.dart';
 
 class QuizIdentification extends StatefulWidget {
-  const QuizIdentification({super.key});
+  final List cards;
+  final Deck deck;
+  const QuizIdentification({
+    Key? key,
+    required this.cards,
+    required this.deck,
+  }) : super(key: key);
 
   @override
   _QuizIdentificationState createState() => _QuizIdentificationState();
@@ -24,47 +31,30 @@ class _QuizIdentificationState extends State<QuizIdentification> {
   String question = '';
   final answerController = TextEditingController();
   int currentQuestionIndex = 0; //track the current question
-  List<Map<String, String>> questions = [
-    {
-      'question': 'sino project manager ng group odyssey',
-      'answer': 'richmond',
-    },
-    {
-      'question': 'ano ang unang project ng group oydssey',
-      'answer': 'archivary',
-    },
-    {
-      'question': 'sino front end leader ng odyssey',
-      'answer': 'pole',
-    },
-    {
-      'question': 'ano unang pangalan ng grp odyssey',
-      'answer': 'maiteam',
-    },
-  ];
 
   //initialize the first question
   @override
   void initState() {
     super.initState();
-    question = questions[currentQuestionIndex]['question']!;
+    question = widget.cards[currentQuestionIndex].definition;
   }
 
   void handleSubmit() {
     String userAnswer = answerController.text.trim();
-    var currentQuestion = questions[currentQuestionIndex];
+    var currentQuestion = widget.cards[currentQuestionIndex];
 
-    if (userAnswer == currentQuestion['answer']) {
+    if (userAnswer.trim().toLowerCase() ==
+        currentQuestion.term.toString().trim().toLowerCase()) {
       print('Correct!');
     } else {
       print('Incorrect!');
     }
 
     //Move to the next question
-    if (currentQuestionIndex < questions.length - 1) {
+    if (currentQuestionIndex < widget.cards.length - 1) {
       setState(() {
         currentQuestionIndex++;
-        question = questions[currentQuestionIndex]['question']!;
+        question = widget.cards[currentQuestionIndex].definition;
         answerController.clear();
       });
     } else {
@@ -124,7 +114,7 @@ class _QuizIdentificationState extends State<QuizIdentification> {
                     child: Column(
                       children: [
                         AutoSizeText(
-                          title.isNotEmpty ? title : 'A Very long deck title that is more than 2 lines',
+                          widget.deck.title,
                           overflow: TextOverflow.visible,
                           maxLines: 3,
                           style: const TextStyle(
@@ -241,7 +231,7 @@ class _QuizIdentificationState extends State<QuizIdentification> {
                             ),
                             child: Center(
                               child: Text(
-                                '${currentQuestionIndex + 1}/${questions.length}',
+                                '${currentQuestionIndex + 1}/${widget.cards.length}',
                                 style: const TextStyle(
                                     fontFamily: 'Fraiche',
                                     fontSize: 32,

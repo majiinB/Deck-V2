@@ -42,22 +42,16 @@ class LearnModeDialog extends StatefulWidget {
 }
 class _LearnModeDialogState extends State<LearnModeDialog> {
   String selectedMode = 'Quiz';
+  String modeDialogue = 'Quiz Items';
   final numberOfCards = TextEditingController();
 
   String quizType = "Multiple Choice";
-  String cardOrientation = '';
+  String cardOrientation = 'Term';
+  int numOfCards = 5;
 
   ///toggles to show quiz button options or study button options
   bool showQuizOptions = true;
   bool showStudyOptions = false;
-
-  List<Cards> sampleCards = [
-    Cards('Card 1 Term', 'Definition of Card 1', false, 'card1_id', false),
-    Cards('Card 2 Term', 'Definition of Card 2', true, 'card2_id', false),
-    Cards('Card 3 Term', 'Definition of Card 3', false, 'card3_id', true),
-    Cards('Card 4 Term', 'Definition of Card 4', true, 'card4_id', false),
-    Cards('Card 5 Term', 'Definition of Card 5', false, 'card5_id', false),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +92,7 @@ class _LearnModeDialogState extends State<LearnModeDialog> {
                                   print("Quiz Mode is Selected");
                                   showQuizOptions = true;
                                   showStudyOptions = false;
-
+                                  modeDialogue = 'Quiz Items';
                                 });
                               },
                           ),
@@ -115,6 +109,7 @@ class _LearnModeDialogState extends State<LearnModeDialog> {
                                 print("Study Mode is Selected");
                                 showStudyOptions = true;
                                 showQuizOptions = false;
+                                modeDialogue = 'Cards';
                               });
                             },
                           ),
@@ -126,11 +121,11 @@ class _LearnModeDialogState extends State<LearnModeDialog> {
                   color: DeckColors.primaryColor,
                   thickness: 3,
                 ),
-                const Align(
+                Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Number of Cards:',
-                    style: TextStyle(
+                    'Number of $modeDialogue:',
+                    style: const TextStyle(
                       fontSize: 16,
                       fontFamily: 'Nunito-Bold',
                       color: DeckColors.primaryColor,
@@ -140,7 +135,7 @@ class _LearnModeDialogState extends State<LearnModeDialog> {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 10.0),
                   child: BuildTextBox(
-                    hintText: 'Enter number of flashcards',
+                    hintText: 'Enter number of $modeDialogue',
                     controller: numberOfCards,
                   ),
                 ),
@@ -224,8 +219,6 @@ class _LearnModeDialogState extends State<LearnModeDialog> {
                                   cardOrientation = "Term";
                                 } else if (index == 1){
                                   cardOrientation = "Definition";
-                                } else if (index == 2){
-                                  cardOrientation = "Shuffled";
                                 }
                               });
                             },
@@ -244,23 +237,27 @@ class _LearnModeDialogState extends State<LearnModeDialog> {
                   padding: const EdgeInsets.symmetric(vertical: 10.0),
                   child: BuildButton(
                     onPressed: () async {
-
                       ///If user clicks quiz
                         if(showQuizOptions){
                           if(quizType == "Multiple Choice"){
                             FlashcardAiService aiService = new FlashcardAiService();
                             Quiz? quiz = await aiService.retrieveQuizForDeck(deckId: widget.deck.deckId);
                             List<QuizQuestion>? questions = quiz!.questions;
-                            print(questions);
                             await Navigator.of(context).push(
-                              RouteGenerator.createRoute(QuizMultChoice(questions: questions,)),
+                              RouteGenerator.createRoute(QuizMultChoice(
+                                deck: widget.deck,
+                                questions: questions,
+                              )),
                             ).then((_) {
                               Navigator.of(context).pop(); ///Close the dialog after navigating
                             });
                           }
                           else if(quizType == "Identification") {
                             Navigator.of(context).push(
-                              RouteGenerator.createRoute(const QuizIdentification()),
+                              RouteGenerator.createRoute(QuizIdentification(
+                                cards: await widget.deck.getCardRandom(numOfCards),
+                                deck:  widget.deck,
+                              )),
                             ).then((_) {
                               Navigator.of(context).pop(); ///Close the dialog after navigating
                             });
@@ -270,31 +267,33 @@ class _LearnModeDialogState extends State<LearnModeDialog> {
                         ///If user clicks study (flashcard mode)
                         else if (showStudyOptions){
                           ///this choice is for term orientation
+                          final raw = numberOfCards.text.trim();
+                          final parsed = int.tryParse(raw);
+                          if (raw.isNotEmpty && parsed != null && parsed > 0 ) {
+                            numOfCards = parsed;
+                          }
                           if(cardOrientation == "Term"){
                             Navigator.of(context).push(
                               RouteGenerator.createRoute(PlayMyDeckPage(
-                                cards: sampleCards,
-                                deck:  widget.deck,)
-                              ),
-                            );
+                                cards: await widget.deck.getCardRandom(numOfCards),
+                                deck:  widget.deck,
+                                orientation: cardOrientation,
+                              )),
+                            ).then((_) {
+                              Navigator.of(context).pop(); ///Close the dialog after navigating
+                            });
                           }
                           ///this choice is for definition orientation
                           else if (cardOrientation == "Definition"){
                             Navigator.of(context).push(
                               RouteGenerator.createRoute(PlayMyDeckPage(
-                                cards: sampleCards,
-                                deck:  widget.deck,)
-                              ),
-                            );
-                          }
-                          ///this choice is for both orientation
-                          else if (cardOrientation == "Shuffled"){
-                            Navigator.of(context).push(
-                              RouteGenerator.createRoute(PlayMyDeckPage(
-                                cards: sampleCards,
-                                deck:  widget.deck,)
-                              ),
-                            );
+                                cards: await widget.deck.getCardRandom(numOfCards),
+                                deck:  widget.deck,
+                                orientation: cardOrientation,
+                              )),
+                            ).then((_) {
+                              Navigator.of(context).pop(); ///Close the dialog after navigating
+                            });
                           }
                         }
                     },

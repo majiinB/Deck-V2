@@ -14,7 +14,8 @@ import '../quiz_results.dart';
 
 class QuizMultChoice extends StatefulWidget {
   final List<QuizQuestion?> questions;
-  const QuizMultChoice({super.key, required this.questions});
+  final Deck deck;
+  const QuizMultChoice({super.key, required this.deck, required this.questions});
 
   @override
   _QuizMultChoiceState createState() => _QuizMultChoiceState();
@@ -155,7 +156,7 @@ class _QuizMultChoiceState extends State<QuizMultChoice> {
               child: Column(
                 children: [
                   Text(
-                    '',
+                    widget.deck.title,
                     overflow: TextOverflow.visible,
                     style: const TextStyle(
                       fontFamily: 'Fraiche',

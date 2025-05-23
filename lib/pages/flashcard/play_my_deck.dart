@@ -12,8 +12,14 @@ import '../misc/custom widgets/buttons/custom_buttons.dart';
 class PlayMyDeckPage extends StatefulWidget {
   final List cards;
   final Deck deck;
+  final String orientation;
 
-  const PlayMyDeckPage({Key? key, required this.cards, required this.deck}) : super(key: key);
+  const PlayMyDeckPage({
+    Key? key,
+    required this.cards,
+    required this.deck,
+    required this.orientation
+  }) : super(key: key);
 
   @override
   _PlayMyDeckPageState createState() => _PlayMyDeckPageState();
@@ -85,12 +91,14 @@ class _PlayMyDeckPageState extends State<PlayMyDeckPage> {
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 15.0),
                     child: FlipCard(
-                      front: buildFlipCard(widget.cards[index].term,
+                      front: buildFlipCard(
+                          (widget.orientation == "Term") ? widget.cards[index].term : widget.cards[index].definition,
                           DeckColors.primaryColor, 'Fraiche',
-                          "Tap to see answer"),
-                      back: buildFlipCard(widget.cards[index].definition,
+                          (widget.orientation == "Term") ? "Tap to see definition" : "Tap to see term"),
+                      back: buildFlipCard(
+                          (widget.orientation == "Term") ? widget.cards[index].definition : widget.cards[index].term,
                           DeckColors.primaryColor, 'Nunito',
-                          "Tap to see description"),
+                          (widget.orientation == "Term") ? "Tap to see term" : "Tap to see definition"),
                     ),
                   );
                 },
