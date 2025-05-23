@@ -45,7 +45,7 @@ class _PlayMyDeckPageState extends State<PlayMyDeckPage> {
         title: 'Study Mode',
         color: DeckColors.primaryColor,
         fontSize: 24,
-        onButtonPressed: () { //TODO FIX THIS (status: FIXED!!)
+        onButtonPressed: () {
           showConfirmDialog(
             context,
             'assets/images/Deck-Dialogue4.png',
@@ -59,6 +59,10 @@ class _PlayMyDeckPageState extends State<PlayMyDeckPage> {
             },
           );
         },
+        buttonText: 'Stop Playing',
+        buttonIcon: Icons.stop_rounded,
+        buttonColor: DeckColors.deckRed,
+        borderButtonColor: DeckColors.deckRed,
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: 15.0),
