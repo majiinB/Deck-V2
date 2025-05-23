@@ -157,6 +157,10 @@ class _QuizMultChoiceState extends State<QuizMultChoice> {
                   },
             );
         },
+        buttonText: 'Stop Playing',
+        buttonIcon: Icons.stop_rounded,
+        buttonColor: DeckColors.deckRed,
+        borderButtonColor: DeckColors.deckRed,
       ),
       body: SingleChildScrollView(
         child: Column(

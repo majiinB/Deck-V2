@@ -210,8 +210,8 @@ class _LearnModeDialogState extends State<LearnModeDialog> {
                       Padding(
                           padding: const EdgeInsets.symmetric(vertical: 10.0),
                           child: RadioButtonGroup(
-                            buttonLabels: ['Term', 'Definition', 'Shuffled'],
-                            buttonColors: [DeckColors.deckYellow, DeckColors.deckYellow, DeckColors.deckYellow],
+                            buttonLabels: ['Term', 'Definition'],
+                            buttonColors: [DeckColors.deckYellow, DeckColors.deckYellow],
                             isClickable: true,
                             onChange: (label, index){
                               setState(() {

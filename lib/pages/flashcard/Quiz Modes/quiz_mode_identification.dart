@@ -118,142 +118,109 @@ class _QuizIdentificationState extends State<QuizIdentification> {
               },
           );
         },
+        buttonText: 'Stop Playing',
+        buttonIcon: Icons.stop_rounded,
+        buttonColor: DeckColors.deckRed,
+        borderButtonColor: DeckColors.deckRed,
       ),
-      body: Stack(
-        children: [
-          Column(
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 10),
+          child: Column(
             children: [
-              Expanded(
-                child: SingleChildScrollView(
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                child: AutoSizeText(
+                  widget.deck.title,
+                  overflow: TextOverflow.visible,
+                  maxLines: 3,
+                  style: const TextStyle(
+                    fontFamily: 'Fraiche',
+                    color: DeckColors.primaryColor,
+                    fontSize: 40,
+                    height: 1,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 15.0, left: 15.0, right:15.0),
+                child: Container(
+                  height: 450,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15.0),
+                    color: DeckColors.white,
+                    border: Border.all(
+                      color: DeckColors.primaryColor,
+                      width: 3.0,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        spreadRadius: 2,
+                        blurRadius: 20,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 15.0),
+                    padding: const EdgeInsets.all(15.0),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        AutoSizeText(
-                          widget.deck.title,
-                          overflow: TextOverflow.visible,
-                          maxLines: 3,
-                          style: const TextStyle(
-                            fontFamily: 'Fraiche',
-                            color: DeckColors.primaryColor,
-                            fontSize: 40,
-                            height: 1,
+                        Expanded(
+                          child: Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: Text(
+                                question,
+                                style: const TextStyle(
+                                  fontFamily: 'Nunito-Regular',
+                                  color: DeckColors.primaryColor,
+                                  fontSize: 16,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const Divider(
+                          color: DeckColors.primaryColor,
+                          thickness: 2,
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.only(top: 10.0),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Answer',
+                              style: TextStyle(
+                                fontFamily: 'Nunito-Bold',
+                                fontSize: 16,
+                                color: DeckColors.primaryColor,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: BuildTextBox(
+                            hintText: 'Type Answer',
+                            controller: answerController,
                           ),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(top: 15.0),
-                          child: Container(
-                            height: 400,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15.0),
-                              color: DeckColors.white,
-                              border: Border.all(
-                                color: DeckColors.primaryColor,
-                                width: 3.0,
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.1),
-                                  spreadRadius: 2,
-                                  blurRadius: 20,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(15.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(15.0),
-                                    child: Center(
-                                      child: Text(
-                                        question,
-                                        style: const TextStyle(
-                                          fontFamily: 'Nunito-Regular',
-                                          color: DeckColors.primaryColor,
-                                          fontSize: 16,
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  ),
-                                  Spacer(),
-                                  const Divider(
-                                    color: DeckColors.primaryColor,
-                                    thickness: 2,
-                                  ),
-                                  const Padding(
-                                    padding: EdgeInsets.only(top: 10.0),
-                                    child: Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(
-                                        'Answer',
-                                        style: TextStyle(
-                                          fontFamily: 'Nunito-Bold',
-                                          fontSize: 16,
-                                          color: DeckColors.primaryColor,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 8.0),
-                                    child: BuildTextBox(
-                                      hintText: 'Type Answer',
-                                      controller: answerController,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 15.0),
-                                    child: BuildButton(
-                                      onPressed: handleSubmit,
-                                      buttonText: 'Submit Answer',
-                                      height: 50.0,
-                                      width: MediaQuery.of(context).size.width,
-                                      backgroundColor: DeckColors.primaryColor,
-                                      textColor: DeckColors.white,
-                                      radius: 10.0,
-                                      fontSize: 16,
-                                      borderWidth: 3,
-                                      borderColor: DeckColors.primaryColor,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(vertical: 10.0),
-                          child: Container(
+                          child: BuildButton(
+                            onPressed: handleSubmit,
+                            buttonText: 'Submit Answer',
+                            height: 50.0,
                             width: MediaQuery.of(context).size.width,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15.0),
-                              color: DeckColors.accentColor,
-                              border: Border.all(
-                                color: DeckColors.primaryColor,
-                                width: 3.0,
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.1),
-                                  spreadRadius: 2,
-                                  blurRadius: 20,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                            child: Center(
-                              child: Text(
-                                '${currentQuestionIndex + 1}/${widget.cards.length}',
-                                style: const TextStyle(
-                                    fontFamily: 'Fraiche',
-                                    fontSize: 32,
-                                    color: DeckColors.primaryColor),
-                              ),
-                            ),
+                            backgroundColor: DeckColors.primaryColor,
+                            textColor: DeckColors.white,
+                            radius: 10.0,
+                            fontSize: 16,
+                            borderWidth: 3,
+                            borderColor: DeckColors.primaryColor,
                           ),
                         ),
                       ],
@@ -261,14 +228,48 @@ class _QuizIdentificationState extends State<QuizIdentification> {
                   ),
                 ),
               ),
-              Image.asset(
-                'assets/images/Deck-Bottom-Image1.png',
-                fit: BoxFit.fitWidth,
-                width: MediaQuery.of(context).size.width,
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15.0),
+                    color: DeckColors.accentColor,
+                    border: Border.all(
+                      color: DeckColors.primaryColor,
+                      width: 3.0,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        spreadRadius: 2,
+                        blurRadius: 20,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Center(
+                    child: Text(
+                      '${currentQuestionIndex + 1}/${widget.cards.length}',
+                      style: const TextStyle(
+                          fontFamily: 'Fraiche',
+                          fontSize: 32,
+                          color: DeckColors.primaryColor),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 10.0),
+                child: Image.asset(
+                  'assets/images/Deck-Bottom-Image1.png',
+                  fit: BoxFit.fitWidth,
+                  width: MediaQuery.of(context).size.width,
+                ),
               ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }
