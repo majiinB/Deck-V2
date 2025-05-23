@@ -16,30 +16,43 @@ import 'package:flutter/widgets.dart';
 import '../misc/custom widgets/progressbar/progress_bar.dart';
 
 class QuizResults extends StatefulWidget {
-  const QuizResults({super.key});
+  final List<Map<String, dynamic>> result;
+  final int score;
+  const QuizResults({super.key, required this.result, required this.score});
 
   @override
   _QuizResultsState createState() => _QuizResultsState();
 }
 
 class _QuizResultsState extends State<QuizResults> {
-  int correctItems = 2;
-  int overallItems = 4;
   final TextEditingController _searchController = TextEditingController();
+  int overallItems = 0;
+  int correctItems = 0;
+  int incorrectItems = 0;
+  double progress = 0.0;
+  List<Map<String, dynamic>> correctAnswers = [];
+  List<Map<String, dynamic>> wrongAnswers = [];
 
-  //lists to store titles and content for the flashcards
-  List<String> correctFlashCardTitles = ['Flashcard 1', 'Flashcard 2', 'Flashcard 3', 'Flashcard 4'];
-  List<String> correctFlashCardContents = ['Content of card 1', 'Content of card 2', 'Content of card 3', 'Content of card 4'];
+  @override
+  void initState() {
+    super.initState();
+    overallItems = widget.result.length;
+    correctItems = widget.score;
+    incorrectItems = overallItems - correctItems;
+    progress = widget.result.isNotEmpty ? widget.score / widget.result.length : 0.0;
 
-
-  List<String> incorrectFlashCardTitles = ['Flashcard 1', 'Flashcard 2', 'Flashcard 3', 'Flashcard 4'];
-  List<String> incorrectFlashCardContents = ['Content of card 1', 'Content of card 2', 'Content of card 3', 'Content of card 4'];
+    // Separate the correct and wrong answers
+    for (var result in widget.result) {
+      if (result['isCorrect']) {
+        correctAnswers.add(result);
+      } else {
+        wrongAnswers.add(result);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    double progress = overallItems > 0 ? correctItems / overallItems : 0.0;
-    int incorrectItems = overallItems - correctItems;
-
     return PopScope(
       canPop: true, ///set to false to if nagawa na ung view deck page
       onPopInvoked: (didPop) {
@@ -105,7 +118,7 @@ class _QuizResultsState extends State<QuizResults> {
                                   ),
                                   const Spacer(),
                                   Text(
-                                    '$correctItems/$overallItems',
+                                    '${widget.score}/${widget.result.length}',
                                     style: const TextStyle(
                                       fontFamily: 'Fraiche',
                                       fontSize: 24,
@@ -269,7 +282,7 @@ class _QuizResultsState extends State<QuizResults> {
                               child: Padding(
                                 padding: const EdgeInsets.only(top: 10.0,),
                                 child: ListView.builder(
-                                  itemCount: correctFlashCardTitles.length,
+                                  itemCount: correctAnswers.length,
                                   shrinkWrap: true,
                                   physics: const NeverScrollableScrollPhysics(),
                                   itemBuilder: (context, index) {
@@ -277,8 +290,8 @@ class _QuizResultsState extends State<QuizResults> {
                                       padding: const EdgeInsets.only(top: 8.0, right: 4.0),
                                       child: BuildContainerOfFlashCards(
                                         enableSwipeToRetrieve: false,
-                                        titleOfFlashCard: correctFlashCardTitles[index],
-                                        contentOfFlashCard: correctFlashCardContents[index],
+                                        titleOfFlashCard: 'Question No. ${correctAnswers[index]['questionIndex']}',
+                                        contentOfFlashCard: correctAnswers[index]['question'],
                                         rightIcon: Icon(Icons.check),
                                         rightIconColor: Colors.green.shade700,
                                         iconOnPressed: () {
@@ -301,7 +314,7 @@ class _QuizResultsState extends State<QuizResults> {
                               child: Padding(
                                 padding: const EdgeInsets.only(top: 10.0),
                                 child: ListView.builder(
-                                  itemCount: incorrectFlashCardTitles.length,
+                                  itemCount: wrongAnswers.length,
                                   shrinkWrap: true,
                                   physics: const NeverScrollableScrollPhysics(),
                                   itemBuilder: (context, index) {
@@ -309,8 +322,8 @@ class _QuizResultsState extends State<QuizResults> {
                                       padding: const EdgeInsets.only(top: 8.0, left: 4.0),
                                       child: BuildContainerOfFlashCards(
                                         enableSwipeToRetrieve: false,
-                                        titleOfFlashCard: incorrectFlashCardTitles[index],
-                                        contentOfFlashCard: incorrectFlashCardContents[index],
+                                        titleOfFlashCard: 'Question No. ${wrongAnswers[index]['questionIndex']}',
+                                        contentOfFlashCard: wrongAnswers[index]['question'],
                                         rightIcon: Icon(Icons.close_rounded),
                                         rightIconColor: DeckColors.deckRed,
                                         iconOnPressed: () {

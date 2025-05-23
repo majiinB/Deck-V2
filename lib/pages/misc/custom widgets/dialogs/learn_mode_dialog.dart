@@ -253,9 +253,11 @@ class _LearnModeDialogState extends State<LearnModeDialog> {
                             });
                           }
                           else if(quizType == "Identification") {
-                            Navigator.of(context).push(
+                            List<Cards> randomizedCards = await widget.deck.getCardRandom(numOfCards);
+                            print(randomizedCards);
+                            await Navigator.of(context).push(
                               RouteGenerator.createRoute(QuizIdentification(
-                                cards: await widget.deck.getCardRandom(numOfCards),
+                                cards: randomizedCards,
                                 deck:  widget.deck,
                               )),
                             ).then((_) {

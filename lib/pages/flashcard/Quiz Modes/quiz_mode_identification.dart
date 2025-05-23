@@ -31,24 +31,40 @@ class _QuizIdentificationState extends State<QuizIdentification> {
   String question = '';
   final answerController = TextEditingController();
   int currentQuestionIndex = 0; //track the current question
+  List<Map<String, dynamic>> results = [];
+  int score = 0;
+
 
   //initialize the first question
   @override
   void initState() {
     super.initState();
-    question = widget.cards[currentQuestionIndex].definition;
+    if (widget.cards.isNotEmpty) {
+      question = widget.cards[currentQuestionIndex].definition;
+    } else {
+      question = 'No cards available.';
+    }
   }
 
   void handleSubmit() {
     String userAnswer = answerController.text.trim();
     var currentQuestion = widget.cards[currentQuestionIndex];
 
-    if (userAnswer.trim().toLowerCase() ==
-        currentQuestion.term.toString().trim().toLowerCase()) {
-      print('Correct!');
-    } else {
-      print('Incorrect!');
-    }
+    // Check if correct
+    bool isCorrect = userAnswer.toLowerCase() ==
+        currentQuestion.term.toString().trim().toLowerCase();
+
+    if (isCorrect) score++;
+
+    // Record result
+    results.add({
+      'questionId': currentQuestion.cardId, // assuming your card model has 'id'
+      'questionIndex' : currentQuestionIndex + 1,
+      'question': currentQuestion.definition,
+      'correctAnswer': currentQuestion.term,
+      'userAnswer': userAnswer,
+      'isCorrect': isCorrect,
+    });
 
     //Move to the next question
     if (currentQuestionIndex < widget.cards.length - 1) {
@@ -71,7 +87,7 @@ class _QuizIdentificationState extends State<QuizIdentification> {
               onConfirm: () {
                 Navigator.of(context).pop();
                 Navigator.of(context).push(
-                  RouteGenerator.createRoute(const QuizResults()),
+                  RouteGenerator.createRoute(QuizResults(score: score, result: results,)),
                 );
               },
             );
