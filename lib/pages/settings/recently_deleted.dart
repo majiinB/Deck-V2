@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:deck/backend/flashcard/flashcard_utils.dart';
 import 'package:deck/pages/misc/colors.dart';
 import 'package:deck/pages/misc/deck_icons.dart';
@@ -33,6 +35,7 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
   String _searchQuery = "";
   String _nextPageToken = "";
   List<String> get allDeckIds => _decks.map((d) => d.deckId).toList();
+  Timer? _debounce; // Debouncer
 
   @override
   void initState() {
@@ -52,7 +55,7 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
   void _initUserDecks(User? user) async {
     if (user != null) {
       String userId = user.uid;
-      var result = await _flashcardService.getDeletedDecksByUserId(); // Call method to fetch decks
+      var result = await _flashcardService.getDecks("DELETED_DECKS"); // Call method to fetch decks
       List<Deck> decks = result['decks'];
       String nextPageToken = result['nextPageToken'];
 
@@ -71,12 +74,26 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
   }
 
   void _onSearchChanged() {
-    setState(() {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 1200), () async {
       _searchQuery = _searchController.text;
-      _filteredDecks = _decks
-          .where((deck) =>
-              deck.title.toLowerCase().contains(_searchQuery.toLowerCase()))
-          .toList();
+      List<Deck> searchedDecks = [];
+      if(_searchQuery.trim().isNotEmpty){
+        var result = await _flashcardService.searchDecks(_searchQuery, "DELETED_DECKS");
+        searchedDecks = result['decks'];
+        setState(() {
+          _filteredDecks = searchedDecks;
+        });
+      }else{
+        var result = await _flashcardService.getDecks("DELETED_DECKS"); // Call method to fetch decks
+        searchedDecks = result['decks'];
+        String nextPageToken = result['nextPageToken'];
+        setState(() {
+          _decks = searchedDecks;
+          _filteredDecks = _decks;
+          _nextPageToken = nextPageToken;
+        });
+      }
     });
   }
 

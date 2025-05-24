@@ -32,18 +32,14 @@ class Cards {
 
   Future<bool> updateDeleteStatus(bool value, String deckId) async {
     try {
-      if (isDeleted == null) {
-        print('isDeleted is null');
-        return false;
-      }
       String? token = await AuthService().getIdToken();
 
       Map<String, dynamic> requestBody = {
-        'isDeleted': value,
+        'flashcardIDs': [_cardId],
       };
 
-      final response = await http.put(
-        Uri.parse('$deckManagerAPIUrl/v1/decks/$deckId/flashcards/$cardId'), // API endpoint.
+      final response = await http.post(
+        Uri.parse('$deckManagerAPIUrl/v1/decks/$deckId/flashcards/delete'), // API endpoint.
         body: jsonEncode(requestBody), // JSON-encoded request body.
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',

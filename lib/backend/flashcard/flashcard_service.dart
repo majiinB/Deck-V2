@@ -27,6 +27,10 @@ class FlashcardService{
         url = '$deckManagerAPIUrl/v1/decks/public?limit=10';
       }else if(filter.toUpperCase() == "SAVED_DECKS"){
         url = '$deckManagerAPIUrl/v1/decks/saved?limit=10';
+      }else if(filter.toUpperCase() == "DELETED_DECKS"){
+        url = '$deckManagerAPIUrl/v1/decks/deleted?limit=10';
+      }else if (filter.toUpperCase() == "RECOMMENDED_DECKS"){
+        url = '$deckManagerAPIUrl/v1/decks/recommend';
       }
 
       // Send a POST request to the API with the request body and headers.
@@ -44,7 +48,10 @@ class FlashcardService{
         // Extract the data from the JSON response.
         Map<String, dynamic> deckData = jsonData["data"];
         print(deckData);
-        nextPageTokenRetrieved = deckData["nextPageToken"];
+
+        if(filter != "RECOMMENDED_DECKS"){
+          nextPageTokenRetrieved = deckData["nextPageToken"];
+        }
 
         // Extract the list of decks from the JSON response.
         List<dynamic> listOfDecks = deckData["decks"];
@@ -146,7 +153,7 @@ class FlashcardService{
     String nextPageTokenRetrieved = "";
     try {
       String? token = await AuthService().getIdToken();
-      String url = '$deckManagerAPIUrl/v1/decks/search?searchQuery=$query&filter=$filter';
+      String url = '$deckLocalAPIUrl/v1/decks/search?searchQuery=$query&filter=$filter';
 
       // Send a GET request to the API with the request body and headers.
       final response = await http.get(
@@ -181,7 +188,7 @@ class FlashcardService{
     String nextPageTokenRetrieved = "";
     try {
       String? token = await AuthService().getIdToken();
-      String url = '$deckLocalAPIUrl/v1/decks/deleted?limit=10';
+      String url = '$deckManagerAPIUrl/v1/decks/deleted?limit=10';
 
       // Send a POST request to the API with the request body and headers.
       final response = await http.get(
