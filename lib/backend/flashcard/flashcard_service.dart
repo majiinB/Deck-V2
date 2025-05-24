@@ -153,7 +153,7 @@ class FlashcardService{
     String nextPageTokenRetrieved = "";
     try {
       String? token = await AuthService().getIdToken();
-      String url = '$deckLocalAPIUrl/v1/decks/search?searchQuery=$query&filter=$filter';
+      String url = '$deckManagerAPIUrl/v1/decks/search?searchQuery=$query&filter=$filter';
 
       // Send a GET request to the API with the request body and headers.
       final response = await http.get(
