@@ -49,7 +49,7 @@ class _PlayMyDeckPageState extends State<PlayMyDeckPage> {
           showConfirmDialog(
             context,
             'assets/images/Deck-Dialogue4.png',
-            'Stop Quiz Mode?',
+            'Stop Study Mode?',
             'Stop Now? You\'ll lose all your progress',
             'Stop',
                 () {
