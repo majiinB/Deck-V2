@@ -188,7 +188,7 @@ class _SuggestImprovementState extends State<SuggestImprovement> {
                                   return CustomAlertDialog(
                                       imagePath: 'assets/images/Deck-Dialogue3.png',
                                       title: 'Suggestion received!',
-                                      message: 'Thank you for helping keep Deck safe for everyone.',
+                                      message: 'Thanks for helping us improve Deck. Your feedback matters!',
                                       button1: 'Ok',
                                       onConfirm: () {
                                         Navigator.of(context).popUntil((route) => route.isFirst);
