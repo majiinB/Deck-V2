@@ -47,7 +47,7 @@ class _AddFlashcardPageState extends State<AddFlashcardPage> {
           builder: (BuildContext context) {
             return CustomConfirmDialog(
               title: 'Are you sure you want to go back?',
-              message: 'If you go back now, you will lose all your progress',
+              message: 'Going back now will lose all your progress.',
               imagePath: 'assets/images/Deck-Dialogue4.png',
               button1: 'Go Back',
               button2: 'Cancel',
@@ -163,7 +163,7 @@ class _AddFlashcardPageState extends State<AddFlashcardPage> {
                             context,
                             "assets/images/Deck-Dialogue4.png",
                             "Add Flash Card",
-                            "Are you sure you want to add this flash card on your deck?",
+                            "Add this flashcard to your deck?",
                             "Add Flashcard",
                             () async {
                               setState(() => _isLoading = true);
@@ -189,7 +189,7 @@ class _AddFlashcardPageState extends State<AddFlashcardPage> {
                                   showAlertDialog(
                                     context,"assets/images/Deck-Dialogue1.png",
                                     "Input Error",
-                                    "Please fill out all of the input fields and try again.");
+                                    "Please fill out all of the input fields");
                            // showDialog(
                                   //   context: context,
                                   //   builder: (BuildContext context) {

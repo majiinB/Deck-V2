@@ -553,8 +553,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
                                         builder: (BuildContext context) {
                                           return CustomConfirmDialog(
                                             title: 'Delete this deck?',
-                                            message: 'Once deleted, this deck will no longer be playable. '
-                                                'But do not worry, you can still retrieve it in the trash bin.',
+                                            message: 'Deleted decks move to trash and can be recovered.',
                                             imagePath: 'assets/images/Deck-Dialogue4.png',
                                             button1: 'Delete Deck',
                                             button2: 'Cancel',

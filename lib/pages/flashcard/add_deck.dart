@@ -93,7 +93,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
             builder: (BuildContext context) {
               return CustomConfirmDialog(
                 title: 'Are you sure you want to go back?',
-                message: 'If you go back now, you will lose all your progress',
+                message: 'Going back now will lose all your progress.',
                 imagePath: 'assets/images/Deck-Dialogue4.png',
                 button1: 'Go Back',
                 button2: 'Cancel',
@@ -217,7 +217,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                                                       context,
                                                       "assets/images/Deck-Dialogue1.png",
                                                       "Error in selecting files",
-                                                      "There was an error in selecting the file. Please try again.");
+                                                      "File selection failed. Try again.");
                                                   // showDialog(
                                                   //   context: context,
                                                   //   builder: (BuildContext context) {
@@ -483,7 +483,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                                           context,
                                           "assets/images/Deck-Dialogue1.png",
                                           "Error in selecting files!",
-                                          "There was an error in selecting the file. Please try again.",
+                                          "File selection failed. Try again.",
                                         );
 
                                       }
@@ -572,7 +572,8 @@ class _AddDeckPageState extends State<AddDeckPage> {
                               setState(() => _isLoading = false);
                               showAlertDialog(context,
                                   "assets/images/Deck-Dialogue2.png",
-                                  "Error adding Deck", "The AI needs to know how many cards to generate");
+                                  "Error adding Deck",
+                                  "AI requires card count before generating them");
                               return;
                             }else{
                               int? numberOfCards = int.tryParse(_numCardsController.text);
@@ -652,7 +653,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                                     context,
                                     "assets/images/Deck-Dialogue2.png",
                                     "Unknown Error Occurred",
-                                    "An unknown error has occurred while generating your deck. Please try again."
+                                    "Deck couldn\'t be generated. Please try again."
                                 );
                                 return;
                               }
@@ -691,7 +692,7 @@ class _AddDeckPageState extends State<AddDeckPage> {
                                   context,
                                   "assets/images/Deck-Dialogue2.png",
                                   "An error occured",
-                                  "Please fill out all of the input fields and try again.");                        }
+                                  "Please fill out all of the input fields");                        }
                             // END OF AI
                           }else{
                             // START OF NON AI

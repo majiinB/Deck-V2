@@ -228,8 +228,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                     builder: (BuildContext context) {
                       return CustomConfirmDialog(
                         title: 'Delete this deck?',
-                        message: 'Once deleted, this deck will no longer be playable. '
-                            'But do not worry, you can still retrieve it in the trash bin.',
+                        message: 'Deleted decks move to trash and can be recovered.',
                         imagePath: 'assets/images/Deck-Dialogue4.png',
                         button1: 'Delete Deck',
                         button2: 'Cancel',
@@ -532,7 +531,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                     context,
                                                     "assets/images/Deck_Dialogue1.png",
                                                     "Card Deletion Unsuccessful",
-                                                    "An error occurred during the deletion process please try again"
+                                                    "An error occurred during the deletion process"
                                                   );
                                                 }
                                               },
@@ -664,7 +663,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                       context,
                                                       "assets/images/Deck_Dialogue1.png",
                                                       "Card Deletion Unsuccessful",
-                                                      "An error occurred during the deletion process please try again"
+                                                      "An error occurred during the deletion process"
                                                   );
                                                 }
                                               },

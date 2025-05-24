@@ -50,7 +50,7 @@ class _PlayMyDeckPageState extends State<PlayMyDeckPage> {
             context,
             'assets/images/Deck-Dialogue4.png',
             'Stop Quiz Mode?',
-            'Are you sure you want to stop? You will lose all progress if you stop now.',
+            'Stop Now? You\'ll lose all your progress',
             'Stop',
                 () {
               ///Pop twice: first, close the dialog, then navigate back to the previous page
@@ -60,7 +60,7 @@ class _PlayMyDeckPageState extends State<PlayMyDeckPage> {
           );
         },
         buttonText: 'Stop Playing',
-        buttonIcon: Icons.stop_rounded,
+        buttonIcon: Icons.play_arrow_rounded,
         buttonColor: DeckColors.deckRed,
         borderButtonColor: DeckColors.deckRed,
       ),

@@ -54,7 +54,7 @@ class _BanAppealPageState extends State<BanAppealPage> {
             builder: (BuildContext context) {
               return CustomConfirmDialog(
                 title: 'Are you sure you want to go back?',
-                message: 'If you go back now, you will lose all your progress',
+                message: 'Going back now will lose all your progress',
                 imagePath: 'assets/images/Deck-Dialogue4.png',
                 button1: 'Go Back',
                 button2: 'Cancel',
@@ -204,7 +204,7 @@ class _BanAppealPageState extends State<BanAppealPage> {
                           return CustomAlertDialog(
                               imagePath: 'assets/images/Deck-Dialogue3.png',
                               title: 'Appeal Submitted',
-                              message: 'Thanks for taking the time to submit an appeal. We’ll look into your case and get back to you soon.',
+                              message: 'Appeal submitted. We’ll review it soon.',
                               button1: 'Ok',
                               onConfirm: () {
                                 ///Pop twice: first, close the dialog, then navigate back to the previous page

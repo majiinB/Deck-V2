@@ -57,7 +57,7 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
             builder: (BuildContext context) {
               return CustomConfirmDialog(
                 title: 'Are you sure you want to go back?',
-                message: 'If you go back now, you will lose all your progress',
+                message: 'Going back now will lose all your progress',
                 imagePath: 'assets/images/Deck-Dialogue4.png',
                 button1: 'Go Back',
                 button2: 'Cancel',
@@ -230,7 +230,7 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
                                   context,
                                   "assets/images/Deck-Dialogue1.png",
                                   "Uh oh. Something went wrong.",
-                                  "Error changing password! You cannot set the same password as your new password. Please try again.",
+                                  "Your new password cannot be the same as before.",
                                 );
                                 return;
                               }
@@ -278,7 +278,7 @@ class ChangePasswordPageState extends State<ChangePasswordPage> {
                                 context,
                                 "assets/images/Deck-Dialogue1.png",
                                 "Uh oh. Something went wrong.",
-                                "Error changing password! An Unknown error occured during the process. Please try again.",
+                                "An Unknown error occured during the process.",
                               );}
                           },
                         );

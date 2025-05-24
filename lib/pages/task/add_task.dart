@@ -255,7 +255,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                                   context,
                                   "assets/images/Deck-Dialogue1.png",
                                   "Uh oh. Something went wrong.",
-                                  "Error adding task! A text field is blank! Please fill all the text fields and try again.",
+                                  "Please fill all the text fields and try again.",
                                 );
                                 return;
                               }
@@ -270,7 +270,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                                   context,
                                   "assets/images/Deck-Dialogue1.png",
                                   "Uh oh. Something went wrong.",
-                                  "Error adding task! Past deadlines aren't allowed. Please try again.",
+                                  "Past deadlines aren't allowed. Please try again.",
                                 );
                                 return;
                               }
