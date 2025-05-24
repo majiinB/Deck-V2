@@ -157,7 +157,7 @@ class _LoginPageState extends State<LoginPage> {
                                 context,
                                 "assets/images/Deck-Dialogue2.png",
                                 "Access Denied",
-                                "Your account has been banned. Would you like to submit an appeal?",
+                                "Account banned. Would you like to appeal?",
                                 "Yes",
                                     () {
                                   Navigator.of(context).pop();
@@ -236,7 +236,7 @@ class _LoginPageState extends State<LoginPage> {
                                   context,
                                   "assets/images/Deck-Dialogue1.png",
                                   "Uh oh. Something went wrong.",
-                                  "Error signing up! A problem occurred while signing in. Please try again.",
+                                  "A problem occurred while signing in. Please try again.",
                                 );
                               }
                             }
@@ -373,7 +373,7 @@ class _LoginPageState extends State<LoginPage> {
                                 context,
                                 "assets/images/Deck-Dialogue1.png",
                                 "Uh oh. Something went wrong.",
-                                "Error signing up! A problem occurred while signing in. Please try again.",
+                                "A problem occurred while signing in. Please try again.",
                               );
                             }
                           },

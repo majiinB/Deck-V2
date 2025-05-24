@@ -93,7 +93,7 @@ class EditProfileState extends State<EditProfile> {
         context,
         "assets/images/Deck-Dialogue1.png",
         "Uh oh. Something went wrong.",
-        "Error changing information! Please fill out all of the input fields and try again.",
+        "Please fill out all of the input fields",
       );
       return;
     }
@@ -225,7 +225,7 @@ class EditProfileState extends State<EditProfile> {
             builder: (BuildContext context) {
               return CustomConfirmDialog(
                 title: 'Are you sure you want to go back?',
-                message: 'If you go back now, you will lose all your progress',
+                message: 'Going back now will lose all your progress.',
                 imagePath: 'assets/images/Deck-Dialogue4.png',
                 button1: 'Go Back',
                 button2: 'Cancel',
@@ -577,7 +577,7 @@ class EditProfileState extends State<EditProfile> {
                                   context,
                                   "assets/images/Deck-Dialogue4.png",
                                   "Save Account Information",
-                                  "Are you sure you want to change your account information?",
+                                  "Are you sure you want to update your account?",
                                   "Save Account Information",
                                   () async {
                                     try {

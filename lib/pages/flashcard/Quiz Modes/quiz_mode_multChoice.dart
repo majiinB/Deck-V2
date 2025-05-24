@@ -119,7 +119,7 @@ class _QuizMultChoiceState extends State<QuizMultChoice> {
             return CustomAlertDialog(
              imagePath: 'assets/images/Deck-Dialogue3.png',
               title: 'Quiz Finished!',
-              message: 'Congratulations, wanderer! You\'ve completed the quiz! Let\'s now take a look at your results!',
+              message: 'Congratulations, wanderer! You\'ve completed the quiz!',
               button1: 'Ok',
               onConfirm: () {
                 Navigator.of(context).pop();
@@ -148,7 +148,7 @@ class _QuizMultChoiceState extends State<QuizMultChoice> {
               context,
               'assets/images/Deck-Dialogue4.png',
               'Stop Quiz Mode?',
-              'Are you sure you want to stop? You will lose all progress if you stop now.',
+              'Stop Now? You\'ll lose all your progress',
               'Stop',
                   () {
                     ///Pop twice: first, close the dialog, then navigate back to the previous page
@@ -158,7 +158,7 @@ class _QuizMultChoiceState extends State<QuizMultChoice> {
             );
         },
         buttonText: 'Stop Playing',
-        buttonIcon: Icons.stop_rounded,
+        buttonIcon: Icons.play_arrow_rounded,
         buttonColor: DeckColors.deckRed,
         borderButtonColor: DeckColors.deckRed,
       ),

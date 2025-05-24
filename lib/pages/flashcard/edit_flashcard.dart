@@ -80,7 +80,7 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
           builder: (BuildContext context) {
             return CustomConfirmDialog(
               title: 'Are you sure you want to go back?',
-              message: 'If you go back now, you will lose all your progress',
+              message: 'Going back now will lose all your progress.',
               imagePath: 'assets/images/Deck-Dialogue4.png',
               button1: 'Go Back',
               button2: 'Cancel',
@@ -223,12 +223,16 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
                                     try {
                                       if (_questionOrTermController.text.trim().isEmpty) {
                                         await Future.delayed(const Duration(milliseconds: 300));
-                                        showAlertDialog(context, "assets/images/Deck-Dialogue1.png","Uh oh. Something went wrong","Input Error. This flash card requires a term/question. Please try again.");
+                                        showAlertDialog(context, "assets/images/Deck-Dialogue1.png",
+                                            "Uh oh. Something went wrong",
+                                            "Please add a term or question to continue.");
                                         return;
                                       }
                                       if (_descriptionOrAnswerController.text.trim().isEmpty) {
                                         await Future.delayed(const Duration(milliseconds: 300));
-                                        showAlertDialog(context, "assets/images/Deck-Dialogue1.png","Uh oh. Something went wrong","Input Error. This flash card requires a description/answer. Please try again.");
+                                        showAlertDialog(context, "assets/images/Deck-Dialogue1.png",
+                                            "Uh oh. Something went wrong",
+                                            "Please add a description or answer to continue.");
                                     return;
                                       }
                                       if (widget.card.term.toString().trim() != _questionOrTermController.text.toString().trim()) {
@@ -293,7 +297,7 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
                               builder: (BuildContext context) {
                                 return CustomConfirmDialog(
                                   title: 'Delete this flashcard?',
-                                  message: 'Deleting this flashcard will permanently remove it, and it cannot be recovered',
+                                  message: 'Once deleted, this flashcard cannot be restored.',
                                   imagePath: 'assets/images/Deck-Dialogue4.png',
                                   button1: 'Delete Flashcard',
                                   button2: 'Cancel',

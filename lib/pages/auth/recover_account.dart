@@ -120,7 +120,7 @@ class RecoverAccountPage extends StatelessWidget {
                         context,
                         "assets/images/Deck-Dialogue1.png",
                         "Uh oh. Something went wrong.",
-                        "Error while trying to recover account! An unknown error occured while performing process. Please try again.",
+                        "Error recovering account. Please try again.",
                       );
                     }
                   },

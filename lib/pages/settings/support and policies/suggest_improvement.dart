@@ -41,7 +41,7 @@ class _SuggestImprovementState extends State<SuggestImprovement> {
             builder: (BuildContext context) {
               return CustomConfirmDialog(
                 title: 'Are you sure you want to go back?',
-                message: 'If you go back now, you will lose all your progress',
+                message: 'Going back now will lose all your progress',
                 imagePath: 'assets/images/Deck-Dialogue4.png',
                 button1: 'Go Back',
                 button2: 'Cancel',
@@ -188,7 +188,7 @@ class _SuggestImprovementState extends State<SuggestImprovement> {
                                   return CustomAlertDialog(
                                       imagePath: 'assets/images/Deck-Dialogue3.png',
                                       title: 'Suggestion received!',
-                                      message: 'Thanks for helping us improve Deck. Your feedback matters!',
+                                      message: 'Thank you for helping keep Deck safe for everyone.',
                                       button1: 'Ok',
                                       onConfirm: () {
                                         Navigator.of(context).popUntil((route) => route.isFirst);

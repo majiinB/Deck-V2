@@ -239,7 +239,7 @@ class _ReportAProblemState extends State<ReportAProblem> {
                                 return CustomAlertDialog(
                                     imagePath: 'assets/images/Deck-Dialogue3.png',
                                     title: 'Report Submitted',
-                                    message: 'Thanks for helping keep Deck a safe space for everyone.',
+                                    message: 'Thank you for helping keep Deck safe for everyone.',
                                     button1: 'Ok',
                                     onConfirm: () {
                                       ///Pop twice: first, close the dialog, then navigate back to the previous page

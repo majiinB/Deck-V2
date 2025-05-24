@@ -1,11 +1,13 @@
 import 'package:deck/pages/misc/colors.dart';
 import 'package:deck/pages/misc/custom%20widgets/menus/pop_up_menu.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 
 ///
 ///
 ///DeckList is a method for Container of Decks but only for design
+///This is used in recently deleted page
 class DeckList extends StatefulWidget {
   final String? deckImageUrl;
   final String titleText, numberText;
@@ -62,20 +64,23 @@ class DeckListState extends State<DeckList> {
             height: 75,
             width: 75,
             child: widget.deckImageUrl != null
-                ? Image.network(
-              widget.deckImageUrl!,
-              width: 20,
-              height: 10,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  color: DeckColors.white,
-                  child: const Center(
-                      child:
-                      Icon(Icons.broken_image, color: Colors.grey)),
-                );
-              },
-            )
+                ? ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.network(
+                    widget.deckImageUrl!,
+                    width: 20,
+                    height: 10,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    color: DeckColors.white,
+                    child: const Center(
+                        child:
+                        Icon(Icons.broken_image, color: Colors.grey)),
+                      );
+                    },
+                  ),
+                )
                 : const Placeholder(
               color: DeckColors.white,
             ),
@@ -88,12 +93,15 @@ class DeckListState extends State<DeckList> {
                 children: [
                   Row(
                     children: [
-                      Text(
-                        widget.titleText,
-                        style: const TextStyle(
-                          fontFamily: 'Fraiche',
-                          fontSize: 16,
-                          color: DeckColors.primaryColor,
+                      Expanded(
+                        child: Text(
+                          widget.titleText,
+                          style: const TextStyle(
+                            fontFamily: 'Fraiche',
+                            fontSize: 16,
+                            color: DeckColors.primaryColor,
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       Spacer(),

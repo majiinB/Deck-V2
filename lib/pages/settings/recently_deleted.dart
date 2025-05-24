@@ -153,7 +153,7 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
                           context,
                           "assets/images/Deck-Dialogue4.png",
                           "Retrieve All Items?",
-                          "Are you sure you want to retrieve all items? Once retrieved, they will return to the deck page.",
+                          "Once retrieved, items will go back to deck.",
                           "Retrieve All",
                           () {
                             for (final id in allDeckIds) {
@@ -184,7 +184,7 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
                             context,
                             "assets/images/Deck-Dialogue4.png",
                             "Delete All Items?",
-                            "Are you sure you want to delete all items? Once deleted, they cannot be retrieved. Proceed with caution.",
+                            "Once deleted, items cannot be recovered. Proceed carefully.",
                             "Delete All",
                                 ()  {
                                   final idsToRemove = allDeckIds;
