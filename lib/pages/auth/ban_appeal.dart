@@ -138,7 +138,7 @@ class _BanAppealPageState extends State<BanAppealPage> {
                 ),
                 const Padding(
                   padding: EdgeInsets.only(top:10, left: 15.0, right: 15.0),
-                  child: Text('Don’t include any sensitive information such as your password in your message.',
+                  child: Text('Don’t include any sensitive information in your message.',
                     style: TextStyle(
                       fontFamily: 'Nunito-Regular',
                       color: DeckColors.primaryColor,

@@ -101,7 +101,7 @@ class _SomethingElseState extends State<SomethingElse>{
             ///----- E N D ------
             const Padding(
               padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
-              child: Text('Don’t include any sensitive information such as you password in your message.',
+              child: Text('Don’t include any sensitive information in your message.',
                 style: TextStyle(
                   fontFamily: 'Nunito-Regular',
                   color: DeckColors.primaryColor,

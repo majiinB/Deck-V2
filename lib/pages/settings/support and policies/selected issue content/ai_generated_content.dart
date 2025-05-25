@@ -13,19 +13,11 @@ class AIGeneratedContent extends StatefulWidget{
 }
 class _AIGeneratedContentState extends State<AIGeneratedContent> {
   final addDetailsController = TextEditingController();
-  bool hasUploadedImages = false;
 
-  ///This tracks if images are uploaded
-  void _onImageUploadChange(bool hasImages) {
-    setState(() {
-      hasUploadedImages = hasImages;
-    });
-  }
 
   ///This is used to check if there are unsaved changes
   bool _hasUnsavedChanges() {
-    return addDetailsController.text.isNotEmpty ||
-        hasUploadedImages;
+    return addDetailsController.text.isNotEmpty;
   }
 
   ///This disposes controllers to free resources and prevent memory leaks

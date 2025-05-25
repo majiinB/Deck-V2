@@ -13,19 +13,10 @@ class BugIssues extends StatefulWidget {
 }
   class _BugIssuesState extends State<BugIssues>{
   final detailsController = TextEditingController();
-  bool hasUploadedImages = false;
-
-  ///This tracks if images are uploaded
-  void _onImageUploadChange(bool hasImages) {
-    setState(() {
-      hasUploadedImages = hasImages;
-    });
-  }
 
   ///This tracks if there are unsaved changes
   bool _hasUnsavedChanges() {
-    return detailsController.text.isNotEmpty ||
-        hasUploadedImages;
+    return detailsController.text.isNotEmpty;
   }
 
   ///This disposes controllers to free resources and prevent memory leaks
@@ -102,7 +93,7 @@ class BugIssues extends StatefulWidget {
               ///----- E N D ------
               const Padding(
                 padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
-                child: Text('Don’t include any sensitive information such as you password in your message.',
+                child: Text('Don’t include any sensitive information in your message.',
                   style: TextStyle(
                     fontFamily: 'Nunito-Regular',
                     color: DeckColors.primaryColor,

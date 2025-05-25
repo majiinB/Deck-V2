@@ -99,7 +99,7 @@ class TaskList extends StatelessWidget{
         ifCollectionEmptyText:
         'Seems like there aren’t any task for today, wanderer!',
         ifCollectionEmptySubText:
-        'Now’s the perfect time to get ahead. Start adding new tasks and stay on top of your game!',
+        'Get ahead now! Add tasks and stay sharp!',
         ifCollectionEmptyHeight: MediaQuery.of(context).size.height / 2,
       );
     }

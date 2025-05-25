@@ -264,7 +264,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                                   } else if (e.code == 'email-already-in-use'){
                                     message = "Email is already taken! Please try again.";
                                   } else if (e.code == 'weak-password'){
-                                    message = "Password should be at least 6 characters! Please try again.";
+                                    message = "Password should contain at least six characters. Try again.";
                                   } else if (e.code == 'email-already-in-use'){
                                     message = "Email is already in use! Please try again.";
                                   } else {

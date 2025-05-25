@@ -231,7 +231,7 @@ class _TaskPageState extends State<TaskPage> {
                           hasIcon: false,
                           ifCollectionEmptyText: 'YIPEE! No upcoming deadlines! ',
                           ifCollectionEmptySubText:
-                          'Now’s the perfect time to get ahead. Start adding new tasks and stay on top of your game!',
+                          'Get ahead now! Add tasks and stay sharp!',
                         )
                     ]
                 )
