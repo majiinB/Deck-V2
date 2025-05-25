@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:deck/backend/flashcard/flashcard_service.dart';
 import 'package:deck/pages/flashcard/flashcard.dart';
 import 'package:deck/pages/flashcard/view_deck.dart';
 import 'package:deck/pages/misc/colors.dart';
@@ -18,7 +19,9 @@ import '../misc/custom widgets/progressbar/progress_bar.dart';
 class QuizResults extends StatefulWidget {
   final List<Map<String, dynamic>> result;
   final int score;
-  const QuizResults({super.key, required this.result, required this.score});
+  final String deckId;
+  final String quizType;
+  const QuizResults({super.key, required this.result, required this.score, required this.deckId, required this.quizType});
 
   @override
   _QuizResultsState createState() => _QuizResultsState();
@@ -48,6 +51,33 @@ class _QuizResultsState extends State<QuizResults> {
       } else {
         wrongAnswers.add(result);
       }
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _logQuizAttempt();
+    });
+  }
+
+  Future<void> _logQuizAttempt() async {
+    try {
+      FlashcardService flashcardService = new FlashcardService();
+      await flashcardService.logQuizAttempt(
+        deckId: widget.deckId,
+        attemptedAt: DateTime.now(),
+        quizType: widget.quizType.toString(),
+        score: widget.score,
+        totalQuestions: overallItems,
+        correctQuestionIds: correctAnswers
+            .map((r) => r['questionId'] as String)
+            .toList(),
+        incorrectQuestionIds: wrongAnswers
+            .map((r) => r['questionId'] as String)
+            .toList(),
+      );
+      print('Quiz attempt logged successfully');
+    } catch (e) {
+      print('Failed to log quiz attempt: $e');
+      // optionally show a SnackBar or silently ignore
     }
   }
 

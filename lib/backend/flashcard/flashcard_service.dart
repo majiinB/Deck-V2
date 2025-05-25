@@ -517,4 +517,94 @@ class FlashcardService{
       return false; // Return false by default in case of errors
     }
   }
+
+  Future<void> logQuizAttempt({
+    required String deckId,
+    required DateTime attemptedAt,
+    required String quizType,
+    required int score,
+    required int totalQuestions,
+    required List<String> correctQuestionIds,
+    required List<String> incorrectQuestionIds,
+  }) async {
+    final token = await AuthService().getIdToken();
+    if (token == null) {
+      throw Exception('User is not authenticated');
+    }
+
+    final url = Uri.parse('$deckLocalAPIUrl/v1/decks/log/quiz');
+    final body = jsonEncode({
+      'deckID': deckId,
+      'attempted_at': attemptedAt.toUtc().toIso8601String(),
+      'quizType': quizType,
+      'score': score,
+      'totalQuestions': totalQuestions,
+      'correctQuestionIds': correctQuestionIds,
+      'incorrectQuestionIds': incorrectQuestionIds,
+    });
+
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+      body: body,
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      // success! you can parse response.body if you need to
+      print('Logged quiz attempt successfully');
+    } else {
+      // handle error
+      final errorMsg = response.body.isNotEmpty
+          ? jsonDecode(response.body)
+          : 'Unknown error';
+      throw Exception(
+          'Failed to log quiz attempt (${response.statusCode}): $errorMsg');
+    }
+  }
+
+  /// Fetches the latest quiz attempt for the current user (and deck).
+  ///
+  /// Returns a map with:
+  ///  - 'latest_attempt': { …quizAttemptData… }
+  ///  - 'deck': { …deckData… }
+  ///
+  /// Throws an [Exception] on non-200 responses.
+  Future<Map<String, dynamic>> getLatestQuizAttempt() async {
+    final token = await AuthService().getIdToken();
+    if (token == null) {
+      throw Exception('User is not authenticated');
+    }
+
+    final uri = Uri.parse('$deckLocalAPIUrl/v1/decks/log/quiz');
+
+    final response = await http.get(
+      uri,
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode != 200) {
+      final body = response.body.isNotEmpty
+          ? jsonDecode(response.body)
+          : 'No response body';
+      throw Exception(
+          'Failed to fetch latest quiz attempt (${response.statusCode}): $body');
+    }
+
+    final Map<String, dynamic> jsonData =
+    jsonDecode(response.body) as Map<String, dynamic>;
+
+    // If your BaseResponse shape is { status, message, data }
+    if (jsonData.containsKey('data') && jsonData['data'] is Map) {
+      return jsonData['data'] as Map<String, dynamic>;
+    } else {
+      // Fallback: return the entire payload
+      return jsonData;
+    }
+  }
 }

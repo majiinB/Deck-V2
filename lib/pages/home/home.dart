@@ -97,22 +97,27 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void _initScore() {
-    /// Initializes the quiz score and determines if the user has passed.
-    ///
-    /// This function sets the `correct` and `total` scores, checks if user
-    /// has passed based on whether they scored at least half of the total, and
-    /// updates the `score` display accordingly.
-    correct = 50; //get scores from db
-    total = 100;
+  void _initScore() async{
+    try {
+      final result = await _flashcardService.getLatestQuizAttempt();
+      final latestAttempt = result['latest_attempt'] as Map<String, dynamic>;
+      final deckInfo = result['deck'] as Map<String, dynamic>;
+      final int attemptScore = latestAttempt['score'] as int;
+      final int totalQuestion = latestAttempt['total_questions'] as int;
 
-    if(correct >= (total/2)){
-      isRecentQuizPassed = true;
-    }else {
-      isRecentQuizPassed = false;
+      setState(() {
+        correct = attemptScore;
+        total = totalQuestion;
+        score = "$correct/$total";
+        if(correct >= (total/2)){
+          isRecentQuizPassed = true;
+        }else {
+          isRecentQuizPassed = false;
+        }
+      });
+    } catch (e) {
+      print('Error fetching latest quiz attempt: $e');
     }
-    setState(() {
-      score = "$correct/$total";});
   }
 
   @override

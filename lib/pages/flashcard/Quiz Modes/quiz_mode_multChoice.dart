@@ -124,7 +124,7 @@ class _QuizMultChoiceState extends State<QuizMultChoice> {
               onConfirm: () {
                 Navigator.of(context).pop();
                 Navigator.of(context).push(
-                  RouteGenerator.createRoute(QuizResults(result: results, score: score,)),
+                  RouteGenerator.createRoute(QuizResults(result: results, score: score, deckId: widget.deck.deckId, quizType: "MULTIPLE_CHOICE_QUIZ",)),
                 );
               },
             );

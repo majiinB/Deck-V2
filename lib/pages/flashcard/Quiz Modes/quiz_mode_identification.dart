@@ -87,7 +87,7 @@ class _QuizIdentificationState extends State<QuizIdentification> {
               onConfirm: () {
                 Navigator.of(context).pop();
                 Navigator.of(context).push(
-                  RouteGenerator.createRoute(QuizResults(score: score, result: results,)),
+                  RouteGenerator.createRoute(QuizResults(score: score, result: results, deckId: widget.deck.deckId, quizType: "IDENTIFICATION_QUIZ")),
                 );
               },
             );
