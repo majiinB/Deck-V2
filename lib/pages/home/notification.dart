@@ -162,7 +162,7 @@ class _NotificationPageState extends State<NotificationPage> {
                 child: IfCollectionEmpty(
                   ifCollectionEmptyText: 'No Results Found',
                   ifCollectionEmptySubText:
-                  'Try adjusting your search to \nfind what your looking for.',
+                  'Try adjusting your search to find what you want',
                   ifCollectionEmptyHeight:
                   MediaQuery.of(context).size.height,
                 ),

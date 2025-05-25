@@ -474,7 +474,7 @@ class _HomePageState extends State<HomePage> {
                             hasBackground: true,
                             ifCollectionEmptyText: 'YIPEE! No upcoming deadlines! ',
                             ifCollectionEmptySubText:
-                            'Now’s the perfect time to get ahead. Start adding new tasks and stay on top of your game!',
+                            'Get ahead now! Add tasks and stay sharp!',
                           )
                         else if(taskToday.isNotEmpty) ...[
                           ...taskToday.take(3).map((task) =>
@@ -601,7 +601,7 @@ class _HomePageState extends State<HomePage> {
                             hasBackground: true,
                             ifCollectionEmptyText: 'No Recent Decks Yet!',
                             ifCollectionEmptySubText:
-                            'Discover new decks or create your own to keep learning.',
+                            'Discover new decks or create your own to learn.',
                           ),
                       ],
                     ),

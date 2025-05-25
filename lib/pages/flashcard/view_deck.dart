@@ -484,8 +484,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                               ifCollectionEmptyText:
                                   'No Flashcards Yet!',
                               ifCollectionEmptySubText:
-                              'Looks like you haven\'t added any flashcards yet. '
-                                  'Let\'s kick things off by adding your first one.',
+                              'Haven’t added any cards? Let\'s get started!',
                               ifCollectionEmptyHeight:
                                   MediaQuery.of(context).size.height * 0.3,
                             )

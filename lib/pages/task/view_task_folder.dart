@@ -452,7 +452,7 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
                     /// if Complete tab does not contain a task
                     // IfCollectionEmpty(
                     //   ifCollectionEmptyText: 'Seems like there aren’t any\n task for today, wanderer!',
-                    //   ifCollectionEmptySubText: 'Now’s the perfect time to get ahead. Start\nadding new tasks and stay \non top of your game!',
+                    //   ifCollectionEmptySubText: 'Get ahead today! Start adding your tasks now!',
                     //   ifCollectionEmptyHeight: MediaQuery.of(context).size.height/2,
                     // )
                     // if (isThereTaskForDay(today, false) || showAllTask)

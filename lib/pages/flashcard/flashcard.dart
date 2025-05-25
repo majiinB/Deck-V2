@@ -268,7 +268,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
                     hasIcon: true,
                     ifCollectionEmptyText: 'It’s lonely around here...',
                     ifCollectionEmptySubText:
-                    'No Recent Decks Yet! Now’s the perfect time to get ahead. Create your own Deck now to keep learning.',
+                    'No decks yet? Now\'s the time to create one!',
                     ifCollectionEmptyHeight: MediaQuery.of(context).size.height/3,
                   ),
                 ),
@@ -631,7 +631,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
                     IfCollectionEmpty(
                       ifCollectionEmptyText: 'No Results Found',
                       ifCollectionEmptySubText:
-                      'Try adjusting your search to \nfind what your looking for.',
+                      'Try adjusting your search to find it.',
                       ifCollectionEmptyHeight:
                       MediaQuery.of(context).size.height * 0.4,
                     )

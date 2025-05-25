@@ -211,7 +211,7 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
             if (_filteredDecks.isEmpty)
               IfCollectionEmpty(
                   ifCollectionEmptyText: 'A clean mind starts with a clean trash',
-                  ifCollectionEmptySubText: 'Deleted Decks are kept in the trash bin until you delete them permanently.',
+                  ifCollectionEmptySubText: 'Deleted decks stay in trash until fully deleted.',
                   ifCollectionEmptyHeight:
                       MediaQuery.of(context).size.height * 0.7),
             if (_filteredDecks.isNotEmpty)
