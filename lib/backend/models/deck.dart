@@ -135,7 +135,7 @@ class Deck{
 
       // Send a PUT request to the API with the request body and headers.
       final response = await http.put(
-        Uri.parse('$deckManagerAPIUrl/v1/decks/$_deckId'), // API endpoint.
+        Uri.parse('$deckLocalAPIUrl/v1/decks/$_deckId'), // API endpoint.
         body: jsonEncode(requestBody), // JSON-encoded request body.
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
