@@ -564,7 +564,9 @@ class _FlashcardPageState extends State<FlashcardPage> {
                                     await Navigator.of(context).push(
                                       RouteGenerator.createRoute(EditDeck(deck: _filteredDecks[index])),
                                     );
-                                    setState(() {});
+                                    setState(() {
+                                      _initUserDecks(_user);
+                                    });
                                   }
 
                                   ///D E L E T E  D E C K

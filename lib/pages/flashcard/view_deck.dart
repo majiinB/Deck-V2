@@ -516,7 +516,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                 "Delete Item",
                                               () async {
                                                 try {
-                                                  await removedCard.updateDeleteStatus(true, widget.deck.deckId);
+                                                  await removedCard.deleteCard(true, widget.deck.deckId);
                                                   setState(() {
                                                     _filteredCards.removeAt(index);
                                                     _cardsCollection.removeWhere((card) => card.cardId == removedCard.cardId);
@@ -569,7 +569,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                   button2: 'Cancel',
                                                   onConfirm: () async {
                                                     try {
-                                                      await removedCard.updateDeleteStatus(true, widget.deck.deckId);
+                                                      await removedCard.deleteCard(true, widget.deck.deckId);
                                                       setState(() {
                                                         _filteredCards.removeAt(index);
                                                         _cardsCollection.removeWhere((card) => card.cardId == removedCard.cardId);
@@ -588,7 +588,9 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                     }
                                                     Navigator.of(context).pop(true);
                                                   },
-                                                  onCancel: () {},
+                                                  onCancel: () {
+                                                    Navigator.of(context).pop();
+                                                  },
                                                );
                                               },
                                             );
@@ -648,7 +650,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                               "Delete Item",
                                                   () async {
                                                 try {
-                                                  await removedCard.updateDeleteStatus(true, widget.deck.deckId);
+                                                  await removedCard.deleteCard(true, widget.deck.deckId);
                                                   setState(() {
                                                     _filteredCards.removeAt(index);
                                                     _cardsCollection.removeWhere((card) => card.cardId == removedCard.cardId);
@@ -701,7 +703,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                   button2: 'Cancel',
                                                   onConfirm: () async {
                                                     try {
-                                                      await removedCard.updateDeleteStatus(true, widget.deck.deckId);
+                                                      await removedCard.deleteCard(true, widget.deck.deckId);
                                                       setState(() {
                                                         _filteredStarredCards.removeAt(index);
                                                         _cardsCollection.removeWhere((card) => card.cardId == removedCard.cardId);
@@ -720,7 +722,9 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                     }
                                                     Navigator.of(context).pop(true);
                                                   },
-                                                  onCancel: () {},
+                                                  onCancel: () {
+                                                    Navigator.of(context).pop(true);
+                                                  },
                                                 );
                                               },
                                             );

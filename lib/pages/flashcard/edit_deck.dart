@@ -349,7 +349,10 @@ class _EditDeckState extends State<EditDeck> {
                     Padding(
                       padding: const EdgeInsets.only(top: 10.0, bottom: 20),
                       child: BuildButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          await widget.deck.updateDeleteStatus(true);
+                          Navigator.of(context).pop();
+                        },
                         buttonText: 'Delete Deck',
                         height: 50.0,
                         width: MediaQuery.of(context).size.width,

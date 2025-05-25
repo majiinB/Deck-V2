@@ -235,22 +235,15 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
                                             "Please add a description or answer to continue.");
                                     return;
                                       }
+                                      Map<String, dynamic> requestBody = {};
                                       if (widget.card.term.toString().trim() != _questionOrTermController.text.toString().trim()) {
-                                        setState(() => _isLoading = true);
-                                        await widget.card.updateQuestion(
-                                          _questionOrTermController.text.toString().trim(),
-                                          widget.deck.deckId,
-                                        );
+                                        requestBody['term'] = _questionOrTermController.text.toString().trim();
                                       }
                                       if (widget.card.definition.toString() != _descriptionOrAnswerController.text.toString()) {
-                                        setState(() => _isLoading = true);
-                                        await widget.card.updateAnswer(
-                                          _descriptionOrAnswerController.text.toString().trim(),
-                                          widget.deck.deckId,
-                                        );
+                                        requestBody['definition'] = _descriptionOrAnswerController.text.toString().trim();
                                       }
-                                      await Future.delayed(const Duration(milliseconds: 300));
-                                      setState(() => _isLoading = false);
+                                      Navigator.of(context).pop(true);
+                                      await widget.card.updateAnswer(widget.deck.deckId, requestBody);
                                       showAlertDialog(
                                         context,
                                         "assets/images/Deck-Dialogue3.png",
