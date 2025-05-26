@@ -532,7 +532,7 @@ class FlashcardService{
       throw Exception('User is not authenticated');
     }
 
-    final url = Uri.parse('$deckLocalAPIUrl/v1/decks/log/quiz');
+    final url = Uri.parse('$deckManagerAPIUrl/v1/decks/log/quiz');
     final body = jsonEncode({
       'deckID': deckId,
       'attempted_at': attemptedAt.toUtc().toIso8601String(),
@@ -578,7 +578,7 @@ class FlashcardService{
       throw Exception('User is not authenticated');
     }
 
-    final uri = Uri.parse('$deckLocalAPIUrl/v1/decks/log/quiz');
+    final uri = Uri.parse('$deckManagerAPIUrl/v1/decks/log/quiz');
 
     final response = await http.get(
       uri,
