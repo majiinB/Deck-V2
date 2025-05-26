@@ -1,9 +1,14 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../auth/auth_service.dart';
 import '../models/task.dart';
+import 'package:http/http.dart' as http;
 
 class TaskService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final String deckTaskManagerAPIUrl = "https://deck-task-manager-api-taglvgaoma-uc.a.run.app";
+  final String deckTaskManagerLocalAPIUrl = "http://10.0.2.2:5001/deck-f429c/us-central1/deck_task_manager_api";
 
   Future<List<Task>> getTasksOnSpecificDate() async {
     List<Task> list = [];
@@ -99,4 +104,47 @@ class TaskService {
     );
   }
 
+  Future<String> createTaskFolder({
+    required String title,
+    required String background,
+    required DateTime timeStamp
+  }) async {
+    final token = await AuthService().getIdToken();
+    if (token == null) {
+      throw Exception('User is not authenticated');
+    }
+
+    final uri = Uri.parse('$deckTaskManagerLocalAPIUrl/v1/task/create-task-folder');
+
+    final body = {
+      "taskFolderDetails": {
+        "title": title,
+        "background": background,
+        "timestamp": timeStamp.toUtc().toIso8601String(),
+        "is_deleted": false
+      }
+    };
+
+    final response = await http.post(
+      uri,
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(body),
+    );
+
+    if (response.statusCode != 200) {
+      final bodyText = response.body.isNotEmpty
+          ? jsonDecode(response.body)
+          : 'No response body';
+      throw Exception(
+          'Failed to create task folder (${response.statusCode}): $bodyText');
+    }
+
+    final Map<String, dynamic> jsonData =
+    jsonDecode(response.body) as Map<String, dynamic>;
+
+    return "Task Folder Creation Successful";
+  }
 }

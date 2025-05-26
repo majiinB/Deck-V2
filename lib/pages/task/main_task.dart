@@ -1,3 +1,4 @@
+import 'package:deck/backend/models/TaskFolder.dart';
 import 'package:deck/pages/misc/custom%20widgets/tiles/task_folder_tile.dart';
 import 'package:deck/pages/task/view_task_folder.dart';
 import 'package:flutter/material.dart';
@@ -49,12 +50,12 @@ class _TaskPageState extends State<TaskPage> {
     super.initState();
     if (widget.openViewTask) {
       // Delay to ensure the widget is built
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => ViewTaskFolderPage(title: 'sample',)),//TODO change title
-        );
-      });
+      // WidgetsBinding.instance.addPostFrameCallback((_) {
+      //   Navigator.push(
+      //     context,
+      //     MaterialPageRoute(builder: (context) => ViewTaskFolderPage(title: 'sample',)),//TODO change title
+      //   );
+      // });
     }
     _getTasks();
   }
@@ -77,22 +78,22 @@ class _TaskPageState extends State<TaskPage> {
 
   @override
   Widget build(BuildContext context) {
-    List<TaskFolder> taskFolders = [
-      TaskFolder(name: "Archorg", tasksDone: 5, totalTasks: 10, folderBackground: 1, ),
-      TaskFolder(name: "safghfghfghfhfhgfhgfhgfhfghfhfgjhfkhkhjmple", tasksDone: 3, totalTasks: 8, folderBackground: 2,),
-      TaskFolder(name: "hehe", tasksDone: 4, totalTasks: 5, folderBackground: 2,),
-      TaskFolder(name: "raqwr", tasksDone: 2, totalTasks: 5,folderBackground: 3,),
-      TaskFolder(name: "sdaf", tasksDone: 2, totalTasks: 5,folderBackground: 3,),
-      TaskFolder(name: "jugmuk", tasksDone: 2, totalTasks: 5,folderBackground: 1,),
-      TaskFolder(name: "truijn juytjtjy", tasksDone: 50, totalTasks: 41,folderBackground: 3,),
-      TaskFolder(name: "raqjyuyjiwr", tasksDone: 1, totalTasks: 77,folderBackground: 2,),      TaskFolder(name: "Archorg", tasksDone: 5, totalTasks: 10, folderBackground: 1, ),
-      TaskFolder(name: "fdf", tasksDone: 3, totalTasks: 8, folderBackground: 2,),
-      TaskFolder(name: "uoi;poghfmnvc ", tasksDone: 45, totalTasks: 54, folderBackground: 2,),
-      TaskFolder(name: "k,hk,", tasksDone: 7, totalTasks: 33,folderBackground: 3,),
-      TaskFolder(name: "sdacjhdfjfgf", tasksDone: 5, totalTasks: 5,folderBackground: 3,),
-      TaskFolder(name: "fghfghjjkjlkio", tasksDone: 2, totalTasks: 5,folderBackground: 1,),
-      TaskFolder(name: "ioioioioio juytjtjy", tasksDone: 2, totalTasks: 4,folderBackground: 3,),
-      TaskFolder(name: "hgjguygy", tasksDone: 66, totalTasks: 77,folderBackground: 2,),
+    List<TaskFolders> taskFolders = [
+      TaskFolders(name: "Archorg", tasksDone: 5, totalTasks: 10, folderBackground: 1, ),
+      TaskFolders(name: "safghfghfghfhfhgfhgfhgfhfghfhfgjhfkhkhjmple", tasksDone: 3, totalTasks: 8, folderBackground: 2,),
+      TaskFolders(name: "hehe", tasksDone: 4, totalTasks: 5, folderBackground: 2,),
+      TaskFolders(name: "raqwr", tasksDone: 2, totalTasks: 5,folderBackground: 3,),
+      TaskFolders(name: "sdaf", tasksDone: 2, totalTasks: 5,folderBackground: 3,),
+      TaskFolders(name: "jugmuk", tasksDone: 2, totalTasks: 5,folderBackground: 1,),
+      TaskFolders(name: "truijn juytjtjy", tasksDone: 50, totalTasks: 41,folderBackground: 3,),
+      TaskFolders(name: "raqjyuyjiwr", tasksDone: 1, totalTasks: 77,folderBackground: 2,),
+      TaskFolders(name: "fdf", tasksDone: 3, totalTasks: 8, folderBackground: 2,),
+      TaskFolders(name: "uoi;poghfmnvc ", tasksDone: 45, totalTasks: 54, folderBackground: 2,),
+      TaskFolders(name: "k,hk,", tasksDone: 7, totalTasks: 33,folderBackground: 3,),
+      TaskFolders(name: "sdacjhdfjfgf", tasksDone: 5, totalTasks: 5,folderBackground: 3,),
+      TaskFolders(name: "fghfghjjkjlkio", tasksDone: 2, totalTasks: 5,folderBackground: 1,),
+      TaskFolders(name: "ioioioioio juytjtjy", tasksDone: 2, totalTasks: 4,folderBackground: 3,),
+      TaskFolders(name: "hgjguygy", tasksDone: 66, totalTasks: 77,folderBackground: 2,),
     ];
 
     List<Map<String, dynamic>> sampleTasks = [
@@ -141,10 +142,17 @@ class _TaskPageState extends State<TaskPage> {
                                   icon: const Icon(Icons.add,
                                       color: DeckColors.primaryColor, size: 32),
                                   onPressed: () async {
-                                    Navigator.push(
+                                    final result = await Navigator.push(
                                       context,
-                                      RouteGenerator.createRoute(AddTaskFolderPage()),
+                                      MaterialPageRoute(builder: (context) => const AddTaskFolderPage()),
                                     );
+
+                                    if (result != null && result is TaskFolder) {
+                                      await Navigator.push(
+                                        context,
+                                        RouteGenerator.createRoute(ViewTaskFolderPage(taskFolder: result)),
+                                      );
+                                    }
                                   },
                                 ),
                               ],
@@ -179,10 +187,10 @@ class _TaskPageState extends State<TaskPage> {
                                       totalTask: taskFolder.totalTasks,
                                       folderBackground: taskFolder.folderBackground,
                                       onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          RouteGenerator.createRoute(ViewTaskFolderPage(title: taskFolder.name,)),//TODO change title and ADD THE INDEX OF THE FOLDER HERE
-                                        );
+                                        // Navigator.push(
+                                        //   context,
+                                        //   RouteGenerator.createRoute(ViewTaskFolderPage(title: taskFolder.name,)),//TODO change title and ADD THE INDEX OF THE FOLDER HERE
+                                        // );
                                       },
                                   )
                               );
@@ -242,13 +250,13 @@ class _TaskPageState extends State<TaskPage> {
 }
 
 //TODO remove this po kasi ginawa ko lng toh para may sample
-class TaskFolder {
+class TaskFolders {
   final String name;
   final int folderBackground;
   final int tasksDone;
   final int totalTasks;
 
-  TaskFolder({
+  TaskFolders({
     required this.name,
     required this.tasksDone,
     required this.totalTasks,
