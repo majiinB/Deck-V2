@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:deck/backend/auth/auth_service.dart';
+import 'package:deck/backend/models/TaskFolder.dart';
+import 'package:deck/pages/task/view_task_folder.dart';
 import 'package:flutter/material.dart';
 import 'package:deck/pages/misc/colors.dart';
 import 'package:flutter_svg/svg.dart';
@@ -14,6 +16,7 @@ import '../misc/custom widgets/dialogs/alert_dialog.dart';
 import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
 import '../misc/custom widgets/textboxes/textboxes.dart';
 import '../misc/deck_icons.dart';
+import '../misc/widget_method.dart';
 
 class AddTaskFolderPage extends StatefulWidget {
   const AddTaskFolderPage({super.key});
@@ -24,6 +27,8 @@ class AddTaskFolderPage extends StatefulWidget {
 
 class _AddTaskFolderPageState extends State<AddTaskFolderPage> {
   bool isLoading = false;
+  String background = "assets/images/Deck-Background9.svg";
+  final TaskService _taskService = TaskService();
   final TextEditingController _titleController = TextEditingController();
 
 
@@ -85,10 +90,52 @@ class _AddTaskFolderPageState extends State<AddTaskFolderPage> {
                           buttonLabels: ['Cards', 'Hearts', 'Stars'],
                           buttonColors: [DeckColors.softGreen,DeckColors.deckRed,DeckColors.deckYellow],
                           buttonBackground: ['assets/images/Deck-Background9.svg','assets/images/Deck-Background7.svg','assets/images/Deck-Background8.svg'],
-
+                          onChange: (String label, int index){
+                            setState(() {
+                              switch (index) {
+                                case 0:
+                                  background = 'assets/images/Deck-Background9.svg';
+                                  break;
+                                case 1:
+                                  background = 'assets/images/Deck-Background7.svg';
+                                  break;
+                                case 2:
+                                  background = 'assets/images/Deck-Background8.svg';
+                                  break;
+                                default:
+                                  background = 'assets/images/Deck-Background9.svg';
+                              }
+                            });
+                          },
                         ),
                         BuildButton(
-                          onPressed: () {},
+                          onPressed: () async{
+                            String taskFolderTitle = _titleController.text.toString().trim();
+                            DateTime timeStamp = DateTime.now();
+                            setState(() {
+                              isLoading = true;
+                            });
+                            try{
+                              await _taskService.createTaskFolder(
+                                  title: taskFolderTitle,
+                                  background: background,
+                                  timeStamp: timeStamp
+                              );
+                              TaskFolder newTaskFolder = TaskFolder(
+                                  title: taskFolderTitle,
+                                  background: background,
+                                  timestamp: timeStamp,
+                                  isDeleted: false
+                              );
+                              Navigator.of(context).pop(newTaskFolder);
+                            }catch(e){
+                              print(e);
+                            }finally{
+                              setState(() {
+                                isLoading = false;
+                              });
+                            }
+                          },
                           buttonText: 'Create Task Folder',
                           height: 50,
                           width: MediaQuery.of(context).size.width,

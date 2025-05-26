@@ -12,6 +12,7 @@ import 'package:table_calendar/table_calendar.dart';
 // import 'package:deck/pages/task/view_task.dart';
 import 'package:deck/pages/task/add_task.dart';
 // import 'package:deck/pages/misc/deck_icons2.dart';
+import '../../backend/models/TaskFolder.dart';
 import '../../backend/models/task.dart';
 // import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
 // import '../misc/custom widgets/functions/if_collection_empty.dart';
@@ -32,12 +33,11 @@ import '../misc/deck_icons2.dart';
 import 'edit_task_folder.dart';
 
 class ViewTaskFolderPage extends StatefulWidget {
-  final String? title;
+  final TaskFolder taskFolder;
 
   ViewTaskFolderPage({
     super.key,
-    required this.title,
-
+    required this.taskFolder
   });
   @override
   _ViewTaskFolderPageState createState() => _ViewTaskFolderPageState();
@@ -910,7 +910,8 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         AutoSizeText(
-                            widget.title ?? 'Unititled',
+                            // widget.title ?? 'Unititled',
+                            'Untitled',
                             maxLines: 2,
                             style: const TextStyle(
                               fontFamily: 'Fraiche',
