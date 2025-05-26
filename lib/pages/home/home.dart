@@ -491,27 +491,27 @@ class _HomePageState extends State<HomePage> {
                                   taskName: task['taskName'],// task.taskName
                                   deadline: selectedDay,
                                   onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        RouteGenerator.createRoute(
-                                          ViewTaskPage(
-                                              task: Task(
-                                                '0000',
-                                                'title',
-                                                'description',
-                                                'priority',
-                                                'user_id',
-                                                false,
-                                                false,
-                                                DateTime.now(),
-                                                DateTime.now(),
-                                                false,
-                                                DateTime.now(),
-                                              ),
-                                              isEditable: false
-                                          )
-                                        )
-                                    );
+                                    // Navigator.push(
+                                    //     context,
+                                    //     RouteGenerator.createRoute(
+                                    //       ViewTaskPage(
+                                    //           task: Task(
+                                    //             '0000',
+                                    //             'title',
+                                    //             'description',
+                                    //             'priority',
+                                    //             'user_id',
+                                    //             false,
+                                    //             false,
+                                    //             DateTime.now(),
+                                    //             DateTime.now(),
+                                    //             false,
+                                    //             DateTime.now(),
+                                    //           ),
+                                    //           isEditable: false
+                                    //       )
+                                    //     )
+                                    // );
                                   },
                                   priority: task['priority'],//task.priority
                                 ),

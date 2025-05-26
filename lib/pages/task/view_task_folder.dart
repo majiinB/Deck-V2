@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:deck/backend/task/task_provider.dart';
+import 'package:deck/backend/task/task_service.dart';
 import 'package:deck/pages/misc/custom%20widgets/progressbar/progress_bar.dart';
 import 'package:deck/pages/task/view_task.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:deck/pages/task/add_task.dart';
 // import 'package:deck/pages/misc/deck_icons2.dart';
 import '../../backend/models/TaskFolder.dart';
+import '../../backend/models/newTask.dart';
 import '../../backend/models/task.dart';
 // import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
 // import '../misc/custom widgets/functions/if_collection_empty.dart';
@@ -56,6 +58,10 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
   int totalLowPrio = 0;
   late final Map<String, double> workloadData;
   late final Map<String, double> priorityData;
+  TaskService _taskService = TaskService();
+  List<NewTask> pendingTasks = [];
+  List<NewTask> inProgressTasks = [];
+  List<NewTask> completedTasks = [];
 
   /// function to get the total number of all task, pending task, tasks in progress, completed task
   /// this will be used for the overview tab
@@ -121,7 +127,16 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
 
   bool showAllTask = false;
   void _getTasks() async {
-    await Provider.of<TaskProvider>(context, listen: false).loadTasks();
+    try{
+      Map<String, List<NewTask>> taskGroups = await _taskService.fetchTasksByFolder(taskFolderId: widget.taskFolder.id);
+      setState(() {
+        pendingTasks = taskGroups['pending']!;
+        inProgressTasks = taskGroups['inProgress']!;
+        completedTasks = taskGroups['completed']!;
+      });
+    }catch(e){
+      print(e);
+    }
   }
 
   @override
@@ -318,7 +333,7 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
   Widget buildListTab(){
     /// buildListTab is a widget designed to present a list of all the task
     /// It  organizes tasks into different categories using tabs:
-    ///   pedning
+    ///   pending
     ///   in progress
     ///   completed
 
@@ -357,11 +372,11 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
                   borderWidth: 3,
                   borderColor: DeckColors.primaryColor,
                   onPressed: () async {
-                    print("Add task pressed");
-                    Navigator.push(
+                    await Navigator.push(
                       context,
-                      RouteGenerator.createRoute(const AddTaskPage()),
+                      RouteGenerator.createRoute(AddTaskPage(taskFolder: widget.taskFolder,)),
                     );
+                    _getTasks();
                   }
               ),
               const SizedBox(
@@ -375,152 +390,74 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
                   length: 3,
                   tabContent: [
                     SingleChildScrollView(
-                      padding: EdgeInsets.only(top: 20,bottom:100),
-                      child:
-                      TaskTile(
-                        taskName: 'an exeample of a very long'
-                            'task tiele that should trigger t he ellipsis',
-                        deadline: DateTime.now(),//TaskProvider.getNameDate(task.deadline),
-                        priority: 0,
-                        progressStatus: 'to do',
-                        onDelete: () {
-                        },
-                        onPressed: () {
-                          print("Clicked task tile!");
-                          Navigator.push(
-                            context,
-                            RouteGenerator.createRoute(ViewTaskPage(task: Task("0000", "_title", "_description", "0", "jkghjh", false, true, DateTime.now(), DateTime.now(), false, DateTime.now()), isEditable: true,)),//TODO change title
+                      padding: EdgeInsets.only(top: 20, bottom: 100),
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: pendingTasks.length,
+                        itemBuilder: (context, index) {
+                          return TaskTile(
+                            taskName: pendingTasks[index].title,
+                            deadline: pendingTasks[index].startDate,
+                            priority: pendingTasks[index].priority,
+                            progressStatus: pendingTasks[index].status,
+                            onDelete: () {},
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                RouteGenerator.createRoute(ViewTaskPage(task: pendingTasks[index], isEditable: true)),
+                              );
+                            },
                           );
                         },
                       ),
-                      // TaskList(
-                      //   tasks: [],
-                      //   filter: (task) => !task.getIsDone,
-                      // )
-
                     ),
                     SingleChildScrollView(
                         padding: EdgeInsets.only(top: 20,bottom:100),
-                        child:
-                        // TaskTile(
-                        //   taskName: 'an exeample of a very long'
-                        //       'task tiele that should trigger t he ellipsis',
-                        //   deadline: DateTime.now(),//TaskProvider.getNameDate(task.deadline),
-                        //   priority: 0,
-                        //   progressStatus: 'to do',
-                        //   onDelete: () {
-                        //   },
-                        //   onPressed: () {
-                        //     print("Clicked task tile!");
-                        //   },
-                        // ),
-                        TaskList(
-                          tasks: [],
-                          filter: (task) => !task.getIsDone,
-                        )
-
+                        child:ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: inProgressTasks.length,
+                          itemBuilder: (context, index) {
+                            return TaskTile(
+                              taskName: inProgressTasks[index].title,
+                              deadline: inProgressTasks[index].startDate,
+                              priority: inProgressTasks[index].priority,
+                              progressStatus: inProgressTasks[index].status,
+                              onDelete: () {},
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  RouteGenerator.createRoute(ViewTaskPage(task: inProgressTasks[index], isEditable: true)),
+                                );
+                              },
+                            );
+                          },
+                        ),
                     ),
                     SingleChildScrollView(
                         padding: EdgeInsets.only(top: 20,bottom:100),
-                        child:
-                        // TaskTile(
-                        //   taskName: 'an exeample of a very long'
-                        //       'task tiele that should trigger t he ellipsis',
-                        //   deadline: DateTime.now(),//TaskProvider.getNameDate(task.deadline),
-                        //   priority: 0,
-                        //   progressStatus: 'to do',
-                        //   onDelete: () {
-                        //   },
-                        //   onPressed: () {
-                        //     print("Clicked task tile!");
-                        //   },
-                        // ),
-                        TaskList(
-                          tasks: [],
-                          filter: (task) => !task.getIsDone,
-                        )
-
+                        child:ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: completedTasks.length,
+                          itemBuilder: (context, index) {
+                            return TaskTile(
+                              taskName: completedTasks[index].title,
+                              deadline: completedTasks[index].startDate,
+                              priority: completedTasks[index].priority,
+                              progressStatus: completedTasks[index].status,
+                              onDelete: () {},
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  RouteGenerator.createRoute(ViewTaskPage(task: completedTasks[index], isEditable: true)),
+                                );
+                              },
+                            );
+                          },
+                        ),
                     ),
-                    // _buildTaskList(tasks, (task) => !task.getIsDone && !task.getIsActive),
-                    // _buildTaskList(tasks, (task) => task.getIsActive && !task.getIsDone),
-                    // _buildTaskList(tasks, (task) => task.getIsDone && !task.getIsActive)
-
-
-                    ///in progress tab
-
-                    ///if IN PROGRESS tab does not contain a task
-                    /// if Complete tab does not contain a task
-                    // IfCollectionEmpty(
-                    //   ifCollectionEmptyText: 'Seems like there aren’t any\n task for today, wanderer!',
-                    //   ifCollectionEmptySubText: 'Get ahead today! Start adding your tasks now!',
-                    //   ifCollectionEmptyHeight: MediaQuery.of(context).size.height/2,
-                    // )
-                    // if (isThereTaskForDay(today, false) || showAllTask)
-                    //   ListView.builder(
-                    //     shrinkWrap:
-                    //         true, // Allow the ListView to wrap its content
-                    //     physics: const NeverScrollableScrollPhysics(),
-                    //     itemCount: tasks.length,
-                    //     itemBuilder: (context, index) {
-                    //       if ((showAllTask && tasks[index].getIsDone) ||
-                    //           (tasks[index].getIsDone &&
-                    //               isSameDay(
-                    //                   tasks[index].deadline, selectedDay))) {
-                    //         return Padding(
-                    //           padding: const EdgeInsets.symmetric(vertical: 10),
-                    //           child: DeckTaskTile(
-                    //             title: tasks[index].title,
-                    //             deadline: tasks[index]
-                    //                 .deadline
-                    //                 .toString()
-                    //                 .split(" ")[0],
-                    //             isChecked: tasks[index].getIsDone,
-                    //             onChanged: (newValue) {
-                    //               setState(() {
-                    //                 tasks[index].setIsDone = newValue ?? false;
-                    //                 Provider.of<TaskProvider>(context,
-                    //                         listen: false)
-                    //                     .setTaskUndone(tasks[index]);
-                    //               });
-                    //             },
-                    //             onDelete: () {
-                    //               final String deletedTitle =
-                    //                   tasks[index].title;
-                    //               showConfirmationDialog(
-                    //                 context,
-                    //                 "Delete Item",
-                    //                 "Are you sure you want to delete '$deletedTitle'?",
-                    //                 () {
-                    //                   Provider.of<TaskProvider>(context,
-                    //                           listen: false)
-                    //                       .deleteTask(tasks[index].uid);
-                    //                 },
-                    //                 () {
-                    //                   setState(() {});
-                    //                 },
-                    //               );
-                    //             },
-                    //             enableRetrieve: false,
-                    //             onTap: () {
-                    //               print("Clicked task tile!");
-                    //               Navigator.push(
-                    //                 context,
-                    //                 MaterialPageRoute(
-                    //                     builder: (context) => ViewTaskPage(
-                    //                           task: tasks[index],
-                    //                           isEditable: true,
-                    //                         )),
-                    //               );
-                    //             },
-                    //           ),
-                    //         );
-                    //       } else {
-                    //         return const SizedBox(
-                    //             height: 0); // Placeholder for empty space
-                    //       }
-                    //     },
-                    //   )
-                    // else
                   ],
                 )
               )
@@ -777,11 +714,12 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
                   borderWidth: 3,
                   borderColor: DeckColors.primaryColor,
                   onPressed: () async {
-                    print("Add task pressed");
-                    Navigator.push(
+                    await Navigator.push(
                       context,
-                      RouteGenerator.createRoute(const AddTaskPage()),
-                    );              }
+                      RouteGenerator.createRoute(AddTaskPage(taskFolder: widget.taskFolder)),
+                    );
+                    _getTasks();
+                  }
               ),
               const SizedBox(
                 height: 10,

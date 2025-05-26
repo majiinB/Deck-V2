@@ -252,18 +252,3 @@ class _TaskPageState extends State<TaskPage> {
     );
   }
 }
-
-//TODO remove this po kasi ginawa ko lng toh para may sample
-class TaskFolders {
-  final String name;
-  final int folderBackground;
-  final int tasksDone;
-  final int totalTasks;
-
-  TaskFolders({
-    required this.name,
-    required this.tasksDone,
-    required this.totalTasks,
-    required this.folderBackground
-  });
-}

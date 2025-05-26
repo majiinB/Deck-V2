@@ -63,7 +63,7 @@ class TaskList extends StatelessWidget{
             child: TaskTile(
               taskName: task.title,
               deadline: DateTime.now(),//TaskProvider.getNameDate(task.deadline),
-              priority: getPriorityIndex(task.priority),
+              priority: "high",
               progressStatus: 'to do',
               onDelete: () {
                 final String deletedTitle = task.title;

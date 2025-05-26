@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../auth/auth_service.dart';
 import '../models/TaskFolder.dart';
+import '../models/newTask.dart';
 import '../models/task.dart';
 import 'package:http/http.dart' as http;
 
@@ -193,6 +194,116 @@ class TaskService {
         .toList();
 
     return taskFolders;
+  }
+
+  /// Creates a Task in the given folder, returns the server message on success.
+  Future<String> createTask({
+    required String taskFolderId,
+    required String title,
+    required String description,
+    required String status,
+    required String priority,
+    required DateTime startDate,
+    required DateTime endDate,
+    DateTime? doneDate,
+  }) async {
+    final token = await AuthService().getIdToken();
+    if (token == null) {
+      throw Exception('User is not authenticated');
+    }
+
+    // The endpoint expects the folder ID as a URL param:
+    final uri = Uri.parse('$deckTaskManagerLocalAPIUrl/v1/task/create-task');
+
+    // Build the JSON body from the individual fields
+    final body = {
+      'taskDetails': {
+        'task_folder_id': taskFolderId,
+        'title': title,
+        'description': description,
+        'status': status,
+        'priority': priority,
+        'start_date': startDate.toUtc().toIso8601String(),
+        'end_date': endDate.toUtc().toIso8601String(),
+        if (doneDate != null)
+          'done_date': doneDate.toUtc().toIso8601String(),
+      }
+    };
+
+    final response = await http.post(
+      uri,
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(body),
+    );
+
+    if (response.statusCode != 200) {
+      final payload = response.body.isNotEmpty
+          ? jsonDecode(response.body)
+          : 'No response body';
+      throw Exception(
+          'Failed to create task (${response.statusCode}): $payload');
+    }
+
+    final Map<String, dynamic> jsonData =
+    jsonDecode(response.body) as Map<String, dynamic>;
+
+    if (jsonData['success'] != true) {
+      throw Exception('Error creating task: ${jsonData['message']}');
+    }
+
+    return jsonData['message'] as String;
+  }
+
+  Future<Map<String, List<NewTask>>> fetchTasksByFolder({
+    required String taskFolderId,
+  }) async {
+    final token = await AuthService().getIdToken();
+    if (token == null) {
+      throw Exception('User is not authenticated');
+    }
+
+    final uri = Uri.parse('$deckTaskManagerLocalAPIUrl/v1/task/fetch-tasks/folder/$taskFolderId');
+
+    final response = await http.get(
+      uri,
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode != 200) {
+      final payload = response.body.isNotEmpty
+          ? jsonDecode(response.body)
+          : 'No response body';
+      throw Exception(
+          'Failed to fetch tasks (${response.statusCode}): $payload');
+    }
+
+    final Map<String, dynamic> jsonData =
+    jsonDecode(response.body) as Map<String, dynamic>;
+
+    if (jsonData['success'] != true) {
+      throw Exception('Error fetching tasks: ${jsonData['message']}');
+    }
+
+    final Map<String, dynamic> data =
+    jsonData['data'] as Map<String, dynamic>;
+
+    return {
+      'pending': (data['pending'] as List<dynamic>)
+          .map((taskJson) => NewTask.fromJson(taskJson as Map<String, dynamic>))
+          .toList(),
+      'inProgress': (data['inProgress'] as List<dynamic>)
+          .map((taskJson) => NewTask.fromJson(taskJson as Map<String, dynamic>))
+          .toList(),
+      'completed': (data['completed'] as List<dynamic>)
+          .map((taskJson) => NewTask.fromJson(taskJson as Map<String, dynamic>))
+          .toList(),
+    };
   }
 
 }

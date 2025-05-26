@@ -1,3 +1,9 @@
+import 'dart:convert';
+import 'package:deck/backend/models/newTask.dart';
+import 'package:http/http.dart' as http;
+
+import '../auth/auth_service.dart';
+
 class TaskFolder {
   final String id;
   final String title;
@@ -5,6 +11,8 @@ class TaskFolder {
   final DateTime timestamp;
   final bool isDeleted;
   final String? userId;  // Optional because sometimes it might not be used on client side
+  final String deckTaskManagerAPIUrl = "https://deck-task-manager-api-taglvgaoma-uc.a.run.app";
+  final String deckTaskManagerLocalAPIUrl = "http://10.0.2.2:5001/deck-f429c/us-central1/deck_task_manager_api";
 
   TaskFolder({
     required this.id,

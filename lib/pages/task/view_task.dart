@@ -1,3 +1,4 @@
+import 'package:deck/backend/models/newTask.dart';
 import 'package:deck/backend/models/task.dart';
 import 'package:deck/backend/task/task_provider.dart';
 import 'package:deck/pages/misc/deck_icons2.dart';
@@ -14,7 +15,7 @@ import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
 import '../misc/custom widgets/textboxes/textboxes.dart';
 
 class ViewTaskPage extends StatefulWidget {
-  final Task task;
+  final NewTask task;
   final bool isEditable;
   const ViewTaskPage({super.key, required this.task, required this.isEditable});
 
@@ -28,7 +29,7 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
   late final TextEditingController _endDateController;
   late final TextEditingController _startDateController;
   late final TextEditingController _descriptionController;
-  late Task _task;
+  late NewTask _task;
   late String title,description,deadline;
   late int _priorityIndex;
   late bool isEditable;
@@ -38,19 +39,19 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
     super.initState();
     isEditable = false;
     _task = widget.task;
-    title = _task.title;
+    title = widget.task.title;
     _priorityIndex = TaskProvider.getPriorityIndex(_task.priority);
-    deadline = TaskProvider.getNameDate(_task.deadline);
+    deadline = getNameDate(widget.task.endDate);
     _descriptionController = TextEditingController(text: widget.task.description.toString());
-    _startDateController = TextEditingController(text: widget.task.deadline.toString().split(" ")[0]);
-    _endDateController = TextEditingController(text: widget.task.deadline.toString().split(" ")[0]);
+    _startDateController = TextEditingController(text: widget.task.startDate.toString().split(" ")[0]);
+    _endDateController = TextEditingController(text: widget.task.doneDate.toString().split(" ")[0]);
     _selectedStatus = determineStatusIndex(widget.task);
   }
 
-  int determineStatusIndex(Task task){
-    if(!task.getIsDone && !task.getIsActive) {
+  int determineStatusIndex(NewTask task){
+    if(task.status.toString().toLowerCase() == "pending") {
       return 0;
-    } else if(!task.getIsDone && task.getIsActive) {return 1;}
+    } else if(task.status.toString().toLowerCase() == "in progress") {return 1;}
     else {return 2;}
   }
 
@@ -67,18 +68,32 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
   //   }
   // }
 
-  void _updateTask(Task updatedTask) {
-    setState(() {
-      _task = updatedTask;
-      title = _task.title;
-      _priorityIndex = TaskProvider.getPriorityIndex(_task.priority);
-      deadline = TaskProvider.getNameDate(_task.deadline);
-      _descriptionController.text = _task.description;
-      _startDateController.text = _task.deadline.toString().split(" ")[0];//todo
-      _endDateController.text = _task.deadline.toString().split(" ")[0];
-      _selectedStatus = determineStatusIndex(updatedTask);
-    });
+  // void _updateTask(Task updatedTask) {
+  //   setState(() {
+  //     _task = updatedTask;
+  //     title = _task.title;
+  //     _priorityIndex = TaskProvider.getPriorityIndex(_task.priority);
+  //     deadline = TaskProvider.getNameDate(_task.deadline);
+  //     _descriptionController.text = _task.description;
+  //     _startDateController.text = _task.deadline.toString().split(" ")[0];//todo
+  //     _endDateController.text = _task.deadline.toString().split(" ")[0];
+  //     _selectedStatus = determineStatusIndex(updatedTask);
+  //   });
+  // }
+
+  String getNameDate(DateTime date){
+    List<String> months = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+
+    String month = months[date.month - 1]; // Get the month name
+    String day = date.day.toString(); // Get the day
+    String year = date.year.toString(); // Get the year
+
+    return '$month $day, $year';
   }
+
   Color getPriorityColor(int priority){
     Color color = DeckColors.white;
     if(priority == 0) { color = DeckColors.deckRed;}
