@@ -47,7 +47,7 @@ class _HomePageState extends State<HomePage> {
   bool hasUnreadNotif = true;
   int correct = 0;
   int total = 0;
-  String score = "";
+  String score = "0/0";
   bool isRecentQuizPassed = true;
 
   DateTime selectedDay = DateTime.now();

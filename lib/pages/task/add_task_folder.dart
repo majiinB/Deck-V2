@@ -116,16 +116,10 @@ class _AddTaskFolderPageState extends State<AddTaskFolderPage> {
                               isLoading = true;
                             });
                             try{
-                              await _taskService.createTaskFolder(
+                              TaskFolder newTaskFolder = await _taskService.createTaskFolder(
                                   title: taskFolderTitle,
                                   background: background,
                                   timeStamp: timeStamp
-                              );
-                              TaskFolder newTaskFolder = TaskFolder(
-                                  title: taskFolderTitle,
-                                  background: background,
-                                  timestamp: timeStamp,
-                                  isDeleted: false
                               );
                               Navigator.of(context).pop(newTaskFolder);
                             }catch(e){

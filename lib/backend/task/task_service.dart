@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../auth/auth_service.dart';
+import '../models/TaskFolder.dart';
 import '../models/task.dart';
 import 'package:http/http.dart' as http;
 
@@ -104,10 +105,10 @@ class TaskService {
     );
   }
 
-  Future<String> createTaskFolder({
+  Future<TaskFolder> createTaskFolder({
     required String title,
     required String background,
-    required DateTime timeStamp
+    required DateTime timeStamp,
   }) async {
     final token = await AuthService().getIdToken();
     if (token == null) {
@@ -145,6 +146,53 @@ class TaskService {
     final Map<String, dynamic> jsonData =
     jsonDecode(response.body) as Map<String, dynamic>;
 
-    return "Task Folder Creation Successful";
+    if (jsonData['success'] != true) {
+      throw Exception('Task folder creation failed: ${jsonData['message']}');
+    }
+
+    final Map<String, dynamic> newFolderJson = jsonData['data']['new_task_folder'];
+
+    return TaskFolder.fromJson(newFolderJson);
   }
+
+  Future<List<TaskFolder>> getTaskFolders() async {
+    final token = await AuthService().getIdToken();
+    if (token == null) {
+      throw Exception('User is not authenticated');
+    }
+
+    final uri = Uri.parse('$deckTaskManagerLocalAPIUrl/v1/task/get-task-folders');
+
+    final response = await http.get(
+      uri,
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode != 200) {
+      final bodyText = response.body.isNotEmpty
+          ? jsonDecode(response.body)
+          : 'No response body';
+      throw Exception(
+          'Failed to fetch task folders (${response.statusCode}): $bodyText');
+    }
+
+    final Map<String, dynamic> jsonData =
+    jsonDecode(response.body) as Map<String, dynamic>;
+
+    if (jsonData['success'] != true) {
+      throw Exception('Failed to retrieve task folders: ${jsonData['message']}');
+    }
+
+    final List<dynamic> foldersJson = jsonData['data'];
+
+    final List<TaskFolder> taskFolders = foldersJson
+        .map((folderJson) => TaskFolder.fromJson(folderJson))
+        .toList();
+
+    return taskFolders;
+  }
+
 }

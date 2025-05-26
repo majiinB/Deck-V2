@@ -910,8 +910,7 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         AutoSizeText(
-                            // widget.title ?? 'Unititled',
-                            'Untitled',
+                            widget.taskFolder.title ?? 'Unititled',
                             maxLines: 2,
                             style: const TextStyle(
                               fontFamily: 'Fraiche',

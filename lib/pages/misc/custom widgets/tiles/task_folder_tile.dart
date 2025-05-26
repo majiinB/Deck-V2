@@ -30,13 +30,13 @@ class TaskFolderTile extends StatelessWidget{
     String? backgroundImage;
     switch(folderBackground){
       case 1:
-        backgroundImage = 'assets/images/Deck-Background4.svg';
+        backgroundImage = 'assets/images/Deck-Background6.svg';
         break;
       case 2:
-        backgroundImage = 'assets/images/Deck-Background5.svg';
+        backgroundImage = 'assets/images/Deck-Background4.svg';
         break;
       case 3:
-        backgroundImage = 'assets/images/Deck-Background6.svg';
+        backgroundImage = 'assets/images/Deck-Background5.svg';
         break;
       default:
         backgroundImage = null;
