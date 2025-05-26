@@ -81,7 +81,7 @@ class _NotificationPageState extends State<NotificationPage> {
 
                       if (type == 'deck') {
                         return Padding(
-                          padding: EdgeInsets.only(top: 20),
+                          padding: EdgeInsets.only(top: 10, left: 15, right:15),
                             child: DeckApprovalNotification(
                               title: title,
                               message: message,
@@ -114,7 +114,7 @@ class _NotificationPageState extends State<NotificationPage> {
                         );
                       } else if (type == 'task') {
                         return Padding(
-                          padding: EdgeInsets.only(top: 10),
+                          padding: EdgeInsets.only(top: 10, left: 15, right:15),
                           child: TaskReminderNotification(
                             title: title,
                             message: message,
