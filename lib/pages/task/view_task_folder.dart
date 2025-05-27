@@ -122,6 +122,7 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
         _isLoading = true;
       });
       Map<String, List<NewTask>> taskGroups = await _taskService.fetchTasksByFolder(taskFolderId: widget.taskFolder.id);
+      print(taskGroups);
       setState(() {
         pendingTasks = taskGroups['pending']!;
         inProgressTasks = taskGroups['inProgress']!;
@@ -312,7 +313,6 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
           ),
           Container(
               padding: EdgeInsets.all(20),
-
               decoration: BoxDecoration(
                 border: Border.all(color: DeckColors.primaryColor, width: 3),
                 color: DeckColors.white,
@@ -333,7 +333,9 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
                     ),
                   ),
                   PieChart(
-                    dataMap: priorityData,
+                    dataMap: (priorityData != null && priorityData.isNotEmpty)
+                        ? priorityData
+                        : {"No Data": 100},
                     colorList: priorityColorList,
                     animationDuration: const Duration(milliseconds: 800),
                     chartLegendSpacing: 32,

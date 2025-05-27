@@ -11,7 +11,9 @@ import 'package:auto_size_text/auto_size_text.dart';
 import '../../backend/auth/auth_service.dart';
 import '../../backend/flashcard/flashcard_service.dart';
 import '../../backend/models/deck.dart';
+import '../../backend/models/newTask.dart';
 import '../../backend/task/task_provider.dart';
+import '../../backend/task/task_service.dart';
 import '../flashcard/flashcard.dart';
 import '../misc/custom widgets/tiles/home_deck_tile.dart';
 import '../task/main_task.dart';
@@ -40,6 +42,8 @@ class _HomePageState extends State<HomePage> {
   late List<Deck> _decks = [];
   late List<Deck> _recoDecks = [];
   late User? _user;
+  final TaskService _taskService = TaskService();
+  List<NewTask> upcomingTasks = [];
 
   //Initial values
   String greeting = "";
@@ -62,7 +66,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     _user = _authService.getCurrentUser();
     _initUserDecks(_user);
-    _initUserTasks(_user);
+    _getTasks();
     _initGreeting();
     _initScore();//temporary
   }
@@ -85,8 +89,11 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void _initUserTasks(User? user) async {
-    await Provider.of<TaskProvider>(context, listen: false).loadTasks();
+  void _getTasks() async {
+    List <NewTask> retrievedTasks = await _taskService.fetchNearingDueTasks();
+    setState(() {
+      upcomingTasks = retrievedTasks;
+    });
   }
 
   void _initGreeting() {
@@ -122,44 +129,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<TaskProvider>(context);
-    final _tasks = provider.getList;
-    _tasks.sort((a, b) {
-      // Define your priority order
-      int getPriorityIndex(String priority) {
-        switch (priority) {
-          case 'High':
-            return 0;
-          case 'Medium':
-            return 1;
-          case 'Low':
-            return 2;
-          default:
-            return 3; // Fallback if the priority is not recognized
-        }
-      }
-
-      // Compare priorities (High -> Low)
-      return getPriorityIndex(a.priority).compareTo(getPriorityIndex(b.priority));
-    });
-
-    //this is only sample data
-    // sorry if it doesn't sort out the task yet hehe, you already have a logic for that naman
-    List<Map<String, dynamic>> sampleTasks = [
-      {'folderName': 'ArchOrg', 'taskName': 'Make a circuit board', 'deadline': DateTime.now(), 'priority': 0, 'isDone': false},
-      {'folderName': 'Hello', 'taskName': 'Exam in Quizalize', 'deadline': DateTime.now(), 'priority': 1, 'isDone': false},
-      // {'folderName': 'SoftEng', 'taskName': 'Nyehehe', 'deadline': DateTime.now(), 'priority': 2, 'isDone': false},
-      {'folderName': 'Math', 'taskName': 'Finish homework', 'deadline': DateTime.now(), 'priority': 0, 'isDone': false},
-      {'folderName': 'Science', 'taskName': 'Read module', 'deadline': DateTime.now(), 'priority': 1, 'isDone': false},
-    ];
-    List<Map<String, dynamic>> taskToday = sampleTasks
-        .where((task) => isSameDay(task['deadline'], DateTime.now()) && task['isDone'] == false)
-        .toList();
-
-    // List<Task> taskToday = _tasks
-    //     .where((task) => isSameDay(task.deadline, selectedDay) && !task.isDone)
-    //     .toList();
-
     return Scaffold(
       backgroundColor: DeckColors.backgroundColor,
       body: SafeArea(
@@ -473,7 +442,7 @@ class _HomePageState extends State<HomePage> {
                                 fontWeight: FontWeight.bold)
                         ),
                         const SizedBox(height: 10),
-                        if(taskToday.isEmpty)
+                        if(upcomingTasks.isEmpty)
                           const IfCollectionEmpty(
                             hasIcon: false,
                             hasBackground: true,
@@ -481,43 +450,22 @@ class _HomePageState extends State<HomePage> {
                             ifCollectionEmptySubText:
                             'Get ahead now! Add tasks and stay sharp!',
                           )
-                        else if(taskToday.isNotEmpty) ...[
-                          ...taskToday.take(3).map((task) =>
+                        else if(upcomingTasks.isNotEmpty) ...[
+                          ...upcomingTasks.take(3).map((task) =>
+
                               Padding(
                                 padding: EdgeInsets.only(bottom: 10),
                                 child: HomeTaskTile(
                                   //TODO change datas here
-                                  folderName: task['folderName'],//task.folderName
-                                  taskName: task['taskName'],// task.taskName
-                                  deadline: selectedDay,
-                                  onPressed: () {
-                                    // Navigator.push(
-                                    //     context,
-                                    //     RouteGenerator.createRoute(
-                                    //       ViewTaskPage(
-                                    //           task: Task(
-                                    //             '0000',
-                                    //             'title',
-                                    //             'description',
-                                    //             'priority',
-                                    //             'user_id',
-                                    //             false,
-                                    //             false,
-                                    //             DateTime.now(),
-                                    //             DateTime.now(),
-                                    //             false,
-                                    //             DateTime.now(),
-                                    //           ),
-                                    //           isEditable: false
-                                    //       )
-                                    //     )
-                                    // );
-                                  },
-                                  priority: task['priority'],//task.priority
+                                  folderName: task.folderSource!,
+                                  taskName: task.title,// task.taskName
+                                  deadline: task.endDate,
+                                  onPressed: () {},
+                                  priority: task.priority,//task.priority
                                 ),
                               )
                           ),
-                        if (taskToday.length > 3)
+                        if (upcomingTasks.length > 3)
                           SizedBox(
                               width: double.infinity,
                               child:TextButton(
@@ -548,48 +496,6 @@ class _HomePageState extends State<HomePage> {
                             )
                           ),
                         ],
-                        //   SliverList(
-                        //   delegate: SliverChildBuilderDelegate(childCount: _tasks.length.clamp(0, 5),
-                        //       (context, index) {
-                        //     DateTime deadline = DateTime(_tasks[index].deadline.year,
-                        //         _tasks[index].deadline.month, _tasks[index].deadline.day);
-                        //     DateTime notifyRange = DateTime(DateTime.now().year,
-                        //             DateTime.now().month, DateTime.now().day)
-                        //         .add(const Duration(days: 1));
-                        //     DateTime today = DateTime(DateTime.now().year,
-                        //         DateTime.now().month, DateTime.now().day);
-                        //     if (!_tasks[index].isDone &&
-                        //         deadline.isBefore(notifyRange) &&
-                        //         deadline.isAtSameMomentAs(today)
-                        //         ) {
-                        //       return
-                        //         LayoutBuilder(
-                        //           builder: (context, BoxConstraints constraints) {
-                        //         return  DeckTaskTile(
-                        //           title: _tasks[index].title,
-                        //           deadline: TaskProvider.getNameDate(_tasks[index].deadline),
-                        //           priority: _tasks[index].priority,
-                        //           progressStatus: 'to do',
-                        //           // title: tasks[index]['title'],
-                        //           // deadline: _tasks[index].deadline.toString().split(" ")[0],
-                        //           // priority: tasks[index]['priority'],
-                        //           // progressStatus: tasks[index]['progressStatus'],
-                        //           enableRetrieve: false,
-                        //           onTap: () {
-                        //             print("Clicked task tile!");
-                        //             Navigator.push(
-                        //               context,
-                        //               RouteGenerator.createRoute(ViewTaskPage(task: _tasks[index], isEditable: false)),
-                        //             );
-                        //           }, onDelete: () {  },
-                        //         );
-                        //       });
-                        //     } else {
-                        //       return const SizedBox();
-                        //     }
-                        //   }),
-                        // ),
-
                         const SizedBox(height: 10),
                         //recently accessed decks section
                         const Text(

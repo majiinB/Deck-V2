@@ -8,6 +8,7 @@ class NewTask {
   final DateTime startDate;
   final DateTime endDate;
   final DateTime? doneDate;
+  final String? folderSource;
 
   NewTask({
     required this.taskId,
@@ -19,6 +20,7 @@ class NewTask {
     required this.startDate,
     required this.endDate,
     this.doneDate,
+    this.folderSource,
   });
 
   factory NewTask.fromJson(Map<String, dynamic> json) {
@@ -34,6 +36,7 @@ class NewTask {
       doneDate: json['done_date'] != null
           ? DateTime.parse(json['done_date'] as String)
           : null,
+      folderSource: json['folder_source'] as String,
     );
   }
 

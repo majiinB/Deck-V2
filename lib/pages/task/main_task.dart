@@ -1,14 +1,11 @@
 import 'package:deck/backend/models/TaskFolder.dart';
+import 'package:deck/backend/models/newTask.dart';
 import 'package:deck/backend/task/task_service.dart';
 import 'package:deck/pages/misc/custom%20widgets/tiles/task_folder_tile.dart';
 import 'package:deck/pages/task/view_task_folder.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
-import 'package:table_calendar/table_calendar.dart';
 
-import '../../backend/models/task.dart';
-import '../../backend/task/task_provider.dart';
 import '../misc/colors.dart';
 import '../misc/custom widgets/functions/if_collection_empty.dart';
 //import 'package:intl/intl.dart';
@@ -17,10 +14,7 @@ import '../misc/custom widgets/functions/if_collection_empty.dart';
 // import 'package:deck/pages/task/add_task.dart';
 import 'package:deck/pages/misc/deck_icons2.dart';
 
-import '../misc/custom widgets/menus/pop_up_menu.dart';
 import '../misc/custom widgets/tiles/home_task_tile.dart';
-import '../misc/custom widgets/tiles/task_list.dart';
-import '../misc/deck_icons.dart';
 import '../misc/widget_method.dart';
 import 'add_task_folder.dart';
 // import '../../backend/models/task.dart';
@@ -44,6 +38,7 @@ class _TaskPageState extends State<TaskPage> {
   DateTime today = DateTime.now();
   TaskService _taskService = TaskService();
   List<TaskFolder> taskFolders = [];
+  List<NewTask> upcomingTasks = [];
 
 
   bool showAllTask = false;
@@ -51,23 +46,16 @@ class _TaskPageState extends State<TaskPage> {
   @override
   void initState() {
     super.initState();
-    if (widget.openViewTask) {
-      // Delay to ensure the widget is built
-      // WidgetsBinding.instance.addPostFrameCallback((_) {
-      //   Navigator.push(
-      //     context,
-      //     MaterialPageRoute(builder: (context) => ViewTaskFolderPage(title: 'sample',)),//TODO change title
-      //   );
-      // });
-    }
     _getTaskFolder();
     _getTasks();
   }
   //
   void _getTasks() async {
-    await Provider.of<TaskProvider>(context, listen: false).loadTasks();
+    List <NewTask> retrievedTasks = await _taskService.fetchNearingDueTasks();
+    setState(() {
+      upcomingTasks = retrievedTasks;
+    });
   }
-
   void _getTaskFolder() async {
     List <TaskFolder> retrievedFolders = await _taskService.getTaskFolders();
     setState(() {
@@ -89,22 +77,6 @@ class _TaskPageState extends State<TaskPage> {
 
   @override
   Widget build(BuildContext context) {
-
-    List<Map<String, dynamic>> sampleTasks = [
-      {'folderName': 'ArchOrg', 'taskName': 'Make a circuit board', 'deadline': DateTime.now(), 'priority': 0, 'isDone': false},
-      {'folderName': 'Hello', 'taskName': 'Exam in Quizalize', 'deadline': DateTime.now(), 'priority': 1, 'isDone': false},
-      {'folderName': 'SoftEng', 'taskName': 'Nyehehe', 'deadline': DateTime.now(), 'priority': 2, 'isDone': false},
-      {'folderName': 'Math', 'taskName': 'Finish homework', 'deadline': DateTime.now(), 'priority': 0, 'isDone': false},
-      {'folderName': 'Science', 'taskName': 'Read module', 'deadline': DateTime.now(), 'priority': 1, 'isDone': false},
-    ];
-    List<Map<String, dynamic>> taskToday = sampleTasks
-        .where((task) => isSameDay(task['deadline'], DateTime.now()) && task['isDone'] == false)
-        .toList();
-
-    // List<Task> taskToday = _tasks
-    //     .where((task) => isSameDay(task.deadline, selectedDay) && !task.isDone)
-    //     .toList();
-
     return  Scaffold(
         backgroundColor: DeckColors.backgroundColor,
         body: SafeArea(
@@ -201,7 +173,7 @@ class _TaskPageState extends State<TaskPage> {
                           },
                         ),
                       ),
-                      if (taskFolders.isNotEmpty || taskToday.isNotEmpty)
+                      if (taskFolders.isNotEmpty || upcomingTasks.isNotEmpty)
                         Padding(
                         padding:  const EdgeInsets.only(left:30, right:30, top: 20.0),
                         child: Column(
@@ -219,18 +191,18 @@ class _TaskPageState extends State<TaskPage> {
                               ),
                               ListView.builder(
                                 shrinkWrap: true,
-                                itemCount:sampleTasks.length,
+                                itemCount: upcomingTasks.length,
                                 physics: const NeverScrollableScrollPhysics(),
                                 itemBuilder: (context,index){
-                                  final task = sampleTasks[index];
+                                  final task = upcomingTasks[index];
                                   return Padding(
                                     padding: const EdgeInsets.only(bottom: 10),
                                     child:HomeTaskTile(//TODO: update
-                                      folderName: task['folderName'],//task.folderName
-                                      taskName: task['taskName'],// task.taskName
-                                      deadline: selectedDay,
+                                      folderName: task.folderSource!,//task.folderName
+                                      taskName: task.title,// task.taskName
+                                      deadline: task.endDate,
                                       onPressed: () {},
-                                      priority: task['priority'],//task.priority
+                                      priority: task.priority,//task.priority
                                     ),
                                   );
                                 },

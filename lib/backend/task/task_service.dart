@@ -306,4 +306,41 @@ class TaskService {
     };
   }
 
+  Future<List<NewTask>> fetchNearingDueTasks() async {
+    final token = await AuthService().getIdToken();
+    if (token == null) {
+      throw Exception('User is not authenticated');
+    }
+
+    final uri = Uri.parse('$deckTaskManagerLocalAPIUrl/v1/task/fetch-tasks/near-deadline');
+
+    final response = await http.get(
+      uri,
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode != 200) {
+      final payload = response.body.isNotEmpty
+          ? jsonDecode(response.body)
+          : 'No response body';
+      throw Exception(
+          'Failed to fetch nearing due tasks (${response.statusCode}): $payload');
+    }
+
+    final Map<String, dynamic> jsonData =
+    jsonDecode(response.body) as Map<String, dynamic>;
+
+    if (jsonData['success'] != true) {
+      throw Exception('Error fetching nearing due tasks: ${jsonData['message']}');
+    }
+
+    final List<dynamic> data = jsonData['data'] as List<dynamic>;
+
+    return data
+        .map((taskJson) => NewTask.fromJson(taskJson as Map<String, dynamic>))
+        .toList();
+  }
 }
