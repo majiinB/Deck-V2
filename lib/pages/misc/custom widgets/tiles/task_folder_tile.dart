@@ -1,3 +1,4 @@
+import 'package:deck/backend/models/TaskFolder.dart';
 import 'package:deck/pages/misc/deck_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
@@ -13,6 +14,7 @@ class TaskFolderTile extends StatelessWidget{
   final int? totalCompleted;
   final int? totalTask;
   final int? folderBackground;
+  final TaskFolder taskFolder;
   final VoidCallback? onPressed;
 
   TaskFolderTile({
@@ -22,6 +24,7 @@ class TaskFolderTile extends StatelessWidget{
     required this.totalCompleted,
     required this.totalTask,
     required this.onPressed,
+    required this.taskFolder
   });
 
   @override
@@ -128,7 +131,7 @@ class TaskFolderTile extends StatelessWidget{
                 print("Edit Folder Info Selected");
                 Navigator.push(
                   context,
-                  RouteGenerator.createRoute(EditTaskFolderPage()),//TODO ADD THE INDEX OF THE FOLDER HERE
+                  RouteGenerator.createRoute(EditTaskFolderPage(taskFolder: taskFolder,)),//TODO ADD THE INDEX OF THE FOLDER HERE
                 );
               } else if (index == 1) {
                 print("Delete Selected");

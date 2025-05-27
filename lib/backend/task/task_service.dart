@@ -223,8 +223,8 @@ class TaskService {
         'description': description,
         'status': status,
         'priority': priority,
-        'start_date': startDate.toUtc().toIso8601String(),
-        'end_date': endDate.toUtc().toIso8601String(),
+        'start_date': startDate.toIso8601String(),
+        'end_date': endDate.toIso8601String(),
         if (doneDate != null)
           'done_date': doneDate.toUtc().toIso8601String(),
       }
@@ -343,4 +343,115 @@ class TaskService {
         .map((taskJson) => NewTask.fromJson(taskJson as Map<String, dynamic>))
         .toList();
   }
+
+  /// Updates a task in the given folder, returns the server message on success.
+  Future<String> updateTask({
+    required String taskFolderId,
+    required String taskId,
+    String? title,
+    String? description,
+    String? status,
+    String? priority,
+    DateTime? startDate,
+    DateTime? endDate,
+    DateTime? doneDate,
+  }) async {
+    final token = await AuthService().getIdToken();
+    if (token == null) {
+      throw Exception('User is not authenticated');
+    }
+
+    final uri = Uri.parse('$deckTaskManagerLocalAPIUrl/v1/task/update-task/$taskFolderId');
+
+    // Build the taskDetails object, only adding non-null values
+    final taskDetails = <String, dynamic>{
+      if (title != null) 'title': title,
+      if (description != null) 'description': description,
+      if (status != null) 'status': status,
+      if (priority != null) 'priority': priority,
+      if (startDate != null) 'start_date': startDate.toIso8601String(),
+      if (endDate != null) 'end_date': endDate.toIso8601String(),
+      if (doneDate != null) 'done_date': doneDate.toIso8601String(),
+    };
+
+    final body = {
+      'taskId': taskId,
+      'taskDetails': taskDetails,
+    };
+
+    final response = await http.put(
+      uri,
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(body),
+    );
+
+    if (response.statusCode != 200) {
+      final payload = response.body.isNotEmpty
+          ? jsonDecode(response.body)
+          : 'No response body';
+      throw Exception(
+          'Failed to update task (${response.statusCode}): $payload');
+    }
+
+    final Map<String, dynamic> jsonData =
+    jsonDecode(response.body) as Map<String, dynamic>;
+
+    if (jsonData['success'] != true) {
+      throw Exception('Error updating task: ${jsonData['message']}');
+    }
+
+    return jsonData['message'] as String;
+  }
+
+  /// Updates a task folder. Returns the server message on success.
+  Future<String> updateTaskFolder({
+    required String taskFolderId,
+    String? title,
+    String? background,
+  }) async {
+    final token = await AuthService().getIdToken();
+    if (token == null) {
+      throw Exception('User is not authenticated');
+    }
+
+    final uri = Uri.parse('$deckTaskManagerLocalAPIUrl/v1/task/update-task-folder/$taskFolderId');
+
+    // Build the taskFolderDetails object, only adding non-null values
+    final taskFolderDetails = <String, dynamic>{
+      if (title != null) 'title': title,
+      if (background != null) 'background': background,
+    };
+
+    final body = {
+      'taskFolderDetails': taskFolderDetails,
+    };
+
+    final response = await http.put(
+      uri,
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(body),
+    );
+
+    if (response.statusCode != 200) {
+      final payload = response.body.isNotEmpty
+          ? jsonDecode(response.body)
+          : 'No response body';
+      throw Exception('Failed to update task folder (${response.statusCode}): $payload');
+    }
+
+    final Map<String, dynamic> jsonData = jsonDecode(response.body);
+
+    if (jsonData['success'] != true) {
+      throw Exception('Error updating task folder: ${jsonData['message']}');
+    }
+
+    return jsonData['message'] as String;
+  }
+
 }

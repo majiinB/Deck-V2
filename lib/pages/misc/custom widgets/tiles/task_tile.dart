@@ -72,9 +72,8 @@ class DeckTaskTileState extends State<TaskTile> {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-
         AutoSizeText(
-          formattedDate,
+          'Deadline: $formattedDate',
           textAlign: TextAlign.start,
           maxLines: 1,
           minFontSize: 8,
@@ -88,17 +87,6 @@ class DeckTaskTileState extends State<TaskTile> {
         const Expanded(
             child: SizedBox()
         ),
-        // AutoSizeText(
-        //   formattedTime,
-        //   textAlign: TextAlign.start,
-        //   maxLines: 1,
-        //   overflow: TextOverflow.ellipsis,
-        //   style: const TextStyle(
-        //     fontFamily: 'Nunito-SemiBold',
-        //     fontSize: 14,
-        //     color: DeckColors.primaryColor,
-        //   ),
-        // ),
       ],
     );
   }

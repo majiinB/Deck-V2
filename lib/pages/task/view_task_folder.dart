@@ -449,6 +449,8 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
                                 context,
                                 RouteGenerator.createRoute(ViewTaskPage(task: pendingTasks[index], isEditable: true)),
                               );
+                              _getTasks();
+                              _filterTasksByDate(selectedDay);
                             },
                           );
                         },
@@ -472,6 +474,8 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
                                   context,
                                   RouteGenerator.createRoute(ViewTaskPage(task: inProgressTasks[index], isEditable: true)),
                                 );
+                                _getTasks();
+                                _filterTasksByDate(selectedDay);
                               },
                             );
                           },
@@ -495,6 +499,8 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
                                   context,
                                   RouteGenerator.createRoute(ViewTaskPage(task: completedTasks[index], isEditable: true)),
                                 );
+                                _getTasks();
+                                _filterTasksByDate(selectedDay);
                               },
                             );
                           },
@@ -698,6 +704,8 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
                                     ViewTaskPage(task: task, isEditable: true),
                                   ),
                                 );
+                                _getTasks();
+                                _filterTasksByDate(selectedDay);
                               },
                             );
                           },
@@ -726,6 +734,8 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
                                     ViewTaskPage(task: task, isEditable: true),
                                   ),
                                 );
+                                _getTasks();
+                                _filterTasksByDate(selectedDay);
                               },
                             );
                           },
@@ -754,6 +764,8 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
                                     ViewTaskPage(task: task, isEditable: true),
                                   ),
                                 );
+                                _getTasks();
+                                _filterTasksByDate(selectedDay);
                               },
                             );
                           },
@@ -803,7 +815,7 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
             /// Edit Task folder info option
             if (index == 0) {
               Navigator.of(context).push(
-                RouteGenerator.createRoute(const EditTaskFolderPage()),
+                RouteGenerator.createRoute(EditTaskFolderPage(taskFolder: widget.taskFolder)),
               );
             }
             /// Delete Task Folder Option

@@ -1,6 +1,7 @@
 import 'package:deck/backend/models/newTask.dart';
 import 'package:deck/backend/models/task.dart';
 import 'package:deck/backend/task/task_provider.dart';
+import 'package:deck/backend/task/task_service.dart';
 import 'package:deck/pages/misc/deck_icons2.dart';
 import 'package:flutter/material.dart';
 import 'package:deck/pages/misc/colors.dart';
@@ -25,14 +26,20 @@ class ViewTaskPage extends StatefulWidget {
 
 class _ViewTaskPageState extends State<ViewTaskPage> {
   late int _selectedStatus;
+  late String selectedStatusLabel;
   //initial values
   late final TextEditingController _endDateController;
   late final TextEditingController _startDateController;
   late final TextEditingController _descriptionController;
+  late final TextEditingController _titleController;
   late NewTask _task;
-  late String title,description,deadline;
+  late String title,description,deadline,startDate;
   late int _priorityIndex;
+  late String priorityLabel;
   late bool isEditable;
+  late DateTime selectedStartDate;
+  late DateTime selectedEndDate;
+  final TaskService _taskService = TaskService();
 
   @override
   void initState() {
@@ -40,12 +47,18 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
     isEditable = false;
     _task = widget.task;
     title = widget.task.title;
+    priorityLabel = widget.task.priority;
     _priorityIndex = TaskProvider.getPriorityIndex(_task.priority);
+    selectedStatusLabel = widget.task.status;
     deadline = getNameDate(widget.task.endDate);
+    startDate = getNameDate(widget.task.startDate);
+    _titleController = TextEditingController(text: widget.task.title.toString());
     _descriptionController = TextEditingController(text: widget.task.description.toString());
     _startDateController = TextEditingController(text: widget.task.startDate.toString().split(" ")[0]);
     _endDateController = TextEditingController(text: widget.task.doneDate.toString().split(" ")[0]);
     _selectedStatus = determineStatusIndex(widget.task);
+    selectedEndDate = widget.task.endDate;
+    selectedStartDate = widget.task.startDate;
   }
 
   int determineStatusIndex(NewTask task){
@@ -68,18 +81,55 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
   //   }
   // }
 
-  // void _updateTask(Task updatedTask) {
-  //   setState(() {
-  //     _task = updatedTask;
-  //     title = _task.title;
-  //     _priorityIndex = TaskProvider.getPriorityIndex(_task.priority);
-  //     deadline = TaskProvider.getNameDate(_task.deadline);
-  //     _descriptionController.text = _task.description;
-  //     _startDateController.text = _task.deadline.toString().split(" ")[0];//todo
-  //     _endDateController.text = _task.deadline.toString().split(" ")[0];
-  //     _selectedStatus = determineStatusIndex(updatedTask);
-  //   });
-  // }
+  void onUpdateTask() async{
+    final taskFolderId = widget.task.taskFolderId;
+    final taskId = widget.task.taskId;
+
+    String? title = _titleController.text.toString().trim();
+    String? description = _descriptionController.text.toString().trim();
+    String? status = selectedStatusLabel;
+    String? priority = priorityLabel;
+    DateTime? startDate = selectedStartDate;
+    DateTime? endDate = selectedEndDate;
+
+    if(title.isEmpty || title == widget.task.title){
+      title = null;
+    }
+    if(description.isEmpty || description == widget.task.description){
+      description = null;
+    }
+    if(status.toLowerCase() == widget.task.status.toLowerCase()){
+      status = null;
+    }
+    if(priority.toLowerCase() == widget.task.priority.toLowerCase()){
+      priority = null;
+    }
+    if(endDate == widget.task.endDate){
+      endDate = null;
+    }
+    if(startDate == widget.task.startDate){
+      startDate = null;
+    }
+
+    try {
+      final message = await _taskService.updateTask(
+        taskFolderId: taskFolderId,
+        taskId: taskId,
+        title: title,
+        description: description,
+        status: status,
+        priority: priority,
+        startDate: startDate,
+        endDate: endDate,
+      );
+
+      print('Task updated: $message');
+      // You can then show a success snackbar or navigate back, etc.
+    } catch (e) {
+      print('Error: $e');
+      // Show error dialog or snackbar
+    }
+  }
 
   String getNameDate(DateTime date){
     List<String> months = [
@@ -110,6 +160,7 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
     else{prio = "";}
     return prio;
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -181,6 +232,7 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                           ),
                         ),
                         BuildTextBox(
+                          controller: _titleController,
                           hintText: title,
                           isReadOnly: isEditable,
                         ),
@@ -188,7 +240,7 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                           height: 20,
                         ),
                         const Text(
-                          'Due Date',
+                          'Start Date',
                           style: TextStyle(
                             fontFamily: 'Nunito-Bold',
                             color: DeckColors.primaryColor,
@@ -196,9 +248,24 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                           ),
                         ),
                         BuildTextBox(
-                          hintText: deadline,
+                          hintText: startDate,
                           isReadOnly: isEditable,
                           rightIcon: Icons.calendar_today_outlined,
+                          onTap: () async{
+                            final DateTime? pickedDate = await showDatePicker(
+                              context: context,
+                              initialDate: selectedStartDate,
+                              firstDate: DateTime(2000),
+                              lastDate: DateTime(2101),
+                            );
+
+                            if (pickedDate != null) {
+                              setState(() {
+                                selectedStartDate = pickedDate;
+                                startDate = getNameDate(pickedDate);
+                              });
+                            }
+                          },
                         ),
                         const Text(
                           'Due Date',
@@ -212,6 +279,21 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                           hintText: deadline,
                           isReadOnly: true,
                           rightIcon: Icons.calendar_today_outlined,
+                          onTap: () async{
+                            final DateTime? pickedDate = await showDatePicker(
+                              context: context,
+                              initialDate: selectedEndDate,
+                              firstDate: DateTime(2000),
+                              lastDate: DateTime(2101),
+                            );
+
+                            if (pickedDate != null) {
+                              setState(() {
+                                selectedEndDate = pickedDate;
+                                deadline = getNameDate(pickedDate);
+                              });
+                            }
+                          },
                         ),
                         const Text(
                           'Description',
@@ -230,7 +312,6 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                         ),
                         if(isEditable)... {
                           const Text(
-
                             'Priority',
                             style: TextStyle(
                               fontFamily: 'Nunito-Bold',
@@ -246,6 +327,7 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                           onChange: (label, index) {
                             setState(() {
                               _priorityIndex = index; // Update _priorityIndex when user interacts with it
+                              priorityLabel = label;
                             });
                           },
                         )}
@@ -279,8 +361,7 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                               ),
                             ],
                           )
-                        }
-                        ,
+                        },
                         const Text(
                           'Status',
                           style: TextStyle(
@@ -290,13 +371,14 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                           ),
                         ),
                         RadioButtonGroup(
-                          buttonLabels: const ['Pending', 'In Progress', 'Complete'],
+                          buttonLabels: const ['Pending', 'In Progress', 'Completed'],
                           buttonColors: const [ DeckColors.primaryColor, DeckColors.primaryColor, DeckColors.primaryColor],
                           isClickable: true,
                           initialSelectedIndex: _selectedStatus,
                           onChange: (label, index) {
                             setState((){
                               _selectedStatus = index;
+                              selectedStatusLabel = label;
                             });
                           }
                         ),
@@ -320,7 +402,10 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                                   "",
                                   "Save",
                                       () {
-                                  });
+                                        onUpdateTask();
+                                        Navigator.pop(context);
+                                  }
+                              );
                             },
                           ),
                         BuildButton(
@@ -355,186 +440,7 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                 ]
             ),
           )
-        // child: SingleChildScrollView(
-        //   // Add a SingleChildScrollView here
-        //   child: Column(
-        //     children: [
-        //       const Divider(
-        //         color: DeckColors.white,
-        //         thickness: 2,
-        //       ),
-        //       Padding(
-        //         padding: const EdgeInsets.only(top: 20),
-        //         child: BuildTextBox(
-        //           hintText: "Enter Task Title",
-        //           showPassword: false,
-        //           controller: _titleController, //initial title
-        //         ),
-        //       ),
-        //       Padding(
-        //         padding: const EdgeInsets.only(top: 20),
-        //         child: BuildTextBox(
-        //           hintText: "Enter Deadline",
-        //           onTap: () => _selectDate(
-        //               context), // Pass context to _selectDate method
-        //           controller: _dateController,
-        //           isReadOnly: true,
-        //           rightIcon: Icons.calendar_today_outlined,
-        //         ),
-        //       ),
-        //       Padding(
-        //         padding: const EdgeInsets.only(top: 20),
-        //         child: BuildTextBox(
-        //           hintText: "Enter Task Description",
-        //           showPassword: false,
-        //           controller: _descriptionController,
-        //           isMultiLine: true,
-        //
-        //         ),
-        //       ),
-        //       Padding(
-        //         padding: const EdgeInsets.only(top: 20),
-        //         child: BuildButton(
-        //             buttonText: "Save",
-        //             height: 50,
-        //             width: MediaQuery.of(context).size.width,
-        //             radius: 10,
-        //             backgroundColor: DeckColors.primaryColor,
-        //             textColor: DeckColors.white,
-        //             size: 16,
-        //             fontSize: 16,
-        //             borderWidth: 0,
-        //             borderColor: Colors.transparent,
-        //             onPressed: () {
-        //               showConfirmationDialog(
-        //                   context,
-        //                   "Save Task Information",
-        //                   "Are you sure you want to change this task's information?",
-        //                       () async{
-        //                     if(_dateController.text.isEmpty || _titleController.text.isEmpty || _descriptionController.text.isEmpty){
-        //                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Fill all the text fields before saving!')));
-        //                       return;
-        //                     }
-        //
-        //                     DateTime date = DateTime.parse(_dateController.text).add(const Duration(hours: 23, minutes: 59, seconds: 59));
-        //                     DateTime? storedDeadline = await _getDeadline();
-        //                     if(storedDeadline != date) {
-        //                       if (date.isBefore(DateTime.now())) {
-        //                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('You cannot set the deadline in the past!')));
-        //                         return;
-        //                       }
-        //                     }
-        //
-        //                     Provider.of<TaskProvider>(context, listen: false).editTask(widget.task, {
-        //                       'title': _titleController.text,
-        //                       'description': _descriptionController.text,
-        //                       'deadline': DateTime.parse(_dateController.text).add(const Duration(hours: 23, minutes: 59, seconds: 59)),
-        //                     }).then((_) {
-        //                       Navigator.pop(context, TaskService().getTaskById(widget.task.uid));
-        //                     });
-        //                   }, (){}
-        //               );
-        //               // Navigator.push(
-        //               //   context,
-        //               //   MaterialPageRoute(builder: (context) => TaskPage()),
-        //               // );
-        //             }),
-        //       ),
-        //       Padding(
-        //         padding: const EdgeInsets.only(top: 20),
-        //         child: BuildButton(
-        //           buttonText: "Cancel",
-        //           height: 50,
-        //           width: MediaQuery.of(context).size.width,
-        //           radius: 10,
-        //           backgroundColor: DeckColors.white,
-        //           textColor: DeckColors.primaryColor,
-        //           size: 16,
-        //           fontSize: 16,
-        //           borderWidth: 0,
-        //           borderColor: Colors.transparent,
-        //           onPressed: () {
-        //             print("Cancel button clicked");
-        //             Navigator.pop(context);
-        //           },
-        //         ),
-        //       ),
-        //     ],
-        //   ),
-        // ),
-      ),
-
-      // body: SafeArea(
-      //   top: true,
-      //   bottom: false,
-      //   left: true,
-      //   right: true,
-      //   minimum: const EdgeInsets.only(left: 20, right: 20),
-      //   child: SingleChildScrollView(
-      //     child: Column(
-      //       crossAxisAlignment: CrossAxisAlignment.stretch,
-      //       children: [
-      //         Padding(
-      //           padding: const EdgeInsets.symmetric(vertical: 20),
-      //           child: Text(
-      //             _task.title,
-      //             style: const TextStyle(
-      //               fontFamily: 'Fraiche',
-      //               fontSize: 20,
-      //               color: DeckColors.white,
-      //             ),
-      //             textAlign: TextAlign.justify,
-      //           ),
-      //         ),
-      //         const Divider(
-      //           color: DeckColors.white,
-      //           thickness: 2,
-      //         ),
-      //         Padding(
-      //           padding: const EdgeInsets.symmetric(vertical: 20),
-      //           child: Row(
-      //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //             children: [
-      //               const Text(
-      //                 "Task Deadline",
-      //                 style: TextStyle(
-      //                   fontFamily: 'nunito',
-      //                   fontSize: 16,
-      //                   color: DeckColors.white,
-      //                   fontWeight: FontWeight.w900,
-      //                 ),
-      //               ),
-      //               Text(
-      //                 _task.deadline.toString().split(" ")[0],
-      //                 style: const TextStyle(
-      //                   fontFamily: 'nunito',
-      //                   fontSize: 16,
-      //                   color: DeckColors.white,
-      //                 ),
-      //               ),
-      //             ],
-      //           ),
-      //         ),
-      //         const Divider(
-      //           color: DeckColors.white,
-      //           thickness: 2,
-      //         ),
-      //         Padding(
-      //           padding: const EdgeInsets.symmetric(vertical: 20),
-      //           child: Text(
-      //             _task.description,
-      //             style: const TextStyle(
-      //               fontFamily: 'nunito',
-      //               fontSize: 16,
-      //               color: DeckColors.white,
-      //             ),
-      //             textAlign: TextAlign.justify,
-      //           ),
-      //         ),
-      //       ],
-      //     ),
-      //   ),
-      // ),
+        ),
     );
   }
 }

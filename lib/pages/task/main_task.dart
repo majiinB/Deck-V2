@@ -162,6 +162,7 @@ class _TaskPageState extends State<TaskPage> {
                                       totalCompleted: taskFolder.completedTasksCount,
                                       totalTask: taskFolder.totalTasks,
                                       folderBackground: folderBg,
+                                      taskFolder: taskFolder,
                                       onPressed: () {
                                         Navigator.push(
                                           context,

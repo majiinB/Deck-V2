@@ -265,9 +265,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
                                 );
                                 return;
                               }
-                              print(DateTime.parse(_endDateController.text));
-                              print(DateTime.parse(_startDateController.text));
-                              print(DateTime.now());
                               if(DateTime.parse(_endDateController.text).add(const Duration(hours: 23, minutes: 59, seconds: 59)).isBefore(DateTime.now())){
                                 /// stop loading
                                 setState(() => isLoading = false);
