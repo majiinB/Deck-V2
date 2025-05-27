@@ -10,9 +10,14 @@ class TaskFolder {
   final String background;
   final DateTime timestamp;
   final bool isDeleted;
-  final String? userId;  // Optional because sometimes it might not be used on client side
-  final String deckTaskManagerAPIUrl = "https://deck-task-manager-api-taglvgaoma-uc.a.run.app";
-  final String deckTaskManagerLocalAPIUrl = "http://10.0.2.2:5001/deck-f429c/us-central1/deck_task_manager_api";
+  final String? userId;
+  final int totalTasks;
+  final int completedTasksCount;
+
+  final String deckTaskManagerAPIUrl =
+      "https://deck-task-manager-api-taglvgaoma-uc.a.run.app";
+  final String deckTaskManagerLocalAPIUrl =
+      "http://10.0.2.2:5001/deck-f429c/us-central1/deck_task_manager_api";
 
   TaskFolder({
     required this.id,
@@ -21,6 +26,8 @@ class TaskFolder {
     required this.timestamp,
     required this.isDeleted,
     this.userId,
+    required this.totalTasks,
+    required this.completedTasksCount,
   });
 
   /// Factory constructor to create a TaskFolder from JSON
@@ -31,7 +38,9 @@ class TaskFolder {
       background: json['background'] as String,
       timestamp: DateTime.parse(json['timestamp'] as String),
       isDeleted: json['is_deleted'] as bool,
-      userId: json['user_id'] as String?,  // nullable
+      userId: json['user_id'] as String?,
+      totalTasks: json['totalTasks'] as int? ?? 0,
+      completedTasksCount: json['completedTasksCount'] as int? ?? 0,
     );
   }
 
@@ -44,6 +53,8 @@ class TaskFolder {
       'timestamp': timestamp.toIso8601String(),
       'is_deleted': isDeleted,
       if (userId != null) 'user_id': userId,
+      'totalTasks': totalTasks,
+      'completedTasksCount': completedTasksCount,
     };
   }
 }

@@ -187,8 +187,8 @@ class _TaskPageState extends State<TaskPage> {
                                   padding: EdgeInsets.only(left: index == 0 ? 30 : 10, right: 10) ,
                                     child: TaskFolderTile(
                                       folderName: taskFolder.title, //TODO: CHANGE PLACEHOLDERS
-                                      totalCompleted: 0,
-                                      totalTask: 0,
+                                      totalCompleted: taskFolder.completedTasksCount,
+                                      totalTask: taskFolder.totalTasks,
                                       folderBackground: folderBg,
                                       onPressed: () {
                                         Navigator.push(
