@@ -54,8 +54,8 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
     startDate = getNameDate(widget.task.startDate);
     _titleController = TextEditingController(text: widget.task.title.toString());
     _descriptionController = TextEditingController(text: widget.task.description.toString());
-    _startDateController = TextEditingController(text: widget.task.startDate.toString().split(" ")[0]);
-    _endDateController = TextEditingController(text: widget.task.doneDate.toString().split(" ")[0]);
+    _startDateController = TextEditingController(text: startDate);
+    _endDateController = TextEditingController(text: deadline);
     _selectedStatus = determineStatusIndex(widget.task);
     selectedEndDate = widget.task.endDate;
     selectedStartDate = widget.task.startDate;
@@ -67,19 +67,6 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
     } else if(task.status.toString().toLowerCase() == "in progress") {return 1;}
     else {return 2;}
   }
-
-  // StatusResult checkStatus() {
-  //   switch (_selectedStatus) {
-  //     case 0:
-  //       return StatusResult(false, false); // Not active, not completed
-  //     case 1:
-  //       return StatusResult(false, true);   // Active and completed
-  //     case 2:
-  //       return StatusResult(true, false);   // Not active, but completed
-  //     default:
-  //       return StatusResult(false, false);  // Default case
-  //   }
-  // }
 
   void onUpdateTask() async{
     final taskFolderId = widget.task.taskFolderId;
@@ -124,6 +111,8 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
       );
 
       print('Task updated: $message');
+      Navigator.of(context).pop();
+      Navigator.of(context).pop();
       // You can then show a success snackbar or navigate back, etc.
     } catch (e) {
       print('Error: $e');
@@ -159,6 +148,96 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
     else if(priority == 2) {prio = "Low";}
     else{prio = "";}
     return prio;
+  }
+
+  Future<void> _selectDate(BuildContext context, String controller) async {
+    DateTime initialDate = DateTime.now();
+
+    if(controller == "START_DATE"){
+      initialDate = selectedStartDate;
+    }else if (controller == "END_DATE"){
+      initialDate = selectedEndDate;
+    }
+
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2030), //edit nyo nlng toh
+      initialDate: initialDate,
+      errorFormatText: 'Enter valid date',
+      errorInvalidText: 'Enter date in valid range',
+      fieldHintText: 'Month/Day/Year',
+      fieldLabelText: 'Date Deadline',
+      initialEntryMode: DatePickerEntryMode.calendarOnly,
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            textTheme: const TextTheme(
+              titleSmall: TextStyle(
+                fontFamily: 'Fraiche',
+                fontSize: 20,
+              ),
+              headlineLarge: TextStyle(
+                fontFamily: 'Fraiche',
+                fontSize: 40,
+              ),
+              labelLarge: TextStyle(
+                fontFamily: 'Fraiche',
+                fontSize: 20,
+              ),
+              bodyLarge: TextStyle(
+                fontFamily: 'Nunito-Regular',
+                fontSize: 16,
+              ),
+            ),
+            colorScheme: Theme.of(context).colorScheme.copyWith(
+              // Title, selected date and day selection background (dark and light mode)
+              surface: DeckColors.backgroundColor,
+              primary: DeckColors.primaryColor,
+              // Title, selected date and month/year picker color (dark and light mode)
+              onSurface: DeckColors.white,
+              onPrimary: DeckColors.white,
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                textStyle: const TextStyle(
+                  fontFamily: 'Fraiche',
+                  fontSize: 20,
+                ),
+                shape: RoundedRectangleBorder(
+                    side: const BorderSide(
+                        color: Colors.transparent,
+                        width: 1,
+                        style: BorderStyle.solid),
+                    borderRadius: BorderRadius.circular(50)),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 25,
+                  horizontal: 20,
+                ),
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    // Update text in the controller with selected date
+    if (pickedDate != null) {
+      if(controller == "START_DATE"){
+        setState(() {
+          selectedStartDate = pickedDate;
+          startDate = getNameDate(pickedDate);
+          _startDateController.text = startDate;
+        });
+      }else if (controller == "END_DATE"){
+        setState(() {
+          selectedEndDate = pickedDate;
+          deadline = getNameDate(pickedDate);
+          _endDateController.text = deadline;
+        });
+      }
+    }
   }
 
   @override
@@ -249,23 +328,10 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                         ),
                         BuildTextBox(
                           hintText: startDate,
+                          controller: _startDateController,
                           isReadOnly: isEditable,
                           rightIcon: Icons.calendar_today_outlined,
-                          onTap: () async{
-                            final DateTime? pickedDate = await showDatePicker(
-                              context: context,
-                              initialDate: selectedStartDate,
-                              firstDate: DateTime(2000),
-                              lastDate: DateTime(2101),
-                            );
-
-                            if (pickedDate != null) {
-                              setState(() {
-                                selectedStartDate = pickedDate;
-                                startDate = getNameDate(pickedDate);
-                              });
-                            }
-                          },
+                          onTap: () => _selectDate(context, "START_DATE")
                         ),
                         const Text(
                           'Due Date',
@@ -277,23 +343,10 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                         ),
                         BuildTextBox(
                           hintText: deadline,
+                          controller: _endDateController,
                           isReadOnly: true,
                           rightIcon: Icons.calendar_today_outlined,
-                          onTap: () async{
-                            final DateTime? pickedDate = await showDatePicker(
-                              context: context,
-                              initialDate: selectedEndDate,
-                              firstDate: DateTime(2000),
-                              lastDate: DateTime(2101),
-                            );
-
-                            if (pickedDate != null) {
-                              setState(() {
-                                selectedEndDate = pickedDate;
-                                deadline = getNameDate(pickedDate);
-                              });
-                            }
-                          },
+                          onTap: () => _selectDate(context, "END_DATE"),
                         ),
                         const Text(
                           'Description',
@@ -403,7 +456,6 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                                   "Save",
                                       () {
                                         onUpdateTask();
-                                        Navigator.pop(context);
                                   }
                               );
                             },
@@ -427,10 +479,12 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                                 "Delete Task?",
                                 "Are you sure you want to delete ?",
                                 "Delete Task",
-                                    () {
-                                  // Provider.of<TaskProvider>(context,
-                                  //     listen: false)
-                                  //     .deleteTask(tasks[index].uid);
+                                    () async {
+                                     await _taskService.deleteTask(
+                                         taskFolderId: widget.task.taskFolderId,
+                                         taskId: widget.task.taskId);
+                                     Navigator.of(context).pop();
+                                     Navigator.of(context).pop();
                                 });
                           },
                         ),

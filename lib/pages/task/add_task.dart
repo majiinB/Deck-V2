@@ -39,7 +39,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
       errorInvalidText: 'Enter date in valid range',
       fieldHintText: 'Month/Day/Year',
       fieldLabelText: 'Date Deadline',
-
       initialEntryMode: DatePickerEntryMode.calendarOnly,
       builder: (context, child) {
         return Theme(

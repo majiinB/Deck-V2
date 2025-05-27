@@ -129,6 +129,7 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
         completedTasks = taskGroups['completed']!;
         _getOverview();
         _groupTasksByDate();
+        _filterTasksByDate(selectedDay);
         _isLoading = false;
       });
     }catch(e){
@@ -440,17 +441,16 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
                         itemBuilder: (context, index) {
                           return TaskTile(
                             taskName: pendingTasks[index].title,
-                            deadline: pendingTasks[index].startDate,
+                            deadline: pendingTasks[index].endDate,
                             priority: pendingTasks[index].priority,
                             progressStatus: pendingTasks[index].status,
                             onDelete: () {},
-                            onPressed: () {
-                              Navigator.push(
+                            onPressed: () async{
+                              await Navigator.push(
                                 context,
                                 RouteGenerator.createRoute(ViewTaskPage(task: pendingTasks[index], isEditable: true)),
                               );
                               _getTasks();
-                              _filterTasksByDate(selectedDay);
                             },
                           );
                         },
@@ -465,17 +465,16 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
                           itemBuilder: (context, index) {
                             return TaskTile(
                               taskName: inProgressTasks[index].title,
-                              deadline: inProgressTasks[index].startDate,
+                              deadline: inProgressTasks[index].endDate,
                               priority: inProgressTasks[index].priority,
                               progressStatus: inProgressTasks[index].status,
                               onDelete: () {},
-                              onPressed: () {
-                                Navigator.push(
+                              onPressed: () async {
+                                await Navigator.push(
                                   context,
                                   RouteGenerator.createRoute(ViewTaskPage(task: inProgressTasks[index], isEditable: true)),
                                 );
                                 _getTasks();
-                                _filterTasksByDate(selectedDay);
                               },
                             );
                           },
@@ -490,17 +489,16 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
                           itemBuilder: (context, index) {
                             return TaskTile(
                               taskName: completedTasks[index].title,
-                              deadline: completedTasks[index].startDate,
+                              deadline: completedTasks[index].endDate,
                               priority: completedTasks[index].priority,
                               progressStatus: completedTasks[index].status,
                               onDelete: () {},
-                              onPressed: () {
-                                Navigator.push(
+                              onPressed: () async {
+                                await Navigator.push(
                                   context,
                                   RouteGenerator.createRoute(ViewTaskPage(task: completedTasks[index], isEditable: true)),
                                 );
                                 _getTasks();
-                                _filterTasksByDate(selectedDay);
                               },
                             );
                           },
@@ -668,7 +666,6 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
                       RouteGenerator.createRoute(AddTaskPage(taskFolder: widget.taskFolder)),
                     );
                     _getTasks();
-                    _filterTasksByDate(selectedDay);
                   }
               ),
               const SizedBox(
@@ -691,21 +688,20 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
                             final task = pendingByDateTasks[index];
                             return TaskTile(
                               taskName: task.title,
-                              deadline: task.startDate,
+                              deadline: task.endDate,
                               priority: task.priority,
                               progressStatus: task.status,
                               onDelete: () {
                                 // your delete logic
                               },
-                              onPressed: () {
-                                Navigator.push(
+                              onPressed: () async {
+                                await Navigator.push(
                                   context,
                                   RouteGenerator.createRoute(
                                     ViewTaskPage(task: task, isEditable: true),
                                   ),
                                 );
                                 _getTasks();
-                                _filterTasksByDate(selectedDay);
                               },
                             );
                           },
@@ -721,21 +717,20 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
                             final task = inProgressByDateTasks[index];
                             return TaskTile(
                               taskName: task.title,
-                              deadline: task.startDate,
+                              deadline: task.endDate,
                               priority: task.priority,
                               progressStatus: task.status,
                               onDelete: () {
                                 // your delete logic
                               },
-                              onPressed: () {
-                                Navigator.push(
+                              onPressed: () async {
+                                await Navigator.push(
                                   context,
                                   RouteGenerator.createRoute(
                                     ViewTaskPage(task: task, isEditable: true),
                                   ),
                                 );
                                 _getTasks();
-                                _filterTasksByDate(selectedDay);
                               },
                             );
                           },
@@ -751,21 +746,20 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
                             final task = completedByDateTasks[index];
                             return TaskTile(
                               taskName: task.title,
-                              deadline: task.startDate,
+                              deadline: task.endDate,
                               priority: task.priority,
                               progressStatus: task.status,
                               onDelete: () {
                                 // your delete logic
                               },
-                              onPressed: () {
-                                Navigator.push(
+                              onPressed: () async {
+                                await Navigator.push(
                                   context,
                                   RouteGenerator.createRoute(
                                     ViewTaskPage(task: task, isEditable: true),
                                   ),
                                 );
                                 _getTasks();
-                                _filterTasksByDate(selectedDay);
                               },
                             );
                           },
@@ -831,7 +825,9 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
                       button1: 'Delete',
                       button2: 'Cancel',
                       onConfirm: () async {
-                        ///TODO add function
+                        BuildContext contextHolder = context;
+                        await TaskService().deleteTaskFolder(taskFolderId: widget.taskFolder.id);
+                        Navigator.of(context).pop(); // Pop dialog
                         Navigator.of(context).pop();
                       },
                       onCancel: () {

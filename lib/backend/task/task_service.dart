@@ -116,7 +116,7 @@ class TaskService {
       throw Exception('User is not authenticated');
     }
 
-    final uri = Uri.parse('$deckTaskManagerLocalAPIUrl/v1/task/create-task-folder');
+    final uri = Uri.parse('$deckTaskManagerAPIUrl/v1/task/create-task-folder');
 
     final body = {
       "taskFolderDetails": {
@@ -162,7 +162,7 @@ class TaskService {
       throw Exception('User is not authenticated');
     }
 
-    final uri = Uri.parse('$deckTaskManagerLocalAPIUrl/v1/task/get-task-folders');
+    final uri = Uri.parse('$deckTaskManagerAPIUrl/v1/task/get-task-folders');
 
     final response = await http.get(
       uri,
@@ -213,7 +213,7 @@ class TaskService {
     }
 
     // The endpoint expects the folder ID as a URL param:
-    final uri = Uri.parse('$deckTaskManagerLocalAPIUrl/v1/task/create-task');
+    final uri = Uri.parse('$deckTaskManagerAPIUrl/v1/task/create-task');
 
     // Build the JSON body from the individual fields
     final body = {
@@ -265,7 +265,7 @@ class TaskService {
       throw Exception('User is not authenticated');
     }
 
-    final uri = Uri.parse('$deckTaskManagerLocalAPIUrl/v1/task/fetch-tasks/folder/$taskFolderId');
+    final uri = Uri.parse('$deckTaskManagerAPIUrl/v1/task/fetch-tasks/folder/$taskFolderId');
 
     final response = await http.get(
       uri,
@@ -312,7 +312,7 @@ class TaskService {
       throw Exception('User is not authenticated');
     }
 
-    final uri = Uri.parse('$deckTaskManagerLocalAPIUrl/v1/task/fetch-tasks/near-deadline');
+    final uri = Uri.parse('$deckTaskManagerAPIUrl/v1/task/fetch-tasks/near-deadline');
 
     final response = await http.get(
       uri,
@@ -361,7 +361,7 @@ class TaskService {
       throw Exception('User is not authenticated');
     }
 
-    final uri = Uri.parse('$deckTaskManagerLocalAPIUrl/v1/task/update-task/$taskFolderId');
+    final uri = Uri.parse('$deckTaskManagerAPIUrl/v1/task/update-task/$taskFolderId');
 
     // Build the taskDetails object, only adding non-null values
     final taskDetails = <String, dynamic>{
@@ -417,7 +417,7 @@ class TaskService {
       throw Exception('User is not authenticated');
     }
 
-    final uri = Uri.parse('$deckTaskManagerLocalAPIUrl/v1/task/update-task-folder/$taskFolderId');
+    final uri = Uri.parse('$deckTaskManagerAPIUrl/v1/task/update-task-folder/$taskFolderId');
 
     // Build the taskFolderDetails object, only adding non-null values
     final taskFolderDetails = <String, dynamic>{
@@ -449,6 +449,79 @@ class TaskService {
 
     if (jsonData['success'] != true) {
       throw Exception('Error updating task folder: ${jsonData['message']}');
+    }
+
+    return jsonData['message'] as String;
+  }
+
+  /// Deletes a task folder. Returns the server message on success.
+  Future<String> deleteTaskFolder({
+    required String taskFolderId,
+  }) async {
+    final token = await AuthService().getIdToken();
+    if (token == null) {
+      throw Exception('User is not authenticated');
+    }
+
+    final uri = Uri.parse('$deckTaskManagerAPIUrl/v1/task/delete-task-folder/$taskFolderId');
+
+    final response = await http.delete(
+      uri,
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode != 200) {
+      final payload = response.body.isNotEmpty
+          ? jsonDecode(response.body)
+          : 'No response body';
+      throw Exception('Failed to delete task folder (${response.statusCode}): $payload');
+    }
+
+    final Map<String, dynamic> jsonData = jsonDecode(response.body);
+
+    if (jsonData['success'] != true) {
+      throw Exception('Error deleting task folder: ${jsonData['message']}');
+    }
+
+    return jsonData['message'] as String;
+  }
+
+  /// Deletes a specific task. Returns the server message on success.
+  Future<String> deleteTask({
+    required String taskFolderId,
+    required String taskId,
+  }) async {
+    final token = await AuthService().getIdToken();
+    if (token == null) {
+      throw Exception('User is not authenticated');
+    }
+
+    final uri = Uri.parse(
+      '$deckTaskManagerAPIUrl/v1/task/delete-task/$taskFolderId?taskId=$taskId',
+    );
+
+    final response = await http.delete(
+      uri,
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode != 200) {
+      final payload = response.body.isNotEmpty
+          ? jsonDecode(response.body)
+          : 'No response body';
+      throw Exception('Failed to delete task (${response.statusCode}): $payload');
+    }
+
+    final Map<String, dynamic> jsonData = jsonDecode(response.body);
+
+    if (jsonData['success'] != true) {
+      throw Exception('Error deleting task: ${jsonData['message']}');
     }
 
     return jsonData['message'] as String;
