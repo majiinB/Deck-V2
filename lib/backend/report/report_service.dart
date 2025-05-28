@@ -10,7 +10,7 @@ class ReportService {
   final String testUrl = "http://192.168.100.4:3000";
 
   Future<void> createReport(Report report) async {
-    final url = Uri.parse('$testUrl/v1/report/create-report'); // Update with your endpoint
+    final url = Uri.parse('$apiUrl/v1/report/create-report'); // Update with your endpoint
 
     final response = await http.post(
       url,
@@ -30,7 +30,7 @@ class ReportService {
   }
 
   Future<void> createReportedDeck(ReportedDeck report) async {
-    final url = Uri.parse('$testUrl/v1/report/create-reported-deck'); // Update with your endpoint
+    final url = Uri.parse('$apiUrl/v1/report/create-reported-deck'); // Update with your endpoint
 
     final response = await http.post(
       url,
