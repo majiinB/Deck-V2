@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:deck/backend/auth/auth_service.dart';
+import 'package:deck/backend/custom_exceptions/api_exception.dart';
 import 'package:deck/backend/flashcard/flashcard_utils.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import '../models/deck.dart';
@@ -126,8 +127,9 @@ class FlashcardService{
       );
 
       if(response.statusCode == 200) {
+        print(jsonDecode(response.body));
         var jsonData = jsonDecode(response.body) as Map<String, dynamic>;
-        print(jsonData); // Log parsed data for debugging.
+        // Log parsed data for debugging.
 
         // If the JSON data is empty, return null.
         if (jsonData.isEmpty) return null;
@@ -137,9 +139,9 @@ class FlashcardService{
         if (deckData.isEmpty) return null;
 
         // Extract the list of decks from the JSON response.
-        Map<String, dynamic> responseDeck = deckData["deck"];
+        // Map<String, dynamic> responseDeck = deckData["deck"];
 
-        return Deck.fromJson(responseDeck);
+        return Deck.fromJson(deckData);
       }
     } catch (e) {
       // Handle errors
@@ -379,37 +381,51 @@ class FlashcardService{
         'description': description,
         'coverPhoto': coverPhoto
       };
-      // Send a POST request to the API with the request body and headers.
+
       final response = await http.post(
-        Uri.parse('$deckManagerAPIUrl/v1/decks/'), // API endpoint.
-        body: jsonEncode(requestBody), // JSON-encoded request body.
+        Uri.parse('$deckManagerAPIUrl/v1/decks/'),
+        body: jsonEncode(requestBody),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $token',
         },
-
       );
-      print(response.statusCode);
-      print(response.body);
-      if(response.statusCode == 201){
+
+      if (response.statusCode == 201) {
         var jsonData = jsonDecode(response.body) as Map<String, dynamic>;
-        print(jsonData); // Log parsed data for debugging.
 
-        // If the JSON data is non-empty, process it.
         if (jsonData.isNotEmpty) {
-          // Extract the list of questions from the JSON response.
           Map<String, dynamic> deckData = jsonData["data"]["deck"];
-
           return Deck.fromJson(deckData);
-        }else{
+        } else {
           return null;
         }
+
+      } else if (response.statusCode == 500) {
+        throw ApiException(response.statusCode, "An unexpected server error occurred. Please try again later.");
+
+      } else {
+        var errorData = jsonDecode(response.body) as Map<String, dynamic>;
+        String errorMessage = errorData["message"] ?? "Failed to add deck.";
+
+        // Check if 'details' exists and is a Map, and has 'errorList'
+        if (errorData.containsKey("details") &&
+            errorData["details"] is Map<String, dynamic> &&
+            errorData["details"].containsKey("errorList")) {
+
+          List<dynamic> errorList = errorData["details"]["errorList"];
+          String combinedMessages = errorList.map((e) => e["message"]).join("\n");
+          errorMessage += "\n\nDetails:\n$combinedMessages";
+        }
+
+        throw ApiException(response.statusCode, errorMessage);
       }
     } catch (e) {
-      print('Error adding deck: $e');
-      return null;
+      rethrow;
     }
   }
+
+
   Future<String> uploadPdfFileToFirebase(String filePath, String userId) async {
     String fileUrl = "";
     File file = File(filePath);
@@ -505,7 +521,6 @@ class FlashcardService{
       QuerySnapshot querySnapshot = await decksRef
           .where('owner_id', isEqualTo: userId)
           .where('title', isEqualTo: formattedTitle)
-          .where('is_deleted', isEqualTo: false)
           .get();
 
       // If there are any documents returned, it means a deck with the same title and user_id exists
