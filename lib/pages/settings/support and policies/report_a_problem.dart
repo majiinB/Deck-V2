@@ -1,10 +1,15 @@
+import 'package:deck/backend/models/report.dart';
+import 'package:deck/backend/models/reportedDeck.dart';
 import 'package:deck/pages/settings/support%20and%20policies/selected%20issue%20content/ai_generated_content.dart';
 import 'package:deck/pages/settings/support%20and%20policies/selected%20issue%20content/bug_issues.dart';
 import 'package:deck/pages/settings/support%20and%20policies/selected%20issue%20content/someone_deck_content.dart';
 import 'package:deck/pages/settings/support%20and%20policies/selected%20issue%20content/something_else.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+import '../../../backend/auth/auth_service.dart';
+import '../../../backend/report/report_service.dart';
 import '../../auth/privacy_policy.dart';
 import '../../misc/colors.dart';
 import '../../misc/custom widgets/appbar/auth_bar.dart';
@@ -17,8 +22,9 @@ import '../../misc/widget_method.dart';
 
 class ReportAProblem extends StatefulWidget {
   final String sourcePage;
+  String? deckID;
 
-  const ReportAProblem({super.key, required this.sourcePage});
+  ReportAProblem({super.key, required this.sourcePage, this.deckID});
 
   @override
   _ReportAProblemState createState() => _ReportAProblemState();
@@ -26,6 +32,12 @@ class ReportAProblem extends StatefulWidget {
 class _ReportAProblemState extends State<ReportAProblem> {
   List<String> buttonLabels = [];
   List<String> buttonSubtexts = [];
+  final TextEditingController textController = TextEditingController();
+
+  late final BugIssues bugIssues;
+  late final SomethingElse somethingElse;
+  late final AIGeneratedContent aiGeneratedContent;
+  late final SomeoneDeckContent someoneDeckContent;
 
   ///Handles the button selected in radio button behavior
   //tracks the selected radio button
@@ -53,6 +65,17 @@ class _ReportAProblemState extends State<ReportAProblem> {
     else {
       selectedRadio = 0; //Someone's Deck Content
     }
+
+     bugIssues = BugIssues(controller: textController);
+     somethingElse = SomethingElse(controller: textController);
+     aiGeneratedContent = AIGeneratedContent(controller: textController);
+     someoneDeckContent = SomeoneDeckContent(controller: textController);
+  }
+
+  @override
+  void dispose() {
+    textController.dispose();
+    super.dispose();
   }
 
   ///This shows radio btns otpions based on the source page
@@ -86,18 +109,18 @@ class _ReportAProblemState extends State<ReportAProblem> {
     if(widget.sourcePage == 'AccountPage') {
       switch (selectedRadio) {
         case 0:
-          return BugIssues();
+          return bugIssues;
         case 1:
-          return SomethingElse();
+          return somethingElse;
         default:
           return const SizedBox.shrink();
       }
     }
     else if (widget.sourcePage == 'ViewDeckOwner') {
-      return selectedRadio == 0 ? AIGeneratedContent() : const SizedBox.shrink();
+      return selectedRadio == 0 ? aiGeneratedContent : const SizedBox.shrink();
     }
     else {
-      return selectedRadio == 0 ? SomeoneDeckContent() : const SizedBox.shrink();
+      return selectedRadio == 0 ? someoneDeckContent : const SizedBox.shrink();
     }
   }
 
@@ -232,6 +255,51 @@ class _ReportAProblemState extends State<ReportAProblem> {
                         padding: const EdgeInsets.only(left: 15.0, right: 15.0, top:10, bottom: 20),
                         child: BuildButton(
                           onPressed: () {
+                            String reportTitle = '';
+                            String reportType = '';
+                            String reportDetails = '';
+
+                            if (widget.sourcePage == 'AccountPage') {
+                              if (selectedRadio == 0) {
+                                reportTitle = 'Bug Issues';
+                                reportType = 'application';
+                                reportDetails = bugIssues.getTextValue();
+                              } else if (selectedRadio == 1) {
+                                reportTitle = 'Something Else';
+                                reportType = 'application';
+                                reportDetails = somethingElse.getTextValue();
+                              }
+                            } else if (widget.sourcePage == 'ViewDeckOwner') {
+                              reportTitle = 'AI-Generated Content';
+                              reportType = 'deck';
+                              reportDetails = aiGeneratedContent.getTextValue();
+                            } else {
+                              reportTitle = 'Someone\'s Deck Content';
+                              reportType = 'deck';
+                              reportDetails = someoneDeckContent.getTextValue();
+                            }
+
+                            if(reportType != 'deck') {
+                              // Create and submit the report
+                              Report report = Report(
+                                userId: AuthService().getCurrentUser()!.uid,
+                                title: reportTitle,
+                                type: reportType,
+                                details: reportDetails,
+                                status: 'Pending',
+                              );
+                              ReportService().createReport(report);
+                            } else {
+                              ReportedDeck report = ReportedDeck(
+                                  id: '',
+                                  deckId: widget.deckID,
+                                  reportedBy: AuthService().getCurrentUser()!.uid,
+                                  title: reportTitle,
+                                  details: reportDetails,
+                                  status: 'Pending');
+                              ReportService().createReportedDeck(report);
+                            }
+
                             showDialog<bool>(
                               context: context,
                               barrierDismissible: false,

@@ -7,12 +7,20 @@ import '../../../misc/custom widgets/buttons/radio_button.dart';
 import '../../../misc/custom widgets/dialogs/confirmation_dialog.dart';
 
 class SomeoneDeckContent extends StatefulWidget {
+  final TextEditingController controller; // Accept controller via constructor
 
+  const SomeoneDeckContent({super.key, required this.controller});
+
+  String getTextValue() {
+    return controller.text;
+  }
   @override
   _SomeoneDeckContentState createState() => _SomeoneDeckContentState();
 }
 class _SomeoneDeckContentState extends State<SomeoneDeckContent> {
-  final someoneDetailsController = TextEditingController();
+  String getTextValue() {
+    return widget.controller.text;
+  }
 
   ///handles behavior of the radio buttons in the 'Reason for reporting this content' section
   int selectedDeckRadio = -1;
@@ -52,7 +60,7 @@ class _SomeoneDeckContentState extends State<SomeoneDeckContent> {
   ///--- E N D -----
 
   bool _hasUnsavedChanges() {
-    return someoneDetailsController.text.isNotEmpty;
+    return widget.controller.text.isNotEmpty;
   }
 
 
@@ -178,7 +186,7 @@ class _SomeoneDeckContentState extends State<SomeoneDeckContent> {
               child: BuildTextBox(
                 hintText: 'Enter additional details',
                 isMultiLine: true,
-                controller: someoneDetailsController,
+                controller: widget.controller,
               ),
             )
             ///---- E N D -----

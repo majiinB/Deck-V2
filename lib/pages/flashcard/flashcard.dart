@@ -638,7 +638,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => const ReportAProblem(sourcePage: 'FlashcardPage'),
+                                          builder: (context) => ReportAProblem(sourcePage: 'FlashcardPage'),
                                         ),
                                       );
                                     });

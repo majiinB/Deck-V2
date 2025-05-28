@@ -7,24 +7,37 @@ import '../../../misc/custom widgets/images/screenshot_image.dart';
 import '../../../misc/custom widgets/textboxes/textboxes.dart';
 
 class BugIssues extends StatefulWidget {
+  final TextEditingController controller;
 
+  const BugIssues({super.key, required this.controller});
+
+  String getTextValue() {
+    return controller.text;
+  }
   @override
   _BugIssuesState createState() => _BugIssuesState();
 }
   class _BugIssuesState extends State<BugIssues>{
-  final detailsController = TextEditingController();
+  bool hasUploadedImages = false;
+
+  String getTextValue() {
+    return widget.controller.text;
+  }
+
+  ///This tracks if images are uploaded
+  void _onImageUploadChange(bool hasImages) {
+    setState(() {
+      hasUploadedImages = hasImages;
+    });
+  }
 
   ///This tracks if there are unsaved changes
   bool _hasUnsavedChanges() {
-    return detailsController.text.isNotEmpty;
+    return widget.controller.text.isNotEmpty ||
+        hasUploadedImages;
   }
 
   ///This disposes controllers to free resources and prevent memory leaks
-  @override
-  void dispose() {
-    detailsController.dispose();
-    super.dispose();
-  }
   
     @override
     Widget build(BuildContext context){
@@ -86,7 +99,7 @@ class BugIssues extends StatefulWidget {
                 child: BuildTextBox(
                   showPassword: false,
                   hintText: 'Enter additional details',
-                  controller: detailsController,
+                  controller: widget.controller,
                   isMultiLine: true,
                 ),
               ),

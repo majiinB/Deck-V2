@@ -6,13 +6,22 @@ import '../../../misc/custom widgets/images/screenshot_image.dart';
 import '../../../misc/custom widgets/textboxes/textboxes.dart';
 
 class SomethingElse extends StatefulWidget {
+  final TextEditingController controller; // Accept controller via constructor
 
+  const SomethingElse({super.key, required this.controller});
+
+  String getTextValue() {
+    return controller.text;
+  }
   @override
   _SomethingElseState createState() => _SomethingElseState();
 }
 class _SomethingElseState extends State<SomethingElse>{
-  final bugDetailsController = TextEditingController();
   bool hasUploadedImages = false;
+
+  String getTextValue() {
+    return widget.controller.text;
+  }
 
   ///This tracks if images are uploaded
   void _onImageUploadChange(bool hasImages) {
@@ -23,15 +32,8 @@ class _SomethingElseState extends State<SomethingElse>{
 
   ///This tracks if there are unsaved changes
   bool _hasUnsavedChanges() {
-    return bugDetailsController.text.isNotEmpty ||
+    return widget.controller.text.isNotEmpty ||
         hasUploadedImages;
-  }
-
-  ///This disposes controllers to free resources and prevent memory leaks
-  @override
-  void dispose() {
-    bugDetailsController.dispose();
-    super.dispose();
   }
 
   @override
@@ -94,7 +96,7 @@ class _SomethingElseState extends State<SomethingElse>{
               child: BuildTextBox(
                 showPassword: false,
                 hintText: 'Enter additional details',
-                controller: bugDetailsController,
+                controller: widget.controller,
                 isMultiLine: true,
               ),
             ),
