@@ -3,6 +3,7 @@ import 'package:deck/backend/models/card.dart';
 import 'package:deck/pages/flashcard/add_flashcard.dart';
 import 'package:deck/pages/flashcard/edit_deck.dart';
 import 'package:deck/pages/flashcard/edit_flashcard.dart';
+import 'package:deck/pages/flashcard/play_my_deck.dart';
 import 'package:deck/pages/misc/colors.dart';
 import 'package:deck/pages/misc/deck_icons.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,18 +11,23 @@ import 'package:flutter/material.dart';
 import 'package:deck/pages/misc/widget_method.dart';
 // import 'package:google_fonts/google_fonts.dart';
 
+import '../../backend/flashcard/flashcard_ai_service.dart';
 import '../../backend/models/deck.dart';
+import '../../backend/models/quiz.dart';
 import '../misc/custom widgets/appbar/auth_bar.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
 import '../misc/custom widgets/dialogs/alert_dialog.dart';
 import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
 import '../misc/custom widgets/dialogs/learn_mode_dialog.dart';
 import '../misc/custom widgets/functions/if_collection_empty.dart';
+import '../misc/custom widgets/functions/loading.dart';
 import '../misc/custom widgets/functions/tab_bar.dart';
 import '../misc/custom widgets/images/cover_image.dart';
 import '../misc/custom widgets/textboxes/textboxes.dart';
 import '../misc/custom widgets/tiles/container_of_flashcard.dart';
 import '../settings/support and policies/report_a_problem.dart';
+import 'Quiz Modes/quiz_mode_identification.dart';
+import 'Quiz Modes/quiz_mode_multChoice.dart';
 
 class ViewDeckPage extends StatefulWidget {
   final Deck deck;
@@ -46,6 +52,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
   List<Cards> _filteredStarredCards = [];
   bool _canToggleStar = true;
   User? currentUser;
+  bool _isLoading = false;
   final TextEditingController _searchController = TextEditingController();
   static const _toggleCooldown = Duration(milliseconds: 1000);
 
@@ -148,7 +155,6 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
         (_cardsCollection.isNotEmpty)
             ? 20.0
             : 40.0;
-
     return Scaffold(
       backgroundColor: DeckColors.backgroundColor,
       appBar:  AuthBar(
@@ -299,7 +305,9 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
           }
           ///-------- E N D  O F  P O P  U P  M E N U  B U T T O N -------------
       ),
-      body: SingleChildScrollView(
+      body: _isLoading ? const DeckLoadingDialog(
+        message: "Getting your cards ready for the challenge!",
+      ):SingleChildScrollView(
         //padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -317,14 +325,6 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                     isHeader: true,
                   ),
                 ),
-                /*Container(
-                  height: 150,
-                  width: double.infinity,
-                  child: const Image(
-                    image: AssetImage('assets/images/Deck-Branding1.png'),
-                    fit: BoxFit.cover,
-                  ),
-                ),*/
                 //For fading effect on the bottom, refer at figma if confused
                 Container(
                   width: double.infinity,
@@ -435,12 +435,77 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                           child: BuildButton(
                             onPressed:widget.deck.flashcardCount == 0 ? () {
                               // Do nothing
-                            } : () {
-                              showDialog(
+                            } : () async {
+                              final result = await showDialog(
                                 context: context,
                                 barrierDismissible: false,
                                 builder: (BuildContext context) => LearnModeDialog(deck: widget.deck),
                               );
+
+                              if (result != null && result is Map<String, dynamic>) {
+                                setState(() {
+                                  _isLoading = true;
+                                });
+
+                                final selectedMode = result['mode'] as String;
+                                final numberOfCards = result['numberOfCards'] as int;
+
+                                try{
+                                  if (selectedMode == 'Quiz') {
+                                    final quizType = result['quizType'] as String;
+                                    if (quizType == "Multiple Choice") {
+                                      FlashcardAiService aiService = FlashcardAiService();
+                                      Quiz? quiz = await aiService.retrieveQuizForDeck(
+                                          deckId: widget.deck.deckId, numOfQuiz: numberOfCards);
+                                      List<QuizQuestion>? questions = quiz?.questions;
+                                      if (questions != null) {
+                                        await Navigator.of(context).push(
+                                          RouteGenerator.createRoute(QuizMultChoice(
+                                            deck: widget.deck,
+                                            questions: questions,
+                                          )),
+                                        );
+                                      }
+                                    } else if (quizType == "Identification") {
+                                      List<Cards> randomizedCards = await widget.deck.getCardRandom(numberOfCards);
+                                      await Navigator.of(context).push(
+                                        RouteGenerator.createRoute(QuizIdentification(
+                                          cards: randomizedCards,
+                                          deck: widget.deck,
+                                        )),
+                                      );
+                                    }
+                                  } else if (selectedMode == 'Study') {
+                                    final cardOrientation = result['cardOrientation'] as String;
+                                    print('Card Orientation: $cardOrientation');
+                                    await Navigator.of(context).push(
+                                      RouteGenerator.createRoute(PlayMyDeckPage(
+                                        cards: await widget.deck.getCardRandom(numberOfCards),
+                                        deck: widget.deck,
+                                        orientation: cardOrientation,
+                                      )),
+                                    );
+                                  }
+                                }catch(e){
+                                  String errorMessage = "";
+                                  if(selectedMode == 'Quiz') {
+                                    errorMessage = "Sorry an unknown kind of error has occurred during the creation of your quiz. Please try again later.";
+                                  }else if(selectedMode == 'Study'){
+                                    errorMessage = "Sorry an unknown kind of error has occurred while assembling your flashcard. Please try again later";
+                                  }
+                                  showAlertDialog(
+                                      context,
+                                      "assets/images/Deck-Dialogue2.png",
+                                      "An unknown error has occurred",
+                                      errorMessage
+                                  );
+                                  return;
+                                }finally{
+                                  setState(() {
+                                    _isLoading = false;
+                                  });
+                                }
+                              }
                             },
                             buttonText: 'Learn',
                             height: 35,

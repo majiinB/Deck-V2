@@ -86,7 +86,6 @@ class _AddDeckPageState extends State<AddDeckPage> {
         if (didPop) {
           return;
         }
-
         //Check for unsaved changes
         if (_hasUnsavedChanges()) { //TODO FIX THIS, IDK HOW TO FIX (status: FIXED!!)
           final shouldPop = await showDialog<bool>(
