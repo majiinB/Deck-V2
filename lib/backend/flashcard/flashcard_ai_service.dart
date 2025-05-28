@@ -159,9 +159,10 @@ class FlashcardAiService {
     }
   }
 
-  Future<Quiz?> retrieveQuizForDeck({required String deckId,}) async {
+  Future<Quiz?> retrieveQuizForDeck({required String deckId, required int numOfQuiz}) async {
     Map<String, dynamic> requestBody = {
       'deckId': deckId,
+      'numOfQuiz': numOfQuiz
     };
 
     try {

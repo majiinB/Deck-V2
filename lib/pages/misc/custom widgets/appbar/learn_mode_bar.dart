@@ -20,12 +20,20 @@ class LearnModeBar extends StatelessWidget implements PreferredSizeWidget {
     required this.fontSize,
     this.automaticallyImplyLeading = false,
     required this.onButtonPressed,
+    required this.buttonText,
+    required this.buttonIcon,
+    required this.buttonColor,
+    required this.borderButtonColor,
   });
   final String title;
+  final String buttonText;
   final Color color;
   final double fontSize;
   final bool automaticallyImplyLeading;
   final VoidCallback onButtonPressed;
+  final IconData buttonIcon;
+  final Color buttonColor;
+  final Color borderButtonColor;
 
   @override
   Widget build(BuildContext context) {
@@ -51,16 +59,16 @@ class LearnModeBar extends StatelessWidget implements PreferredSizeWidget {
               padding: const EdgeInsets.only(right: 8.0),
               child: BuildButton(
                   onPressed: onButtonPressed,
-                  buttonText: 'Stop Playing',
+                  buttonText: buttonText,
                   height: 35,
                   width: 170,
                   radius: 20,
-                  backgroundColor: DeckColors.deckRed,
+                  backgroundColor: buttonColor,
                   textColor: DeckColors.white,
                   fontSize: 16,
                   borderWidth: 1,
-                  borderColor: DeckColors.accentColor,
-                  icon: Icons.stop_rounded,
+                  borderColor: borderButtonColor,
+                  icon: buttonIcon,
                   paddingIconText: 3,
                   iconColor: DeckColors.white,
               ),

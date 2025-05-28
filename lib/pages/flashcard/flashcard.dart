@@ -66,29 +66,47 @@ class _FlashcardPageState extends State<FlashcardPage> {
   void initState() {
     super.initState();
     _user = _authService.getCurrentUser();
-    FlashcardUtils.updateLatestReview.addListener(_updateLatestReview);
+    // FlashcardUtils.updateLatestReview.addListener(_updateLatestReview);
     _scrollController.addListener(_onScroll);
     _initUserDecks(_user);
-    _initScore();
+    // _initScore();
     _searchController.addListener(_onSearchChanged);
   }
 
   void _initUserDecks(User? user) async {
     if (user != null) {
-      print("initialize deck");
-      String userId = user.uid;
-      var result = await _flashcardService.getDecks(filter); // Call method to fetch decks
-      List<Deck> decks = result['decks'];
-      String nextPageToken = result['nextPageToken'];
+      try{
+        String userId = user.uid;
+        var result = await _flashcardService.getDecks(filter); // Call method to fetch decks
+        List<Deck> decks = result['decks'];
+        String nextPageToken = result['nextPageToken'];
 
-      Deck? latest = await _flashcardService.getLatestDeckLog(userId);
-      if (!mounted) return;
-      setState(() {
-        _decks = decks; // Update state with fetched decks
-        _filteredDecks = decks; // Initialize filtered decks
-        _latestDeck = latest;
-        _nextPageToken = nextPageToken;
-      });
+        final latestResult = await _flashcardService.getLatestQuizAttempt();
+        final deckInfo = latestResult['deck'] as Map<String, dynamic>;
+        final deckFromJson = Deck.fromJson(deckInfo);
+
+        final latestAttempt = latestResult['latest_attempt'] as Map<String, dynamic>;
+        final int attemptScore = latestAttempt['score'] as int;
+        final int totalQuestion = latestAttempt['total_questions'] as int;
+
+        if (!mounted) return;
+        setState(() {
+          _decks = decks; // Update state with fetched decks
+          _filteredDecks = decks; // Initialize filtered decks
+          _latestDeck = deckFromJson;
+          _nextPageToken = nextPageToken;
+          correct = attemptScore;
+          total = totalQuestion;
+          score = "$correct/$total";
+          if(correct >= (total/2)){
+            isRecentQuizPassed = true;
+          }else {
+            isRecentQuizPassed = false;
+          }
+        });
+      }catch(e){
+        print('Error fetching latest quiz attempt: $e');
+      }
     }
   }
 
@@ -116,41 +134,44 @@ class _FlashcardPageState extends State<FlashcardPage> {
     });
   }
 
-  void _updateLatestReview() async {
-    if (FlashcardUtils.updateLatestReview.value) {
-      Deck? latest = await _flashcardService.getLatestDeckLog(_user!.uid);
-      if (!mounted) return;
-      setState(() {
-        _latestDeck = latest;
-      });
-      _initUserDecks(_user); // This already has its own setState
-      FlashcardUtils.updateLatestReview.value = false; // Reset the notifier
-      if (_latestDeck != null) {
-        print("Latest Deck: ${_latestDeck!.title}");
-      }
-    }
-  }
+  // void _updateLatestReview() async {
+  //   if (FlashcardUtils.updateLatestReview.value) {
+  //     final result = await _flashcardService.getLatestQuizAttempt();
+  //     final deckInfo = result['deck'] as Map<String, dynamic>;
+  //     final deckFromJson = Deck.fromJson(deckInfo);
+  //     if (!mounted) return;
+  //     setState(() {
+  //       _latestDeck = deckFromJson;
+  //     });
+  //     _initUserDecks(_user); // This already has its own setState
+  //     FlashcardUtils.updateLatestReview.value = false; // Reset the notifier
+  //     if (_latestDeck != null) {
+  //       print("Latest Deck: ${_latestDeck!.title}");
+  //     }
+  //   }
+  // }
 
-  void _initScore() {
-    /// Initializes the quiz score and determines if the user has passed.
-    ///
-    /// This function sets the `correct` and `total` scores, checks if user
-    /// has passed based on whether they scored at least half of the total, and
-    /// updates the `score` display accordingly.
-    correct = 50; //_latestDeck.score //TODO get scores from db
-    total = 100; //_latestDeck.total
-    print("Initializing Score..."); // Debugging
-
-    if(correct >= (total/2)){
-      isRecentQuizPassed = true;
-    }else {
-      isRecentQuizPassed = false;
-    }
-    setState(() {
-      score = "$correct/$total";
-      print("Score updated: $score");
-    });
-  }
+  // void _initScore() async{
+  //   try {
+  //     final result = await _flashcardService.getLatestQuizAttempt();
+  //     final latestAttempt = result['latest_attempt'] as Map<String, dynamic>;
+  //     final int attemptScore = latestAttempt['score'] as int;
+  //     final int totalQuestion = latestAttempt['total_questions'] as int;
+  //
+  //     setState(() {
+  //       correct = attemptScore;
+  //       total = totalQuestion;
+  //       score = "$correct/$total";
+  //       if(correct >= (total/2)){
+  //         isRecentQuizPassed = true;
+  //       }else {
+  //         isRecentQuizPassed = false;
+  //       }
+  //     });
+  //   } catch (e) {
+  //     print('Error fetching latest quiz attempt: $e');
+  //   }
+  // }
 
   Future<void> _onScroll() async {
     if (_searchQuery.trim().isNotEmpty) return;
@@ -269,7 +290,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
                     hasIcon: true,
                     ifCollectionEmptyText: 'It’s lonely around here...',
                     ifCollectionEmptySubText:
-                    'No Recent Decks Yet! Now’s the perfect time to get ahead. Create your own Deck now to keep learning.',
+                    'No decks yet? Now\'s the time to create one!',
                     ifCollectionEmptyHeight: MediaQuery.of(context).size.height/3,
                   ),
                 ),
@@ -543,7 +564,9 @@ class _FlashcardPageState extends State<FlashcardPage> {
                                     await Navigator.of(context).push(
                                       RouteGenerator.createRoute(EditDeck(deck: _filteredDecks[index])),
                                     );
-                                    setState(() {});
+                                    setState(() {
+                                      _initUserDecks(_user);
+                                    });
                                   }
 
                                   ///D E L E T E  D E C K
@@ -554,8 +577,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
                                         builder: (BuildContext context) {
                                           return CustomConfirmDialog(
                                             title: 'Delete this deck?',
-                                            message: 'Once deleted, this deck will no longer be playable. '
-                                                'But do not worry, you can still retrieve it in the trash bin.',
+                                            message: 'Deleted decks move to trash and can be recovered.',
                                             imagePath: 'assets/images/Deck-Dialogue4.png',
                                             button1: 'Delete Deck',
                                             button2: 'Cancel',
@@ -633,7 +655,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
                     IfCollectionEmpty(
                       ifCollectionEmptyText: 'No Results Found',
                       ifCollectionEmptySubText:
-                      'Try adjusting your search to \nfind what your looking for.',
+                      'Try adjusting your search to find it.',
                       ifCollectionEmptyHeight:
                       MediaQuery.of(context).size.height * 0.4,
                     )
@@ -649,7 +671,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
   @override
   void dispose() {
     _searchController.removeListener(_onSearchChanged);
-    FlashcardUtils.updateLatestReview.removeListener(_updateLatestReview);
+    // FlashcardUtils.updateLatestReview.removeListener(_updateLatestReview);
     _scrollController.removeListener(_onScroll);
     _searchController.dispose();
     _debounce?.cancel();

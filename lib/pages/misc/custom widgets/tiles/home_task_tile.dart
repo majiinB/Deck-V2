@@ -24,7 +24,7 @@ import 'package:intl/intl.dart';
 class HomeTaskTile extends StatelessWidget {
   final String folderName;
   final String taskName;
-  final int priority;
+  final String priority;
   final DateTime deadline;
   // final double cardWidth;
   //final File? deckImage;
@@ -48,16 +48,15 @@ class HomeTaskTile extends StatelessWidget {
     ///
     /// - [dateTime]: The DateTime to be formatted
     String formattedDate = DateFormat("MMMM dd, yyyy").format(dateTime);
-    String formattedTime = DateFormat("hh:mm a").format(dateTime);
-    return "$formattedDate || $formattedTime";
+    return "Deadline: $formattedDate";
   }
 
   // Function to set the container color based on priority level
-  Color getColor(int priority){
+  Color getColor(String priority){
     Color color = DeckColors.white;
-    if(priority == 0) { color = DeckColors.deckRed;}
-    else if(priority == 1) { color = DeckColors.deckYellow;}
-    else if(priority == 2) { color = DeckColors.deckBlue;}
+    if(priority.toLowerCase() == "high") { color = DeckColors.deckRed;}
+    else if(priority.toLowerCase() == "medium") { color = DeckColors.deckYellow;}
+    else if(priority.toLowerCase() == "low") { color = DeckColors.deckBlue;}
     else{color = DeckColors.white;}
     return color;
   }

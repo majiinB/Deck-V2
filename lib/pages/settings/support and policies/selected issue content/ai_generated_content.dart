@@ -26,12 +26,6 @@ class _AIGeneratedContentState extends State<AIGeneratedContent> {
     return widget.controller.text;
   }
 
-  ///This tracks if images are uploaded
-  void _onImageUploadChange(bool hasImages) {
-    setState(() {
-      hasUploadedImages = hasImages;
-    });
-  }
 
   ///This is used to check if there are unsaved changes
   bool _hasUnsavedChanges() {
@@ -58,7 +52,7 @@ class _AIGeneratedContentState extends State<AIGeneratedContent> {
             builder: (BuildContext context) { 
               return CustomConfirmDialog(
                 title: 'Are you sure you want to go back?',
-                message: 'If you go back now, you will lose all your progress',
+                message: 'Going back now will lose all your progress.',
                 imagePath: 'assets/images/Deck-Dialogue4.png',
                 button1: 'Go Back',
                 button2: 'Cancel',

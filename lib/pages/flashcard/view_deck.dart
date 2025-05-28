@@ -228,8 +228,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                     builder: (BuildContext context) {
                       return CustomConfirmDialog(
                         title: 'Delete this deck?',
-                        message: 'Once deleted, this deck will no longer be playable. '
-                            'But do not worry, you can still retrieve it in the trash bin.',
+                        message: 'Deleted decks move to trash and can be recovered.',
                         imagePath: 'assets/images/Deck-Dialogue4.png',
                         button1: 'Delete Deck',
                         button2: 'Cancel',
@@ -485,8 +484,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                               ifCollectionEmptyText:
                                   'No Flashcards Yet!',
                               ifCollectionEmptySubText:
-                              'Looks like you haven\'t added any flashcards yet. '
-                                  'Let\'s kick things off by adding your first one.',
+                              'Haven’t added any cards? Let\'s get started!',
                               ifCollectionEmptyHeight:
                                   MediaQuery.of(context).size.height * 0.3,
                             )
@@ -518,7 +516,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                 "Delete Item",
                                               () async {
                                                 try {
-                                                  await removedCard.updateDeleteStatus(true, widget.deck.deckId);
+                                                  await removedCard.deleteCard(true, widget.deck.deckId);
                                                   setState(() {
                                                     _filteredCards.removeAt(index);
                                                     _cardsCollection.removeWhere((card) => card.cardId == removedCard.cardId);
@@ -532,7 +530,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                     context,
                                                     "assets/images/Deck_Dialogue1.png",
                                                     "Card Deletion Unsuccessful",
-                                                    "An error occurred during the deletion process please try again"
+                                                    "An error occurred during the deletion process"
                                                   );
                                                 }
                                               },
@@ -571,7 +569,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                   button2: 'Cancel',
                                                   onConfirm: () async {
                                                     try {
-                                                      await removedCard.updateDeleteStatus(true, widget.deck.deckId);
+                                                      await removedCard.deleteCard(true, widget.deck.deckId);
                                                       setState(() {
                                                         _filteredCards.removeAt(index);
                                                         _cardsCollection.removeWhere((card) => card.cardId == removedCard.cardId);
@@ -590,7 +588,9 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                     }
                                                     Navigator.of(context).pop(true);
                                                   },
-                                                  onCancel: () {},
+                                                  onCancel: () {
+                                                    Navigator.of(context).pop();
+                                                  },
                                                );
                                               },
                                             );
@@ -650,7 +650,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                               "Delete Item",
                                                   () async {
                                                 try {
-                                                  await removedCard.updateDeleteStatus(true, widget.deck.deckId);
+                                                  await removedCard.deleteCard(true, widget.deck.deckId);
                                                   setState(() {
                                                     _filteredCards.removeAt(index);
                                                     _cardsCollection.removeWhere((card) => card.cardId == removedCard.cardId);
@@ -664,7 +664,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                       context,
                                                       "assets/images/Deck_Dialogue1.png",
                                                       "Card Deletion Unsuccessful",
-                                                      "An error occurred during the deletion process please try again"
+                                                      "An error occurred during the deletion process"
                                                   );
                                                 }
                                               },
@@ -703,7 +703,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                   button2: 'Cancel',
                                                   onConfirm: () async {
                                                     try {
-                                                      await removedCard.updateDeleteStatus(true, widget.deck.deckId);
+                                                      await removedCard.deleteCard(true, widget.deck.deckId);
                                                       setState(() {
                                                         _filteredStarredCards.removeAt(index);
                                                         _cardsCollection.removeWhere((card) => card.cardId == removedCard.cardId);
@@ -722,7 +722,9 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                     }
                                                     Navigator.of(context).pop(true);
                                                   },
-                                                  onCancel: () {},
+                                                  onCancel: () {
+                                                    Navigator.of(context).pop(true);
+                                                  },
                                                 );
                                               },
                                             );

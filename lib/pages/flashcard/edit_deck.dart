@@ -97,7 +97,7 @@ class _EditDeckState extends State<EditDeck> {
             builder: (BuildContext context) {
               return CustomConfirmDialog(
                 title: 'Are you sure you want to go back?',
-                message: 'If you go back now, you will lose all your progress',
+                message: 'Going back now will lose all your progress.',
                 imagePath: 'assets/images/Deck-Dialogue4.png',
                 button1: 'Go Back',
                 button2: 'Cancel',
@@ -229,7 +229,7 @@ class _EditDeckState extends State<EditDeck> {
                                                 showAlertDialog(
                                                     context,"assets/images/Deck-Dialogue1.png",
                                                     "Error in selecting files",
-                                                    "There was an error in selecting the file. Please try again."
+                                                    "File selection failed. Try again."
                                                 );
                                               }
                                               Navigator.pop(context);
@@ -333,7 +333,7 @@ class _EditDeckState extends State<EditDeck> {
                                 context,
                                 'assets/images/Deck-Dialogue3.png',
                                 'Deck Successfully Updated',
-                                'Deck was successfully updated and will be reflected now on the list'
+                                'Deck updated. Changes now visible in list.'
                             );
                           },
                           buttonText: 'Save Deck',
@@ -349,7 +349,10 @@ class _EditDeckState extends State<EditDeck> {
                     Padding(
                       padding: const EdgeInsets.only(top: 10.0, bottom: 20),
                       child: BuildButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          await widget.deck.updateDeleteStatus(true);
+                          Navigator.of(context).pop();
+                        },
                         buttonText: 'Delete Deck',
                         height: 50.0,
                         width: MediaQuery.of(context).size.width,

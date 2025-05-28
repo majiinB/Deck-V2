@@ -452,9 +452,7 @@ class AccountPageState extends State<AccountPage> {
                       builder: (BuildContext context) {
                         return CustomConfirmDialog(
                           title: 'Leaving already, wanderer?',
-                          message: 'Deleting your account will remove all your decks, tasks, '
-                              'and progress permanently. Deck will surely miss you… '
-                              'Are you sure you want to go?',
+                          message: 'Deleting your account removes all decks and progress.',
                           imagePath: 'assets/images/Deck-Dialogue1.png',
                           button1: 'Delete Account',
                           button2: 'Cancel',
@@ -473,8 +471,7 @@ class AccountPageState extends State<AccountPage> {
                                 return CustomAlertDialog(
                                   imagePath: 'assets/images/Deck-Dialogue1.png',
                                   title: 'Goodbye, wanderer',
-                                  message: 'Your account has been deleted. Thank you for '
-                                      'being part of Deck. See you again someday!',
+                                  message: 'Thanks for being part of Deck. Goodbye for now!',
                                   button1: 'Ok',
                                   onConfirm: () {
                                     Navigator.of(context).pop(); // Close the second dialog

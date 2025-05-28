@@ -31,7 +31,7 @@ import '../functions/swipe_to_delete_and_retrieve.dart';
 class TaskTile extends StatefulWidget {
   final String taskName;
   final DateTime deadline;
-  final int priority; // high, medium, low
+  final String priority; // high, medium, low
   String progressStatus; // pending, progress, completed
   final VoidCallback onDelete;
   final VoidCallback? onPressed;
@@ -72,9 +72,8 @@ class DeckTaskTileState extends State<TaskTile> {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-
         AutoSizeText(
-          formattedDate,
+          'Deadline: $formattedDate',
           textAlign: TextAlign.start,
           maxLines: 1,
           minFontSize: 8,
@@ -87,17 +86,6 @@ class DeckTaskTileState extends State<TaskTile> {
         ),
         const Expanded(
             child: SizedBox()
-        ),
-        AutoSizeText(
-          formattedTime,
-          textAlign: TextAlign.start,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: const TextStyle(
-            fontFamily: 'Nunito-SemiBold',
-            fontSize: 14,
-            color: DeckColors.primaryColor,
-          ),
         ),
       ],
     );
@@ -119,12 +107,12 @@ class DeckTaskTileState extends State<TaskTile> {
 
   // Function to set the container color based on priority level
   Color _updatePriorityColor() {
-    switch (widget.priority) {
-      case 0:
+    switch (widget.priority.toString().toLowerCase()) {
+      case "high":
         return DeckColors.deckRed;
-      case 1:
+      case "medium":
         return DeckColors.deckYellow;
-      case 2:
+      case "low":
         return DeckColors.deckBlue;
       default:
         return DeckColors.white;
@@ -155,51 +143,52 @@ class DeckTaskTileState extends State<TaskTile> {
             border: Border.all(color: DeckColors.primaryColor, width: 3),
             borderRadius: BorderRadius.circular(15.0),
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Icon(
-                _getProgressIcon(),
-                color: _updatePriorityColor(),
-                size:20,
-                weight:2,
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child:Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: Column(
-                    crossAxisAlignment:
-                    CrossAxisAlignment.start,
-                    children: [
-                      getDeadline(DateTime.now()),
-                      AutoSizeText(
-                        widget.taskName,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontFamily: 'fraiche',
-                          fontSize: 20,
-                          color: DeckColors.primaryColor,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  _getProgressIcon(),
+                  color: _updatePriorityColor(),
+                  size:20,
+                  weight:2,
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child:Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: Column(
+                      crossAxisAlignment:
+                      CrossAxisAlignment.start,
+                      children: [
+                        getDeadline(widget.deadline),
+                        AutoSizeText(
+                          widget.taskName,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontFamily: 'fraiche',
+                            fontSize: 20,
+                            color: DeckColors.primaryColor,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 10),
-              Container(
-                  width: 20,
-                  decoration: BoxDecoration(
-                      color: _updatePriorityColor(),
-                      borderRadius: const BorderRadius.horizontal(
-                          right: Radius.circular(12)
-                      )
-                  )
-              ),
-            ],
-          )
+                const SizedBox(width: 10),
+                Container(
+                    width: 20,
+                    height: 63,
+                    decoration: BoxDecoration(
+                        color: _updatePriorityColor(),
+                        borderRadius: const BorderRadius.horizontal(
+                            right: Radius.circular(12)
+                        )
+                    )
+                ),
+              ],
+            )
         )
       ),
     );

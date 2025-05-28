@@ -19,13 +19,12 @@ class DeckApprovalNotification extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.only(left: 30,right: 30,top: 10),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15.0),
         color: DeckColors.white,
-        border: Border.symmetric(
-            horizontal: BorderSide(
-                color: DeckColors.primaryColor,
-                width: 3
-            )
+        border: Border.all(
+          color: DeckColors.primaryColor,
+          width: 3.0,
         ),
       ),
       child:  Column(
@@ -33,10 +32,10 @@ class DeckApprovalNotification extends StatelessWidget {
           children: [
             AutoSizeText(
                 title,
-                maxLines: 1,
                 minFontSize:15,
+                maxLines: null,
                 style: const TextStyle(
-                  overflow: TextOverflow.ellipsis,
+                  overflow: TextOverflow.visible,
                   color:DeckColors.primaryColor,
                   fontFamily: 'Nunito-Bold',
                   fontSize: 20,
@@ -47,10 +46,10 @@ class DeckApprovalNotification extends StatelessWidget {
             ),
             AutoSizeText(
                 message,
-                maxLines: 1,
                 minFontSize: 12,
+                maxLines: null,
                 style: const TextStyle(
-                  overflow: TextOverflow.ellipsis,
+                  overflow: TextOverflow.visible,
                   color:DeckColors.primaryColor,
                   fontFamily: 'Nunito-Regular',
                   fontSize: 12,

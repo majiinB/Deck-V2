@@ -53,7 +53,7 @@ class _SomethingElseState extends State<SomethingElse>{
             builder: (BuildContext context) {
               return CustomConfirmDialog(
                 title: 'Are you sure you want to go back?',
-                message: 'If you go back now, you will lose all your progress',
+                message: 'Going back now will lose all your progress.',
                 imagePath: 'assets/images/Deck-Dialogue4.png',
                 button1: 'Go Back',
                 button2: 'Cancel',
@@ -103,7 +103,7 @@ class _SomethingElseState extends State<SomethingElse>{
             ///----- E N D ------
             const Padding(
               padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
-              child: Text('Don’t include any sensitive information such as you password in your message.',
+              child: Text('Don’t include any sensitive information in your message.',
                 style: TextStyle(
                   fontFamily: 'Nunito-Regular',
                   color: DeckColors.primaryColor,

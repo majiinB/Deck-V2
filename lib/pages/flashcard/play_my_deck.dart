@@ -12,8 +12,14 @@ import '../misc/custom widgets/buttons/custom_buttons.dart';
 class PlayMyDeckPage extends StatefulWidget {
   final List cards;
   final Deck deck;
+  final String orientation;
 
-  const PlayMyDeckPage({Key? key, required this.cards, required this.deck}) : super(key: key);
+  const PlayMyDeckPage({
+    Key? key,
+    required this.cards,
+    required this.deck,
+    required this.orientation
+  }) : super(key: key);
 
   @override
   _PlayMyDeckPageState createState() => _PlayMyDeckPageState();
@@ -39,12 +45,12 @@ class _PlayMyDeckPageState extends State<PlayMyDeckPage> {
         title: 'Study Mode',
         color: DeckColors.primaryColor,
         fontSize: 24,
-        onButtonPressed: () { //TODO FIX THIS (status: FIXED!!)
+        onButtonPressed: () {
           showConfirmDialog(
             context,
             'assets/images/Deck-Dialogue4.png',
-            'Stop Quiz Mode?',
-            'Are you sure you want to stop? You will lose all progress if you stop now.',
+            'Stop Study Mode?',
+            'Stop Now? You\'ll lose all your progress',
             'Stop',
                 () {
               ///Pop twice: first, close the dialog, then navigate back to the previous page
@@ -53,6 +59,10 @@ class _PlayMyDeckPageState extends State<PlayMyDeckPage> {
             },
           );
         },
+        buttonText: 'Stop Playing',
+        buttonIcon: Icons.play_arrow_rounded,
+        buttonColor: DeckColors.deckRed,
+        borderButtonColor: DeckColors.deckRed,
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: 15.0),
@@ -85,12 +95,14 @@ class _PlayMyDeckPageState extends State<PlayMyDeckPage> {
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 15.0),
                     child: FlipCard(
-                      front: buildFlipCard(widget.cards[index].term,
+                      front: buildFlipCard(
+                          (widget.orientation == "Term") ? widget.cards[index].term : widget.cards[index].definition,
                           DeckColors.primaryColor, 'Fraiche',
-                          "Tap to see answer"),
-                      back: buildFlipCard(widget.cards[index].definition,
+                          (widget.orientation == "Term") ? "Tap to see definition" : "Tap to see term"),
+                      back: buildFlipCard(
+                          (widget.orientation == "Term") ? widget.cards[index].definition : widget.cards[index].term,
                           DeckColors.primaryColor, 'Nunito',
-                          "Tap to see description"),
+                          (widget.orientation == "Term") ? "Tap to see term" : "Tap to see definition"),
                     ),
                   );
                 },
