@@ -33,59 +33,6 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   final TextEditingController confirmPasswordController =
   TextEditingController();
 
-  String getAdjective() {
-    List<String> adjective = [
-      'Long',
-      'Short',
-      'Thick',
-      'Thin',
-      'Curved',
-      'Straight',
-      'Hard',
-      'Soft',
-      'Smooth',
-      'Rough',
-      'Firm',
-      'Stiff',
-      'Limp',
-      'Engorged',
-      'Swollen',
-      'Massive',
-      'Turgid',
-      'Plump',
-      'Slender',
-      'Enlarged',
-      'Lengthy',
-      'Trim',
-      'Sturdy',
-      'Malleable',
-      'Elastic',
-      'Pulsating',
-      'Robust',
-      'Lithe',
-      'Luscious',
-      'Muscular',
-      'Rigid',
-      'Tender',
-      'Prominent',
-      'Noticeable',
-      'Substantial',
-      'Compact',
-      'Potent',
-      'Dominant',
-      'Stretched',
-      'Expansive',
-      'Defined',
-      'Well-endowed'
-    ];
-
-    return "${adjective[Random().nextInt(adjective.length)]}_${getRandomNumber()}";
-  }
-
-  int getRandomNumber() {
-    return 10000 + Random().nextInt(99999 + 1);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -239,7 +186,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
 
                                 try{
                                   final authService = AuthService();
-                                  String name = "Anon ${getAdjective()}";
+                                  String name = '${firstNameController.text} ${lastNameController.text}';
                                   await authService.signUpWithEmail(emailController.text, passwordController.text, name);
 
                                   final user = <String, dynamic> {

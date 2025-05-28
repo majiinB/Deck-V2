@@ -215,7 +215,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const ReportAProblem(sourcePage: 'ViewDeckOwner'),
+                      builder: (context) => ReportAProblem(sourcePage: 'ViewDeckOwner', deckID: widget.deck.deckId),
                     ),
                   );
                 });
@@ -290,7 +290,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const ReportAProblem(sourcePage: 'FlashcardPage'),
+                      builder: (context) => ReportAProblem(sourcePage: 'FlashcardPage', deckID: widget.deck.deckId ),
                     ),
                   );
                 });

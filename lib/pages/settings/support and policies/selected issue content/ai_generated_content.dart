@@ -6,14 +6,25 @@ import '../../../misc/custom widgets/dialogs/confirmation_dialog.dart';
 import '../../../misc/custom widgets/images/screenshot_image.dart';
 
 
-class AIGeneratedContent extends StatefulWidget{
+class AIGeneratedContent extends StatefulWidget {
+  final TextEditingController controller; // Accept controller via constructor
+
+  const AIGeneratedContent({super.key, required this.controller});
+
+  String getTextValue() {
+    return controller.text;
+  }
 
   @override
   _AIGeneratedContentState createState() => _AIGeneratedContentState();
 }
+
 class _AIGeneratedContentState extends State<AIGeneratedContent> {
-  final addDetailsController = TextEditingController();
+  //how to access the addDetailsController here?
   bool hasUploadedImages = false;
+  String getTextValue() {
+    return widget.controller.text;
+  }
 
   ///This tracks if images are uploaded
   void _onImageUploadChange(bool hasImages) {
@@ -24,16 +35,11 @@ class _AIGeneratedContentState extends State<AIGeneratedContent> {
 
   ///This is used to check if there are unsaved changes
   bool _hasUnsavedChanges() {
-    return addDetailsController.text.isNotEmpty ||
+    return widget.controller.text.isNotEmpty ||
         hasUploadedImages;
   }
 
   ///This disposes controllers to free resources and prevent memory leaks
-  @override
-  void dispose() {
-    addDetailsController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +103,7 @@ class _AIGeneratedContentState extends State<AIGeneratedContent> {
               child: BuildTextBox(
                 showPassword: false,
                 hintText: 'Enter additional details',
-                controller: addDetailsController,
+                controller: widget.controller,
                 isMultiLine: true,
               ),
             ),

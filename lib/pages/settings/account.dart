@@ -279,7 +279,7 @@ class AccountPageState extends State<AccountPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const ReportAProblem(sourcePage: 'AccountPage'),
+                        builder: (context) => ReportAProblem(sourcePage: 'AccountPage'),
                       ),
                     );
                   },
