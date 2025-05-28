@@ -102,6 +102,15 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
       if(startDate == widget.task.startDate){
         startDate = null;
       }
+      if(title == null &&
+        description == null &&
+        status == null &&
+        priority == null &&
+        endDate == null &&
+        startDate == null
+      ){
+        throw Exception("At least one field must change in order to update a task.");
+      }
 
       final message = await _taskService.updateTask(
         taskFolderId: taskFolderId,
