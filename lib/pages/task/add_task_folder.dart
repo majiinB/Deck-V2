@@ -110,12 +110,17 @@ class _AddTaskFolderPageState extends State<AddTaskFolderPage> {
                         ),
                         BuildButton(
                           onPressed: () async{
-                            String taskFolderTitle = _titleController.text.toString().trim();
-                            DateTime timeStamp = DateTime.now();
-                            setState(() {
-                              isLoading = true;
-                            });
                             try{
+                              String taskFolderTitle = _titleController.text.toString().trim();
+                              DateTime timeStamp = DateTime.now();
+                              if(taskFolderTitle.isEmpty){
+                                throw Exception("The folder requires a Title");
+                              }
+
+                              setState(() {
+                                isLoading = true;
+                              });
+
                               TaskFolder newTaskFolder = await _taskService.createTaskFolder(
                                   title: taskFolderTitle,
                                   background: background,
@@ -123,7 +128,16 @@ class _AddTaskFolderPageState extends State<AddTaskFolderPage> {
                               );
                               Navigator.of(context).pop(newTaskFolder);
                             }catch(e){
-                              print(e);
+                              String errorMessage = 'An unknown error occurred.';
+                              if (e is Exception) {
+                                errorMessage = e.toString();
+                              }
+                              showAlertDialog(
+                                context,
+                                "assets/images/Deck-Dialogue1.png",
+                                "Uh oh. Something went wrong.",
+                                errorMessage,
+                              );
                             }finally{
                               setState(() {
                                 isLoading = false;

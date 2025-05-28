@@ -52,6 +52,7 @@ class _TaskPageState extends State<TaskPage> {
   //
   void _getTasks() async {
     List <NewTask> retrievedTasks = await _taskService.fetchNearingDueTasks();
+    print(retrievedTasks);
     setState(() {
       upcomingTasks = retrievedTasks;
     });
