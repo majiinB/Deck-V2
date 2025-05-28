@@ -5,6 +5,7 @@ import 'package:deck/pages/misc/colors.dart';
 import '../misc/custom widgets/appbar/auth_bar.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
 import '../misc/custom widgets/buttons/radio_button_group_background_image.dart';
+import '../misc/custom widgets/dialogs/alert_dialog.dart';
 import '../misc/custom widgets/textboxes/textboxes.dart';
 
 class EditTaskFolderPage extends StatefulWidget {
@@ -51,13 +52,22 @@ class _EditTaskFolderPageState extends State<EditTaskFolderPage> {
     String? title = _titleController.text.toString().trim();
     String? background = selectedBackground;
 
-    if(title == widget.taskFolder.title || title.isEmpty){
-      title = null;
-    }
-    if(background == widget.taskFolder.title || background.isEmpty){
-      background = null;
-    }
     try{
+      if(title.isEmpty){
+        throw Exception("Folder title is required");
+      }
+
+      if(title == widget.taskFolder.title){
+        title = null;
+      }
+      if(background == widget.taskFolder.background || background.isEmpty){
+        background = null;
+      }
+
+      if(title == null && background == null){
+        throw Exception("At least one field must change in order to update a folder.");
+      }
+
       await _taskService.updateTaskFolder(
           taskFolderId: taskFolderId,
           title: title,
@@ -65,7 +75,16 @@ class _EditTaskFolderPageState extends State<EditTaskFolderPage> {
       );
       Navigator.pop(context);
     }catch(e){
-      print(e);
+      String errorMessage = 'An unknown error occurred.';
+      if (e is Exception) {
+        errorMessage = e.toString().replaceFirst("Exception: ", "");
+      }
+      showAlertDialog(
+        context,
+        "assets/images/Deck-Dialogue1.png",
+        "Uh oh. Something went wrong.",
+        errorMessage,
+      );
     }
   }
 
