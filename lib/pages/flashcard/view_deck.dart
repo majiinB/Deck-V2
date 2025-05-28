@@ -342,16 +342,6 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                 )
               ],
             ),
-            /*Text(
-                widget.deck.title.toString(),
-                overflow: TextOverflow.visible,
-                style: const TextStyle(
-                  fontFamily: 'Fraiche',
-                  color: DeckColors.primaryColor,
-                  fontSize: 32,
-                  fontWeight: FontWeight.w900,
-                ),
-              ),*/
             Padding(
               padding: const EdgeInsets.only(
                   top: 15, left: 20, right: 20, bottom: 20),
@@ -579,33 +569,33 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                 "Delete Item?",
                                                 "Are you sure you want to delete '$deletedTitle'?",
                                                 "Delete Item",
-                                              () async {
-                                                try {
-                                                  await removedCard.deleteCard(true, widget.deck.deckId);
-                                                  setState(() {
-                                                    _filteredCards.removeAt(index);
-                                                    _cardsCollection.removeWhere((card) => card.cardId == removedCard.cardId);
-                                                    _starredCards.removeWhere((card) => card.cardId == removedCard.cardId);
-                                                    _filteredStarredCards.removeWhere((card) => card.cardId == removedCard.cardId);
-                                                    numberOfCards = _cardsCollection.length;
-                                                  });
-                                                } catch (e) {
-                                                  print('View Deck Error: $e');
-                                                  showAlertDialog(
-                                                    context,
-                                                    "assets/images/Deck_Dialogue1.png",
-                                                    "Card Deletion Unsuccessful",
-                                                    "An error occurred during the deletion process"
-                                                  );
+                                                () async {
+                                                  try {
+                                                    await removedCard.deleteCard(true, widget.deck.deckId);
+                                                    setState(() {
+                                                      _filteredCards.removeAt(index);
+                                                      _cardsCollection.removeWhere((card) => card.cardId == removedCard.cardId);
+                                                      _starredCards.removeWhere((card) => card.cardId == removedCard.cardId);
+                                                      _filteredStarredCards.removeWhere((card) => card.cardId == removedCard.cardId);
+                                                      numberOfCards = _cardsCollection.length;
+                                                    });
+                                                    Navigator.pop(context); // close the dialog after successful deletion
+                                                  } catch (e) {
+                                                    print('View Deck Error: $e');
+                                                    showAlertDialog(
+                                                        context,
+                                                        "assets/images/Deck_Dialogue1.png",
+                                                        "Card Deletion Unsuccessful",
+                                                        "An error occurred during the deletion process"
+                                                    );
+                                                  }
                                                 }
-                                              },
                                             );
                                           }
                                           : null,
                                           enableSwipeToRetrieve: false,
-                                          onTap: () {
-                                            print("Clicked");
-                                            Navigator.push(
+                                          onTap: () async{
+                                            await Navigator.push(
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
@@ -614,6 +604,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                         card: _cardsCollection[index],
                                                       )),
                                             );
+                                            setState(() {});
                                           },
                                           isStarShaded: _filteredCards[index].isStarred,
                                           onStarShaded: () => _toggleStar(_filteredCards[index], true),

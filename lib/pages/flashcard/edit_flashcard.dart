@@ -14,6 +14,7 @@ import '../misc/custom widgets/appbar/auth_bar.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
 import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
 import '../misc/custom widgets/dialogs/alert_dialog.dart';
+import '../misc/custom widgets/functions/loading.dart';
 import '../misc/custom widgets/textboxes/textboxes.dart';
 
 class EditFlashcardPage extends StatefulWidget {
@@ -118,7 +119,9 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
             });
           },
         ),
-        body: _isLoading ? const Center(child: CircularProgressIndicator()) :
+        body: _isLoading ? const DeckLoadingDialog(
+          message: "Updating your flashcard…",
+        ) :
         Column(
           children: [
             Expanded(
@@ -219,49 +222,53 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
                                   "Save Changes?",
                                   "Are you sure you want to save changes made?",
                                   "Save",
-                                      () async {
+                                  () async {
+                                    Navigator.of(context).pop();
+                                    if (_questionOrTermController.text.trim().isEmpty) {
+                                      await Future.delayed(const Duration(milliseconds: 300));
+                                      showAlertDialog(context, "assets/images/Deck-Dialogue1.png",
+                                          "Uh oh. Something went wrong",
+                                          "Please add a term or question to continue.");
+                                      return;
+                                    }
+                                    if (_descriptionOrAnswerController.text.trim().isEmpty) {
+                                      await Future.delayed(const Duration(milliseconds: 300));
+                                      showAlertDialog(context, "assets/images/Deck-Dialogue1.png",
+                                          "Uh oh. Something went wrong",
+                                          "Please add a description or answer to continue.");
+                                      return;
+                                    }
                                     try {
-                                      if (_questionOrTermController.text.trim().isEmpty) {
-                                        await Future.delayed(const Duration(milliseconds: 300));
-                                        showAlertDialog(context, "assets/images/Deck-Dialogue1.png",
-                                            "Uh oh. Something went wrong",
-                                            "Please add a term or question to continue.");
-                                        return;
-                                      }
-                                      if (_descriptionOrAnswerController.text.trim().isEmpty) {
-                                        await Future.delayed(const Duration(milliseconds: 300));
-                                        showAlertDialog(context, "assets/images/Deck-Dialogue1.png",
-                                            "Uh oh. Something went wrong",
-                                            "Please add a description or answer to continue.");
-                                    return;
-                                      }
                                       Map<String, dynamic> requestBody = {};
                                       if (widget.card.term.toString().trim() != _questionOrTermController.text.toString().trim()) {
                                         requestBody['term'] = _questionOrTermController.text.toString().trim();
+                                        widget.card.term = _questionOrTermController.text.toString().trim();
                                       }
                                       if (widget.card.definition.toString() != _descriptionOrAnswerController.text.toString()) {
                                         requestBody['definition'] = _descriptionOrAnswerController.text.toString().trim();
+                                        widget.card.definition = _descriptionOrAnswerController.text.toString().trim();
                                       }
-                                      Navigator.of(context).pop(true);
+                                      setState(() {
+                                        _isLoading = true;
+                                      });
                                       await widget.card.updateAnswer(widget.deck.deckId, requestBody);
                                       showAlertDialog(
                                         context,
                                         "assets/images/Deck-Dialogue3.png",
                                         "Changed flash card information!",
-                                        "Successfully changed flash card information.",
+                                        "Successfully changed flash card information!",
                                       );
-                                      setState(() {
-                                        buttonsEnabled = !buttonsEnabled;
-                                      });
+                                      await Future.delayed(const Duration(milliseconds: 300)); // optional small delay for UX
                                     } catch (e) {
-                                      print('Error saving changes $e');
                                       setState(() => _isLoading = false);
                                       showAlertDialog(
                                         context,
                                         "assets/images/Deck-Dialogue3.png",
-                                        "Changed flash card information!",
-                                        "Successfully changed flash card information.",
+                                        "An Unknown Error Occurred",
+                                        "An unknown error occurred preventing your flashcard to be update. Please try again later.",
                                       );
+                                    } finally{
+                                      setState(() => _isLoading = false);
                                     }
                                   },
                                 );
