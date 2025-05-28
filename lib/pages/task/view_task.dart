@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 import '../misc/custom widgets/appbar/auth_bar.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
 import '../misc/custom widgets/buttons/radio_button_group.dart';
+import '../misc/custom widgets/dialogs/alert_dialog.dart';
 import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
 import '../misc/custom widgets/textboxes/textboxes.dart';
 
@@ -79,26 +80,29 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
     DateTime? startDate = selectedStartDate;
     DateTime? endDate = selectedEndDate;
 
-    if(title.isEmpty || title == widget.task.title){
-      title = null;
-    }
-    if(description.isEmpty || description == widget.task.description){
-      description = null;
-    }
-    if(status.toLowerCase() == widget.task.status.toLowerCase()){
-      status = null;
-    }
-    if(priority.toLowerCase() == widget.task.priority.toLowerCase()){
-      priority = null;
-    }
-    if(endDate == widget.task.endDate){
-      endDate = null;
-    }
-    if(startDate == widget.task.startDate){
-      startDate = null;
-    }
-
     try {
+      if(title.isEmpty){
+        throw Exception("Task title is required");
+      }
+      if(title == widget.task.title){
+        title = null;
+      }
+      if(description == widget.task.description){
+        description = null;
+      }
+      if(status.toLowerCase() == widget.task.status.toLowerCase()){
+        status = null;
+      }
+      if(priority.toLowerCase() == widget.task.priority.toLowerCase()){
+        priority = null;
+      }
+      if(endDate == widget.task.endDate){
+        endDate = null;
+      }
+      if(startDate == widget.task.startDate){
+        startDate = null;
+      }
+
       final message = await _taskService.updateTask(
         taskFolderId: taskFolderId,
         taskId: taskId,
@@ -110,13 +114,20 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
         endDate: endDate,
       );
 
-      print('Task updated: $message');
       Navigator.of(context).pop();
       Navigator.of(context).pop();
       // You can then show a success snackbar or navigate back, etc.
     } catch (e) {
-      print('Error: $e');
-      // Show error dialog or snackbar
+      String errorMessage = 'An unknown error occurred.';
+      if (e is Exception) {
+        errorMessage = e.toString().replaceFirst("Exception: ", "");
+      }
+      showAlertDialog(
+        context,
+        "assets/images/Deck-Dialogue1.png",
+        "Uh oh. Something went wrong.",
+        errorMessage,
+      );
     }
   }
 
@@ -447,7 +458,6 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                             borderWidth: 2,
                             borderColor: DeckColors.primaryColor,
                             onPressed: () {
-                              print("Save button pressed");
                               showConfirmDialog(
                                   context,
                                   "assets/images/Deck-Dialogue4.png",

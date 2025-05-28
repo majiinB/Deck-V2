@@ -130,7 +130,7 @@ class _AddTaskFolderPageState extends State<AddTaskFolderPage> {
                             }catch(e){
                               String errorMessage = 'An unknown error occurred.';
                               if (e is Exception) {
-                                errorMessage = e.toString();
+                                errorMessage = e.toString().replaceFirst("Exception: ", "");
                               }
                               showAlertDialog(
                                 context,

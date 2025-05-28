@@ -252,7 +252,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                               ///loading dialog
                               setState(() => isLoading = true);
                               await Future.delayed(const Duration(milliseconds: 300));
-                              if(_endDateController.text.isEmpty || _startDateController.text.isEmpty || _titleController.text.isEmpty || _descriptionController.text.isEmpty){
+                              if(_endDateController.text.isEmpty || _startDateController.text.isEmpty || _titleController.text.isEmpty){
                                 /// stop loading
                                 setState(() => isLoading = false);
                                 ///display error
