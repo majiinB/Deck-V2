@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../colors.dart';
+import '../dialogs/confirmation_dialog.dart';
 import '../menus/pop_up_menu.dart';
 import '../progressbar/progress_bar.dart';
 import 'package:deck/pages/task/edit_task_folder.dart';
@@ -127,7 +128,7 @@ class TaskFolderTile extends StatelessWidget{
           child: PopupMenu(
             items: ["Edit Folder Info", "Delete"],
             icons: [DeckIcons.pencil, DeckIcons.trash_bin],
-            onItemSelected: (index) async {
+            onItemSelected: (index) {
               if (index == 0) {
                 print("Edit Folder Info Selected");
                 Navigator.push(
@@ -135,7 +136,17 @@ class TaskFolderTile extends StatelessWidget{
                   RouteGenerator.createRoute(EditTaskFolderPage(taskFolder: taskFolder,)),//TODO ADD THE INDEX OF THE FOLDER HERE
                 );
               } else if (index == 1) {
-                await TaskService().deleteTaskFolder(taskFolderId: taskFolder.id);
+                showConfirmDialog(
+                    context,
+                    "assets/images/Deck-Dialogue4.png",
+                    'Delete Task Folder "${taskFolder.title}"?',
+                    'This action is permanent and will remove all ${totalTask} tasks inside.',
+                    "Delete",
+                        () async{
+                          await TaskService().deleteTaskFolder(taskFolderId: taskFolder.id);
+                          Navigator.of(context).pop();
+                    }
+                );
               }
             },
             // offset: -100,

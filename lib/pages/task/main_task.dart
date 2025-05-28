@@ -120,7 +120,6 @@ class _TaskPageState extends State<TaskPage> {
                                         RouteGenerator.createRoute(ViewTaskFolderPage(taskFolder: result)),
                                       );
                                     }
-
                                     _getTaskFolder();
                                   },
                                 ),
