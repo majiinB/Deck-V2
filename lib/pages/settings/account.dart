@@ -23,6 +23,7 @@ import '../misc/custom widgets/buttons/custom_buttons.dart';
 import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
 import '../misc/custom widgets/images/profile_image.dart';
 import '../misc/custom widgets/tiles/settings_container.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({super.key});
@@ -473,8 +474,53 @@ class AccountPageState extends State<AccountPage> {
                                   title: 'Goodbye, wanderer',
                                   message: 'Thanks for being part of Deck. Goodbye for now!',
                                   button1: 'Ok',
-                                  onConfirm: () {
-                                    Navigator.of(context).pop(); // Close the second dialog
+                                  onConfirm: () async {
+                                    if (mounted) {
+                                      try {
+                                        // Get current user
+                                        final user = FirebaseAuth.instance.currentUser;
+
+                                        if (user != null) {
+                                          String userId = user.uid;
+
+                                          // Delete Firestore data (assuming user data is stored under 'users' collection)
+                                          // Delete user document from 'users' collection
+                                          final QuerySnapshot<Map<String, dynamic>> userQuery = await FirebaseFirestore.instance
+                                              .collection('users')
+                                              .where('user_id', isEqualTo: userId)
+                                              .get();
+
+                                          for (var doc in userQuery.docs) {
+                                            await doc.reference.delete();
+                                          }
+
+                                          // Delete ban entries from 'bans' collection
+                                          final QuerySnapshot<Map<String, dynamic>> banQuery = await FirebaseFirestore.instance
+                                              .collection('bans')
+                                              .where('user_id', isEqualTo: userId)
+                                              .get();
+
+                                          for (var doc in banQuery.docs) {
+                                            await doc.reference.delete();
+                                          }
+
+                                          // Delete account from Firebase Authentication
+                                          await user.delete();
+                                        }
+
+                                        print('Account and associated Firestore data deleted successfully.');
+
+                                        // Navigate back to the welcome page
+                                        Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+                                          RouteGenerator.createRoute(const WelcomePage()),
+                                              (Route<dynamic> route) => false,
+                                        );
+                                      } catch (error) {
+                                        print('Error deleting account: $error');
+                                      } finally {
+                                        if (mounted) setState(() => _isLoading = false);
+                                      }
+                                    }
                                   },
                                 );
                               },
