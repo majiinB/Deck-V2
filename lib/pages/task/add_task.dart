@@ -1,20 +1,17 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:deck/backend/auth/auth_service.dart';
+import 'package:deck/backend/models/TaskFolder.dart';
+import 'package:deck/backend/task/task_service.dart';
 import 'package:flutter/material.dart';
 import 'package:deck/pages/misc/colors.dart';
-import 'package:provider/provider.dart';
-import '../../backend/task/task_provider.dart';
-import '../../backend/task/task_service.dart';
 import '../misc/custom widgets/appbar/auth_bar.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
 import '../misc/custom widgets/buttons/radio_button_group.dart';
 import '../misc/custom widgets/dialogs/alert_dialog.dart';
-import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
 import '../misc/custom widgets/textboxes/textboxes.dart';
-import '../misc/deck_icons.dart';
 
 class AddTaskPage extends StatefulWidget {
-  const AddTaskPage({super.key});
+  final TaskFolder taskFolder;
+  const AddTaskPage({super.key, required this.taskFolder});
 
   @override
   State<AddTaskPage> createState() => _AddTaskPageState();
@@ -28,8 +25,11 @@ class _AddTaskPageState extends State<AddTaskPage> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
-  
-  Future<void> _selectDate(BuildContext context) async {
+  @override
+  void initState() {
+    super.initState();
+  }
+  Future<void> _selectDate(BuildContext context, String controller) async {
     DateTime? pickedDate = await showDatePicker(
       context: context,
       firstDate: DateTime(2020),
@@ -39,7 +39,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
       errorInvalidText: 'Enter date in valid range',
       fieldHintText: 'Month/Day/Year',
       fieldLabelText: 'Date Deadline',
-
       initialEntryMode: DatePickerEntryMode.calendarOnly,
       builder: (context, child) {
         return Theme(
@@ -94,10 +93,13 @@ class _AddTaskPageState extends State<AddTaskPage> {
       },
     );
 
+    // Update text in the controller with selected date
     if (pickedDate != null) {
-      _endDateController.text = pickedDate
-          .toString()
-          .split(" ")[0]; // Update text in the controller with selected date
+      if(controller == "START_DATE"){
+        _startDateController.text = pickedDate.toString().split(" ")[0];
+      }else if (controller == "END_DATE"){
+        _endDateController.text = pickedDate.toString().split(" ")[0];
+      }
     }
   }
 
@@ -161,7 +163,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                         ),
                         BuildTextBox(
                           hintText: "Enter Start Date",
-                          onTap: () => _selectDate(context), // Pass context to _selectDate method
+                          onTap: () => _selectDate(context, "START_DATE"), // Pass context to _selectDate method
                           controller: _startDateController,
                           isReadOnly: true,
                           rightIcon: Icons.calendar_today_outlined,
@@ -182,7 +184,10 @@ class _AddTaskPageState extends State<AddTaskPage> {
                         ),
                         BuildTextBox(
                           hintText: "Enter Due Date",
-                          onTap: () => _selectDate(context), // Pass context to _selectDate method
+                          onTap: () => {
+                            // TODO: Check if end date is greater than start date
+                            _selectDate(context, "END_DATE")
+                          }, // Pass context to _selectDate method
                           controller: _endDateController,
                           isReadOnly: true,
                           rightIcon: Icons.calendar_today_outlined,
@@ -247,7 +252,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                               ///loading dialog
                               setState(() => isLoading = true);
                               await Future.delayed(const Duration(milliseconds: 300));
-                              if(_endDateController.text.isEmpty || _startDateController.text.isEmpty || _titleController.text.isEmpty || _descriptionController.text.isEmpty){
+                              if(_endDateController.text.isEmpty || _startDateController.text.isEmpty || _titleController.text.isEmpty){
                                 /// stop loading
                                 setState(() => isLoading = false);
                                 ///display error
@@ -255,13 +260,10 @@ class _AddTaskPageState extends State<AddTaskPage> {
                                   context,
                                   "assets/images/Deck-Dialogue1.png",
                                   "Uh oh. Something went wrong.",
-                                  "Error adding task! A text field is blank! Please fill all the text fields and try again.",
+                                  "Please fill all the text fields and try again.",
                                 );
                                 return;
                               }
-                              print(DateTime.parse(_endDateController.text));
-                              print(DateTime.parse(_startDateController.text));
-                              print(DateTime.now());
                               if(DateTime.parse(_endDateController.text).add(const Duration(hours: 23, minutes: 59, seconds: 59)).isBefore(DateTime.now())){
                                 /// stop loading
                                 setState(() => isLoading = false);
@@ -270,27 +272,26 @@ class _AddTaskPageState extends State<AddTaskPage> {
                                   context,
                                   "assets/images/Deck-Dialogue1.png",
                                   "Uh oh. Something went wrong.",
-                                  "Error adding task! Past deadlines aren't allowed. Please try again.",
+                                  "Past deadlines aren't allowed. Please try again.",
                                 );
                                 return;
                               }
-                              Map<String, dynamic> data = {
-                                "user_id": AuthService().getCurrentUser()?.uid,
-                                "title": _titleController.text,
-                                "description" : _descriptionController.text,
-                                "priority": _selectedPriority,
-                                "is_done": false,
-                                "is_active": false,
-                                "set_date": DateTime.now(),
-                                "end_date": DateTime.parse(_endDateController.text).add(const Duration(hours: 23, minutes: 59, seconds: 59)),
-                                "is_deleted": false,
-                                "done_date": DateTime.now(),
-                              };
+                              String taskFolderId = widget.taskFolder.id;
+                              TaskService taskService = TaskService();
+                              await taskService.createTask(
+                                  taskFolderId: taskFolderId,
+                                  title: _titleController.text.toString().trim(),
+                                  description: _descriptionController.text.toString().trim(),
+                                  status: "pending",
+                                  priority: _selectedPriority,
+                                  startDate: DateTime.parse(_startDateController.text),
+                                  endDate: DateTime.parse(_endDateController.text));
+
                               /// stop loading
                               if(mounted) {
                                 setState(() => isLoading = false);
-                              }
-                              Provider.of<TaskProvider>(context, listen: false).addTask(data);
+                              };
+
                               Navigator.pop(context);
                             }
                         ),

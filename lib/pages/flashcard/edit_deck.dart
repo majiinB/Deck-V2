@@ -11,6 +11,7 @@ import '../../backend/models/deck.dart';
 import '../misc/custom widgets/appbar/auth_bar.dart';
 import '../misc/custom widgets/buttons/icon_button.dart';
 import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
+import '../misc/custom widgets/functions/loading.dart';
 import '../misc/custom widgets/images/cover_image.dart';
 import '../misc/custom widgets/textboxes/textboxes.dart';
 import '../misc/custom widgets/tiles/bottom_sheet.dart';
@@ -34,6 +35,7 @@ class _EditDeckState extends State<EditDeck> {
   String originalDeckTitle = '';
   String originalDeckDescription = '';
   String? originalCoverPhoto;
+  bool isLoading = false;
 
   String coverPhoto = "no_photo";
   ///This is used to update word count
@@ -97,7 +99,7 @@ class _EditDeckState extends State<EditDeck> {
             builder: (BuildContext context) {
               return CustomConfirmDialog(
                 title: 'Are you sure you want to go back?',
-                message: 'If you go back now, you will lose all your progress',
+                message: 'Going back now will lose all your progress.',
                 imagePath: 'assets/images/Deck-Dialogue4.png',
                 button1: 'Go Back',
                 button2: 'Cancel',
@@ -125,7 +127,9 @@ class _EditDeckState extends State<EditDeck> {
           color: DeckColors.primaryColor,
           fontSize: 24,
         ),
-        body: SingleChildScrollView(
+        body: isLoading ? const DeckLoadingDialog(
+          message: "Updating your deck…",
+        ): SingleChildScrollView(
           padding: EdgeInsets.only(top: 15,),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -229,7 +233,7 @@ class _EditDeckState extends State<EditDeck> {
                                                 showAlertDialog(
                                                     context,"assets/images/Deck-Dialogue1.png",
                                                     "Error in selecting files",
-                                                    "There was an error in selecting the file. Please try again."
+                                                    "File selection failed. Try again."
                                                 );
                                               }
                                               Navigator.pop(context);
@@ -311,30 +315,64 @@ class _EditDeckState extends State<EditDeck> {
                       padding: const EdgeInsets.only(top: 15.0),
                       child: BuildButton(
                           onPressed: () async {
-                            print('clicked save deck');
-                            Map<String, dynamic> requestBody = {};
-                            if(_isDeckTitleChanged){
-                              requestBody['deckTitle'] = deckTitleController.text;
-                            }
-                            if(_isDeckDescriptionChanged){
-                              requestBody['deckDescription'] = deckDescriptionController.text;
-                            }
-                            if(coverPhoto != 'no_photo'){
-                              FlashcardService flashcardService = FlashcardService();
-                              String uploadedPhotoUrl = await flashcardService.uploadImageToFirebase(
-                                  coverPhoto,
-                                  widget.deck.userId.toString()
+                            // Navigator.of(context).pop();
+                            if(!_isDeckTitleChanged && !_isDeckDescriptionChanged && coverPhoto == 'no_photo'){
+                              setState(() {
+                                isLoading = false;
+                              });
+                              showAlertDialog(
+                                  context,
+                                  'assets/images/Deck-Dialogue1.png',
+                                  'Deck Update Error',
+                                  'At least one of the deck information must be changed to update the deck'
                               );
-                              requestBody['coverPhoto'] = uploadedPhotoUrl;
+                              return;
                             }
 
-                            await widget.deck.updateDeckInfo(requestBody);
-                            showAlertDialog(
-                                context,
-                                'assets/images/Deck-Dialogue3.png',
-                                'Deck Successfully Updated',
-                                'Deck was successfully updated and will be reflected now on the list'
-                            );
+                            try{
+                              Map<String, dynamic> requestBody = {};
+                              if(_isDeckTitleChanged){
+                                requestBody['deckTitle'] = deckTitleController.text;
+                                widget.deck.title = deckTitleController.text;
+                              }
+                              if(_isDeckDescriptionChanged){
+                                requestBody['deckDescription'] = deckDescriptionController.text;
+                                widget.deck.description = deckTitleController.text;
+                              }
+
+                              setState(() {
+                                isLoading = true;
+                              });
+
+                              if(coverPhoto != 'no_photo'){
+                                FlashcardService flashcardService = FlashcardService();
+                                String uploadedPhotoUrl = await flashcardService.uploadImageToFirebase(
+                                    coverPhoto,
+                                    widget.deck.userId.toString()
+                                );
+                                requestBody['coverPhoto'] = uploadedPhotoUrl;
+                                widget.deck.coverPhoto = uploadedPhotoUrl;
+                              }
+
+                              await widget.deck.updateDeckInfo(requestBody);
+                              showAlertDialog(
+                                  context,
+                                  'assets/images/Deck-Dialogue3.png',
+                                  'Deck Successfully Updated',
+                                  'Deck updated. Changes now visible in list.'
+                              );
+                            }catch(e){
+                              showAlertDialog(
+                                  context,
+                                  'assets/images/Deck-Dialogue1.png',
+                                  'Deck Update Error',
+                                  'An Unknown Error Has Occurred During The Update. Please Try Again Later.'
+                              );
+                            }finally{
+                              setState(() {
+                                isLoading = false;
+                              });
+                            }
                           },
                           buttonText: 'Save Deck',
                           height: 50.0,
@@ -349,7 +387,10 @@ class _EditDeckState extends State<EditDeck> {
                     Padding(
                       padding: const EdgeInsets.only(top: 10.0, bottom: 20),
                       child: BuildButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          await widget.deck.updateDeleteStatus(true);
+                          Navigator.of(context).pop();
+                        },
                         buttonText: 'Delete Deck',
                         height: 50.0,
                         width: MediaQuery.of(context).size.width,

@@ -30,20 +30,16 @@ class Cards {
     );
   }
 
-  Future<bool> updateDeleteStatus(bool value, String deckId) async {
+  Future<bool> deleteCard(bool value, String deckId) async {
     try {
-      if (isDeleted == null) {
-        print('isDeleted is null');
-        return false;
-      }
       String? token = await AuthService().getIdToken();
 
       Map<String, dynamic> requestBody = {
-        'isDeleted': value,
+        'flashcardIDs': [_cardId],
       };
 
-      final response = await http.put(
-        Uri.parse('$deckManagerAPIUrl/v1/decks/$deckId/flashcards/$cardId'), // API endpoint.
+      final response = await http.post(
+        Uri.parse('$deckManagerAPIUrl/v1/decks/$deckId/flashcards/delete'), // API endpoint.
         body: jsonEncode(requestBody), // JSON-encoded request body.
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
@@ -127,21 +123,38 @@ class Cards {
       return false;
     }
   }
-  Future<bool> updateAnswer(String newAnswer, String deckId) async {
+  Future<bool> updateAnswer(String deckId, Map<String, dynamic> requestBody) async {
     try {
-      // Reference to the Firestore document
-      DocumentReference deckRef = _firestore.collection('decks').doc(deckId)
-          .collection('questions')
-          .doc(_cardId);
+      String? token = await AuthService().getIdToken();
 
-      // Update only the 'title' field of the document
-      await deckRef.update({'answer': newAnswer});
-      definition = newAnswer;
-      print('Card answer updated successfully');
-      return true;
+      // Send a PUT request to the API with the request body and headers.
+      final response = await http.put(
+        Uri.parse('$deckManagerAPIUrl/v1/decks/$deckId/flashcards/$cardId'), // API endpoint.
+        body: jsonEncode(requestBody), // JSON-encoded request body.
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $token',
+        },
+
+      );
+      print(response.statusCode);
+      print(response.body);
+      if(response.statusCode == 200){
+        var jsonData = jsonDecode(response.body) as Map<String, dynamic>;
+        print(jsonData); // Log parsed data for debugging.
+
+        if(requestBody.containsKey('term')){
+          term = requestBody['term'];
+        }else if(requestBody.containsKey('definition')){
+          definition = requestBody['definition'];
+        }
+        // If the JSON data is non-empty, process it.
+        if (jsonData.isNotEmpty) return true;
+        return true;
+      }
+      return false;
     } catch (e) {
-      // Handle any errors that might occur during the update
-      print('Error updating card answer: $e');
+      print('Error deleting deck: $e');
       return false;
     }
   }

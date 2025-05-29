@@ -11,7 +11,9 @@ import 'package:auto_size_text/auto_size_text.dart';
 import '../../backend/auth/auth_service.dart';
 import '../../backend/flashcard/flashcard_service.dart';
 import '../../backend/models/deck.dart';
+import '../../backend/models/newTask.dart';
 import '../../backend/task/task_provider.dart';
+import '../../backend/task/task_service.dart';
 import '../flashcard/flashcard.dart';
 import '../misc/custom widgets/tiles/home_deck_tile.dart';
 import '../task/main_task.dart';
@@ -38,7 +40,10 @@ class _HomePageState extends State<HomePage> {
   final AuthService _authService = AuthService();
   final FlashcardService _flashcardService = FlashcardService();
   late List<Deck> _decks = [];
+  late List<Deck> _recoDecks = [];
   late User? _user;
+  final TaskService _taskService = TaskService();
+  List<NewTask> upcomingTasks = [];
 
   //Initial values
   String greeting = "";
@@ -46,7 +51,7 @@ class _HomePageState extends State<HomePage> {
   bool hasUnreadNotif = true;
   int correct = 0;
   int total = 0;
-  String score = "";
+  String score = "0/0";
   bool isRecentQuizPassed = true;
 
   DateTime selectedDay = DateTime.now();
@@ -61,7 +66,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     _user = _authService.getCurrentUser();
     _initUserDecks(_user);
-    _initUserTasks(_user);
+    _getTasks();
     _initGreeting();
     _initScore();//temporary
   }
@@ -73,15 +78,22 @@ class _HomePageState extends State<HomePage> {
       String? lastName = _user?.displayName?.split(" ").last;
       String? firstNameAndLastName = '${firstName ?? "User"} ${lastName ?? ""}';
       List<Deck> decks = await _flashcardService
-          .getDecksByUserIdNewestFirst(userId, firstNameAndLastName); // Call method to fetch decks
+          .getDecksByUserIdNewestFirst(); // Call method to fetch decks
+      var result = await _flashcardService.getDecks("RECOMMENDED_DECKS");
+      List<Deck> recoDecks = result['decks'];
+
       setState(() {
         _decks = decks; // Update state with fetched decks
+        _recoDecks = recoDecks;
       });
     }
   }
 
-  void _initUserTasks(User? user) async {
-    await Provider.of<TaskProvider>(context, listen: false).loadTasks();
+  void _getTasks() async {
+    List <NewTask> retrievedTasks = await _taskService.fetchNearingDueTasks();
+    setState(() {
+      upcomingTasks = retrievedTasks;
+    });
   }
 
   void _initGreeting() {
@@ -92,64 +104,31 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void _initScore() {
-    /// Initializes the quiz score and determines if the user has passed.
-    ///
-    /// This function sets the `correct` and `total` scores, checks if user
-    /// has passed based on whether they scored at least half of the total, and
-    /// updates the `score` display accordingly.
-    correct = 50; //get scores from db
-    total = 100;
+  void _initScore() async{
+    try {
+      final result = await _flashcardService.getLatestQuizAttempt();
+      final latestAttempt = result['latest_attempt'] as Map<String, dynamic>;
+      final deckInfo = result['deck'] as Map<String, dynamic>;
+      final int attemptScore = latestAttempt['score'] as int;
+      final int totalQuestion = latestAttempt['total_questions'] as int;
 
-    if(correct >= (total/2)){
-      isRecentQuizPassed = true;
-    }else {
-      isRecentQuizPassed = false;
+      setState(() {
+        correct = attemptScore;
+        total = totalQuestion;
+        score = "$correct/$total";
+        if(correct >= (total/2)){
+          isRecentQuizPassed = true;
+        }else {
+          isRecentQuizPassed = false;
+        }
+      });
+    } catch (e) {
+      print('Error fetching latest quiz attempt: $e');
     }
-    setState(() {
-      score = "$correct/$total";});
   }
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<TaskProvider>(context);
-    final _tasks = provider.getList;
-    _tasks.sort((a, b) {
-      // Define your priority order
-      int getPriorityIndex(String priority) {
-        switch (priority) {
-          case 'High':
-            return 0;
-          case 'Medium':
-            return 1;
-          case 'Low':
-            return 2;
-          default:
-            return 3; // Fallback if the priority is not recognized
-        }
-      }
-
-      // Compare priorities (High -> Low)
-      return getPriorityIndex(a.priority).compareTo(getPriorityIndex(b.priority));
-    });
-
-    //this is only sample data
-    // sorry if it doesn't sort out the task yet hehe, you already have a logic for that naman
-    List<Map<String, dynamic>> sampleTasks = [
-      {'folderName': 'ArchOrg', 'taskName': 'Make a circuit board', 'deadline': DateTime.now(), 'priority': 0, 'isDone': false},
-      {'folderName': 'Hello', 'taskName': 'Exam in Quizalize', 'deadline': DateTime.now(), 'priority': 1, 'isDone': false},
-      // {'folderName': 'SoftEng', 'taskName': 'Nyehehe', 'deadline': DateTime.now(), 'priority': 2, 'isDone': false},
-      {'folderName': 'Math', 'taskName': 'Finish homework', 'deadline': DateTime.now(), 'priority': 0, 'isDone': false},
-      {'folderName': 'Science', 'taskName': 'Read module', 'deadline': DateTime.now(), 'priority': 1, 'isDone': false},
-    ];
-    List<Map<String, dynamic>> taskToday = sampleTasks
-        .where((task) => isSameDay(task['deadline'], DateTime.now()) && task['isDone'] == false)
-        .toList();
-
-    // List<Task> taskToday = _tasks
-    //     .where((task) => isSameDay(task.deadline, selectedDay) && !task.isDone)
-    //     .toList();
-
     return Scaffold(
       backgroundColor: DeckColors.backgroundColor,
       body: SafeArea(
@@ -163,57 +142,10 @@ class _HomePageState extends State<HomePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children:[
-                  Stack(
-                    children: [
-                      Image.asset(
-                        'assets/images/Deck-Home-Header.png',
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                      ),
-                      Positioned(
-                        top: 10,
-                        right: 10,
-                        child: IconButton(
-                          // iconSize: 10,
-                          icon: hasUnreadNotif ?
-                          Stack(
-                            children: [
-                              const Icon(Icons.notifications,  color: DeckColors.primaryColor),
-                              // Red dot badge (Unread indicator)
-                              Positioned(
-                                right: 0,
-                                top: 0,
-                                child: Container(
-                                  padding: const EdgeInsets.all(2),
-                                  decoration: BoxDecoration(
-                                    color: DeckColors.deckRed,
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                      color: DeckColors.softGreen,
-                                      width: 2,
-                                    ),
-
-                                  ),
-                                  constraints: const BoxConstraints(
-                                    minWidth: 10,
-                                    minHeight: 10,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )
-                              :
-                          Icon( Icons.notifications, color: DeckColors.primaryColor),
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                RouteGenerator.createRoute(NotificationPage()),
-
-                            );
-                          },
-                        ),
-                      ),
-                    ],
+                  Image.asset(
+                    'assets/images/Deck-Home-Header.png',
+                    width: double.infinity,
+                    fit: BoxFit.cover,
                   ),
                   const SizedBox(height: 20),
                   Padding(
@@ -463,51 +395,30 @@ class _HomePageState extends State<HomePage> {
                                 fontWeight: FontWeight.bold)
                         ),
                         const SizedBox(height: 10),
-                        if(taskToday.isEmpty)
+                        if(upcomingTasks.isEmpty)
                           const IfCollectionEmpty(
                             hasIcon: false,
                             hasBackground: true,
                             ifCollectionEmptyText: 'YIPEE! No upcoming deadlines! ',
                             ifCollectionEmptySubText:
-                            'Now’s the perfect time to get ahead. Start adding new tasks and stay on top of your game!',
+                            'Get ahead now! Add tasks and stay sharp!',
                           )
-                        else if(taskToday.isNotEmpty) ...[
-                          ...taskToday.take(3).map((task) =>
+                        else if(upcomingTasks.isNotEmpty) ...[
+                          ...upcomingTasks.take(3).map((task) =>
+
                               Padding(
                                 padding: EdgeInsets.only(bottom: 10),
                                 child: HomeTaskTile(
                                   //TODO change datas here
-                                  folderName: task['folderName'],//task.folderName
-                                  taskName: task['taskName'],// task.taskName
-                                  deadline: selectedDay,
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        RouteGenerator.createRoute(
-                                          ViewTaskPage(
-                                              task: Task(
-                                                '0000',
-                                                'title',
-                                                'description',
-                                                'priority',
-                                                'user_id',
-                                                false,
-                                                false,
-                                                DateTime.now(),
-                                                DateTime.now(),
-                                                false,
-                                                DateTime.now(),
-                                              ),
-                                              isEditable: false
-                                          )
-                                        )
-                                    );
-                                  },
-                                  priority: task['priority'],//task.priority
+                                  folderName: task.folderSource!,
+                                  taskName: task.title,// task.taskName
+                                  deadline: task.endDate,
+                                  onPressed: () {},
+                                  priority: task.priority,//task.priority
                                 ),
                               )
                           ),
-                        if (taskToday.length > 3)
+                        if (upcomingTasks.length > 3)
                           SizedBox(
                               width: double.infinity,
                               child:TextButton(
@@ -538,48 +449,6 @@ class _HomePageState extends State<HomePage> {
                             )
                           ),
                         ],
-                        //   SliverList(
-                        //   delegate: SliverChildBuilderDelegate(childCount: _tasks.length.clamp(0, 5),
-                        //       (context, index) {
-                        //     DateTime deadline = DateTime(_tasks[index].deadline.year,
-                        //         _tasks[index].deadline.month, _tasks[index].deadline.day);
-                        //     DateTime notifyRange = DateTime(DateTime.now().year,
-                        //             DateTime.now().month, DateTime.now().day)
-                        //         .add(const Duration(days: 1));
-                        //     DateTime today = DateTime(DateTime.now().year,
-                        //         DateTime.now().month, DateTime.now().day);
-                        //     if (!_tasks[index].isDone &&
-                        //         deadline.isBefore(notifyRange) &&
-                        //         deadline.isAtSameMomentAs(today)
-                        //         ) {
-                        //       return
-                        //         LayoutBuilder(
-                        //           builder: (context, BoxConstraints constraints) {
-                        //         return  DeckTaskTile(
-                        //           title: _tasks[index].title,
-                        //           deadline: TaskProvider.getNameDate(_tasks[index].deadline),
-                        //           priority: _tasks[index].priority,
-                        //           progressStatus: 'to do',
-                        //           // title: tasks[index]['title'],
-                        //           // deadline: _tasks[index].deadline.toString().split(" ")[0],
-                        //           // priority: tasks[index]['priority'],
-                        //           // progressStatus: tasks[index]['progressStatus'],
-                        //           enableRetrieve: false,
-                        //           onTap: () {
-                        //             print("Clicked task tile!");
-                        //             Navigator.push(
-                        //               context,
-                        //               RouteGenerator.createRoute(ViewTaskPage(task: _tasks[index], isEditable: false)),
-                        //             );
-                        //           }, onDelete: () {  },
-                        //         );
-                        //       });
-                        //     } else {
-                        //       return const SizedBox();
-                        //     }
-                        //   }),
-                        // ),
-
                         const SizedBox(height: 10),
                         //recently accessed decks section
                         const Text(
@@ -596,7 +465,7 @@ class _HomePageState extends State<HomePage> {
                             hasBackground: true,
                             ifCollectionEmptyText: 'No Recent Decks Yet!',
                             ifCollectionEmptySubText:
-                            'Discover new decks or create your own to keep learning.',
+                            'Discover new decks or create your own to learn.',
                           ),
                       ],
                     ),
@@ -646,19 +515,21 @@ class _HomePageState extends State<HomePage> {
                             fontWeight: FontWeight.bold)
                     ),
                   ),
+                  if(_recoDecks.isNotEmpty)
                   SizedBox(
                     height: 150.0,
                     child:
-                    ListView.builder( //TODO Change datas here using data from db
+                    ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      itemCount: 15, //_decks.length
+                      itemCount: _recoDecks.length,
                       itemBuilder:(context, index){
                         return Padding(
                             padding: EdgeInsets.only(left: index == 0 ? 30 : 10, right: 10) ,
                             child: HomeDeckTile(
-                              titleOfDeck: 'yee',
-                              ownerOfDeck: 'sample',
-                              numberOfCards: 100,
+                              titleOfDeck: _recoDecks[index].title,
+                              ownerOfDeck: _recoDecks[index].deckOwnerName,
+                              numberOfCards: _recoDecks[index].flashcardCount,
+                              deckCoverPhotoUrl: _recoDecks[index].coverPhoto,
                               onDelete: () {  },
                               onTap: () {  },
                             )
@@ -666,6 +537,17 @@ class _HomePageState extends State<HomePage> {
                       },
                     ),
                   ),
+                  if(_recoDecks.isEmpty)
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 30.0),
+                      child: IfCollectionEmpty(
+                        hasIcon: false,
+                        hasBackground: true,
+                        ifCollectionEmptyText: 'No decks to recommend just yet! ',
+                        ifCollectionEmptySubText:
+                        'Explore decks to get recommendation',
+                      ),
+                    )
                 ]
             ),
           )

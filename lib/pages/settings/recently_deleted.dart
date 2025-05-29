@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:deck/backend/flashcard/flashcard_utils.dart';
 import 'package:deck/pages/misc/colors.dart';
 import 'package:deck/pages/misc/deck_icons.dart';
@@ -31,6 +33,9 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
   late User? _user;
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = "";
+  String _nextPageToken = "";
+  List<String> get allDeckIds => _decks.map((d) => d.deckId).toList();
+  Timer? _debounce; // Debouncer
 
   @override
   void initState() {
@@ -50,8 +55,10 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
   void _initUserDecks(User? user) async {
     if (user != null) {
       String userId = user.uid;
-      List<Deck> decks =
-          await _flashcardService.getDeletedDecksByUserId(userId);
+      var result = await _flashcardService.getDecks("DELETED_DECKS"); // Call method to fetch decks
+      List<Deck> decks = result['decks'];
+      String nextPageToken = result['nextPageToken'];
+
       Map<String, int> deckCardCount = {};
       for (Deck deck in decks) {
         int count = await deck.getCardCount();
@@ -61,38 +68,53 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
         _decks = decks;
         _filteredDecks = decks;
         _deckCardCount = deckCardCount;
+        _nextPageToken = nextPageToken;
       });
     }
   }
 
   void _onSearchChanged() {
-    setState(() {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 1200), () async {
       _searchQuery = _searchController.text;
-      _filteredDecks = _decks
-          .where((deck) =>
-              deck.title.toLowerCase().contains(_searchQuery.toLowerCase()))
-          .toList();
+      List<Deck> searchedDecks = [];
+      if(_searchQuery.trim().isNotEmpty){
+        var result = await _flashcardService.searchDecks(_searchQuery, "DELETED_DECKS");
+        searchedDecks = result['decks'];
+        setState(() {
+          _filteredDecks = searchedDecks;
+        });
+      }else{
+        var result = await _flashcardService.getDecks("DELETED_DECKS"); // Call method to fetch decks
+        searchedDecks = result['decks'];
+        String nextPageToken = result['nextPageToken'];
+        setState(() {
+          _decks = searchedDecks;
+          _filteredDecks = _decks;
+          _nextPageToken = nextPageToken;
+        });
+      }
     });
   }
 
-  Future<void> _deleteDeck(Deck deck, int index) async {
-    if (await _flashcardService.deleteDeck(deck.deckId)) {
-      setState(() {
-        _decks.removeAt(index);
-        _onSearchChanged();
-        FlashcardUtils.updateSettingsNeeded.value = true;
-      });
-    }
+  void _deleteDeck(List<String> deckIds) async {
+    await _flashcardService.deleteDeck(deckIds);
+    setState(() {
+      // Keep only decks whose ID is NOT in the deckIds list
+      _decks = _decks.where((d) => !deckIds.contains(d.deckId)).toList();
+      _onSearchChanged();
+    });
   }
 
-  Future<void> _retrieveDeck(Deck deck, int index) async {
-    if (await deck.updateDeleteStatus(false)) {
-      setState(() {
-        _decks.removeAt(index);
-        _onSearchChanged();
-        FlashcardUtils.updateSettingsNeeded.value = true;
-      });
-    }
+  void _retrieveDeck(Deck deck) async {
+    final success = await deck.updateDeleteStatus(false);
+    if(!success) return;
+
+    setState(() {
+      _decks.removeWhere((d) => d.deckId == deck.deckId);
+      _filteredDecks.removeWhere((d) => d.deckId == deck.deckId);
+    });
+
   }
 
   @override
@@ -131,12 +153,14 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
                           context,
                           "assets/images/Deck-Dialogue4.png",
                           "Retrieve All Items?",
-                          "Are you sure you want to retrieve all items? Once retrieved, they will return to the deck page.",
+                          "Once retrieved, items will go back to deck.",
                           "Retrieve All",
-                          () async {
-                            for (int i = _decks.length - 1; i >= 0; i--) {
-                              await _retrieveDeck(_decks[i], i);
+                          () {
+                            for (final id in allDeckIds) {
+                              final deck = _decks.firstWhere((d) => d.deckId == id);
+                              _retrieveDeck(deck);
                             }
+                            Navigator.of(context).pop();
                           },
                         );
                       },
@@ -160,13 +184,13 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
                             context,
                             "assets/images/Deck-Dialogue4.png",
                             "Delete All Items?",
-                            "Are you sure you want to delete all items? Once deleted, they cannot be retrieved. Proceed with caution.",
+                            "Once deleted, items cannot be recovered. Proceed carefully.",
                             "Delete All",
-                                () async {
-                              for (int i = _decks.length - 1; i >= 0; i--) {
-                                _deleteDeck(_decks[i], i);
-                              }
-                            },
+                                ()  {
+                                  final idsToRemove = allDeckIds;
+                                  _deleteDeck(idsToRemove);
+                                  Navigator.of(context).pop();
+                                },
                           );
                         },
                         buttonText: 'Delete All',
@@ -187,7 +211,7 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
             if (_filteredDecks.isEmpty)
               IfCollectionEmpty(
                   ifCollectionEmptyText: 'A clean mind starts with a clean trash',
-                  ifCollectionEmptySubText: 'Deleted Decks are kept in the trash bin until you delete them permanently.',
+                  ifCollectionEmptySubText: 'Deleted decks stay in trash until fully deleted.',
                   ifCollectionEmptyHeight:
                       MediaQuery.of(context).size.height * 0.7),
             if (_filteredDecks.isNotEmpty)
@@ -197,15 +221,15 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: _filteredDecks.length,
-                  itemBuilder: (context, index) {
+                  itemBuilder: (context, ItemIndex) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 6.0),
                       child: DeckList(
                         deckImageUrl:
-                            _filteredDecks[index].coverPhoto.toString(),
-                        titleText: _filteredDecks[index].title.toString(),
+                            _filteredDecks[ItemIndex].coverPhoto.toString(),
+                        titleText: _filteredDecks[ItemIndex].title.toString(),
                         numberText:
-                            "${_deckCardCount[_filteredDecks[index].deckId]} Card(s)",
+                            "${_deckCardCount[_filteredDecks[ItemIndex].deckId]} Card(s)",
                         onDelete: () {
                           /*String deletedTitle =
                               _filteredDecks[index].title.toString();
@@ -243,38 +267,34 @@ class RecentlyDeletedPageState extends State<RecentlyDeletedPage> {
                         onItemsSelected: (index) {
                           /// R E T R I E V E  I T E M
                           if(index == 0){
-                            final String retrievedTitle =
-                            _filteredDecks[index].title.toString();
                             Deck retrievedDeck = _filteredDecks[index];
                             showConfirmDialog(
                               context,
                               "assets/images/Deck-Dialogue1.png",
                               "Retrieve Item",
-                              "Are you sure you want to retrieve '$retrievedTitle'?",
+                              "Are you sure you want to retrieve this deck?",
                               "Retrieve",
-                                  () async {
-                                await _retrieveDeck(
-                                    retrievedDeck, _decks.indexOf(retrievedDeck));
-                              },
+                                  ()  {
+                                    _retrieveDeck(retrievedDeck);
+                                    Navigator.of(context).pop();
+                                  },
                             );
                           }
                           ///----- E N D  O F  R E T R I E V E  I T E M -----------
 
                           ///D E L E T E  I T E M
                           else if (index == 1){
-                            String deletedTitle =
-                            _filteredDecks[index].title.toString();
-                            Deck removedDeck = _filteredDecks[index];
+                            List<String> removedDeckId = [_filteredDecks[ItemIndex].deckId];
                             showConfirmDialog(
                               context,
                               "assets/images/Deck-Dialogue1.png",
                               "Delete Item",
-                              "Are you sure you want to delete '$deletedTitle'?",
+                              "Are you sure you want to delete this deck",
                               "Delete Item",
-                                  () async {
-                                await _deleteDeck(
-                                    removedDeck, _decks.indexOf(removedDeck));
-                              },
+                                  ()  {
+                                    _deleteDeck(removedDeckId);
+                                    Navigator.of(context).pop();
+                                  },
                             );
                           }
                           ///----- E N D  O F  D E L E T E  I T E M -----------

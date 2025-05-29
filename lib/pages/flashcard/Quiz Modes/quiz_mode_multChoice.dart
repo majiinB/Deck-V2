@@ -14,7 +14,8 @@ import '../quiz_results.dart';
 
 class QuizMultChoice extends StatefulWidget {
   final List<QuizQuestion?> questions;
-  const QuizMultChoice({super.key, required this.questions});
+  final Deck deck;
+  const QuizMultChoice({super.key, required this.deck, required this.questions});
 
   @override
   _QuizMultChoiceState createState() => _QuizMultChoiceState();
@@ -28,6 +29,9 @@ class _QuizMultChoiceState extends State<QuizMultChoice> {
   String choice2 = '';
   String choice3 = '';
   String choice4 = '';
+  int score = 0;
+  // Each result: { questionId: String, isCorrect: bool }
+  final List<Map<String, dynamic>> results = [];
 
   ///List to hold all the questions
   late final List<Map<String, dynamic>> questions;
@@ -40,13 +44,13 @@ class _QuizMultChoiceState extends State<QuizMultChoice> {
 
     questions = widget.questions.map((quizQuestion) {
       return {
-        'question': quizQuestion!.question,
+        'id': quizQuestion!.id,
+        'relatedFlashcardId': quizQuestion.relatedFlashcardId,
+        'question': quizQuestion.question,
         'choices': quizQuestion.choices.map((choice) => choice.text).toList(),
-        'correct': quizQuestion.choices.firstWhere((choice) => choice.isCorrect).text,
+        'correctIndex': quizQuestion.choices.indexWhere((choice) => choice.isCorrect),
       };
     }).toList();
-
-
     loadQuestion(currentQuestionIndex);
   }
 
@@ -83,15 +87,22 @@ class _QuizMultChoiceState extends State<QuizMultChoice> {
   }
 
   //Handle choice selection
-  void handleChoiceSelection(String choice) {
+  void handleChoiceSelection(int choiceIndex) {
     var currentQuestion = questions[currentQuestionIndex];
-    if (choice == currentQuestion['correct']) {
-      //Correct answer
-      print('Correct!');
-    } else {
-      //Incorrect answer
-      print('Incorrect!');
-    }
+    bool isCorrect = choiceIndex == currentQuestion['correctIndex'];
+
+    // Record result
+    results.add({
+      'questionId': currentQuestion['id'],
+      'questionIndex' : currentQuestionIndex + 1,
+      'question': currentQuestion['question'],
+      'isCorrect': isCorrect,
+      'selectedIndex': choiceIndex,
+      'correctIndex': currentQuestion['correctIndex'],
+    });
+
+    if (isCorrect) score++;
+    print(score);
 
     //Move to the next question
     if (currentQuestionIndex < questions.length - 1) {
@@ -108,12 +119,12 @@ class _QuizMultChoiceState extends State<QuizMultChoice> {
             return CustomAlertDialog(
              imagePath: 'assets/images/Deck-Dialogue3.png',
               title: 'Quiz Finished!',
-              message: 'Congratulations, wanderer! You\'ve completed the quiz! Let\'s now take a look at your results!',
+              message: 'Congratulations, wanderer! You\'ve completed the quiz!',
               button1: 'Ok',
               onConfirm: () {
                 Navigator.of(context).pop();
                 Navigator.of(context).push(
-                  RouteGenerator.createRoute(const QuizResults()),
+                  RouteGenerator.createRoute(QuizResults(result: results, score: score, deckId: widget.deck.deckId, quizType: "MULTIPLE_CHOICE_QUIZ",)),
                 );
               },
             );
@@ -137,7 +148,7 @@ class _QuizMultChoiceState extends State<QuizMultChoice> {
               context,
               'assets/images/Deck-Dialogue4.png',
               'Stop Quiz Mode?',
-              'Are you sure you want to stop? You will lose all progress if you stop now.',
+              'Stop Now? You\'ll lose all your progress',
               'Stop',
                   () {
                     ///Pop twice: first, close the dialog, then navigate back to the previous page
@@ -146,6 +157,10 @@ class _QuizMultChoiceState extends State<QuizMultChoice> {
                   },
             );
         },
+        buttonText: 'Stop Playing',
+        buttonIcon: Icons.play_arrow_rounded,
+        buttonColor: DeckColors.deckRed,
+        borderButtonColor: DeckColors.deckRed,
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -155,7 +170,7 @@ class _QuizMultChoiceState extends State<QuizMultChoice> {
               child: Column(
                 children: [
                   Text(
-                    '',
+                    widget.deck.title,
                     overflow: TextOverflow.visible,
                     style: const TextStyle(
                       fontFamily: 'Fraiche',
@@ -228,7 +243,7 @@ class _QuizMultChoiceState extends State<QuizMultChoice> {
                                         ),
                                         child: InkWell(
                                           onTap: () {
-                                            handleChoiceSelection(data['text']);
+                                            handleChoiceSelection(index);
                                           },
                                           splashColor: Colors.white.withOpacity(0.2),
                                           highlightColor: Colors.white.withOpacity(0.1),

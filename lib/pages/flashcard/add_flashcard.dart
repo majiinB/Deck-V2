@@ -10,6 +10,7 @@ import '../misc/custom widgets/appbar/auth_bar.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
 import '../misc/custom widgets/dialogs/alert_dialog.dart';
 import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
+import '../misc/custom widgets/functions/loading.dart';
 import '../misc/custom widgets/textboxes/textboxes.dart';
 
 class AddFlashcardPage extends StatefulWidget {
@@ -47,7 +48,7 @@ class _AddFlashcardPageState extends State<AddFlashcardPage> {
           builder: (BuildContext context) {
             return CustomConfirmDialog(
               title: 'Are you sure you want to go back?',
-              message: 'If you go back now, you will lose all your progress',
+              message: 'Going back now will lose all your progress.',
               imagePath: 'assets/images/Deck-Dialogue4.png',
               button1: 'Go Back',
               button2: 'Cancel',
@@ -79,8 +80,9 @@ class _AddFlashcardPageState extends State<AddFlashcardPage> {
         color: DeckColors.primaryColor,
         fontSize: 24,
       ),
-      body: _isLoading ? const Center(child: CircularProgressIndicator()) :
-      ///wrap whole content with column and expanded so image can always stay at the bottom
+      body: _isLoading ? const DeckLoadingDialog(
+        message: "Adding the new flashcard to your deck...",
+      ) :
       Column(
         children: [
           Expanded(
@@ -91,9 +93,10 @@ class _AddFlashcardPageState extends State<AddFlashcardPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Padding(padding: EdgeInsets.only(bottom: 20),
+                    const Padding(
+                      padding: EdgeInsets.only(top: 10.0),
                       child: Text(
-                        'Add A New FlashCard To The Deck',
+                        'Add A New FlashCard',
                         style: TextStyle(
                           fontFamily: 'Fraiche',
                           color: DeckColors.primaryColor,
@@ -103,7 +106,7 @@ class _AddFlashcardPageState extends State<AddFlashcardPage> {
                       ),
                     ),
                     const Text(
-                      'Simply fill in the text fields below to add flash card on your deck.',
+                      'Enter details below to create a flashcard.',
                       textAlign: TextAlign.justify,
                       style: TextStyle(
                         fontFamily: 'Nunito-Regular',
@@ -163,9 +166,10 @@ class _AddFlashcardPageState extends State<AddFlashcardPage> {
                             context,
                             "assets/images/Deck-Dialogue4.png",
                             "Add Flash Card",
-                            "Are you sure you want to add this flash card on your deck?",
+                            "Add this flashcard to your deck?",
                             "Add Flashcard",
                             () async {
+                              Navigator.of(context).pop();
                               setState(() => _isLoading = true);
                               try {
                                 if (_definitionOrAnswerController.text.isNotEmpty &&
@@ -175,7 +179,6 @@ class _AddFlashcardPageState extends State<AddFlashcardPage> {
                                     _definitionOrAnswerController.text.toString(),
                                   );
                                   if (card != null) {
-                                    await Future.delayed(const Duration(milliseconds: 300));
                                     setState(() => _isLoading = false);
                                     Navigator.pop(context, card);
                                     showAlertDialog(context,
@@ -183,35 +186,11 @@ class _AddFlashcardPageState extends State<AddFlashcardPage> {
                                       "Card Added Successfully", "You can now view this card in you deck");
                                   }
                                 } else {
-                                  Navigator.of(context).pop(); // Close the confirmation dialog
-                                  await Future.delayed(const Duration(milliseconds: 300)); // Ensure the dialog is fully closed
                                   setState(() => _isLoading = false);
                                   showAlertDialog(
                                     context,"assets/images/Deck-Dialogue1.png",
                                     "Input Error",
-                                    "Please fill out all of the input fields and try again.");
-                           // showDialog(
-                                  //   context: context,
-                                  //   builder: (BuildContext context) {
-                                  //     return AlertDialog(
-                                  //       title: const Text('Input Error'),
-                                  //       content: const Text('Please fill out all of the input fields.'),
-                                  //       actions: <Widget>[
-                                  //         TextButton(
-                                  //           onPressed: () {
-                                  //             Navigator.of(context).pop(); // Close the dialog
-                                  //           },
-                                  //           child: const Text(
-                                  //             'Close',
-                                  //             style: TextStyle(
-                                  //               color: Colors.red,
-                                  //             ),
-                                  //           ),
-                                  //         ),
-                                  //       ],
-                                  //     );
-                                  //   },
-                                  // );
+                                    "Please fill out all of the input fields");
                                 }
                               } catch (e) {
                                 print('add card error: $e');

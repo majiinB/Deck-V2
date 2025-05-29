@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:deck/backend/auth/auth_service.dart';
+import 'package:deck/backend/custom_exceptions/api_exception.dart';
 import 'package:deck/backend/flashcard/flashcard_utils.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import '../models/deck.dart';
@@ -27,6 +28,10 @@ class FlashcardService{
         url = '$deckManagerAPIUrl/v1/decks/public?limit=10';
       }else if(filter.toUpperCase() == "SAVED_DECKS"){
         url = '$deckManagerAPIUrl/v1/decks/saved?limit=10';
+      }else if(filter.toUpperCase() == "DELETED_DECKS"){
+        url = '$deckManagerAPIUrl/v1/decks/deleted?limit=10';
+      }else if (filter.toUpperCase() == "RECOMMENDED_DECKS"){
+        url = '$deckManagerAPIUrl/v1/decks/recommend';
       }
 
       // Send a POST request to the API with the request body and headers.
@@ -44,7 +49,10 @@ class FlashcardService{
         // Extract the data from the JSON response.
         Map<String, dynamic> deckData = jsonData["data"];
         print(deckData);
-        nextPageTokenRetrieved = deckData["nextPageToken"];
+
+        if(filter != "RECOMMENDED_DECKS"){
+          nextPageTokenRetrieved = deckData["nextPageToken"];
+        }
 
         // Extract the list of decks from the JSON response.
         List<dynamic> listOfDecks = deckData["decks"];
@@ -119,8 +127,9 @@ class FlashcardService{
       );
 
       if(response.statusCode == 200) {
+        print(jsonDecode(response.body));
         var jsonData = jsonDecode(response.body) as Map<String, dynamic>;
-        print(jsonData); // Log parsed data for debugging.
+        // Log parsed data for debugging.
 
         // If the JSON data is empty, return null.
         if (jsonData.isEmpty) return null;
@@ -130,9 +139,9 @@ class FlashcardService{
         if (deckData.isEmpty) return null;
 
         // Extract the list of decks from the JSON response.
-        Map<String, dynamic> responseDeck = deckData["deck"];
+        // Map<String, dynamic> responseDeck = deckData["deck"];
 
-        return Deck.fromJson(responseDeck);
+        return Deck.fromJson(deckData);
       }
     } catch (e) {
       // Handle errors
@@ -159,7 +168,7 @@ class FlashcardService{
 
       if(response.statusCode == 200) {
         var jsonData = jsonDecode(response.body) as Map<String, dynamic>;
-
+        print(jsonData);
         // Extract the data from the JSON response.
         Map<String, dynamic> deckData = jsonData["data"];
 
@@ -176,93 +185,72 @@ class FlashcardService{
     };
   }
 
-  Future<List<Deck>> getDeletedDecksByUserId(String userId) async {
-    List<Deck> decks = [];
-
+  Future<Map<String, dynamic>> getDeletedDecksByUserId() async {
+    List<Deck> deckList = [];
+    String nextPageTokenRetrieved = "";
     try {
-      // Reference to the Firestore collection
-      CollectionReference deckCollection = _fireStore.collection('decks');
+      String? token = await AuthService().getIdToken();
+      String url = '$deckManagerAPIUrl/v1/decks/deleted?limit=10';
 
-      // Query the collection for documents with the provided user ID
-      QuerySnapshot querySnapshot = await deckCollection
-          .where('owner_id', isEqualTo: userId)
-          .where('is_deleted', isEqualTo: true)
-          .orderBy('title') // Sort decks alphabetically based on title
-          .get();
+      // Send a POST request to the API with the request body and headers.
+      final response = await http.get(
+        Uri.parse(url), // API endpoint.
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $token',
+        },
+      );
 
-      // Iterate through the query snapshot to extract document data
-      for (var doc in querySnapshot.docs) {
-        // Extract data from the document
-        String title = _flashcardUtils.capitalizeFirstLetterOfWords(doc['title']);
-        String userId = doc['owner_id'];
-        String coverPhoto = doc['cover_photo'];
-        bool isDeleted = doc['is_deleted'];
-        bool isPrivate = doc['is_private'];
-        String deckId = doc.id;
+      if(response.statusCode == 200) {
+        var jsonData = jsonDecode(response.body) as Map<String, dynamic>;
 
-        // Extract created_at timestamp and convert it to DateTime
-        Timestamp createdAtTimestamp = doc['created_at'];
-        DateTime createdAt = createdAtTimestamp.toDate();
+        // Extract the data from the JSON response.
+        Map<String, dynamic> deckData = jsonData["data"];
+        print(deckData);
+        nextPageTokenRetrieved = deckData["nextPageToken"];
 
-        // Create a new Deck object and add it to the list
-        // decks.add(Deck(title, userId, deckId, isDeleted, isPrivate, createdAt, coverPhoto));
+        // Extract the list of decks from the JSON response.
+        List<dynamic> listOfDecks = deckData["decks"];
+        deckList = listOfDecks.map((decksJson) => Deck.fromJson(decksJson)).toList();
       }
     } catch (e) {
       // Handle errors
       print('Error retrieving decks: $e');
     }
-    return decks;
+    return {
+      'decks' : deckList,
+      'nextPageToken' : nextPageTokenRetrieved
+    };
   }
-  Future<List<Deck>> getDecksByUserIdNewestFirst(String userId, String userName) async {
-    List<Deck> decks = [];
-
+  Future<List<Deck>> getDecksByUserIdNewestFirst() async {
+    List<Deck> deckList = [];
     try {
-      // Reference to the Firestore collection
-      CollectionReference deckCollection = _fireStore.collection('decks');
+      String? token = await AuthService().getIdToken();
+      String url = '$deckManagerAPIUrl/v1/decks?limit=6&orderBy=created_at';
 
-      // Query the collection for documents with the provided user ID
-      QuerySnapshot querySnapshot = await deckCollection
-          .where('owner_id', isEqualTo: userId)
-          .where('is_deleted', isEqualTo: false)
-          .orderBy('created_at', descending: true) // Sort by created_at timestamp, newest first
-          .limit(6) // Limit the results to 6 decks
-          .get();
+      // Send a GET request to the API with headers.
+      final response = await http.get(
+        Uri.parse(url),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $token',
+        },
+      );
+      print(jsonDecode(response.body));
 
-      // Iterate through the query snapshot to extract document data
-      for (var doc in querySnapshot.docs) {
-        // Extract data from the document
-        String title = _flashcardUtils.capitalizeFirstLetterOfWords(doc['title']);
-        String userId = doc['owner_id'];
-        String coverPhoto = doc['cover_photo'];
-        String description = doc['description'];
-        bool isDeleted = doc['is_deleted'];
-        bool isPrivate = doc['is_private'];
-        String deckId = doc.id;
-        int flashcardCount = doc['flashcard_count'];
+      if (response.statusCode == 200) {
+        var jsonData = jsonDecode(response.body) as Map<String, dynamic>;
+        Map<String, dynamic> deckData = jsonData["data"];
 
-        // Extract created_at timestamp and convert it to DateTime
-        Timestamp createdAtTimestamp = doc['created_at'];
-        DateTime createdAt = createdAtTimestamp.toDate();
-
-        // Create a new Deck object and add it to the list
-        decks.add(Deck(
-          title,
-          description,
-          userName,
-          flashcardCount,
-          userId,
-          deckId,
-          isDeleted,
-          isPrivate,
-          createdAt,
-          coverPhoto
-        ));
+        List<dynamic> listOfDecks = deckData["decks"];
+        deckList = listOfDecks.map((decksJson) => Deck.fromJson(decksJson)).toList();
+      } else {
+        print('Failed to retrieve decks. Status code: ${response.statusCode}');
       }
     } catch (e) {
-      // Handle errors
       print('Error retrieving decks: $e');
     }
-    return decks;
+    return deckList;
   }
 
   Future<Deck?> getDecksByUserIdAndDeckId(String userId, String deckId) async {
@@ -372,37 +360,52 @@ class FlashcardService{
         'description': description,
         'coverPhoto': coverPhoto
       };
-      // Send a POST request to the API with the request body and headers.
+
       final response = await http.post(
-        Uri.parse('$deckManagerAPIUrl/v1/decks/'), // API endpoint.
-        body: jsonEncode(requestBody), // JSON-encoded request body.
+        Uri.parse('$deckManagerAPIUrl/v1/decks/'),
+        body: jsonEncode(requestBody),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $token',
         },
-
       );
-      print(response.statusCode);
-      print(response.body);
-      if(response.statusCode == 201){
+
+      if (response.statusCode == 201) {
         var jsonData = jsonDecode(response.body) as Map<String, dynamic>;
-        print(jsonData); // Log parsed data for debugging.
 
-        // If the JSON data is non-empty, process it.
         if (jsonData.isNotEmpty) {
-          // Extract the list of questions from the JSON response.
           Map<String, dynamic> deckData = jsonData["data"]["deck"];
-
           return Deck.fromJson(deckData);
-        }else{
+        } else {
           return null;
         }
+
+      } else if (response.statusCode == 500) {
+        throw ApiException(response.statusCode, "An unexpected server error occurred. Please try again later.");
+
+      } else {
+        var errorData = jsonDecode(response.body) as Map<String, dynamic>;
+        String errorMessage = errorData["message"] ?? "Failed to add deck.";
+
+        // Check if 'details' exists and is a Map, and has 'errorList'
+        if (errorData.containsKey("details") &&
+            errorData["details"] is Map<String, dynamic> &&
+            errorData["details"].containsKey("errorList")) {
+
+          List<dynamic> errorList = errorData["details"]["errorList"];
+          String combinedMessages = errorList.map((e) => e["message"]).join("\n");
+          errorMessage += "\n\nDetails:\n$combinedMessages";
+        }
+
+        throw ApiException(response.statusCode, errorMessage);
       }
     } catch (e) {
-      print('Error adding deck: $e');
-      return null;
+      print(e);
+      rethrow;
     }
   }
+
+
   Future<String> uploadPdfFileToFirebase(String filePath, String userId) async {
     String fileUrl = "";
     File file = File(filePath);
@@ -450,20 +453,39 @@ class FlashcardService{
     }
     return fileUrl;
   }
-  Future<bool> deleteDeck(String deckId) async {
+  Future<void> deleteDeck(List<String> deckIds) async {
     try {
-      // Reference to the specific document in the 'deck' collection
-      DocumentReference deckDoc = _fireStore.collection('decks').doc(deckId);
+      String? token = await AuthService().getIdToken();
+      Map<String, dynamic> requestBody = {
+        'deckIDs': deckIds,
+      };
+      // Send a POST request to the API with the request body and headers.
+      final response = await http.post(
+        Uri.parse('$deckManagerAPIUrl/v1/decks/delete'), // API endpoint.
+        body: jsonEncode(requestBody), // JSON-encoded request body.
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $token',
+        },
 
-      // Delete the document
-      await deckDoc.delete();
+      );
+      print(response.statusCode);
+      print(response.body);
+      if(response.statusCode == 201){
+        var jsonData = jsonDecode(response.body) as Map<String, dynamic>;
+        print(jsonData); // Log parsed data for debugging.
 
-      print('Deck with ID $deckId has been deleted successfully.');
-      return true;
+        // If the JSON data is non-empty, process it.
+        if (jsonData.isNotEmpty) {
+          // // Extract the list of questions from the JSON response.
+          // Map<String, dynamic> deckData = jsonData["data"]["deck"];
+        }else{
+          // return null;
+        }
+      }
     } catch (e) {
-      // Handle any errors that might occur during the deletion
-      print('Error deleting deck: $e');
-      return false;
+      print('Error adding deck: $e');
+      // return null;
     }
   }
 
@@ -479,7 +501,6 @@ class FlashcardService{
       QuerySnapshot querySnapshot = await decksRef
           .where('owner_id', isEqualTo: userId)
           .where('title', isEqualTo: formattedTitle)
-          .where('is_deleted', isEqualTo: false)
           .get();
 
       // If there are any documents returned, it means a deck with the same title and user_id exists
@@ -489,6 +510,96 @@ class FlashcardService{
       // Handle any errors that occur during the process
       print('Error checking deck title: $e');
       return false; // Return false by default in case of errors
+    }
+  }
+
+  Future<void> logQuizAttempt({
+    required String deckId,
+    required DateTime attemptedAt,
+    required String quizType,
+    required int score,
+    required int totalQuestions,
+    required List<String> correctQuestionIds,
+    required List<String> incorrectQuestionIds,
+  }) async {
+    final token = await AuthService().getIdToken();
+    if (token == null) {
+      throw Exception('User is not authenticated');
+    }
+
+    final url = Uri.parse('$deckManagerAPIUrl/v1/decks/log/quiz');
+    final body = jsonEncode({
+      'deckID': deckId,
+      'attempted_at': attemptedAt.toUtc().toIso8601String(),
+      'quizType': quizType,
+      'score': score,
+      'totalQuestions': totalQuestions,
+      'correctQuestionIds': correctQuestionIds,
+      'incorrectQuestionIds': incorrectQuestionIds,
+    });
+
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+      body: body,
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      // success! you can parse response.body if you need to
+      print('Logged quiz attempt successfully');
+    } else {
+      // handle error
+      final errorMsg = response.body.isNotEmpty
+          ? jsonDecode(response.body)
+          : 'Unknown error';
+      throw Exception(
+          'Failed to log quiz attempt (${response.statusCode}): $errorMsg');
+    }
+  }
+
+  /// Fetches the latest quiz attempt for the current user (and deck).
+  ///
+  /// Returns a map with:
+  ///  - 'latest_attempt': { …quizAttemptData… }
+  ///  - 'deck': { …deckData… }
+  ///
+  /// Throws an [Exception] on non-200 responses.
+  Future<Map<String, dynamic>> getLatestQuizAttempt() async {
+    final token = await AuthService().getIdToken();
+    if (token == null) {
+      throw Exception('User is not authenticated');
+    }
+
+    final uri = Uri.parse('$deckManagerAPIUrl/v1/decks/log/quiz');
+
+    final response = await http.get(
+      uri,
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode != 200) {
+      final body = response.body.isNotEmpty
+          ? jsonDecode(response.body)
+          : 'No response body';
+      throw Exception(
+          'Failed to fetch latest quiz attempt (${response.statusCode}): $body');
+    }
+
+    final Map<String, dynamic> jsonData =
+    jsonDecode(response.body) as Map<String, dynamic>;
+
+    // If your BaseResponse shape is { status, message, data }
+    if (jsonData.containsKey('data') && jsonData['data'] is Map) {
+      return jsonData['data'] as Map<String, dynamic>;
+    } else {
+      // Fallback: return the entire payload
+      return jsonData;
     }
   }
 }

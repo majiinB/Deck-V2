@@ -63,7 +63,7 @@ class TaskList extends StatelessWidget{
             child: TaskTile(
               taskName: task.title,
               deadline: DateTime.now(),//TaskProvider.getNameDate(task.deadline),
-              priority: getPriorityIndex(task.priority),
+              priority: "high",
               progressStatus: 'to do',
               onDelete: () {
                 final String deletedTitle = task.title;
@@ -99,7 +99,7 @@ class TaskList extends StatelessWidget{
         ifCollectionEmptyText:
         'Seems like there aren’t any task for today, wanderer!',
         ifCollectionEmptySubText:
-        'Now’s the perfect time to get ahead. Start adding new tasks and stay on top of your game!',
+        'Get ahead now! Add tasks and stay sharp!',
         ifCollectionEmptyHeight: MediaQuery.of(context).size.height / 2,
       );
     }

@@ -179,6 +179,7 @@ class _LoginPageState extends State<LoginPage> {
                               // After logging in, renew FCM token for notifications.
                               await FCMService().renewToken();
                               final authService = AuthService();
+
                               String? token = await authService.getIdToken();
                               if (token != null) {
                                 const batchSize = 1000;  // Adjust based on your preference
@@ -233,7 +234,7 @@ class _LoginPageState extends State<LoginPage> {
                                   context,
                                   "assets/images/Deck-Dialogue1.png",
                                   "Uh oh. Something went wrong.",
-                                  "Error signing up! A problem occurred while signing in. Please try again.",
+                                  "A problem occurred while signing in. Please try again.",
                                 );
                               }
                             }
@@ -370,7 +371,7 @@ class _LoginPageState extends State<LoginPage> {
                                 context,
                                 "assets/images/Deck-Dialogue1.png",
                                 "Uh oh. Something went wrong.",
-                                "Error signing up! A problem occurred while signing in. Please try again.",
+                                "A problem occurred while signing in. Please try again.",
                               );
                             }
                           },

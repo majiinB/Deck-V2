@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:deck/backend/flashcard/flashcard_service.dart';
 import 'package:http/http.dart' as http;
 import '../auth/auth_service.dart';
+import '../custom_exceptions/api_exception.dart';
 import 'card.dart';
 
 class Deck{
@@ -124,8 +125,7 @@ class Deck{
     try {
       String? token = await AuthService().getIdToken();
       if (isPrivate == null) {
-        print('isPrivate is null');
-        return false;
+        throw ApiException(400, 'Deck privacy status is unknown.');
       }
 
       bool newPrivacyValue = !isPrivate;
@@ -133,32 +133,40 @@ class Deck{
         'isPrivate': newPrivacyValue,
       };
 
-      // Send a PUT request to the API with the request body and headers.
       final response = await http.put(
-        Uri.parse('$deckManagerAPIUrl/v1/decks/$_deckId'), // API endpoint.
-        body: jsonEncode(requestBody), // JSON-encoded request body.
+        Uri.parse('$deckManagerAPIUrl/v1/decks/$_deckId'),
+        body: jsonEncode(requestBody),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $token',
         },
-
       );
+
       print(response.statusCode);
       print(response.body);
-      if(response.statusCode == 200){
+
+      if (response.statusCode == 200) {
         var jsonData = jsonDecode(response.body) as Map<String, dynamic>;
-        print(jsonData); // Log parsed data for debugging.
-        isPrivate = newPrivacyValue;
-        // If the JSON data is non-empty, process it.
-        if (jsonData.isNotEmpty) return true;
-        return true;
+        print(jsonData);
+        return jsonData.isNotEmpty;
+      } else if (response.statusCode == 400) {
+        var errorData = jsonDecode(response.body) as Map<String, dynamic>;
+        String errorMessage = errorData['data']?['message'] ?? 'An unexpected error occurred while updating the deck.';
+        throw ApiException(400, errorMessage);
+      } else if (response.statusCode == 500) {
+        throw ApiException(500, 'Server is temporarily unavailable. Please try again later.');
+      } else {
+        var errorData = jsonDecode(response.body);
+        String errorMessage = errorData['message'] ?? 'Failed to update deck privacy.';
+        throw ApiException(response.statusCode, errorMessage);
       }
-      return false;
     } catch (e) {
-      print('Error adding deck: $e');
-      return false;
+      print('Error publishing deck: $e');
+      rethrow;
     }
   }
+
+
 
   Future<bool> saveDeck() async {
     try {
@@ -292,6 +300,46 @@ class Deck{
     }
     return flashcards;
   }
+
+  Future<List<Cards>> getCardRandom(int numOfCards) async {
+    List<Cards> flashcards = [];
+    try {
+      String? token = await AuthService().getIdToken();
+
+      // Send a POST request to the API with the request body and headers.
+      final response = await http.get(
+        Uri.parse('$deckManagerAPIUrl/v1/decks/$_deckId/flashcards/random?numOfCards=$numOfCards'), // API endpoint.
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      print(response.statusCode);
+      print(response.body);
+      if(response.statusCode == 200) {
+        var jsonData = jsonDecode(response.body) as Map<String, dynamic>;
+        print(jsonData); // Log parsed data for debugging.
+
+        // If the JSON data is empty, return null.
+        if (jsonData.isEmpty) return flashcards;
+
+        // Extract the data from the JSON response.
+        Map<String, dynamic> cardData = jsonData["data"];
+        if (cardData.isEmpty) return flashcards;
+
+        // Extract the list of decks from the JSON response.
+        List<dynamic> listOfFlashcards = cardData["flashcards"];
+        flashcards = listOfFlashcards.map((cardsJson) => Cards.fromJson(cardsJson)).toList();
+
+      }
+    } catch (e) {
+      // Handle errors
+      print('Error retrieving flashcards: $e');
+    }
+    return flashcards;
+  }
+
   Future<int> getCardCount() async {
     try {
       // Reference to the questions subcollection with a query to filter out deleted cards

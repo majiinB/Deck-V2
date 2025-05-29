@@ -3,6 +3,7 @@ import 'package:deck/backend/models/card.dart';
 import 'package:deck/pages/flashcard/add_flashcard.dart';
 import 'package:deck/pages/flashcard/edit_deck.dart';
 import 'package:deck/pages/flashcard/edit_flashcard.dart';
+import 'package:deck/pages/flashcard/play_my_deck.dart';
 import 'package:deck/pages/misc/colors.dart';
 import 'package:deck/pages/misc/deck_icons.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,18 +11,24 @@ import 'package:flutter/material.dart';
 import 'package:deck/pages/misc/widget_method.dart';
 // import 'package:google_fonts/google_fonts.dart';
 
+import '../../backend/custom_exceptions/api_exception.dart';
+import '../../backend/flashcard/flashcard_ai_service.dart';
 import '../../backend/models/deck.dart';
+import '../../backend/models/quiz.dart';
 import '../misc/custom widgets/appbar/auth_bar.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
 import '../misc/custom widgets/dialogs/alert_dialog.dart';
 import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
 import '../misc/custom widgets/dialogs/learn_mode_dialog.dart';
 import '../misc/custom widgets/functions/if_collection_empty.dart';
+import '../misc/custom widgets/functions/loading.dart';
 import '../misc/custom widgets/functions/tab_bar.dart';
 import '../misc/custom widgets/images/cover_image.dart';
 import '../misc/custom widgets/textboxes/textboxes.dart';
 import '../misc/custom widgets/tiles/container_of_flashcard.dart';
 import '../settings/support and policies/report_a_problem.dart';
+import 'Quiz Modes/quiz_mode_identification.dart';
+import 'Quiz Modes/quiz_mode_multChoice.dart';
 
 class ViewDeckPage extends StatefulWidget {
   final Deck deck;
@@ -46,6 +53,8 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
   List<Cards> _filteredStarredCards = [];
   bool _canToggleStar = true;
   User? currentUser;
+  bool canPressLearn = false;
+  bool _isLoading = false;
   final TextEditingController _searchController = TextEditingController();
   static const _toggleCooldown = Duration(milliseconds: 1000);
 
@@ -78,6 +87,9 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
       _starredCards = starredCards;
       _filteredStarredCards = _starredCards;
       numberOfCards = widget.deck.flashcardCount;
+      if(cards.isNotEmpty){
+        canPressLearn = true;
+      }
     });
   }
 
@@ -108,7 +120,6 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
     }
   }
 
-  // Removed: used for client side search. Will switch to api function call
   void _filterFlashcards() {
     String query = _searchController.text.toLowerCase();
     setState(() {
@@ -148,7 +159,6 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
         (_cardsCollection.isNotEmpty)
             ? 20.0
             : 40.0;
-
     return Scaffold(
       backgroundColor: DeckColors.backgroundColor,
       appBar:  AuthBar(
@@ -177,6 +187,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
             if (widget.deck.userId == currentUser!.uid) {
               ///P U B L I S H  D E C K
               if (index == 0) {
+                BuildContext parentContext = context;
                 //Show the confirmation dialog for Publish/Unpublish
                 showDialog<bool>(
                   context: context,
@@ -190,11 +201,36 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                       imagePath: 'assets/images/Deck-Dialogue4.png',
                       button1: widget.deck.isPrivate ? 'Publish Deck' : 'Unpublish Deck',
                       button2: 'Cancel',
-                      onConfirm: () async {
-                        await widget.deck.publishOrUnpublishDeck();
-                        Navigator.of(context).pop();
-                        setState(() {});
-                      },
+                        onConfirm: () {
+                          Navigator.of(context).pop(); // close confirm dialog
+
+                          Future(() async {
+                            await Future.delayed(Duration(milliseconds: 100));
+
+                            try {
+                              await widget.deck.publishOrUnpublishDeck();
+                              if (parentContext.mounted) {
+                                showAlertDialog(
+                                  parentContext,
+                                  "assets/images/Deck-Dialogue3.png",
+                                  "Publish request for this deck has been made!",
+                                  "Successfully made a publish request! Please wait for our moderator's approval",
+                                );
+                              }
+                            } catch (e) {
+                              print('Caught error: $e');
+                              String errorMessage = e is ApiException ? e.message : 'An unexpected error occurred.';
+                              if (parentContext.mounted) {
+                                showAlertDialog(
+                                  parentContext,
+                                  "assets/images/Deck-Dialogue1.png",
+                                  "Uh Oh An Error Has Occured",
+                                  errorMessage,
+                                );
+                              }
+                            }
+                          });
+                        },
                       onCancel: () {
                         Navigator.of(context).pop();
                       },
@@ -228,8 +264,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                     builder: (BuildContext context) {
                       return CustomConfirmDialog(
                         title: 'Delete this deck?',
-                        message: 'Once deleted, this deck will no longer be playable. '
-                            'But do not worry, you can still retrieve it in the trash bin.',
+                        message: 'Deleted decks move to trash and can be recovered.',
                         imagePath: 'assets/images/Deck-Dialogue4.png',
                         button1: 'Delete Deck',
                         button2: 'Cancel',
@@ -300,7 +335,9 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
           }
           ///-------- E N D  O F  P O P  U P  M E N U  B U T T O N -------------
       ),
-      body: SingleChildScrollView(
+      body: _isLoading ? const DeckLoadingDialog(
+        message: "Getting your cards ready for the challenge!",
+      ):SingleChildScrollView(
         //padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -318,14 +355,6 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                     isHeader: true,
                   ),
                 ),
-                /*Container(
-                  height: 150,
-                  width: double.infinity,
-                  child: const Image(
-                    image: AssetImage('assets/images/Deck-Branding1.png'),
-                    fit: BoxFit.cover,
-                  ),
-                ),*/
                 //For fading effect on the bottom, refer at figma if confused
                 Container(
                   width: double.infinity,
@@ -343,16 +372,6 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                 )
               ],
             ),
-            /*Text(
-                widget.deck.title.toString(),
-                overflow: TextOverflow.visible,
-                style: const TextStyle(
-                  fontFamily: 'Fraiche',
-                  color: DeckColors.primaryColor,
-                  fontSize: 32,
-                  fontWeight: FontWeight.w900,
-                ),
-              ),*/
             Padding(
               padding: const EdgeInsets.only(
                   top: 15, left: 20, right: 20, bottom: 20),
@@ -381,7 +400,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                     ),
                   ),
                   Text(
-                    '$description',
+                    widget.deck.description,
                     overflow: TextOverflow.visible,
                     style: const TextStyle(
                       fontFamily: 'Nunito-Regular',
@@ -432,16 +451,81 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                               borderColor: DeckColors.primaryColor),
                         ),
                         Opacity(
-                          opacity: widget.deck.flashcardCount == 0 ? 0.5 : 1.0,
+                          opacity: canPressLearn ? 1.0 : 0.5,
                           child: BuildButton(
-                            onPressed:widget.deck.flashcardCount == 0 ? () {
-                              // Do nothing
-                            } : () {
-                              showDialog(
+                            onPressed:canPressLearn ? () async {
+                              final result = await showDialog(
                                 context: context,
                                 barrierDismissible: false,
                                 builder: (BuildContext context) => LearnModeDialog(deck: widget.deck),
                               );
+
+                              if (result != null && result is Map<String, dynamic>) {
+                                setState(() {
+                                  _isLoading = true;
+                                });
+
+                                final selectedMode = result['mode'] as String;
+                                final numberOfCards = result['numberOfCards'] as int;
+
+                                try{
+                                  if (selectedMode == 'Quiz') {
+                                    final quizType = result['quizType'] as String;
+                                    if (quizType == "Multiple Choice") {
+                                      FlashcardAiService aiService = FlashcardAiService();
+                                      Quiz? quiz = await aiService.retrieveQuizForDeck(
+                                          deckId: widget.deck.deckId, numOfQuiz: numberOfCards);
+                                      List<QuizQuestion>? questions = quiz?.questions;
+                                      if (questions != null) {
+                                        await Navigator.of(context).push(
+                                          RouteGenerator.createRoute(QuizMultChoice(
+                                            deck: widget.deck,
+                                            questions: questions,
+                                          )),
+                                        );
+                                      }
+                                    } else if (quizType == "Identification") {
+                                      List<Cards> randomizedCards = await widget.deck.getCardRandom(numberOfCards);
+                                      await Navigator.of(context).push(
+                                        RouteGenerator.createRoute(QuizIdentification(
+                                          cards: randomizedCards,
+                                          deck: widget.deck,
+                                        )),
+                                      );
+                                    }
+                                  } else if (selectedMode == 'Study') {
+                                    final cardOrientation = result['cardOrientation'] as String;
+                                    print('Card Orientation: $cardOrientation');
+                                    await Navigator.of(context).push(
+                                      RouteGenerator.createRoute(PlayMyDeckPage(
+                                        cards: await widget.deck.getCardRandom(numberOfCards),
+                                        deck: widget.deck,
+                                        orientation: cardOrientation,
+                                      )),
+                                    );
+                                  }
+                                }catch(e){
+                                  String errorMessage = "";
+                                  if(selectedMode == 'Quiz') {
+                                    errorMessage = "Sorry an unknown kind of error has occurred during the creation of your quiz. Please try again later.";
+                                  }else if(selectedMode == 'Study'){
+                                    errorMessage = "Sorry an unknown kind of error has occurred while assembling your flashcard. Please try again later";
+                                  }
+                                  showAlertDialog(
+                                      context,
+                                      "assets/images/Deck-Dialogue2.png",
+                                      "An unknown error has occurred",
+                                      errorMessage
+                                  );
+                                  return;
+                                }finally{
+                                  setState(() {
+                                    _isLoading = false;
+                                  });
+                                }
+                              }
+                            } : () {
+                              // Do nothing
                             },
                             buttonText: 'Learn',
                             height: 35,
@@ -485,8 +569,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                               ifCollectionEmptyText:
                                   'No Flashcards Yet!',
                               ifCollectionEmptySubText:
-                              'Looks like you haven\'t added any flashcards yet. '
-                                  'Let\'s kick things off by adding your first one.',
+                              'Haven’t added any cards? Let\'s get started!',
                               ifCollectionEmptyHeight:
                                   MediaQuery.of(context).size.height * 0.3,
                             )
@@ -516,33 +599,33 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                 "Delete Item?",
                                                 "Are you sure you want to delete '$deletedTitle'?",
                                                 "Delete Item",
-                                              () async {
-                                                try {
-                                                  await removedCard.updateDeleteStatus(true, widget.deck.deckId);
-                                                  setState(() {
-                                                    _filteredCards.removeAt(index);
-                                                    _cardsCollection.removeWhere((card) => card.cardId == removedCard.cardId);
-                                                    _starredCards.removeWhere((card) => card.cardId == removedCard.cardId);
-                                                    _filteredStarredCards.removeWhere((card) => card.cardId == removedCard.cardId);
-                                                    numberOfCards = _cardsCollection.length;
-                                                  });
-                                                } catch (e) {
-                                                  print('View Deck Error: $e');
-                                                  showAlertDialog(
-                                                    context,
-                                                    "assets/images/Deck_Dialogue1.png",
-                                                    "Card Deletion Unsuccessful",
-                                                    "An error occurred during the deletion process please try again"
-                                                  );
+                                                () async {
+                                                  try {
+                                                    await removedCard.deleteCard(true, widget.deck.deckId);
+                                                    setState(() {
+                                                      _filteredCards.removeAt(index);
+                                                      _cardsCollection.removeWhere((card) => card.cardId == removedCard.cardId);
+                                                      _starredCards.removeWhere((card) => card.cardId == removedCard.cardId);
+                                                      _filteredStarredCards.removeWhere((card) => card.cardId == removedCard.cardId);
+                                                      numberOfCards = _cardsCollection.length;
+                                                    });
+                                                    Navigator.pop(context); // close the dialog after successful deletion
+                                                  } catch (e) {
+                                                    print('View Deck Error: $e');
+                                                    showAlertDialog(
+                                                        context,
+                                                        "assets/images/Deck_Dialogue1.png",
+                                                        "Card Deletion Unsuccessful",
+                                                        "An error occurred during the deletion process"
+                                                    );
+                                                  }
                                                 }
-                                              },
                                             );
                                           }
                                           : null,
                                           enableSwipeToRetrieve: false,
-                                          onTap: () {
-                                            print("Clicked");
-                                            Navigator.push(
+                                          onTap: () async{
+                                            await Navigator.push(
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
@@ -551,6 +634,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                         card: _cardsCollection[index],
                                                       )),
                                             );
+                                            setState(() {});
                                           },
                                           isStarShaded: _filteredCards[index].isStarred,
                                           onStarShaded: () => _toggleStar(_filteredCards[index], true),
@@ -571,7 +655,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                   button2: 'Cancel',
                                                   onConfirm: () async {
                                                     try {
-                                                      await removedCard.updateDeleteStatus(true, widget.deck.deckId);
+                                                      await removedCard.deleteCard(true, widget.deck.deckId);
                                                       setState(() {
                                                         _filteredCards.removeAt(index);
                                                         _cardsCollection.removeWhere((card) => card.cardId == removedCard.cardId);
@@ -590,7 +674,9 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                     }
                                                     Navigator.of(context).pop(true);
                                                   },
-                                                  onCancel: () {},
+                                                  onCancel: () {
+                                                    Navigator.of(context).pop();
+                                                  },
                                                );
                                               },
                                             );
@@ -650,7 +736,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                               "Delete Item",
                                                   () async {
                                                 try {
-                                                  await removedCard.updateDeleteStatus(true, widget.deck.deckId);
+                                                  await removedCard.deleteCard(true, widget.deck.deckId);
                                                   setState(() {
                                                     _filteredCards.removeAt(index);
                                                     _cardsCollection.removeWhere((card) => card.cardId == removedCard.cardId);
@@ -664,7 +750,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                       context,
                                                       "assets/images/Deck_Dialogue1.png",
                                                       "Card Deletion Unsuccessful",
-                                                      "An error occurred during the deletion process please try again"
+                                                      "An error occurred during the deletion process"
                                                   );
                                                 }
                                               },
@@ -703,7 +789,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                   button2: 'Cancel',
                                                   onConfirm: () async {
                                                     try {
-                                                      await removedCard.updateDeleteStatus(true, widget.deck.deckId);
+                                                      await removedCard.deleteCard(true, widget.deck.deckId);
                                                       setState(() {
                                                         _filteredStarredCards.removeAt(index);
                                                         _cardsCollection.removeWhere((card) => card.cardId == removedCard.cardId);
@@ -722,7 +808,9 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                                     }
                                                     Navigator.of(context).pop(true);
                                                   },
-                                                  onCancel: () {},
+                                                  onCancel: () {
+                                                    Navigator.of(context).pop(true);
+                                                  },
                                                 );
                                               },
                                             );

@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:deck/backend/task/task_provider.dart';
+import 'package:deck/backend/task/task_service.dart';
 import 'package:deck/pages/misc/custom%20widgets/progressbar/progress_bar.dart';
 import 'package:deck/pages/task/view_task.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,8 @@ import 'package:table_calendar/table_calendar.dart';
 // import 'package:deck/pages/task/view_task.dart';
 import 'package:deck/pages/task/add_task.dart';
 // import 'package:deck/pages/misc/deck_icons2.dart';
+import '../../backend/models/TaskFolder.dart';
+import '../../backend/models/newTask.dart';
 import '../../backend/models/task.dart';
 // import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
 // import '../misc/custom widgets/functions/if_collection_empty.dart';
@@ -24,6 +27,7 @@ import 'package:deck/pages/misc/widget_method.dart';
 import 'package:pie_chart/pie_chart.dart';
 import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
 import '../misc/custom widgets/functions/if_collection_empty.dart';
+import '../misc/custom widgets/functions/loading.dart';
 import '../misc/custom widgets/functions/tab_bar.dart';
 import '../misc/custom widgets/tiles/task_list.dart';
 import '../misc/custom widgets/tiles/task_tile.dart';
@@ -32,12 +36,11 @@ import '../misc/deck_icons2.dart';
 import 'edit_task_folder.dart';
 
 class ViewTaskFolderPage extends StatefulWidget {
-  final String? title;
+  final TaskFolder taskFolder;
 
   ViewTaskFolderPage({
     super.key,
-    required this.title,
-
+    required this.taskFolder
   });
   @override
   _ViewTaskFolderPageState createState() => _ViewTaskFolderPageState();
@@ -45,8 +48,6 @@ class ViewTaskFolderPage extends StatefulWidget {
 
 class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
   bool _isLoading = false;
-  // double progress = (taskTotal != 0) ? (taskDone ?? 0) / taskTotal! : 0.0;
-
   int totalTask = 0;
   int totalPending = 0;
   int totalProgress = 0;
@@ -54,100 +55,157 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
   int totalHighPrio = 0;
   int totalMidPrio = 0;
   int totalLowPrio = 0;
-  late final Map<String, double> workloadData;
-  late final Map<String, double> priorityData;
+  double progressValue = 0;
+  String progressLabel ='';
+  DateTime today = DateTime.now();
+  DateTime selectedDay = DateTime.now();
+  DateTime focusedDay = DateTime.now();
+  Map<String, double> workloadData = {};
+  Map<String, double> priorityData = {};
+  final TaskService _taskService = TaskService();
+  List<NewTask> pendingTasks = [];
+  List<NewTask> inProgressTasks = [];
+  List<NewTask> completedTasks = [];
+  List<NewTask> pendingByDateTasks = [];
+  List<NewTask> inProgressByDateTasks = [];
+  List<NewTask> completedByDateTasks = [];
+  Map<DateTime, List<NewTask>> tasksByDate = {};
+  List<Color> workLoadColorList =[DeckColors.deepGray,DeckColors.softGreen, DeckColors.accentColor];
+  List<Color> priorityColorList =[DeckColors.deckRed,DeckColors.deckYellow,DeckColors.deckBlue];
 
   /// function to get the total number of all task, pending task, tasks in progress, completed task
   /// this will be used for the overview tab
   /// this need to be set again if user changes something for the new info to be displayed
   void _getOverview() {
+    // Combine all tasks into one list
+    List<NewTask> allTasks = [
+      ...pendingTasks,
+      ...inProgressTasks,
+      ...completedTasks,
+    ];
+
+    int total = allTasks.length;
+
+    // Count statuses
+    int pendingCount = pendingTasks.length;
+    int inProgressCount = inProgressTasks.length;
+    int completedCount = completedTasks.length;
+
+    // Count priority levels
+    int highPriorityCount = allTasks.where((task) => task.priority == 'High').length;
+    int mediumPriorityCount = allTasks.where((task) => task.priority == 'Medium').length;
+    int lowPriorityCount = allTasks.where((task) => task.priority == 'Low').length;
+
     setState(() {
-      totalTask = 100;
-      totalPending = 10;
-      totalProgress = 10;
-      totalCompleted = 80;
-      totalHighPrio = 50;
-      totalMidPrio = 30;
-      totalLowPrio = 20;
+      totalTask = total;
+      totalPending = pendingCount;
+      totalProgress = inProgressCount;
+      totalCompleted = completedCount;
+      totalHighPrio = highPriorityCount;
+      totalMidPrio = mediumPriorityCount;
+      totalLowPrio = lowPriorityCount;
       workloadData = {
         "$totalPending - Pending": totalPending.toDouble(),
         "$totalProgress - In Progress": totalProgress.toDouble(),
-        "$totalLowPrio - Completed": totalCompleted.toDouble(),
+        "$totalCompleted - Completed": totalCompleted.toDouble(),
       };
       priorityData = {
         "$totalHighPrio - High": totalPending.toDouble(),
         "$totalMidPrio - Medium": totalProgress.toDouble(),
-        "$totalCompleted - Low": totalCompleted.toDouble(),
+        "$totalLowPrio - Low": totalCompleted.toDouble(),
       };
     });
-
-    // switch (task.status) {
-    //   case 'pending':
-    //     totalPending++;
-    //     break;
-    //   case 'progress':
-    //     totalProgress++;
-    //     break;
-    //   case 'completed':
-    //     totalCompleted++;
-    //     break;
-    //   default:
-    //   // Handle unknown status if necessary
-    //     break;
-    // }
   }
 
-  // bool isCalendarView = true;  /// bool variable to toggle view
-  // /// function to switch the view
-  // void _toggleView() async {
-  //   setState(() {
-  //     isCalendarView = !isCalendarView;
-  //   });
-  // }
-
-  DateTime today = DateTime.now();
-  DateTime selectedDay = DateTime.now();  ///selectedDay : actual day selected by the user, used for highlighting.
-  DateTime focusedDay = DateTime.now();  /// focusedDay : variable that tracks which day is currently in focus
+  void _getTasks() async {
+    try{
+      setState(() {
+        _isLoading = true;
+      });
+      Map<String, List<NewTask>> taskGroups = await _taskService.fetchTasksByFolder(taskFolderId: widget.taskFolder.id);
+      print(taskGroups);
+      setState(() {
+        pendingTasks = taskGroups['pending']!;
+        inProgressTasks = taskGroups['inProgress']!;
+        completedTasks = taskGroups['completed']!;
+        _getOverview();
+        _groupTasksByDate();
+        _filterTasksByDate(selectedDay);
+        _isLoading = false;
+      });
+    }catch(e){
+      print(e);
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   /// function to update whenever the user selects a new day on the calendar.
   /// DateTime day: This is the day that was selected by the user (from the calendar).
   /// DateTime focusedDay: This is the currently focused day.
-  void _onDaySelected(DateTime day, DateTime newFocusedDay) {
+  void _onDaySelected(DateTime day, DateTime newFocusedDay) async{
     setState(() {
       selectedDay = day; //para sa display ng text
       focusedDay = newFocusedDay;
+      _filterTasksByDate(day);
     });
   }
 
-  bool showAllTask = false;
-  void _getTasks() async {
-    await Provider.of<TaskProvider>(context, listen: false).loadTasks();
+  void _filterTasksByDate(DateTime date) {
+    final targetDate = DateFormat('yyyy-MM-dd').format(date); // adjust your date format to match task.startDate
+
+    pendingByDateTasks = pendingTasks
+        .where((task) => DateFormat('yyyy-MM-dd').format(task.startDate) == targetDate)
+        .toList();
+
+    inProgressByDateTasks = inProgressTasks
+        .where((task) => DateFormat('yyyy-MM-dd').format(task.startDate) == targetDate)
+        .toList();
+
+    completedByDateTasks = completedTasks
+        .where((task) => DateFormat('yyyy-MM-dd').format(task.startDate) == targetDate)
+        .toList();
   }
+
+  void _groupTasksByDate() {
+    tasksByDate.clear();
+
+    List<NewTask> allTasks = [
+      ...pendingTasks,
+      ...inProgressTasks,
+      ...completedTasks,
+    ];
+
+    for (var task in allTasks) {
+      final taskDate = DateTime(task.startDate.year, task.startDate.month, task.startDate.day);
+
+      if (tasksByDate[taskDate] == null) {
+        tasksByDate[taskDate] = [];
+      }
+
+      tasksByDate[taskDate]!.add(task);
+    }
+  }
+
 
   @override
   void initState() {
     super.initState();
     _getTasks();
-    _getOverview();
   }
-  double progressValue = 0;
-  String progressLabel ='';
-  List<Color> workLoadColorList =[DeckColors.deepGray,DeckColors.softGreen, DeckColors.accentColor];
-  List<Color> priorityColorList =[DeckColors.deckRed,DeckColors.deckYellow,DeckColors.deckBlue];
 
   Widget buildOverviewTab( int? total, int? complete){
-
     /// buildOverviewTab is a widget designed to present a comprehensive overview of task progress
     /// and distribution within the folder .
     /// It displays three primary sections:
     ///   overall progress,
     ///   workload by status,
     ///   and priority breakdown.
-
     progressValue = (total != 0) ? (complete ?? 0) / total! : 0.0;
     progressLabel = "$complete / $total";
     return  SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
       child: Column(
         children: [
           Container(
@@ -257,7 +315,6 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
           ),
           Container(
               padding: EdgeInsets.all(20),
-
               decoration: BoxDecoration(
                 border: Border.all(color: DeckColors.primaryColor, width: 3),
                 color: DeckColors.white,
@@ -278,7 +335,9 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
                     ),
                   ),
                   PieChart(
-                    dataMap: priorityData,
+                    dataMap: (priorityData != null && priorityData.isNotEmpty)
+                        ? priorityData
+                        : {"No Data": 100},
                     colorList: priorityColorList,
                     animationDuration: const Duration(milliseconds: 800),
                     chartLegendSpacing: 32,
@@ -318,475 +377,58 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
   Widget buildListTab(){
     /// buildListTab is a widget designed to present a list of all the task
     /// It  organizes tasks into different categories using tabs:
-    ///   pedning
+    ///   pending
     ///   in progress
     ///   completed
 
-    return  Container(
-        padding: EdgeInsets.only(left: 30,right: 30),
-        decoration: const BoxDecoration(
-            border: Border(
-              left: BorderSide(color: DeckColors.primaryColor, width: 3),
-              right: BorderSide(color: DeckColors.primaryColor, width: 3),
-              top: BorderSide(color: DeckColors.primaryColor, width: 3),
-              bottom: BorderSide.none,
-            ),
-            color: DeckColors.white,
-            borderRadius: BorderRadius.vertical(
-                top: Radius.circular(50)
-            )
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              const SizedBox(
-                height: 30,
+    return  Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+      child: Container(
+          padding: const EdgeInsets.only(left: 30, right: 30),
+          decoration: const BoxDecoration(
+              border: Border(
+                left: BorderSide(color: DeckColors.primaryColor, width: 3),
+                right: BorderSide(color: DeckColors.primaryColor, width: 3),
+                top: BorderSide(color: DeckColors.primaryColor, width: 3),
+                bottom: BorderSide.none,
               ),
-              BuildButton(
-                  icon: Icons.add_rounded,
-                  buttonText: "Add task",
-                  // height: 30,
-                  width: MediaQuery.of(context).size.width,
-                  radius: 20,
-                  backgroundColor: DeckColors.deckYellow,
-                  textColor: DeckColors.primaryColor,
-                  paddingIconText: 10,
-                  iconColor:  DeckColors.primaryColor,
-                  size: 20,
-                  fontSize: 15,
-                  borderWidth: 3,
-                  borderColor: DeckColors.primaryColor,
-                  onPressed: () async {
-                    print("Add task pressed");
-                    Navigator.push(
-                      context,
-                      RouteGenerator.createRoute(const AddTaskPage()),
-                    );
-                  }
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width,
-                height: 500,
-                child:BuildTabBar(
-                  titles: ['Pending', 'In Progress', 'Completed'],
-                  length: 3,
-                  tabContent: [
-                    SingleChildScrollView(
-                      padding: EdgeInsets.only(top: 20,bottom:100),
-                      child:
-                      TaskTile(
-                        taskName: 'an exeample of a very long'
-                            'task tiele that should trigger t he ellipsis',
-                        deadline: DateTime.now(),//TaskProvider.getNameDate(task.deadline),
-                        priority: 0,
-                        progressStatus: 'to do',
-                        onDelete: () {
-                        },
-                        onPressed: () {
-                          print("Clicked task tile!");
-                          Navigator.push(
-                            context,
-                            RouteGenerator.createRoute(ViewTaskPage(task: Task("0000", "_title", "_description", "0", "jkghjh", false, true, DateTime.now(), DateTime.now(), false, DateTime.now()), isEditable: true,)),//TODO change title
-                          );
-                        },
-                      ),
-                      // TaskList(
-                      //   tasks: [],
-                      //   filter: (task) => !task.getIsDone,
-                      // )
-
-                    ),
-                    SingleChildScrollView(
-                        padding: EdgeInsets.only(top: 20,bottom:100),
-                        child:
-                        // TaskTile(
-                        //   taskName: 'an exeample of a very long'
-                        //       'task tiele that should trigger t he ellipsis',
-                        //   deadline: DateTime.now(),//TaskProvider.getNameDate(task.deadline),
-                        //   priority: 0,
-                        //   progressStatus: 'to do',
-                        //   onDelete: () {
-                        //   },
-                        //   onPressed: () {
-                        //     print("Clicked task tile!");
-                        //   },
-                        // ),
-                        TaskList(
-                          tasks: [],
-                          filter: (task) => !task.getIsDone,
-                        )
-
-                    ),
-                    SingleChildScrollView(
-                        padding: EdgeInsets.only(top: 20,bottom:100),
-                        child:
-                        // TaskTile(
-                        //   taskName: 'an exeample of a very long'
-                        //       'task tiele that should trigger t he ellipsis',
-                        //   deadline: DateTime.now(),//TaskProvider.getNameDate(task.deadline),
-                        //   priority: 0,
-                        //   progressStatus: 'to do',
-                        //   onDelete: () {
-                        //   },
-                        //   onPressed: () {
-                        //     print("Clicked task tile!");
-                        //   },
-                        // ),
-                        TaskList(
-                          tasks: [],
-                          filter: (task) => !task.getIsDone,
-                        )
-
-                    ),
-                    // _buildTaskList(tasks, (task) => !task.getIsDone && !task.getIsActive),
-                    // _buildTaskList(tasks, (task) => task.getIsActive && !task.getIsDone),
-                    // _buildTaskList(tasks, (task) => task.getIsDone && !task.getIsActive)
-
-
-                    ///in progress tab
-
-                    ///if IN PROGRESS tab does not contain a task
-                    /// if Complete tab does not contain a task
-                    // IfCollectionEmpty(
-                    //   ifCollectionEmptyText: 'Seems like there aren’t any\n task for today, wanderer!',
-                    //   ifCollectionEmptySubText: 'Now’s the perfect time to get ahead. Start\nadding new tasks and stay \non top of your game!',
-                    //   ifCollectionEmptyHeight: MediaQuery.of(context).size.height/2,
-                    // )
-                    // if (isThereTaskForDay(today, false) || showAllTask)
-                    //   ListView.builder(
-                    //     shrinkWrap:
-                    //         true, // Allow the ListView to wrap its content
-                    //     physics: const NeverScrollableScrollPhysics(),
-                    //     itemCount: tasks.length,
-                    //     itemBuilder: (context, index) {
-                    //       if ((showAllTask && tasks[index].getIsDone) ||
-                    //           (tasks[index].getIsDone &&
-                    //               isSameDay(
-                    //                   tasks[index].deadline, selectedDay))) {
-                    //         return Padding(
-                    //           padding: const EdgeInsets.symmetric(vertical: 10),
-                    //           child: DeckTaskTile(
-                    //             title: tasks[index].title,
-                    //             deadline: tasks[index]
-                    //                 .deadline
-                    //                 .toString()
-                    //                 .split(" ")[0],
-                    //             isChecked: tasks[index].getIsDone,
-                    //             onChanged: (newValue) {
-                    //               setState(() {
-                    //                 tasks[index].setIsDone = newValue ?? false;
-                    //                 Provider.of<TaskProvider>(context,
-                    //                         listen: false)
-                    //                     .setTaskUndone(tasks[index]);
-                    //               });
-                    //             },
-                    //             onDelete: () {
-                    //               final String deletedTitle =
-                    //                   tasks[index].title;
-                    //               showConfirmationDialog(
-                    //                 context,
-                    //                 "Delete Item",
-                    //                 "Are you sure you want to delete '$deletedTitle'?",
-                    //                 () {
-                    //                   Provider.of<TaskProvider>(context,
-                    //                           listen: false)
-                    //                       .deleteTask(tasks[index].uid);
-                    //                 },
-                    //                 () {
-                    //                   setState(() {});
-                    //                 },
-                    //               );
-                    //             },
-                    //             enableRetrieve: false,
-                    //             onTap: () {
-                    //               print("Clicked task tile!");
-                    //               Navigator.push(
-                    //                 context,
-                    //                 MaterialPageRoute(
-                    //                     builder: (context) => ViewTaskPage(
-                    //                           task: tasks[index],
-                    //                           isEditable: true,
-                    //                         )),
-                    //               );
-                    //             },
-                    //           ),
-                    //         );
-                    //       } else {
-                    //         return const SizedBox(
-                    //             height: 0); // Placeholder for empty space
-                    //       }
-                    //     },
-                    //   )
-                    // else
-                  ],
-                )
+              color: DeckColors.white,
+              borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(50)
               )
-            ],
           ),
-        )
-    );
-  }
-
-  Widget buildCalendarTab(){
-    return  Container(
-        padding: const EdgeInsets.only(left: 30,right: 30),
-        decoration: const BoxDecoration(
-            border: Border(
-              left: BorderSide(color: DeckColors.primaryColor, width: 3),
-              right: BorderSide(color: DeckColors.primaryColor, width: 3),
-              top: BorderSide(color: DeckColors.primaryColor, width: 3),
-              bottom: BorderSide.none,
-            ),
-            color: DeckColors.white,
-            borderRadius: BorderRadius.vertical(
-                top: Radius.circular(50)
-            )
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(
-                height: 30,
-              ),
-              Text(
-                  DateFormat('yyyy').format(focusedDay),
-                  style: const TextStyle(
-                      fontFamily: 'Fraiche',
-                      fontSize: 20,
-                      color: DeckColors.accentColor,
-                      )
-              ),
-              // Container(
-              //   height: (MediaQuery.of(context).size.height/2),
-              //   padding: const EdgeInsets.symmetric(vertical: 10, horizontal:50),
-              //   decoration: const BoxDecoration(
-              //     color: DeckColors.white,
-              //     borderRadius: BorderRadius.only(
-              //       topLeft: Radius.circular(60),  // Rounded top-left corner
-              //       topRight: Radius.circular(60), // Rounded top-right corner
-              //     ),
-              //   ),
-              //   child: Padding(
-              //     padding: const EdgeInsets.only(top: 20),
-              //     child: BuildTabBar(
-              //       titles: const ['To Do', 'Active', 'Done'],
-              //       length: 3,
-              //       tabContent: [
-              //         // _buildTaskList(tasks, (task) => !task.getIsDone && !task.getIsActive && isSameDay(task.deadline, selectedDay)),
-              //         // _buildTaskList(tasks, (task) => task.getIsActive && !task.getIsDone && isSameDay(task.deadline, selectedDay)),
-              //         // _buildTaskList(tasks, (task) => task.getIsDone && !task.getIsActive && isSameDay(task.deadline, selectedDay)),
-              //         ListView.builder(
-              //           shrinkWrap:
-              //           true, // Allow the ListView to wrap its content
-              //           physics: const NeverScrollableScrollPhysics(),
-              //           itemCount: 10/*tasks.length*/,
-              //           itemBuilder: (context, index) {
-              //             if (showAllTask /* && tasks[index].getIsDone*/ ) /*||
-              //                         (tasks[index].getIsDone &&
-              //                             isSameDay(
-              //                                 tasks[index].deadline, selectedDay)))*/
-              //             { return Padding(
-              //               padding: const EdgeInsets.symmetric(vertical: 10),
-              //               // child: TaskTile(
-              //               // title: tasks[index].title,
-              //               //  deadline:tasks[index]
-              //               //     .deadline
-              //               //     .toString()
-              //               //     .split(" ")[0],
-              //               // isChecked: //tasks[index].getIsDone,
-              //               // onChanged: (newValue) {
-              //               //   setState(() {
-              //               //     // tasks[index].setIsDone = newValue ?? false;
-              //               //     // Provider.of<TaskProvider>(context,
-              //               //     //         listen: false)
-              //               //     //     .setTaskUndone(tasks[index]);
-              //               //   });
-              //               // },
-              //               // onDelete: () {
-              //               //   // final String deletedTitle =
-              //               //   //     tasks[index].title;
-              //               //   // showConfirmDialog(
-              //               //   //   context,
-              //               //   //   "Delete Item",
-              //               //   //   "Are you sure you want to delete '$deletedTitle'?",
-              //               //   //   onConfirm: () {
-              //               //   //     Provider.of<TaskProvider>(context,
-              //               //   //             listen: false)
-              //               //   //         .deleteTask(tasks[index].uid);
-              //               //   //   },
-              //               //   //   () {
-              //               //   //     setState(() {});
-              //               //   //   },
-              //               //   // );
-              //               // },
-              //               // enableRetrieve: false,
-              //               // onTap: () {
-              //               //   print("Clicked task tile!");
-              //               //   // Navigator.push(
-              //               //   //   context,
-              //               //     // RouteGenerator.createRoute(
-              //               //     // const ViewTaskPage(
-              //               //       // task: tasks[index],
-              //               //       // isEditable: true,
-              //               //     // )
-              //               //   // ),
-              //               //   // );
-              //               // },
-              //               // ),
-              //             );
-              //             } else {
-              //               return const SizedBox();
-              //             }
-              //           },
-              //         )
-              //
-              //       ],
-              //     ),
-              //   ),
-              // ),
-              TableCalendar(
-                // eventLoader: _eventLoader,
-                focusedDay: focusedDay,
-                firstDay: DateTime.utc(2020, 1, 1),
-                lastDay: DateTime.utc(DateTime.now().year + 5, 1, 1),
-                onDaySelected: _onDaySelected,
-                selectedDayPredicate: (day) => isSameDay(day, focusedDay),
-                rowHeight: 35,
-                daysOfWeekHeight: 20,
-                calendarStyle: CalendarStyle(
-                  cellMargin: EdgeInsets.all(2),
-                  canMarkersOverflow: false,
-                  markersMaxCount: 1,
-                  markerDecoration: const BoxDecoration(
-                      color: Colors.transparent,
-                      shape: BoxShape.rectangle),
-                  defaultTextStyle: const TextStyle(
-                    color: DeckColors.primaryColor,
-                    fontFamily: 'Nunito-Regular',
-                    fontSize: 15,
-                  ),
-                  weekNumberTextStyle: const TextStyle(
-                    color: DeckColors.primaryColor,
-                    fontFamily: 'Nunito-Regular',
-                    fontSize: 15,
-                  ),
-                  weekendTextStyle: const TextStyle(
-                    color: DeckColors.primaryColor,
-                    fontFamily: 'Nunito-Regular',
-                    fontSize: 15,
-                  ),
-                  selectedTextStyle: const TextStyle(
-                    color: DeckColors.white,
-                    fontFamily: 'Nunito-Regular',
-                    fontSize: 15,
-                  ),
-                  selectedDecoration: const BoxDecoration(
-                    color: DeckColors.accentColor ,
-                    // border: Border.all(
-                    //   color: DeckColors.primaryColor,
-                    //   width: 2,
-                    // ),
-                    shape: BoxShape.circle,
-                  ),
-                  todayTextStyle:const TextStyle(
-                    color: DeckColors.primaryColor,
-                    fontFamily: 'Nunito-Regular',
-                    fontSize: 15,
-                  ),
-                  todayDecoration: BoxDecoration(
-                    color: Colors.transparent,
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: DeckColors.primaryColor,
-                      width: 2,
-                    ),
-                  ),
-                  outsideDaysVisible: true,
-                  outsideTextStyle: const TextStyle(
-                    color: DeckColors.softGray,
-                    fontFamily: 'Nunito-Regular',
-                    fontSize: 15,
-                  ),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                const SizedBox(
+                  height: 30,
                 ),
-                headerStyle: HeaderStyle(
-                  headerPadding: EdgeInsets.zero,
-                  titleTextFormatter: (date, locale) {
-                    return DateFormat('MMMM DDD').format(date);
-                  },
-                  leftChevronIcon: const Icon(
-                      Icons.arrow_left_rounded,
-                      color: DeckColors.primaryColor
-                  ),
-                  leftChevronMargin: const EdgeInsets.only(right: 10),
-                  leftChevronPadding: const EdgeInsets.only(right: 10),
-                  rightChevronIcon: const Icon(
-                      Icons.arrow_right_rounded,
-                      color: DeckColors.primaryColor
-                  ),
-                  rightChevronPadding: const EdgeInsets.only(left: 10),
-                  rightChevronMargin: EdgeInsets.zero,
-                  formatButtonVisible: false,
-                  titleTextStyle: const TextStyle(
-                    color: DeckColors.accentColor,
-                    fontSize: 40,
-                    fontFamily: 'Fraiche',
-                  ),
-                ),
-                daysOfWeekStyle: const DaysOfWeekStyle(
-                  weekdayStyle: TextStyle(
-                    color: DeckColors.primaryColor,
-                    fontSize:  15,
-                    fontFamily: 'Fraiche',
-                  ),
-                  weekendStyle: TextStyle(
-                    color: DeckColors.primaryColor,
+                BuildButton(
+                    icon: Icons.add_rounded,
+                    buttonText: "Add task",
+                    // height: 30,
+                    width: MediaQuery.of(context).size.width,
+                    radius: 20,
+                    backgroundColor: DeckColors.deckYellow,
+                    textColor: DeckColors.primaryColor,
+                    paddingIconText: 10,
+                    iconColor:  DeckColors.primaryColor,
+                    size: 20,
                     fontSize: 15,
-                    fontFamily: 'Fraiche',
-                  ),
+                    borderWidth: 3,
+                    borderColor: DeckColors.primaryColor,
+                    onPressed: () async {
+                      await Navigator.push(
+                        context,
+                        RouteGenerator.createRoute(AddTaskPage(taskFolder: widget.taskFolder,)),
+                      );
+                      _getTasks();
+                    }
                 ),
-                // calendarBuilders: CalendarBuilders(markerBuilder: (context, date, events) {
-                //   if (events.isNotEmpty) {
-                //     return Align(
-                //       alignment: Alignment.bottomCenter,
-                //       child: Container(
-                //         margin: const EdgeInsets.only(bottom: 8),
-                //         width: 5,
-                //         height: 2,
-                //         color: DeckColors.primaryColor,
-                //       ),
-                //     );
-                //   }
-                // }),
-              ),
-              BuildButton(
-                  icon: Icons.add_rounded,
-                  buttonText: "Add task",
-                  // height: 30,
-                  width: MediaQuery.of(context).size.width,
-                  radius: 20,
-                  backgroundColor: DeckColors.deckYellow,
-                  textColor: DeckColors.primaryColor,
-                  paddingIconText: 10,
-                  iconColor:  DeckColors.primaryColor,
-                  size: 20,
-                  fontSize: 15,
-                  borderWidth: 3,
-                  borderColor: DeckColors.primaryColor,
-                  onPressed: () async {
-                    print("Add task pressed");
-                    Navigator.push(
-                      context,
-                      RouteGenerator.createRoute(const AddTaskPage()),
-                    );              }
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              SizedBox(
+                const SizedBox(
+                  height: 10,
+                ),
+                SizedBox(
                   width: MediaQuery.of(context).size.width,
                   height: 500,
                   child:BuildTabBar(
@@ -794,39 +436,357 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
                     length: 3,
                     tabContent: [
                       SingleChildScrollView(
-                          padding: EdgeInsets.only(top: 20,bottom:100),
-                          child:
-                          TaskList(
-                            tasks: [],
-                            filter: (task) => !task.getIsDone,
-                          )
-
+                        padding: EdgeInsets.only(top: 20, bottom: 100, right: 5),
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: pendingTasks.length,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.only(top: 10.0),
+                              child: TaskTile(
+                                taskName: pendingTasks[index].title,
+                                deadline: pendingTasks[index].endDate,
+                                priority: pendingTasks[index].priority,
+                                progressStatus: pendingTasks[index].status,
+                                onDelete: () {},
+                                onPressed: () async{
+                                  await Navigator.push(
+                                    context,
+                                    RouteGenerator.createRoute(ViewTaskPage(task: pendingTasks[index], isEditable: true)),
+                                  );
+                                  _getTasks();
+                                },
+                              ),
+                            );
+                          },
+                        ),
                       ),
                       SingleChildScrollView(
-                          padding: EdgeInsets.only(top: 20,bottom:100),
-                          child:
-                          TaskList(
-                            tasks: [],
-                            filter: (task) => !task.getIsDone,
-                          )
-
+                          padding: EdgeInsets.only(top: 20,bottom:100, right: 5),
+                          child:ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: inProgressTasks.length,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: const EdgeInsets.only(top: 10.0),
+                                child: TaskTile(
+                                  taskName: inProgressTasks[index].title,
+                                  deadline: inProgressTasks[index].endDate,
+                                  priority: inProgressTasks[index].priority,
+                                  progressStatus: inProgressTasks[index].status,
+                                  onDelete: () {},
+                                  onPressed: () async {
+                                    await Navigator.push(
+                                      context,
+                                      RouteGenerator.createRoute(ViewTaskPage(task: inProgressTasks[index], isEditable: true)),
+                                    );
+                                    _getTasks();
+                                  },
+                                ),
+                              );
+                            },
+                          ),
                       ),
                       SingleChildScrollView(
-                          padding: EdgeInsets.only(top: 20,bottom:100),
-                          child:
-                          TaskList(
-                            tasks: [],
-                            filter: (task) => !task.getIsDone,
-                          )
-
+                          padding: EdgeInsets.only(top: 20, bottom:100, right: 5),
+                          child:ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: completedTasks.length,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: const EdgeInsets.only(top: 10.0),
+                                child: TaskTile(
+                                  taskName: completedTasks[index].title,
+                                  deadline: completedTasks[index].endDate,
+                                  priority: completedTasks[index].priority,
+                                  progressStatus: completedTasks[index].status,
+                                  onDelete: () {},
+                                  onPressed: () async {
+                                    await Navigator.push(
+                                      context,
+                                      RouteGenerator.createRoute(ViewTaskPage(task: completedTasks[index], isEditable: true)),
+                                    );
+                                    _getTasks();
+                                  },
+                                ),
+                              );
+                            },
+                          ),
                       ),
-
                     ],
                   )
+                )
+              ],
+            ),
+          )
+      ),
+    );
+  }
+  Widget buildCalendarTab(){
+    return  Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+      child: Container(
+          padding: const EdgeInsets.only(left: 30, right: 30),
+          decoration: const BoxDecoration(
+              border: Border(
+                left: BorderSide(color: DeckColors.primaryColor, width: 3),
+                right: BorderSide(color: DeckColors.primaryColor, width: 3),
+                top: BorderSide(color: DeckColors.primaryColor, width: 3),
+                bottom: BorderSide.none,
+              ),
+              color: DeckColors.white,
+              borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(50)
               )
-            ],
           ),
-        )
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(
+                  height: 30,
+                ),
+                Text(
+                    DateFormat('yyyy').format(focusedDay),
+                    style: const TextStyle(
+                        fontFamily: 'Fraiche',
+                        fontSize: 20,
+                        color: DeckColors.accentColor,
+                        )
+                ),
+                TableCalendar(
+                  eventLoader: (day) {
+                    final date = DateTime(day.year, day.month, day.day);
+                    return tasksByDate[date] ?? [];
+                  },
+                  focusedDay: focusedDay,
+                  firstDay: DateTime.utc(2020, 1, 1),
+                  lastDay: DateTime.utc(DateTime.now().year + 5, 1, 1),
+                  onDaySelected: _onDaySelected,
+                  selectedDayPredicate: (day) => isSameDay(day, focusedDay),
+                  rowHeight: 35,
+                  daysOfWeekHeight: 20,
+                  calendarStyle: CalendarStyle(
+                    cellMargin: EdgeInsets.all(2),
+                    canMarkersOverflow: false,
+                    markersMaxCount: 1,
+                    markerDecoration: const BoxDecoration(
+                        color: Colors.green,
+                        shape: BoxShape.circle),
+                    defaultTextStyle: const TextStyle(
+                      color: DeckColors.primaryColor,
+                      fontFamily: 'Nunito-Regular',
+                      fontSize: 15,
+                    ),
+                    weekNumberTextStyle: const TextStyle(
+                      color: DeckColors.primaryColor,
+                      fontFamily: 'Nunito-Regular',
+                      fontSize: 15,
+                    ),
+                    weekendTextStyle: const TextStyle(
+                      color: DeckColors.primaryColor,
+                      fontFamily: 'Nunito-Regular',
+                      fontSize: 15,
+                    ),
+                    selectedTextStyle: const TextStyle(
+                      color: DeckColors.white,
+                      fontFamily: 'Nunito-Regular',
+                      fontSize: 15,
+                    ),
+                    selectedDecoration: const BoxDecoration(
+                      color: DeckColors.accentColor ,
+                      // border: Border.all(
+                      //   color: DeckColors.primaryColor,
+                      //   width: 2,
+                      // ),
+                      shape: BoxShape.circle,
+                    ),
+                    todayTextStyle:const TextStyle(
+                      color: DeckColors.primaryColor,
+                      fontFamily: 'Nunito-Regular',
+                      fontSize: 15,
+                    ),
+                    todayDecoration: BoxDecoration(
+                      color: Colors.transparent,
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: DeckColors.primaryColor,
+                        width: 2,
+                      ),
+                    ),
+                    outsideDaysVisible: true,
+                    outsideTextStyle: const TextStyle(
+                      color: DeckColors.softGray,
+                      fontFamily: 'Nunito-Regular',
+                      fontSize: 15,
+                    ),
+                  ),
+                  headerStyle: HeaderStyle(
+                    headerPadding: EdgeInsets.zero,
+                    titleTextFormatter: (date, locale) {
+                      return DateFormat('MMMM d').format(date);
+                    },
+                    leftChevronIcon: const Icon(
+                        Icons.arrow_left_rounded,
+                        color: DeckColors.primaryColor
+                    ),
+                    leftChevronMargin: const EdgeInsets.only(right: 10),
+                    leftChevronPadding: const EdgeInsets.only(right: 10),
+                    rightChevronIcon: const Icon(
+                        Icons.arrow_right_rounded,
+                        color: DeckColors.primaryColor
+                    ),
+                    rightChevronPadding: const EdgeInsets.only(left: 10),
+                    rightChevronMargin: EdgeInsets.zero,
+                    formatButtonVisible: false,
+                    titleTextStyle: const TextStyle(
+                      color: DeckColors.accentColor,
+                      fontSize: 40,
+                      fontFamily: 'Fraiche',
+                    ),
+                  ),
+                  daysOfWeekStyle: const DaysOfWeekStyle(
+                    weekdayStyle: TextStyle(
+                      color: DeckColors.primaryColor,
+                      fontSize:  15,
+                      fontFamily: 'Fraiche',
+                    ),
+                    weekendStyle: TextStyle(
+                      color: DeckColors.primaryColor,
+                      fontSize: 15,
+                      fontFamily: 'Fraiche',
+                    ),
+                  ),
+                ),
+                BuildButton(
+                    icon: Icons.add_rounded,
+                    buttonText: "Add task",
+                    // height: 30,
+                    width: MediaQuery.of(context).size.width,
+                    radius: 20,
+                    backgroundColor: DeckColors.deckYellow,
+                    textColor: DeckColors.primaryColor,
+                    paddingIconText: 10,
+                    iconColor:  DeckColors.primaryColor,
+                    size: 20,
+                    fontSize: 15,
+                    borderWidth: 3,
+                    borderColor: DeckColors.primaryColor,
+                    onPressed: () async {
+                      await Navigator.push(
+                        context,
+                        RouteGenerator.createRoute(AddTaskPage(taskFolder: widget.taskFolder)),
+                      );
+                      _getTasks();
+                    }
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    height: 500,
+                    child:BuildTabBar(
+                      titles: ['Pending', 'In Progress', 'Completed'],
+                      length: 3,
+                      tabContent: [
+                        SingleChildScrollView(
+                          padding: EdgeInsets.only(top: 20, bottom: 100, right: 5),
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: pendingByDateTasks.length ?? 0,
+                            itemBuilder: (context, index) {
+                              final task = pendingByDateTasks[index];
+                              return TaskTile(
+                                taskName: task.title,
+                                deadline: task.endDate,
+                                priority: task.priority,
+                                progressStatus: task.status,
+                                onDelete: () {
+                                  // your delete logic
+                                },
+                                onPressed: () async {
+                                  await Navigator.push(
+                                    context,
+                                    RouteGenerator.createRoute(
+                                      ViewTaskPage(task: task, isEditable: true),
+                                    ),
+                                  );
+                                  _getTasks();
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                        SingleChildScrollView(
+                          padding: EdgeInsets.only(top: 20, bottom: 100, right: 5),
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: inProgressByDateTasks.length ?? 0,
+                            itemBuilder: (context, index) {
+                              final task = inProgressByDateTasks[index];
+                              return TaskTile(
+                                taskName: task.title,
+                                deadline: task.endDate,
+                                priority: task.priority,
+                                progressStatus: task.status,
+                                onDelete: () {
+                                  // your delete logic
+                                },
+                                onPressed: () async {
+                                  await Navigator.push(
+                                    context,
+                                    RouteGenerator.createRoute(
+                                      ViewTaskPage(task: task, isEditable: true),
+                                    ),
+                                  );
+                                  _getTasks();
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                        SingleChildScrollView(
+                          padding: EdgeInsets.only(top: 20, bottom: 100, right: 5),
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: completedByDateTasks.length ?? 0,
+                            itemBuilder: (context, index) {
+                              final task = completedByDateTasks[index];
+                              return TaskTile(
+                                taskName: task.title,
+                                deadline: task.endDate,
+                                priority: task.priority,
+                                progressStatus: task.status,
+                                onDelete: () {
+                                  // your delete logic
+                                },
+                                onPressed: () async {
+                                  await Navigator.push(
+                                    context,
+                                    RouteGenerator.createRoute(
+                                      ViewTaskPage(task: task, isEditable: true),
+                                    ),
+                                  );
+                                  _getTasks();
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    )
+                )
+              ],
+            ),
+          )
+      ),
     );
   }
 
@@ -865,7 +825,7 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
             /// Edit Task folder info option
             if (index == 0) {
               Navigator.of(context).push(
-                RouteGenerator.createRoute(const EditTaskFolderPage()),
+                RouteGenerator.createRoute(EditTaskFolderPage(taskFolder: widget.taskFolder)),
               );
             }
             /// Delete Task Folder Option
@@ -881,7 +841,9 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
                       button1: 'Delete',
                       button2: 'Cancel',
                       onConfirm: () async {
-                        ///TODO add function
+                        BuildContext contextHolder = context;
+                        await TaskService().deleteTaskFolder(taskFolderId: widget.taskFolder.id);
+                        Navigator.of(context).pop(); // Pop dialog
                         Navigator.of(context).pop();
                       },
                       onCancel: () {
@@ -904,13 +866,13 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 30,vertical: 10),
+                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         AutoSizeText(
-                            widget.title ?? 'Unititled',
+                            widget.taskFolder.title ?? 'Unititled',
                             maxLines: 2,
                             style: const TextStyle(
                               fontFamily: 'Fraiche',
@@ -940,8 +902,11 @@ class _ViewTaskFolderPageState extends State<ViewTaskFolderPage> {
                       tabContent: [
                         SizedBox(
                           width: MediaQuery.of(context).size.width,
-                          child:
-                          buildOverviewTab(totalTask,totalCompleted),
+                          child: _isLoading
+                              ? const Center(child: DeckLoadingDialog(
+                            message: "Loading task, please wait...",
+                          ))
+                              : buildOverviewTab(totalTask, totalCompleted),
                         ),
                         Container(
                           width: MediaQuery.of(context).size.width,

@@ -1,8 +1,11 @@
+import 'package:deck/backend/models/TaskFolder.dart';
+import 'package:deck/backend/task/task_service.dart';
 import 'package:deck/pages/misc/deck_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../colors.dart';
+import '../dialogs/confirmation_dialog.dart';
 import '../menus/pop_up_menu.dart';
 import '../progressbar/progress_bar.dart';
 import 'package:deck/pages/task/edit_task_folder.dart';
@@ -13,6 +16,7 @@ class TaskFolderTile extends StatelessWidget{
   final int? totalCompleted;
   final int? totalTask;
   final int? folderBackground;
+  final TaskFolder taskFolder;
   final VoidCallback? onPressed;
 
   TaskFolderTile({
@@ -22,6 +26,7 @@ class TaskFolderTile extends StatelessWidget{
     required this.totalCompleted,
     required this.totalTask,
     required this.onPressed,
+    required this.taskFolder
   });
 
   @override
@@ -30,13 +35,13 @@ class TaskFolderTile extends StatelessWidget{
     String? backgroundImage;
     switch(folderBackground){
       case 1:
-        backgroundImage = 'assets/images/Deck-Background4.svg';
+        backgroundImage = 'assets/images/Deck-Background6.svg';
         break;
       case 2:
-        backgroundImage = 'assets/images/Deck-Background5.svg';
+        backgroundImage = 'assets/images/Deck-Background4.svg';
         break;
       case 3:
-        backgroundImage = 'assets/images/Deck-Background6.svg';
+        backgroundImage = 'assets/images/Deck-Background5.svg';
         break;
       default:
         backgroundImage = null;
@@ -128,10 +133,20 @@ class TaskFolderTile extends StatelessWidget{
                 print("Edit Folder Info Selected");
                 Navigator.push(
                   context,
-                  RouteGenerator.createRoute(EditTaskFolderPage()),//TODO ADD THE INDEX OF THE FOLDER HERE
+                  RouteGenerator.createRoute(EditTaskFolderPage(taskFolder: taskFolder,)),//TODO ADD THE INDEX OF THE FOLDER HERE
                 );
               } else if (index == 1) {
-                print("Delete Selected");
+                showConfirmDialog(
+                    context,
+                    "assets/images/Deck-Dialogue4.png",
+                    'Delete Task Folder "${taskFolder.title}"?',
+                    'This action is permanent and will remove all ${totalTask} tasks inside.',
+                    "Delete",
+                        () async{
+                          await TaskService().deleteTaskFolder(taskFolderId: taskFolder.id);
+                          Navigator.of(context).pop();
+                    }
+                );
               }
             },
             // offset: -100,

@@ -65,103 +65,84 @@ class FlashcardAiService {
   Future<Deck?> sendAndRequestDataToGemini({
     required String deckTitle,
     required String deckDescription,
-    required String subject,         // Subject of the flashcards.
-    required String topic,           // Topic within the subject.
-    required int numberOfFlashcards,  // Number of questions to generate.
+    required int numberOfFlashcards,
     required String coverPhoto,
-    String addDescription = "",      // Additional description or context.
-    String pdfFileName = "",        // Name of the associated PDF file.
-    String pdfFileExtension = "",   // File extension of the PDF (e.g., '.pdf').
+    String subject = "",
+    String topic = "",
+    String addDescription = "",
+    String pdfFileName = "",
+    String pdfFileExtension = "",
   }) async {
-
-    // Construct the request body in JSON format.
     Map<String, dynamic> requestBody = {
       'title': deckTitle,
       'description': deckDescription,
-      'subject': subject,
-      'topic': topic,
       'numberOfFlashcards': numberOfFlashcards,
       'coverPhoto': coverPhoto
     };
 
-    if(addDescription.trim().isNotEmpty){
+    if (subject.trim().isNotEmpty) {
+      requestBody['subject'] = subject;
+    }
+    if (topic.trim().isNotEmpty) {
+      requestBody['topic'] = topic;
+    }
+    if (addDescription.trim().isNotEmpty) {
       requestBody['addDescription'] = addDescription;
     }
-
-    print("pdf filename:" + pdfFileName);
-    if(pdfFileName.trim().isNotEmpty || pdfFileName != ""){
+    if (pdfFileName.trim().isNotEmpty) {
       requestBody['fileName'] = pdfFileName;
-      print("pdf filename:" + pdfFileName);
     }
-
-    if(pdfFileExtension.trim().isNotEmpty){
+    if (pdfFileExtension.trim().isNotEmpty) {
       requestBody['fileExtension'] = pdfFileExtension;
     }
 
-    try{
+    try {
       String? token = await AuthService().getIdToken();
 
-      // Send a POST request to the API with the request body and headers.
       final response = await http.post(
-        Uri.parse('$deckAIAPIUrl/v2/deck/generate/flashcards/'), // API endpoint.
-        body: jsonEncode(requestBody), // JSON-encoded request body.
+        Uri.parse('$deckAIAPIUrl/v2/deck/generate/flashcards/'),
+        body: jsonEncode(requestBody),
         headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8', // Specify content type as JSON.
+          'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $token',
         },
       );
-      print(response.statusCode); // Log the status code for debugging.
 
-      // Check if the response was successful (status code 200).
       if (response.statusCode == 200) {
-        // Parse the response body as a JSON object.
         var jsonData = jsonDecode(response.body) as Map<String, dynamic>;
-        print(jsonData); // Log parsed data for debugging.
-
-        // If the JSON data is empty, return null.
         if (jsonData.isEmpty) return null;
+        print(jsonData);
 
-        // Extract the data from the JSON response.
         String deckID = jsonData["data"]["deck_id"];
-
         if (deckID.isEmpty) return null;
 
         Deck? deckResponse = await _flashcardService.getSpecificDeck(deckID);
-        return deckResponse; // Return the generated flashcards.
+        return deckResponse;
       } else {
-        // Handle errors based on status codes using a switch-case.
-        switch (response.statusCode) {
-          case 418:
-            throw IncompleteRequestBodyException('Incomplete request body: ${response.body}');
-          case 420:
-            throw NumberOfCardsException('Unknown number of cards: ${response.body}');
-          case 421:
-            throw TextExtractionException('Text Extraction error: ${response.body}');
-          case 422:
-            throw FileDeletionException('File was not deleted: ${response.body}');
-          case 423:
-            throw NoInformationException('Incomplete request body: ${response.body}');
-          case 424:
-            throw MessageRouteException('Internal server error: ${response.body}');
-          case 425:
-            throw RequestException('Internal server: ${response.body}');
-          case 500:
-          case 501:
-            throw InternalServerErrorException('Internal server error: ${response.body}');
-          default:
-            print(response.statusCode); // Log unexpected status codes.
-            throw ApiException(response.statusCode, 'Error: ${response.body}'); // Generic error handling.
+        // Try to parse the error message from the response
+        var errorData = jsonDecode(response.body);
+        String errorMessage = "An unexpected error occurred.";
+
+        if (errorData is Map<String, dynamic> && errorData.containsKey('data')) {
+          errorMessage = errorData['data']['message'] ?? errorMessage;
+        }
+
+        if (response.statusCode >= 500) {
+          throw ApiException(response.statusCode, 'Server Error: $errorMessage');
+        } else {
+          throw ApiException(response.statusCode, errorMessage);
         }
       }
-    }catch(error){
-      print ('AI ERROR: ${error}');
-      return null;
+    } catch (error) {
+      print('AI ERROR: $error');
+      rethrow;
     }
   }
 
-  Future<Quiz?> retrieveQuizForDeck({required String deckId,}) async {
+  Future<Quiz?> retrieveQuizForDeck({required String deckId, required int numOfQuiz}) async {
     Map<String, dynamic> requestBody = {
       'deckId': deckId,
+      'numOfQuiz': numOfQuiz
     };
 
     try {

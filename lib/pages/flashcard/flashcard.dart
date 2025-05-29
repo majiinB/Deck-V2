@@ -19,8 +19,10 @@ import 'package:flutter/material.dart';
 import 'package:deck/pages/misc/widget_method.dart';
 // import 'package:google_fonts/google_fonts.dart';
 
+import '../../backend/custom_exceptions/api_exception.dart';
 import '../../backend/flashcard/flashcard_utils.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
+import '../misc/custom widgets/dialogs/alert_dialog.dart';
 import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
 import '../misc/custom widgets/functions/if_collection_empty.dart';
 import '../misc/custom widgets/textboxes/textboxes.dart';
@@ -66,39 +68,68 @@ class _FlashcardPageState extends State<FlashcardPage> {
   void initState() {
     super.initState();
     _user = _authService.getCurrentUser();
-    FlashcardUtils.updateLatestReview.addListener(_updateLatestReview);
+    // FlashcardUtils.updateLatestReview.addListener(_updateLatestReview);
     _scrollController.addListener(_onScroll);
     _initUserDecks(_user);
-    _initScore();
+    // _initScore();
     _searchController.addListener(_onSearchChanged);
   }
 
   void _initUserDecks(User? user) async {
-    if (user != null) {
-      print("initialize deck");
-      String userId = user.uid;
-      var result = await _flashcardService.getDecks(filter); // Call method to fetch decks
-      List<Deck> decks = result['decks'];
-      String nextPageToken = result['nextPageToken'];
+    String? userId = user?.uid;
 
-      Deck? latest = await _flashcardService.getLatestDeckLog(userId);
-      if (!mounted) return;
-      setState(() {
-        _decks = decks; // Update state with fetched decks
-        _filteredDecks = decks; // Initialize filtered decks
-        _latestDeck = latest;
-        _nextPageToken = nextPageToken;
-      });
+    if (user != null) {
+      try{
+        var result = await _flashcardService.getDecks(filter); // Call method to fetch decks
+        List<Deck> decks = result['decks'];
+        String nextPageToken = result['nextPageToken'];
+        if (!mounted) return;
+        setState(() {
+          _decks = decks; // Update state with fetched decks
+          _filteredDecks = decks; // Initialize filtered decks
+          _nextPageToken = nextPageToken;
+        });
+      }catch(e){
+        print('Error fetching latest quiz attempt: $e');
+      }
+
+      try{
+        final latestResult = await _flashcardService.getLatestQuizAttempt();
+        final deckInfo = latestResult['deck'] as Map<String, dynamic>;
+        final deckFromJson = Deck.fromJson(deckInfo);
+
+        final latestAttempt = latestResult['latest_attempt'] as Map<String, dynamic>;
+        final int attemptScore = latestAttempt['score'] as int;
+        final int totalQuestion = latestAttempt['total_questions'] as int;
+
+        if (!mounted) return;
+        setState(() {
+          _latestDeck = deckFromJson;
+          correct = attemptScore;
+          total = totalQuestion;
+          score = "$correct/$total";
+          if(correct >= (total/2)){
+            isRecentQuizPassed = true;
+          }else {
+            isRecentQuizPassed = false;
+          }
+        });
+      }catch(e){
+        print('Error fetching latest quiz attempt: $e');
+      }
     }
   }
 
   void _onSearchChanged() {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
     _debounce = Timer(const Duration(milliseconds: 1200), () async {
+      print(filter);
       _searchQuery = _searchController.text;
       List<Deck> searchedDecks = [];
       if(_searchQuery.trim().isNotEmpty){
         var result = await _flashcardService.searchDecks(_searchQuery, filter);
+        print(filter);
+        print("this is the result for this the query $_searchQuery");
         searchedDecks = result['decks'];
         setState(() {
           _filteredDecks = searchedDecks;
@@ -113,42 +144,6 @@ class _FlashcardPageState extends State<FlashcardPage> {
           _nextPageToken = nextPageToken;
         });
       }
-    });
-  }
-
-  void _updateLatestReview() async {
-    if (FlashcardUtils.updateLatestReview.value) {
-      Deck? latest = await _flashcardService.getLatestDeckLog(_user!.uid);
-      if (!mounted) return;
-      setState(() {
-        _latestDeck = latest;
-      });
-      _initUserDecks(_user); // This already has its own setState
-      FlashcardUtils.updateLatestReview.value = false; // Reset the notifier
-      if (_latestDeck != null) {
-        print("Latest Deck: ${_latestDeck!.title}");
-      }
-    }
-  }
-
-  void _initScore() {
-    /// Initializes the quiz score and determines if the user has passed.
-    ///
-    /// This function sets the `correct` and `total` scores, checks if user
-    /// has passed based on whether they scored at least half of the total, and
-    /// updates the `score` display accordingly.
-    correct = 50; //_latestDeck.score //TODO get scores from db
-    total = 100; //_latestDeck.total
-    print("Initializing Score..."); // Debugging
-
-    if(correct >= (total/2)){
-      isRecentQuizPassed = true;
-    }else {
-      isRecentQuizPassed = false;
-    }
-    setState(() {
-      score = "$correct/$total";
-      print("Score updated: $score");
     });
   }
 
@@ -240,19 +235,25 @@ class _FlashcardPageState extends State<FlashcardPage> {
                         String currentFilter = filter;
                         /// M Y  D E C K S
                         if (index == 0){
-                          filter = "MY_DECKS";
+                          setState(() {
+                            filter = "MY_DECKS";
+                          });
                           if(filter == currentFilter) return;
                           _initUserDecks(_user);
                         }
                         /// S A V E D  D E C K S
                         else if (index == 1) {
-                          filter = "SAVED_DECKS";
+                          setState(() {
+                            filter = "SAVED_DECKS";
+                          });
                           if(filter == currentFilter) return;
                           _initUserDecks(_user);
                         }
                         /// PUBLISHED DECKS
                         else if (index == 2) {
-                          filter = "PUBLISHED_DECKS";
+                          setState(() {
+                            filter = "PUBLIC_DECKS";
+                          });
                           if(filter == currentFilter) return;
                           _initUserDecks(_user);
                         }
@@ -269,22 +270,22 @@ class _FlashcardPageState extends State<FlashcardPage> {
                     hasIcon: true,
                     ifCollectionEmptyText: 'It’s lonely around here...',
                     ifCollectionEmptySubText:
-                    'No Recent Decks Yet! Now’s the perfect time to get ahead. Create your own Deck now to keep learning.',
+                    'No decks yet? Now\'s the time to create one!',
                     ifCollectionEmptyHeight: MediaQuery.of(context).size.height/3,
                   ),
                 ),
-              if (_decks.isEmpty)
-                const Padding(
-                  padding: const EdgeInsets.only(left: 30,right: 30, top: 20.0),
-                  child: Text(
-                      'Explore',
-                      style: TextStyle(
-                          fontFamily: 'Fraiche',
-                          fontSize: 30,
-                          color: DeckColors.primaryColor,
-                          fontWeight: FontWeight.bold)
-                  ),
-                ),
+              // if (_decks.isEmpty)
+              //   const Padding(
+              //     padding: const EdgeInsets.only(left: 30,right: 30, top: 20.0),
+              //     child: Text(
+              //         'Explore',
+              //         style: TextStyle(
+              //             fontFamily: 'Fraiche',
+              //             fontSize: 30,
+              //             color: DeckColors.primaryColor,
+              //             fontWeight: FontWeight.bold)
+              //     ),
+              //   ),
               Padding(padding: EdgeInsets.symmetric( horizontal: 30),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -334,30 +335,29 @@ class _FlashcardPageState extends State<FlashcardPage> {
                         children: [
                           Expanded(
                             child: Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
+
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const AutoSizeText(
+                                const Text(
                                   "Continue Learning",
                                   maxLines:1,
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                     height:1,
                                     fontSize: 14,
-                                    fontFamily: 'Fraiche',
+                                    fontFamily: 'Nunito-Bold',
                                     color: DeckColors.primaryColor,
                                   ),
                                 ),
                                 const SizedBox(height: 10),
-                                AutoSizeText(
+                                Text(
                                   _latestDeck?.title ?? 'A VERY VERY VERY LONG Deck Title that will reach until the fourth line nyehe ',
-                                  maxLines:4,
-                                  minFontSize: 8,
+                                  maxLines: 3,
                                   overflow: TextOverflow.ellipsis,
                                   textAlign: TextAlign.left,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     height:1,
-                                    fontSize: 18,
+                                    fontSize: 24,
                                     fontFamily: 'Fraiche',
                                     color: DeckColors.primaryColor,
                                   ),
@@ -377,22 +377,25 @@ class _FlashcardPageState extends State<FlashcardPage> {
                                   maxLines: 1,
                                   style: TextStyle(
                                     height:1,
-                                    fontSize: 10,
-                                    fontFamily: 'Nunito-SemiBold',
+                                    fontSize: 14,
+                                    fontFamily: 'Nunito-Bold',
                                     color: DeckColors.primaryColor,
                                   ),
                                 ),
                                 const SizedBox(height: 10),
-                                Flexible(child: AutoSizeText(
-                                  score.isNotEmpty ? score : "100/100",
-                                  textAlign: TextAlign.end,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    height:1,
-                                    fontSize: 35,
-                                    fontFamily: 'Fraiche',
-                                    color: isRecentQuizPassed ? DeckColors.accentColor : DeckColors.deckRed ,
+                                Flexible(child:
+                                Center(
+                                  child: AutoSizeText(
+                                    score.isNotEmpty ? score : "100/100",
+                                    textAlign: TextAlign.center,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      height:1,
+                                      fontSize: 35,
+                                      fontFamily: 'Fraiche',
+                                      color: isRecentQuizPassed ? DeckColors.accentColor : DeckColors.deckRed ,
+                                    ),
                                   ),
                                 ),
                                 ),
@@ -478,7 +481,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
                                       ViewDeckPage(deck: _filteredDecks[index], filter: filter)),
                                 );
                                 setState(() {
-                                  _onSearchChanged();
+                                  _initUserDecks(_user);
                                 });
                               },
                               // Checks if the user is the owner of the deck
@@ -500,6 +503,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
 
                               ///START FOR LOGIC OF POP UP MENU BUTTON (ung three dots)
                               onItemsSelected: (selectedIndex) async {
+                                BuildContext parentContext = context;
                                 ///If owner, show these options in the popup menu
                                 if(_filteredDecks[index].userId == _user!.uid) {
                                   if (selectedIndex == 0) {
@@ -521,14 +525,34 @@ class _FlashcardPageState extends State<FlashcardPage> {
                                               : 'Unpublish Deck',
                                           button2: 'Cancel',
                                           onConfirm: () async {
-                                            await _filteredDecks[index].publishOrUnpublishDeck();
-                                            setState(() {
-                                              if(filter == "PUBLISHED_DECKS"){
-                                                _filteredDecks.removeWhere((d) => d.deckId == _filteredDecks[index].deckId);
+                                            Navigator.of(context).pop(); // close confirm dialog
+
+                                            Future(() async {
+                                              await Future.delayed(Duration(milliseconds: 100));
+
+                                              try {
+                                                await _filteredDecks[index].publishOrUnpublishDeck();
+                                                if (parentContext.mounted) {
+                                                  showAlertDialog(
+                                                    parentContext,
+                                                    "assets/images/Deck-Dialogue3.png",
+                                                    'Publish request for "${_filteredDecks[index].title}" deck has been made!',
+                                                    "Successfully made a publish request! Please wait for our moderator's approval",
+                                                  );
+                                                }
+                                              } catch (e) {
+                                                print('Caught error: $e');
+                                                String errorMessage = e is ApiException ? e.message : 'An unexpected error occurred.';
+                                                if (parentContext.mounted) {
+                                                  showAlertDialog(
+                                                    parentContext,
+                                                    "assets/images/Deck-Dialogue1.png",
+                                                    "Uh Oh An Error Has Occured",
+                                                    errorMessage,
+                                                  );
+                                                }
                                               }
                                             });
-
-                                            Navigator.of(context).pop();
                                           },
                                           onCancel: () {
                                             Navigator.of(context).pop();
@@ -543,7 +567,9 @@ class _FlashcardPageState extends State<FlashcardPage> {
                                     await Navigator.of(context).push(
                                       RouteGenerator.createRoute(EditDeck(deck: _filteredDecks[index])),
                                     );
-                                    setState(() {});
+                                    setState(() {
+                                      _initUserDecks(_user);
+                                    });
                                   }
 
                                   ///D E L E T E  D E C K
@@ -554,8 +580,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
                                         builder: (BuildContext context) {
                                           return CustomConfirmDialog(
                                             title: 'Delete this deck?',
-                                            message: 'Once deleted, this deck will no longer be playable. '
-                                                'But do not worry, you can still retrieve it in the trash bin.',
+                                            message: 'Deleted decks move to trash and can be recovered.',
                                             imagePath: 'assets/images/Deck-Dialogue4.png',
                                             button1: 'Delete Deck',
                                             button2: 'Cancel',
@@ -630,12 +655,14 @@ class _FlashcardPageState extends State<FlashcardPage> {
                       },
                     ),
                   if (_decks.isNotEmpty && _filteredDecks.isEmpty)
-                    IfCollectionEmpty(
-                      ifCollectionEmptyText: 'No Results Found',
-                      ifCollectionEmptySubText:
-                      'Try adjusting your search to \nfind what your looking for.',
-                      ifCollectionEmptyHeight:
-                      MediaQuery.of(context).size.height * 0.4,
+                    Center(
+                      child: IfCollectionEmpty(
+                        ifCollectionEmptyText: 'No Results Found',
+                        ifCollectionEmptySubText:
+                        'Try adjusting your search to find it.',
+                        ifCollectionEmptyHeight:
+                        MediaQuery.of(context).size.height * 0.4,
+                      ),
                     )
                 ],
               ),)
@@ -649,7 +676,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
   @override
   void dispose() {
     _searchController.removeListener(_onSearchChanged);
-    FlashcardUtils.updateLatestReview.removeListener(_updateLatestReview);
+    // FlashcardUtils.updateLatestReview.removeListener(_updateLatestReview);
     _scrollController.removeListener(_onScroll);
     _searchController.dispose();
     _debounce?.cancel();

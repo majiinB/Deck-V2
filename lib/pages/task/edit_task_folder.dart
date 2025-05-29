@@ -1,22 +1,16 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:deck/backend/auth/auth_service.dart';
+import 'package:deck/backend/models/TaskFolder.dart';
+import 'package:deck/backend/task/task_service.dart';
 import 'package:flutter/material.dart';
 import 'package:deck/pages/misc/colors.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:provider/provider.dart';
-import '../../backend/task/task_provider.dart';
-import '../../backend/task/task_service.dart';
 import '../misc/custom widgets/appbar/auth_bar.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
-import '../misc/custom widgets/buttons/radio_button_group.dart';
 import '../misc/custom widgets/buttons/radio_button_group_background_image.dart';
 import '../misc/custom widgets/dialogs/alert_dialog.dart';
-import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
 import '../misc/custom widgets/textboxes/textboxes.dart';
-import '../misc/deck_icons.dart';
 
 class EditTaskFolderPage extends StatefulWidget {
-  const EditTaskFolderPage({super.key});
+  final TaskFolder taskFolder;
+  const EditTaskFolderPage({super.key, required this.taskFolder});
 
   @override
   State<EditTaskFolderPage> createState() => _EditTaskFolderPageState();
@@ -24,8 +18,75 @@ class EditTaskFolderPage extends StatefulWidget {
 
 class _EditTaskFolderPageState extends State<EditTaskFolderPage> {
   bool isLoading = false;
-  final TextEditingController _titleController = TextEditingController();
-  int selectedIndex = 3;  //TODO create a method to get the initial selected index of a folder
+  late TextEditingController _titleController;
+  int selectedIndex = 0;  //TODO create a method to get the initial selected index of a folder
+  String selectedBackground = "";
+  final TaskService _taskService = TaskService();
+
+  @override
+  void initState() {
+    super.initState();
+    _titleController = TextEditingController(text: widget.taskFolder.title);
+    selectedBackground = widget.taskFolder.background;
+    getSelectedIndexForBG(selectedBackground);
+  }
+
+  void getSelectedIndexForBG (String background){
+    if (background == "assets/images/Deck-Background9.svg") {
+      setState(() {
+        selectedIndex = 0;
+      });
+    }else if (background == "assets/images/Deck-Background7.svg") {
+      setState(() {
+        selectedIndex = 2;
+      });
+    }else if(background == "assets/images/Deck-Background8.svg") {
+      setState(() {
+        selectedIndex = 1;
+      });
+    }
+  }
+
+  void saveTaskFolder() async{
+    final taskFolderId = widget.taskFolder.id;
+    String? title = _titleController.text.toString().trim();
+    String? background = selectedBackground;
+
+    try{
+      if(title.isEmpty){
+        throw Exception("Folder title is required");
+      }
+
+      if(title == widget.taskFolder.title){
+        title = null;
+      }
+      if(background == widget.taskFolder.background || background.isEmpty){
+        background = null;
+      }
+
+      if(title == null && background == null){
+        throw Exception("At least one field must change in order to update a folder.");
+      }
+
+      await _taskService.updateTaskFolder(
+          taskFolderId: taskFolderId,
+          title: title,
+          background: background
+      );
+      Navigator.pop(context);
+    }catch(e){
+      String errorMessage = 'An unknown error occurred.';
+      if (e is Exception) {
+        errorMessage = e.toString().replaceFirst("Exception: ", "");
+      }
+      showAlertDialog(
+        context,
+        "assets/images/Deck-Dialogue1.png",
+        "Uh oh. Something went wrong.",
+        errorMessage,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +95,7 @@ class _EditTaskFolderPageState extends State<EditTaskFolderPage> {
       backgroundColor: DeckColors.backgroundColor,
       appBar: AuthBar(
         automaticallyImplyLeading: true,
-        title: 'Add Task Folder',
+        title: 'Edit Task Folder',
         color: DeckColors.primaryColor,
         fontSize: 24,
         onRightIconPressed: () {
@@ -67,7 +128,7 @@ class _EditTaskFolderPageState extends State<EditTaskFolderPage> {
                           height: 10,
                         ),
                         BuildTextBox(
-                          hintText: 'Enter Folder Title',
+                          hintText: widget.taskFolder.title,
                           showPassword: false,
                           controller: _titleController,
                         ),
@@ -80,15 +141,33 @@ class _EditTaskFolderPageState extends State<EditTaskFolderPage> {
                               color: DeckColors.primaryColor
                           ),
                         ),
-
                         RBGroupImage(
                           buttonLabels: ['Cards', 'Hearts', 'Stars'],
                           initialSelectedIndex: selectedIndex,
                           buttonColors: [DeckColors.softGreen,DeckColors.deckRed,DeckColors.deckYellow],
                           buttonBackground: ['assets/images/Deck-Background9.svg','assets/images/Deck-Background7.svg','assets/images/Deck-Background8.svg'],
+                          onChange: (String label, int index){
+                            setState(() {
+                              switch (index) {
+                                case 0:
+                                  selectedBackground = 'assets/images/Deck-Background9.svg';
+                                  break;
+                                case 2:
+                                  selectedBackground = 'assets/images/Deck-Background7.svg';
+                                  break;
+                                case 1:
+                                  selectedBackground = 'assets/images/Deck-Background8.svg';
+                                  break;
+                                default:
+                                  selectedBackground = 'assets/images/Deck-Background9.svg';
+                              }
+                            });
+                          },
                         ),
                         BuildButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            saveTaskFolder();
+                          },
                           buttonText: 'Save Task Folder',
                           height: 50,
                           width: MediaQuery.of(context).size.width,

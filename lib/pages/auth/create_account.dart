@@ -179,7 +179,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                                     context,
                                     "assets/images/Deck-Dialogue1.png",
                                     "Uh oh. Something went wrong.",
-                                    "Error Signing Up! Passwords do not match! Please try again.",
+                                    "Passwords do not match! Please try again.",
                                   );
                                   return;
                                 }
@@ -211,7 +211,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                                   } else if (e.code == 'email-already-in-use'){
                                     message = "Email is already taken! Please try again.";
                                   } else if (e.code == 'weak-password'){
-                                    message = "Password should be at least 6 characters! Please try again.";
+                                    message = "Password should contain at least six characters. Try again.";
                                   } else if (e.code == 'email-already-in-use'){
                                     message = "Email is already in use! Please try again.";
                                   } else {
@@ -231,7 +231,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                                     context,
                                     "assets/images/Deck-Dialogue1.png",
                                     "Uh oh. Something went wrong.",
-                                    "Error creating your account!Unknown Error! Please try again.",
+                                    "Error creating your account! Unknown Error! Please try again.",
                                   );
                                 }
                               },
@@ -353,7 +353,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                                   context,
                                   "assets/images/Deck-Dialogue1.png",
                                   "Uh oh. Something went wrong.",
-                                  "Error signing up!A problem occured while signing up.Please try again.",
+                                  "A problem occured while signing up. Please try again.",
                                 );
                               }
                             },
