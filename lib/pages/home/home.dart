@@ -142,57 +142,10 @@ class _HomePageState extends State<HomePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children:[
-                  Stack(
-                    children: [
-                      Image.asset(
-                        'assets/images/Deck-Home-Header.png',
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                      ),
-                      Positioned(
-                        top: 10,
-                        right: 10,
-                        child: IconButton(
-                          // iconSize: 10,
-                          icon: hasUnreadNotif ?
-                          Stack(
-                            children: [
-                              const Icon(Icons.notifications,  color: DeckColors.primaryColor),
-                              // Red dot badge (Unread indicator)
-                              Positioned(
-                                right: 0,
-                                top: 0,
-                                child: Container(
-                                  padding: const EdgeInsets.all(2),
-                                  decoration: BoxDecoration(
-                                    color: DeckColors.deckRed,
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                      color: DeckColors.softGreen,
-                                      width: 2,
-                                    ),
-
-                                  ),
-                                  constraints: const BoxConstraints(
-                                    minWidth: 10,
-                                    minHeight: 10,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )
-                              :
-                          Icon( Icons.notifications, color: DeckColors.primaryColor),
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                RouteGenerator.createRoute(NotificationPage()),
-
-                            );
-                          },
-                        ),
-                      ),
-                    ],
+                  Image.asset(
+                    'assets/images/Deck-Home-Header.png',
+                    width: double.infinity,
+                    fit: BoxFit.cover,
                   ),
                   const SizedBox(height: 20),
                   Padding(
@@ -518,7 +471,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
 
-                  if (_recoDecks.isNotEmpty)
+                  if (_decks.isNotEmpty)
                   SizedBox(
                     height: 150.0,
                     child:
@@ -562,6 +515,7 @@ class _HomePageState extends State<HomePage> {
                             fontWeight: FontWeight.bold)
                     ),
                   ),
+                  if(_recoDecks.isNotEmpty)
                   SizedBox(
                     height: 150.0,
                     child:
@@ -582,6 +536,17 @@ class _HomePageState extends State<HomePage> {
                       },
                     ),
                   ),
+                  if(_recoDecks.isEmpty)
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 30.0),
+                      child: IfCollectionEmpty(
+                        hasIcon: false,
+                        hasBackground: true,
+                        ifCollectionEmptyText: 'No decks to recommend just yet! ',
+                        ifCollectionEmptySubText:
+                        'Explore decks to get recommendation',
+                      ),
+                    )
                 ]
             ),
           )
