@@ -33,7 +33,8 @@ class EditFlashcardPage extends StatefulWidget {
 
 class _EditFlashcardPageState extends State<EditFlashcardPage> {
   bool _isLoading = false;
-  bool buttonsEnabled = false; // Flag to track button state
+  late bool isEditable;
+  // bool buttonsEnabled = false; // Flag to track button state
   bool hasUnsavedChanges = false;
   late final TextEditingController _descriptionOrAnswerController;
   late final TextEditingController _questionOrTermController;
@@ -43,6 +44,7 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
   @override
   void initState() {
     super.initState();
+    isEditable = false;
     _descriptionOrAnswerController = TextEditingController(text: widget.card.definition.toString());
     _questionOrTermController = TextEditingController(text: widget.card.term.toString());
 
@@ -107,15 +109,10 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
           title: 'View Flashcard',
           color: DeckColors.primaryColor,
           fontSize: 24,
-          rightIcon: DeckIcons.pencil,
+          rightIcon: isEditable ? Icons.close_rounded : DeckIcons.pencil,
           onRightIconPressed: () {
-            // Unfocus the text fields
-            FocusScope.of(context).unfocus();
-
-            // Hide the keyboard
-            SystemChannels.textInput.invokeMethod('TextInput.hide');
             setState(() {
-              buttonsEnabled = !buttonsEnabled;
+              isEditable = !isEditable;
             });
           },
         ),
@@ -132,32 +129,42 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Padding(padding: EdgeInsets.only(bottom: 10),
-                        child: Text(
-                          'View A Flashcard',
-                          style: TextStyle(
-                            fontFamily: 'Fraiche',
-                            color: DeckColors.primaryColor,
-                            fontSize: 40,
+                      if (isEditable) ... {
+                          const Text(
+                            'Edit Mode',
+                            style: TextStyle(
+                              fontFamily: 'Fraiche',
+                              color: DeckColors.primaryColor,
+                              fontSize: 32,
+                            ),
                           ),
-                        ),
-                      ),
-                      const Text(
-                        'Click the pencil icon above to enable editing of the text fields below.',
-                        textAlign: TextAlign.justify,
-                        style: TextStyle(
-                          fontFamily: 'Nunito-Regular',
-                          fontSize: 16,
-                          color: DeckColors.primaryColor,
-                        ),
-                      ),
-                      /*Padding(
-                        padding: const EdgeInsets.only(top: 20.0),
-                        child: Container(
-                          color: DeckColors.white,
-                          height: 2,
-                        ),
-                      ),*/
+                          const Text (
+                            'Click the \'x\' icon above to exit edit mode.',
+                            style: TextStyle(
+                              fontFamily: 'Nunito-Regular',
+                              color: DeckColors.primaryColor,
+                              fontSize: 16,
+                            ),
+                          ),
+                        }
+                        else ... {
+                          const Text(
+                            'View Flashcard',
+                            style: TextStyle(
+                              fontFamily: 'Fraiche',
+                              color: DeckColors.primaryColor,
+                              fontSize: 32,
+                            ),
+                          ),
+                          const Text (
+                            'Click the pencil icon above to edit the flashcard',
+                            style: TextStyle(
+                              fontFamily: 'Nunito-Regular',
+                              color: DeckColors.primaryColor,
+                              fontSize: 16,
+                            ),
+                          ),
+                        },
                       const Padding(
                         padding: EdgeInsets.only(top: 20.0),
                         child: Text(
@@ -171,14 +178,12 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(top: 10.0),
-                        child: Opacity(
-                          opacity: buttonsEnabled ? 1.0 : 0.7, // Set opacity based on button state
-                          child: IgnorePointer(
-                            ignoring: !buttonsEnabled,
-                            child: BuildTextBox(
-                              hintText: 'Enter Term/Question',
-                              controller: _questionOrTermController,
-                            ),
+                        child: IgnorePointer(
+                          ignoring: !isEditable,
+                          child: BuildTextBox(
+                            hintText: 'Enter Term/Question',
+                            controller: _questionOrTermController,
+                            isReadOnly: !isEditable,
                           ),
                         ),
                       ),
@@ -195,100 +200,91 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: Opacity(
-                          opacity: buttonsEnabled ? 1.0 : 0.7, // Set opacity based on button state
-                          child: IgnorePointer(
-                            ignoring: !buttonsEnabled,
-                            child: BuildTextBox(
-                              controller: _descriptionOrAnswerController,
-                              hintText: 'Enter Description/Answer',
-                              isMultiLine: true,
-                            ),
+                        child: IgnorePointer(
+                          ignoring: !isEditable,
+                          child: BuildTextBox(
+                            controller: _descriptionOrAnswerController,
+                            hintText: 'Enter Description/Answer',
+                            isMultiLine: true,
+                            isReadOnly: !isEditable,
                           ),
                         ),
                       ),
+                      if(isEditable)
                       Padding(
                         padding: const EdgeInsets.only(top: 20),
-                        child: Opacity(
-                          opacity: buttonsEnabled ? 1.0 : 0.7,
-                          child: IgnorePointer(
-                            ignoring: !buttonsEnabled,
-                            child: BuildButton(
-                              onPressed: buttonsEnabled
-                                  ? () {
-                                showConfirmDialog(
-                                  context,
-                                  "assets/images/Deck-Dialogue4.png",
-                                  "Save Changes?",
-                                  "Are you sure you want to save changes made?",
-                                  "Save",
-                                  () async {
-                                    Navigator.of(context).pop();
-                                    if (_questionOrTermController.text.trim().isEmpty) {
-                                      await Future.delayed(const Duration(milliseconds: 300));
-                                      showAlertDialog(context, "assets/images/Deck-Dialogue1.png",
-                                          "Uh oh. Something went wrong",
-                                          "Please add a term or question to continue.");
-                                      return;
-                                    }
-                                    if (_descriptionOrAnswerController.text.trim().isEmpty) {
-                                      await Future.delayed(const Duration(milliseconds: 300));
-                                      showAlertDialog(context, "assets/images/Deck-Dialogue1.png",
-                                          "Uh oh. Something went wrong",
-                                          "Please add a description or answer to continue.");
-                                      return;
-                                    }
-                                    try {
-                                      Map<String, dynamic> requestBody = {};
-                                      if (widget.card.term.toString().trim() != _questionOrTermController.text.toString().trim()) {
-                                        requestBody['term'] = _questionOrTermController.text.toString().trim();
-                                        widget.card.term = _questionOrTermController.text.toString().trim();
-                                      }
-                                      if (widget.card.definition.toString() != _descriptionOrAnswerController.text.toString()) {
-                                        requestBody['definition'] = _descriptionOrAnswerController.text.toString().trim();
-                                        widget.card.definition = _descriptionOrAnswerController.text.toString().trim();
-                                      }
-                                      setState(() {
-                                        _isLoading = true;
-                                      });
-                                      await widget.card.updateAnswer(widget.deck.deckId, requestBody);
-                                      showAlertDialog(
-                                        context,
-                                        "assets/images/Deck-Dialogue3.png",
-                                        "Changed flash card information!",
-                                        "Successfully changed flash card information!",
-                                      );
-                                      await Future.delayed(const Duration(milliseconds: 300)); // optional small delay for UX
-                                    } catch (e) {
-                                      setState(() => _isLoading = false);
-                                      showAlertDialog(
-                                        context,
-                                        "assets/images/Deck-Dialogue3.png",
-                                        "An Unknown Error Occurred",
-                                        "An unknown error occurred preventing your flashcard to be update. Please try again later.",
-                                      );
-                                    } finally{
-                                      setState(() => _isLoading = false);
-                                    }
-                                  },
-                                );
-                              }
-                                  : () {}, // Enable button when user clicks the pencil icon
-                              buttonText: 'Save Flash Card',
-                              height: 50.0,
-                              width: MediaQuery.of(context).size.width,
-                              backgroundColor: DeckColors.accentColor,
-                              textColor: DeckColors.primaryColor,
-                              radius: 10.0,
-                              fontSize: 16,
-                              borderWidth: 2,
-                              borderColor: DeckColors.primaryColor,
-                            ),
-                          ),
+                        child: BuildButton(
+                          onPressed: () {
+                            showConfirmDialog(
+                              context,
+                              "assets/images/Deck-Dialogue4.png",
+                              "Save Changes?",
+                              "Are you sure you want to save changes made?",
+                              "Save",
+                              () async {
+                                Navigator.of(context).pop();
+                                if (_questionOrTermController.text.trim().isEmpty) {
+                                  await Future.delayed(const Duration(milliseconds: 300));
+                                  showAlertDialog(context, "assets/images/Deck-Dialogue1.png",
+                                      "Uh oh. Something went wrong",
+                                      "Please add a term or question to continue.");
+                                  return;
+                                }
+                                if (_descriptionOrAnswerController.text.trim().isEmpty) {
+                                  await Future.delayed(const Duration(milliseconds: 300));
+                                  showAlertDialog(context, "assets/images/Deck-Dialogue1.png",
+                                      "Uh oh. Something went wrong",
+                                      "Please add a description or answer to continue.");
+                                  return;
+                                }
+                                try {
+                                  Map<String, dynamic> requestBody = {};
+                                  if (widget.card.term.toString().trim() != _questionOrTermController.text.toString().trim()) {
+                                    requestBody['term'] = _questionOrTermController.text.toString().trim();
+                                    widget.card.term = _questionOrTermController.text.toString().trim();
+                                  }
+                                  if (widget.card.definition.toString() != _descriptionOrAnswerController.text.toString()) {
+                                    requestBody['definition'] = _descriptionOrAnswerController.text.toString().trim();
+                                    widget.card.definition = _descriptionOrAnswerController.text.toString().trim();
+                                  }
+                                  setState(() {
+                                    _isLoading = true;
+                                  });
+                                  await widget.card.updateAnswer(widget.deck.deckId, requestBody);
+                                  showAlertDialog(
+                                    context,
+                                    "assets/images/Deck-Dialogue3.png",
+                                    "Changed flash card information!",
+                                    "Successfully changed flash card information!",
+                                  );
+                                  await Future.delayed(const Duration(milliseconds: 300)); // optional small delay for UX
+                                } catch (e) {
+                                  setState(() => _isLoading = false);
+                                  showAlertDialog(
+                                    context,
+                                    "assets/images/Deck-Dialogue3.png",
+                                    "An Unknown Error Occurred",
+                                    "An unknown error occurred preventing your flashcard to be update. Please try again later.",
+                                  );
+                                } finally{
+                                  setState(() => _isLoading = false);
+                                }
+                              },
+                            );
+                          },
+                          buttonText: 'Save Flash Card',
+                          height: 50.0,
+                          width: MediaQuery.of(context).size.width,
+                          backgroundColor: DeckColors.accentColor,
+                          textColor: DeckColors.primaryColor,
+                          radius: 10.0,
+                          fontSize: 16,
+                          borderWidth: 2,
+                          borderColor: DeckColors.primaryColor,
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(top: 10),
+                        padding: EdgeInsets.only(top: isEditable? 10 : 20),
                         child: BuildButton(
                           onPressed: () {
                             showDialog<bool>(
