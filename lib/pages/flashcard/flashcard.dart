@@ -76,13 +76,24 @@ class _FlashcardPageState extends State<FlashcardPage> {
   }
 
   void _initUserDecks(User? user) async {
+    String? userId = user?.uid;
+
     if (user != null) {
       try{
-        String userId = user.uid;
         var result = await _flashcardService.getDecks(filter); // Call method to fetch decks
         List<Deck> decks = result['decks'];
         String nextPageToken = result['nextPageToken'];
+        if (!mounted) return;
+        setState(() {
+          _decks = decks; // Update state with fetched decks
+          _filteredDecks = decks; // Initialize filtered decks
+          _nextPageToken = nextPageToken;
+        });
+      }catch(e){
+        print('Error fetching latest quiz attempt: $e');
+      }
 
+      try{
         final latestResult = await _flashcardService.getLatestQuizAttempt();
         final deckInfo = latestResult['deck'] as Map<String, dynamic>;
         final deckFromJson = Deck.fromJson(deckInfo);
@@ -93,10 +104,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
 
         if (!mounted) return;
         setState(() {
-          _decks = decks; // Update state with fetched decks
-          _filteredDecks = decks; // Initialize filtered decks
           _latestDeck = deckFromJson;
-          _nextPageToken = nextPageToken;
           correct = attemptScore;
           total = totalQuestion;
           score = "$correct/$total";
@@ -135,45 +143,6 @@ class _FlashcardPageState extends State<FlashcardPage> {
       }
     });
   }
-
-  // void _updateLatestReview() async {
-  //   if (FlashcardUtils.updateLatestReview.value) {
-  //     final result = await _flashcardService.getLatestQuizAttempt();
-  //     final deckInfo = result['deck'] as Map<String, dynamic>;
-  //     final deckFromJson = Deck.fromJson(deckInfo);
-  //     if (!mounted) return;
-  //     setState(() {
-  //       _latestDeck = deckFromJson;
-  //     });
-  //     _initUserDecks(_user); // This already has its own setState
-  //     FlashcardUtils.updateLatestReview.value = false; // Reset the notifier
-  //     if (_latestDeck != null) {
-  //       print("Latest Deck: ${_latestDeck!.title}");
-  //     }
-  //   }
-  // }
-
-  // void _initScore() async{
-  //   try {
-  //     final result = await _flashcardService.getLatestQuizAttempt();
-  //     final latestAttempt = result['latest_attempt'] as Map<String, dynamic>;
-  //     final int attemptScore = latestAttempt['score'] as int;
-  //     final int totalQuestion = latestAttempt['total_questions'] as int;
-  //
-  //     setState(() {
-  //       correct = attemptScore;
-  //       total = totalQuestion;
-  //       score = "$correct/$total";
-  //       if(correct >= (total/2)){
-  //         isRecentQuizPassed = true;
-  //       }else {
-  //         isRecentQuizPassed = false;
-  //       }
-  //     });
-  //   } catch (e) {
-  //     print('Error fetching latest quiz attempt: $e');
-  //   }
-  // }
 
   Future<void> _onScroll() async {
     if (_searchQuery.trim().isNotEmpty) return;
@@ -296,18 +265,18 @@ class _FlashcardPageState extends State<FlashcardPage> {
                     ifCollectionEmptyHeight: MediaQuery.of(context).size.height/3,
                   ),
                 ),
-              if (_decks.isEmpty)
-                const Padding(
-                  padding: const EdgeInsets.only(left: 30,right: 30, top: 20.0),
-                  child: Text(
-                      'Explore',
-                      style: TextStyle(
-                          fontFamily: 'Fraiche',
-                          fontSize: 30,
-                          color: DeckColors.primaryColor,
-                          fontWeight: FontWeight.bold)
-                  ),
-                ),
+              // if (_decks.isEmpty)
+              //   const Padding(
+              //     padding: const EdgeInsets.only(left: 30,right: 30, top: 20.0),
+              //     child: Text(
+              //         'Explore',
+              //         style: TextStyle(
+              //             fontFamily: 'Fraiche',
+              //             fontSize: 30,
+              //             color: DeckColors.primaryColor,
+              //             fontWeight: FontWeight.bold)
+              //     ),
+              //   ),
               Padding(padding: EdgeInsets.symmetric( horizontal: 30),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -501,7 +470,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
                                       ViewDeckPage(deck: _filteredDecks[index], filter: filter)),
                                 );
                                 setState(() {
-                                  _onSearchChanged();
+                                  _initUserDecks(_user);
                                 });
                               },
                               // Checks if the user is the owner of the deck
