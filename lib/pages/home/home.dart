@@ -78,7 +78,7 @@ class _HomePageState extends State<HomePage> {
       String? lastName = _user?.displayName?.split(" ").last;
       String? firstNameAndLastName = '${firstName ?? "User"} ${lastName ?? ""}';
       List<Deck> decks = await _flashcardService
-          .getDecksByUserIdNewestFirst(userId, firstNameAndLastName); // Call method to fetch decks
+          .getDecksByUserIdNewestFirst(); // Call method to fetch decks
       var result = await _flashcardService.getDecks("RECOMMENDED_DECKS");
       List<Deck> recoDecks = result['decks'];
 
@@ -529,6 +529,7 @@ class _HomePageState extends State<HomePage> {
                               titleOfDeck: _recoDecks[index].title,
                               ownerOfDeck: _recoDecks[index].deckOwnerName,
                               numberOfCards: _recoDecks[index].flashcardCount,
+                              deckCoverPhotoUrl: _recoDecks[index].coverPhoto,
                               onDelete: () {  },
                               onTap: () {  },
                             )

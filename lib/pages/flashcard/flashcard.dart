@@ -123,10 +123,13 @@ class _FlashcardPageState extends State<FlashcardPage> {
   void _onSearchChanged() {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
     _debounce = Timer(const Duration(milliseconds: 1200), () async {
+      print(filter);
       _searchQuery = _searchController.text;
       List<Deck> searchedDecks = [];
       if(_searchQuery.trim().isNotEmpty){
         var result = await _flashcardService.searchDecks(_searchQuery, filter);
+        print(filter);
+        print("this is the result for this the query $_searchQuery");
         searchedDecks = result['decks'];
         setState(() {
           _filteredDecks = searchedDecks;
@@ -232,19 +235,25 @@ class _FlashcardPageState extends State<FlashcardPage> {
                         String currentFilter = filter;
                         /// M Y  D E C K S
                         if (index == 0){
-                          filter = "MY_DECKS";
+                          setState(() {
+                            filter = "MY_DECKS";
+                          });
                           if(filter == currentFilter) return;
                           _initUserDecks(_user);
                         }
                         /// S A V E D  D E C K S
                         else if (index == 1) {
-                          filter = "SAVED_DECKS";
+                          setState(() {
+                            filter = "SAVED_DECKS";
+                          });
                           if(filter == currentFilter) return;
                           _initUserDecks(_user);
                         }
                         /// PUBLISHED DECKS
                         else if (index == 2) {
-                          filter = "PUBLISHED_DECKS";
+                          setState(() {
+                            filter = "PUBLIC_DECKS";
+                          });
                           if(filter == currentFilter) return;
                           _initUserDecks(_user);
                         }

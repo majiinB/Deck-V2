@@ -168,7 +168,7 @@ class FlashcardService{
 
       if(response.statusCode == 200) {
         var jsonData = jsonDecode(response.body) as Map<String, dynamic>;
-
+        print(jsonData);
         // Extract the data from the JSON response.
         Map<String, dynamic> deckData = jsonData["data"];
 
@@ -222,56 +222,35 @@ class FlashcardService{
       'nextPageToken' : nextPageTokenRetrieved
     };
   }
-  Future<List<Deck>> getDecksByUserIdNewestFirst(String userId, String userName) async {
-    List<Deck> decks = [];
-
+  Future<List<Deck>> getDecksByUserIdNewestFirst() async {
+    List<Deck> deckList = [];
     try {
-      // Reference to the Firestore collection
-      CollectionReference deckCollection = _fireStore.collection('decks');
+      String? token = await AuthService().getIdToken();
+      String url = '$deckManagerAPIUrl/v1/decks?limit=6&orderBy=created_at';
 
-      // Query the collection for documents with the provided user ID
-      QuerySnapshot querySnapshot = await deckCollection
-          .where('owner_id', isEqualTo: userId)
-          .where('is_deleted', isEqualTo: false)
-          .orderBy('created_at', descending: true) // Sort by created_at timestamp, newest first
-          .limit(6) // Limit the results to 6 decks
-          .get();
+      // Send a GET request to the API with headers.
+      final response = await http.get(
+        Uri.parse(url),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $token',
+        },
+      );
+      print(jsonDecode(response.body));
 
-      // Iterate through the query snapshot to extract document data
-      for (var doc in querySnapshot.docs) {
-        // Extract data from the document
-        String title = _flashcardUtils.capitalizeFirstLetterOfWords(doc['title']);
-        String userId = doc['owner_id'];
-        String coverPhoto = doc['cover_photo'];
-        String description = doc['description'];
-        bool isDeleted = doc['is_deleted'];
-        bool isPrivate = doc['is_private'];
-        String deckId = doc.id;
-        int flashcardCount = doc['flashcard_count'];
+      if (response.statusCode == 200) {
+        var jsonData = jsonDecode(response.body) as Map<String, dynamic>;
+        Map<String, dynamic> deckData = jsonData["data"];
 
-        // Extract created_at timestamp and convert it to DateTime
-        Timestamp createdAtTimestamp = doc['created_at'];
-        DateTime createdAt = createdAtTimestamp.toDate();
-
-        // Create a new Deck object and add it to the list
-        decks.add(Deck(
-          title,
-          description,
-          userName,
-          flashcardCount,
-          userId,
-          deckId,
-          isDeleted,
-          isPrivate,
-          createdAt,
-          coverPhoto
-        ));
+        List<dynamic> listOfDecks = deckData["decks"];
+        deckList = listOfDecks.map((decksJson) => Deck.fromJson(decksJson)).toList();
+      } else {
+        print('Failed to retrieve decks. Status code: ${response.statusCode}');
       }
     } catch (e) {
-      // Handle errors
       print('Error retrieving decks: $e');
     }
-    return decks;
+    return deckList;
   }
 
   Future<Deck?> getDecksByUserIdAndDeckId(String userId, String deckId) async {
