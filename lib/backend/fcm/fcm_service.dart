@@ -29,7 +29,6 @@ class FCMService {
     print('done! initializing foreground..');
     await initPushNotifications();
   }
-
   Future initPushNotifications() async{
     await _firebaseMessaging.setForegroundNotificationPresentationOptions(
       alert: true,

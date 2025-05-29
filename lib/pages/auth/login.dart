@@ -182,6 +182,7 @@ class _LoginPageState extends State<LoginPage> {
                               // After logging in, renew FCM token for notifications.
                               await FCMService().renewToken();
                               final authService = AuthService();
+
                               String? token = await authService.getIdToken();
                               if (token != null) {
                                 const batchSize = 1000;  // Adjust based on your preference

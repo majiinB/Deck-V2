@@ -19,6 +19,7 @@ import 'package:flutter/material.dart';
 import 'package:deck/pages/misc/widget_method.dart';
 // import 'package:google_fonts/google_fonts.dart';
 
+import '../../backend/custom_exceptions/api_exception.dart';
 import '../../backend/flashcard/flashcard_utils.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
 import '../misc/custom widgets/dialogs/alert_dialog.dart';
@@ -544,20 +545,34 @@ class _FlashcardPageState extends State<FlashcardPage> {
                                               : 'Unpublish Deck',
                                           button2: 'Cancel',
                                           onConfirm: () async {
-                                            Navigator.of(context).pop();
-                                            await Future.delayed(Duration(milliseconds: 100));
+                                            Navigator.of(context).pop(); // close confirm dialog
 
-                                            await _filteredDecks[index].publishOrUnpublishDeck();
+                                            Future(() async {
+                                              await Future.delayed(Duration(milliseconds: 100));
 
-                                            // Now use the outer context safely
-                                            if(parentContext.mounted){
-                                              showAlertDialog(
-                                                parentContext,
-                                                "assets/images/Deck-Dialogue3.png",
-                                                'Publish request for the deck "${_filteredDecks[index].title}" has been made!',
-                                                "Successfully made a publish request! Please wait for our moderator's approval",
-                                              );
-                                            }
+                                              try {
+                                                await _filteredDecks[index].publishOrUnpublishDeck();
+                                                if (parentContext.mounted) {
+                                                  showAlertDialog(
+                                                    parentContext,
+                                                    "assets/images/Deck-Dialogue3.png",
+                                                    'Publish request for "${_filteredDecks[index].title}" deck has been made!',
+                                                    "Successfully made a publish request! Please wait for our moderator's approval",
+                                                  );
+                                                }
+                                              } catch (e) {
+                                                print('Caught error: $e');
+                                                String errorMessage = e is ApiException ? e.message : 'An unexpected error occurred.';
+                                                if (parentContext.mounted) {
+                                                  showAlertDialog(
+                                                    parentContext,
+                                                    "assets/images/Deck-Dialogue1.png",
+                                                    "Uh Oh An Error Has Occured",
+                                                    errorMessage,
+                                                  );
+                                                }
+                                              }
+                                            });
                                           },
                                           onCancel: () {
                                             Navigator.of(context).pop();

@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:deck/pages/misc/widget_method.dart';
 // import 'package:google_fonts/google_fonts.dart';
 
+import '../../backend/custom_exceptions/api_exception.dart';
 import '../../backend/flashcard/flashcard_ai_service.dart';
 import '../../backend/models/deck.dart';
 import '../../backend/models/quiz.dart';
@@ -200,23 +201,36 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                       imagePath: 'assets/images/Deck-Dialogue4.png',
                       button1: widget.deck.isPrivate ? 'Publish Deck' : 'Unpublish Deck',
                       button2: 'Cancel',
-                      onConfirm: () async {
-                        Navigator.of(context).pop(); // close confirm dialog
+                        onConfirm: () {
+                          Navigator.of(context).pop(); // close confirm dialog
 
-                        await Future.delayed(Duration(milliseconds: 100));
+                          Future(() async {
+                            await Future.delayed(Duration(milliseconds: 100));
 
-                        await widget.deck.publishOrUnpublishDeck();
-
-                        // Now use the outer context safely
-                        if(parentContext.mounted){
-                          showAlertDialog(
-                            parentContext,
-                            "assets/images/Deck-Dialogue3.png",
-                            "Publish request for this deck has been made!",
-                            "Successfully made a publish request! Please wait for our moderator's approval",
-                          );
-                        }
-                      },
+                            try {
+                              await widget.deck.publishOrUnpublishDeck();
+                              if (parentContext.mounted) {
+                                showAlertDialog(
+                                  parentContext,
+                                  "assets/images/Deck-Dialogue3.png",
+                                  "Publish request for this deck has been made!",
+                                  "Successfully made a publish request! Please wait for our moderator's approval",
+                                );
+                              }
+                            } catch (e) {
+                              print('Caught error: $e');
+                              String errorMessage = e is ApiException ? e.message : 'An unexpected error occurred.';
+                              if (parentContext.mounted) {
+                                showAlertDialog(
+                                  parentContext,
+                                  "assets/images/Deck-Dialogue1.png",
+                                  "Uh Oh An Error Has Occured",
+                                  errorMessage,
+                                );
+                              }
+                            }
+                          });
+                        },
                       onCancel: () {
                         Navigator.of(context).pop();
                       },
