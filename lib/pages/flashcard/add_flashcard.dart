@@ -93,9 +93,10 @@ class _AddFlashcardPageState extends State<AddFlashcardPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Padding(padding: EdgeInsets.only(bottom: 20),
+                    const Padding(
+                      padding: EdgeInsets.only(top: 10.0),
                       child: Text(
-                        'Add A New FlashCard To The Deck',
+                        'Add A New FlashCard',
                         style: TextStyle(
                           fontFamily: 'Fraiche',
                           color: DeckColors.primaryColor,
@@ -105,7 +106,7 @@ class _AddFlashcardPageState extends State<AddFlashcardPage> {
                       ),
                     ),
                     const Text(
-                      'Simply fill in the text fields below to add flash card on your deck.',
+                      'Enter details below to create a flashcard.',
                       textAlign: TextAlign.justify,
                       style: TextStyle(
                         fontFamily: 'Nunito-Regular',

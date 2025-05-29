@@ -2,10 +2,13 @@ import 'package:deck/backend/models/newTask.dart';
 import 'package:deck/backend/models/task.dart';
 import 'package:deck/backend/task/task_provider.dart';
 import 'package:deck/backend/task/task_service.dart';
+import 'package:deck/pages/misc/deck_icons.dart';
 import 'package:deck/pages/misc/deck_icons2.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:deck/pages/misc/colors.dart';
 import 'package:deck/pages/misc/widget_method.dart';
+import 'package:flutter/widgets.dart';
 // import 'package:deck/pages/task/edit_task.dart';
 import 'package:provider/provider.dart';
 
@@ -182,7 +185,7 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
     DateTime? pickedDate = await showDatePicker(
       context: context,
       firstDate: DateTime(2020),
-      lastDate: DateTime(2030), //edit nyo nlng toh
+      lastDate: DateTime(2070), //edit nyo nlng toh
       initialDate: initialDate,
       errorFormatText: 'Enter valid date',
       errorInvalidText: 'Enter date in valid range',
@@ -201,6 +204,7 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                 fontFamily: 'Fraiche',
                 fontSize: 40,
               ),
+
               labelLarge: TextStyle(
                 fontFamily: 'Fraiche',
                 fontSize: 20,
@@ -212,10 +216,10 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
             ),
             colorScheme: Theme.of(context).colorScheme.copyWith(
               // Title, selected date and day selection background (dark and light mode)
-              surface: DeckColors.backgroundColor,
+              surface: DeckColors.white,
               primary: DeckColors.primaryColor,
               // Title, selected date and month/year picker color (dark and light mode)
-              onSurface: DeckColors.white,
+              onSurface: DeckColors.primaryColor,
               onPrimary: DeckColors.white,
             ),
             textButtonTheme: TextButtonThemeData(
@@ -268,7 +272,7 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
         automaticallyImplyLeading: true,
         color: DeckColors.primaryColor,
         fontSize: 24,
-        rightIcon: isEditable ? Icons.close_rounded : Icons.edit,
+        rightIcon: isEditable ? Icons.close_rounded : DeckIcons.pencil,
         onRightIconPressed: () async {
           setState(() {
             isEditable = !isEditable;
@@ -284,6 +288,7 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
           // }
         },
       ),
+      backgroundColor: DeckColors.backgroundColor,
       body: SafeArea(
           top: true,
           bottom: false,
@@ -295,15 +300,26 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(left:40.0,right:40.0),
+                    padding: const EdgeInsets.only(left:15.0,right:15.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        const SizedBox(
+                          height: 10,
+                        ),
                         if(isEditable) ... {
                           const Text(
-                            'View A Task',
+                            'Edit Mode',
                             style: TextStyle(
-                              fontFamily: 'Nunito-Bold',
+                              fontFamily: 'Fraiche',
+                              color: DeckColors.primaryColor,
+                              fontSize: 32,
+                            ),
+                          ),
+                          const Text (
+                            'Click the \'x\' icon above to exit edit mode.',
+                            style: TextStyle(
+                              fontFamily: 'Nunito-Regular',
                               color: DeckColors.primaryColor,
                               fontSize: 16,
                             ),
@@ -311,16 +327,24 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                         }
                         else ... {
                           const Text(
-                            'Edit Mode',
+                            'View A Task',
                             style: TextStyle(
-                              fontFamily: 'Nunito-Bold',
+                              fontFamily: 'Fraiche',
+                              color: DeckColors.primaryColor,
+                              fontSize: 32,
+                            ),
+                          ),
+                          const Text (
+                            'Click the pencil icon above to edit the task',
+                            style: TextStyle(
+                              fontFamily: 'Nunito-Regular',
                               color: DeckColors.primaryColor,
                               fontSize: 16,
                             ),
                           ),
                         },
                         const SizedBox(
-                          height: 20,
+                          height: 10,
                         ),
                         const Text(
                           'Title',
@@ -330,13 +354,19 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                             fontSize: 16,
                           ),
                         ),
-                        BuildTextBox(
-                          controller: _titleController,
-                          hintText: title,
-                          isReadOnly: isEditable,
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        IgnorePointer(
+                          ignoring: !isEditable,
+                          child: BuildTextBox(
+                            controller: _titleController,
+                            hintText: title,
+                            isReadOnly: isEditable,
+                          ),
                         ),
                         const SizedBox(
-                          height: 20,
+                          height: 10,
                         ),
                         const Text(
                           'Start Date',
@@ -346,12 +376,21 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                             fontSize: 16,
                           ),
                         ),
-                        BuildTextBox(
-                          hintText: startDate,
-                          controller: _startDateController,
-                          isReadOnly: isEditable,
-                          rightIcon: Icons.calendar_today_outlined,
-                          onTap: () => _selectDate(context, "START_DATE")
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        IgnorePointer(
+                          ignoring: !isEditable,
+                          child: BuildTextBox(
+                            hintText: startDate,
+                            controller: _startDateController,
+                            isReadOnly: isEditable,
+                            rightIcon: Icons.calendar_today_outlined,
+                            onTap: () => _selectDate(context, "START_DATE")
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
                         ),
                         const Text(
                           'Due Date',
@@ -361,12 +400,21 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                             fontSize: 16,
                           ),
                         ),
-                        BuildTextBox(
-                          hintText: deadline,
-                          controller: _endDateController,
-                          isReadOnly: true,
-                          rightIcon: Icons.calendar_today_outlined,
-                          onTap: () => _selectDate(context, "END_DATE"),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        IgnorePointer(
+                          ignoring: !isEditable,
+                          child: BuildTextBox(
+                            hintText: deadline,
+                            controller: _endDateController,
+                            isReadOnly: true,
+                            rightIcon: Icons.calendar_today_outlined,
+                            onTap: () => _selectDate(context, "END_DATE"),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
                         ),
                         const Text(
                           'Description',
@@ -376,12 +424,21 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                             fontSize: 16,
                           ),
                         ),
-                        BuildTextBox(
-                          controller: _descriptionController,
-                          hintText: "Task Description",
-                          showPassword: false,
-                          isMultiLine: true,
-                          isReadOnly: isEditable,
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        IgnorePointer(
+                          ignoring: !isEditable,
+                          child: BuildTextBox(
+                            controller: _descriptionController,
+                            hintText: "Task Description",
+                            showPassword: false,
+                            isMultiLine: true,
+                            isReadOnly: isEditable,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
                         ),
                         if(isEditable)... {
                           const Text(
@@ -405,10 +462,12 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                           },
                         )}
                         else... {
+                          const SizedBox(
+                            height: 10,
+                          ),
                           Row(
                             children: [
                               const Text(
-
                                 'Priority',
                                 style: TextStyle(
                                   fontFamily: 'Nunito-Bold',
@@ -418,10 +477,10 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                               ),
                               const Spacer(),
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                                padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 10),
                                 decoration: BoxDecoration(
                                   color: getPriorityColor(_priorityIndex),
-                                  borderRadius: BorderRadius.circular(20),
+                                  borderRadius: BorderRadius.circular(10),
                                   border: Border.all(color: DeckColors.primaryColor, width: 2),
                                 ),
                                 child: Text(
@@ -435,6 +494,9 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                             ],
                           )
                         },
+                        const SizedBox(
+                          height: 10,
+                        ),
                         const Text(
                           'Status',
                           style: TextStyle(
@@ -443,19 +505,29 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                             fontSize: 16,
                           ),
                         ),
-                        RadioButtonGroup(
-                          buttonLabels: const ['Pending', 'In Progress', 'Completed'],
-                          buttonColors: const [ DeckColors.primaryColor, DeckColors.primaryColor, DeckColors.primaryColor],
-                          isClickable: true,
-                          initialSelectedIndex: _selectedStatus,
-                          onChange: (label, index) {
-                            setState((){
-                              _selectedStatus = index;
-                              selectedStatusLabel = label;
-                            });
-                          }
+                        const SizedBox(
+                          height: 5,
                         ),
-                        if(isEditable)BuildButton(
+                        IgnorePointer(
+                          ignoring: !isEditable,
+                          child: RadioButtonGroup(
+                            buttonLabels: const ['Pending', 'In Progress', 'Completed'],
+                            buttonColors: const [ DeckColors.accentColor, DeckColors.accentColor, DeckColors.accentColor],
+                            isClickable: true,
+                            initialSelectedIndex: _selectedStatus,
+                            onChange: (label, index) {
+                              setState((){
+                                _selectedStatus = index;
+                                selectedStatusLabel = label;
+                              });
+                            }
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        if(isEditable)
+                          BuildButton(
                             buttonText: "Save Task",
                             height: 50,
                             width: MediaQuery.of(context).size.width,
@@ -479,6 +551,9 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                               );
                             },
                           ),
+                        const SizedBox(
+                          height: 10,
+                        ),
                         BuildButton(
                           buttonText: "Delete Task",
                           height: 50,
@@ -507,8 +582,16 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                                 });
                           },
                         ),
+                        const SizedBox(
+                          height: 20,
+                        ),
                       ],
                     ),
+                  ),
+                  Image.asset(
+                    'assets/images/Deck-Bottom-Image1.png',
+                    fit: BoxFit.fitWidth,
+                    width: MediaQuery.of(context).size.width,
                   ),
                 ]
             ),
