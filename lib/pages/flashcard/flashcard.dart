@@ -326,30 +326,29 @@ class _FlashcardPageState extends State<FlashcardPage> {
                         children: [
                           Expanded(
                             child: Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
+
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const AutoSizeText(
+                                const Text(
                                   "Continue Learning",
                                   maxLines:1,
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                     height:1,
                                     fontSize: 14,
-                                    fontFamily: 'Fraiche',
+                                    fontFamily: 'Nunito-Bold',
                                     color: DeckColors.primaryColor,
                                   ),
                                 ),
                                 const SizedBox(height: 10),
-                                AutoSizeText(
+                                Text(
                                   _latestDeck?.title ?? 'A VERY VERY VERY LONG Deck Title that will reach until the fourth line nyehe ',
-                                  maxLines:4,
-                                  minFontSize: 8,
+                                  maxLines: 3,
                                   overflow: TextOverflow.ellipsis,
                                   textAlign: TextAlign.left,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     height:1,
-                                    fontSize: 18,
+                                    fontSize: 24,
                                     fontFamily: 'Fraiche',
                                     color: DeckColors.primaryColor,
                                   ),
@@ -369,22 +368,25 @@ class _FlashcardPageState extends State<FlashcardPage> {
                                   maxLines: 1,
                                   style: TextStyle(
                                     height:1,
-                                    fontSize: 10,
-                                    fontFamily: 'Nunito-SemiBold',
+                                    fontSize: 14,
+                                    fontFamily: 'Nunito-Bold',
                                     color: DeckColors.primaryColor,
                                   ),
                                 ),
                                 const SizedBox(height: 10),
-                                Flexible(child: AutoSizeText(
-                                  score.isNotEmpty ? score : "100/100",
-                                  textAlign: TextAlign.end,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    height:1,
-                                    fontSize: 35,
-                                    fontFamily: 'Fraiche',
-                                    color: isRecentQuizPassed ? DeckColors.accentColor : DeckColors.deckRed ,
+                                Flexible(child:
+                                Center(
+                                  child: AutoSizeText(
+                                    score.isNotEmpty ? score : "100/100",
+                                    textAlign: TextAlign.center,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      height:1,
+                                      fontSize: 35,
+                                      fontFamily: 'Fraiche',
+                                      color: isRecentQuizPassed ? DeckColors.accentColor : DeckColors.deckRed ,
+                                    ),
                                   ),
                                 ),
                                 ),
@@ -644,12 +646,14 @@ class _FlashcardPageState extends State<FlashcardPage> {
                       },
                     ),
                   if (_decks.isNotEmpty && _filteredDecks.isEmpty)
-                    IfCollectionEmpty(
-                      ifCollectionEmptyText: 'No Results Found',
-                      ifCollectionEmptySubText:
-                      'Try adjusting your search to find it.',
-                      ifCollectionEmptyHeight:
-                      MediaQuery.of(context).size.height * 0.4,
+                    Center(
+                      child: IfCollectionEmpty(
+                        ifCollectionEmptyText: 'No Results Found',
+                        ifCollectionEmptySubText:
+                        'Try adjusting your search to find it.',
+                        ifCollectionEmptyHeight:
+                        MediaQuery.of(context).size.height * 0.4,
+                      ),
                     )
                 ],
               ),)

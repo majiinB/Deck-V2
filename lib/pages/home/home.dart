@@ -471,7 +471,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
 
-                  if (_recoDecks.isNotEmpty)
+                  if (_decks.isNotEmpty)
                   SizedBox(
                     height: 150.0,
                     child:
@@ -515,6 +515,7 @@ class _HomePageState extends State<HomePage> {
                             fontWeight: FontWeight.bold)
                     ),
                   ),
+                  if(_recoDecks.isNotEmpty)
                   SizedBox(
                     height: 150.0,
                     child:
@@ -535,6 +536,17 @@ class _HomePageState extends State<HomePage> {
                       },
                     ),
                   ),
+                  if(_recoDecks.isEmpty)
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 30.0),
+                      child: IfCollectionEmpty(
+                        hasIcon: false,
+                        hasBackground: true,
+                        ifCollectionEmptyText: 'No decks to recommend just yet! ',
+                        ifCollectionEmptySubText:
+                        'Explore decks to get recommendation',
+                      ),
+                    )
                 ]
             ),
           )
