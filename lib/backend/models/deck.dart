@@ -134,7 +134,7 @@ class Deck{
       };
 
       final response = await http.put(
-        Uri.parse('$deckLocalAPIUrl/v1/decks/$_deckId'),
+        Uri.parse('$deckManagerAPIUrl/v1/decks/$_deckId'),
         body: jsonEncode(requestBody),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
