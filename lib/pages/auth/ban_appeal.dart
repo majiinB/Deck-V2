@@ -1,6 +1,9 @@
+import 'package:deck/backend/auth/auth_service.dart';
+import 'package:deck/backend/auth/ban_service.dart';
 import 'package:deck/pages/misc/custom%20widgets/textboxes/textboxes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import '../auth/privacy_policy.dart';
 import '../misc/colors.dart';
@@ -196,25 +199,65 @@ class _BanAppealPageState extends State<BanAppealPage> {
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0, top:10, bottom: 20),
                   child: BuildButton(
-                    onPressed: () {
-                      showDialog<bool>(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (BuildContext context) {
-                          return CustomAlertDialog(
+                    onPressed: () async {
+                      // Capture user input
+                       // Replace with your actual ID generation logic
+                      String userId = AuthService().getCurrentUser()!.uid; // Retrieve the current user ID dynamically
+                      DateTime appealedAt = DateTime.now();
+                      String title = 'Ban Appeal';
+                      String details = appealDetails.text.trim();
+                      String status = 'Pending'; // Initial status
+
+                      if (details.isNotEmpty) {
+                        await BanService().submitBanAppeal(
+                          id: '',
+                          userId: userId,
+                          appealedAt: appealedAt,
+                          title: title,
+                          details: details,
+                          status: status,
+                        );
+
+                        // Show confirmation dialog after submission
+                        showDialog<bool>(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (BuildContext context) {
+                            return CustomAlertDialog(
                               imagePath: 'assets/images/Deck-Dialogue3.png',
                               title: 'Appeal Submitted',
                               message: 'Thanks for taking the time to submit an appeal. We’ll look into your case and get back to you soon.',
                               button1: 'Ok',
+                              onConfirm: () async {
+                                final authService = AuthService();
+                                await authService.signOut();
+                                GoogleSignIn _googleSignIn = GoogleSignIn();
+                                if (await _googleSignIn.isSignedIn()) {
+                                await _googleSignIn.signOut();
+                                }
+                                Navigator.pop(context);
+                                Navigator.pop(context);
+                              },
+                            );
+                          },
+                        );
+                      } else {
+                        // Handle empty appeal details
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return CustomAlertDialog(
+                              imagePath: 'assets/images/Deck-Dialogue3.png',
+                              title: 'Error',
+                              message: 'Please enter details for your appeal before submitting.',
+                              button1: 'Ok',
                               onConfirm: () {
-                                ///Pop twice: first, close the dialog, then navigate back to the previous page
                                 Navigator.pop(context);
-                                Navigator.pop(context);
-                              }
-                          );
-                        },
-
-                      );
+                              },
+                            );
+                          },
+                        );
+                      }
                     },
                     buttonText: 'Submit',
                     height: 50.0,

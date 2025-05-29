@@ -12,6 +12,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import '../../backend/auth/auth_service.dart';
+import '../../backend/auth/ban_service.dart';
+import '../../backend/models/ban.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
 import '../misc/custom widgets/dialogs/alert_dialog.dart';
 import '../misc/custom widgets/functions/loading.dart';
@@ -146,38 +148,33 @@ class _LoginPageState extends State<LoginPage> {
                         BuildButton(
                           onPressed: () async {
                             setState(() => _isLoading = true);
-
-                            ///FOR TESTING ONLY, FAKE EMAIL!!
-                            ///Input the fake email 'banneduser@example.com' to show the ban popup
-                            ///If user is banned, show popup
-                            final testEmail = emailController.text.trim();
-                            if (testEmail == 'banneduser@example.com') {
-                              setState(() => _isLoading = false);
-                              showConfirmDialog(
-                                context,
-                                "assets/images/Deck-Dialogue2.png",
-                                "Access Denied",
-                                "Your account has been banned. Would you like to submit an appeal?",
-                                "Yes",
-                                    () {
-                                  Navigator.of(context).pop();
-                                  Navigator.of(context).push(
-                                    RouteGenerator.createRoute(BanAppealPage(adminReason: "Your account has been temporarily banned due to violating our community guidelines. We have noticed multiple infractions, including but not limited to inappropriate behavior, spamming, or abusive language. We take these violations seriously in order to maintain a positive and safe environment for all users.")),
-                                  );
-                                },
-                                button2: "No",
-                                onCancel: () {
-                                  Navigator.of(context).pop();
-                                },
-                              );
-                              return;
-                            }
-                            ///if user is not banned, proceed
-                            // setState(() => _isLoading = true);
                             try {
                               // Authenticate using email and password.
                               await AuthService().signInWithEmail(
                                   emailController.text, passwordController.text);
+                              String? user = await BanService().retrieveBan(AuthService().getCurrentUser()!.uid);
+                              print(user);
+                              if(user == AuthService().getCurrentUser()!.uid) {
+                                setState(() => _isLoading = false);
+                                showConfirmDialog(
+                                  context,
+                                  "assets/images/Deck-Dialogue2.png",
+                                  "Access Denied",
+                                  "Your account has been banned. Would you like to submit an appeal?",
+                                  "Yes",
+                                      () {
+                                    Navigator.of(context).pop();
+                                    Navigator.of(context).push(
+                                      RouteGenerator.createRoute(const BanAppealPage(adminReason: "Your account has been temporarily banned due to violating our community guidelines. We have noticed multiple infractions, including but not limited to inappropriate behavior, spamming, or abusive language. We take these violations seriously in order to maintain a positive and safe environment for all users.")),
+                                    );
+                                  },
+                                  button2: "No",
+                                  onCancel: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                );
+                                return;
+                              }
 
                               // After logging in, renew FCM token for notifications.
                               await FCMService().renewToken();
