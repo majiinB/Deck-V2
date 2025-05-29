@@ -237,6 +237,14 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
                                       "Please add a description or answer to continue.");
                                   return;
                                 }
+
+                                if(_questionOrTermController.text.trim() == widget.card.term &&
+                                  _descriptionOrAnswerController.text.trim() == widget.card.definition){
+                                  showAlertDialog(context, "assets/images/Deck-Dialogue1.png",
+                                      "Uh oh. Something went wrong",
+                                      "At least one field needs to be changed to proceed with the update");
+                                  return;
+                                }
                                 try {
                                   Map<String, dynamic> requestBody = {};
                                   if (widget.card.term.toString().trim() != _questionOrTermController.text.toString().trim()) {
@@ -267,7 +275,10 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
                                     "An unknown error occurred preventing your flashcard to be update. Please try again later.",
                                   );
                                 } finally{
-                                  setState(() => _isLoading = false);
+                                  setState(() {
+                                    isEditable = false;
+                                    _isLoading = false;
+                                  });
                                 }
                               },
                             );

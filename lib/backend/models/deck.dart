@@ -148,7 +148,6 @@ class Deck{
       if(response.statusCode == 200){
         var jsonData = jsonDecode(response.body) as Map<String, dynamic>;
         print(jsonData); // Log parsed data for debugging.
-        isPrivate = newPrivacyValue;
         // If the JSON data is non-empty, process it.
         if (jsonData.isNotEmpty) return true;
         return true;

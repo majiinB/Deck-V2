@@ -52,6 +52,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
   List<Cards> _filteredStarredCards = [];
   bool _canToggleStar = true;
   User? currentUser;
+  bool canPressLearn = false;
   bool _isLoading = false;
   final TextEditingController _searchController = TextEditingController();
   static const _toggleCooldown = Duration(milliseconds: 1000);
@@ -85,6 +86,9 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
       _starredCards = starredCards;
       _filteredStarredCards = _starredCards;
       numberOfCards = widget.deck.flashcardCount;
+      if(cards.isNotEmpty){
+        canPressLearn = true;
+      }
     });
   }
 
@@ -115,7 +119,6 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
     }
   }
 
-  // Removed: used for client side search. Will switch to api function call
   void _filterFlashcards() {
     String query = _searchController.text.toLowerCase();
     setState(() {
@@ -183,6 +186,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
             if (widget.deck.userId == currentUser!.uid) {
               ///P U B L I S H  D E C K
               if (index == 0) {
+                BuildContext parentContext = context;
                 //Show the confirmation dialog for Publish/Unpublish
                 showDialog<bool>(
                   context: context,
@@ -197,9 +201,21 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                       button1: widget.deck.isPrivate ? 'Publish Deck' : 'Unpublish Deck',
                       button2: 'Cancel',
                       onConfirm: () async {
+                        Navigator.of(context).pop(); // close confirm dialog
+
+                        await Future.delayed(Duration(milliseconds: 100));
+
                         await widget.deck.publishOrUnpublishDeck();
-                        Navigator.of(context).pop();
-                        setState(() {});
+
+                        // Now use the outer context safely
+                        if(parentContext.mounted){
+                          showAlertDialog(
+                            parentContext,
+                            "assets/images/Deck-Dialogue3.png",
+                            "Publish request for this deck has been made!",
+                            "Successfully made a publish request! Please wait for our moderator's approval",
+                          );
+                        }
                       },
                       onCancel: () {
                         Navigator.of(context).pop();
@@ -370,7 +386,7 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                     ),
                   ),
                   Text(
-                    '$description',
+                    widget.deck.description,
                     overflow: TextOverflow.visible,
                     style: const TextStyle(
                       fontFamily: 'Nunito-Regular',
@@ -421,11 +437,9 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                               borderColor: DeckColors.primaryColor),
                         ),
                         Opacity(
-                          opacity: widget.deck.flashcardCount == 0 ? 0.5 : 1.0,
+                          opacity: canPressLearn ? 1.0 : 0.5,
                           child: BuildButton(
-                            onPressed:widget.deck.flashcardCount == 0 ? () {
-                              // Do nothing
-                            } : () async {
+                            onPressed:canPressLearn ? () async {
                               final result = await showDialog(
                                 context: context,
                                 barrierDismissible: false,
@@ -496,6 +510,8 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                                   });
                                 }
                               }
+                            } : () {
+                              // Do nothing
                             },
                             buttonText: 'Learn',
                             height: 35,

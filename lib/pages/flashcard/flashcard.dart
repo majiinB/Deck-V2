@@ -21,6 +21,7 @@ import 'package:deck/pages/misc/widget_method.dart';
 
 import '../../backend/flashcard/flashcard_utils.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
+import '../misc/custom widgets/dialogs/alert_dialog.dart';
 import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
 import '../misc/custom widgets/functions/if_collection_empty.dart';
 import '../misc/custom widgets/textboxes/textboxes.dart';
@@ -521,6 +522,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
 
                               ///START FOR LOGIC OF POP UP MENU BUTTON (ung three dots)
                               onItemsSelected: (selectedIndex) async {
+                                BuildContext parentContext = context;
                                 ///If owner, show these options in the popup menu
                                 if(_filteredDecks[index].userId == _user!.uid) {
                                   if (selectedIndex == 0) {
@@ -542,14 +544,20 @@ class _FlashcardPageState extends State<FlashcardPage> {
                                               : 'Unpublish Deck',
                                           button2: 'Cancel',
                                           onConfirm: () async {
-                                            await _filteredDecks[index].publishOrUnpublishDeck();
-                                            setState(() {
-                                              if(filter == "PUBLISHED_DECKS"){
-                                                _filteredDecks.removeWhere((d) => d.deckId == _filteredDecks[index].deckId);
-                                              }
-                                            });
-
                                             Navigator.of(context).pop();
+                                            await Future.delayed(Duration(milliseconds: 100));
+
+                                            await _filteredDecks[index].publishOrUnpublishDeck();
+
+                                            // Now use the outer context safely
+                                            if(parentContext.mounted){
+                                              showAlertDialog(
+                                                parentContext,
+                                                "assets/images/Deck-Dialogue3.png",
+                                                'Publish request for the deck "${_filteredDecks[index].title}" has been made!',
+                                                "Successfully made a publish request! Please wait for our moderator's approval",
+                                              );
+                                            }
                                           },
                                           onCancel: () {
                                             Navigator.of(context).pop();

@@ -421,6 +421,7 @@ class FlashcardService{
         throw ApiException(response.statusCode, errorMessage);
       }
     } catch (e) {
+      print(e);
       rethrow;
     }
   }

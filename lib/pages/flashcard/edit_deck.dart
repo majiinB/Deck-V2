@@ -315,7 +315,7 @@ class _EditDeckState extends State<EditDeck> {
                       padding: const EdgeInsets.only(top: 15.0),
                       child: BuildButton(
                           onPressed: () async {
-                            Navigator.of(context).pop();
+                            // Navigator.of(context).pop();
                             if(!_isDeckTitleChanged && !_isDeckDescriptionChanged && coverPhoto == 'no_photo'){
                               setState(() {
                                 isLoading = false;
