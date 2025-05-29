@@ -268,7 +268,7 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AuthBar(
-        title: "View task",
+        title: isEditable ? 'Edit Task' : 'View Task',
         automaticallyImplyLeading: true,
         color: DeckColors.primaryColor,
         fontSize: 24,

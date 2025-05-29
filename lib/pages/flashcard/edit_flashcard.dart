@@ -1,4 +1,5 @@
 import 'package:deck/backend/flashcard/flashcard_utils.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:deck/pages/misc/colors.dart';
@@ -34,7 +35,8 @@ class EditFlashcardPage extends StatefulWidget {
 class _EditFlashcardPageState extends State<EditFlashcardPage> {
   bool _isLoading = false;
   late bool isEditable;
-  // bool buttonsEnabled = false; // Flag to track button state
+  late bool isOwner;
+  User? currentUser;
   bool hasUnsavedChanges = false;
   late final TextEditingController _descriptionOrAnswerController;
   late final TextEditingController _questionOrTermController;
@@ -44,6 +46,7 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
   @override
   void initState() {
     super.initState();
+    _getCurrentUser();
     isEditable = false;
     _descriptionOrAnswerController = TextEditingController(text: widget.card.definition.toString());
     _questionOrTermController = TextEditingController(text: widget.card.term.toString());
@@ -58,6 +61,14 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
     setState(() {
       hasUnsavedChanges = _descriptionOrAnswerController.text.trim() != widget.card.definition.toString().trim() ||
           _questionOrTermController.text.trim() != widget.card.term.toString().trim();
+    });
+  }
+
+  ///Retrieve the currently signed-in user from Firebase Authentication
+  void _getCurrentUser() {
+    setState(() {
+      currentUser = FirebaseAuth.instance.currentUser;
+      isOwner = widget.deck.userId == currentUser?.uid;
     });
   }
 
@@ -106,15 +117,19 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
         backgroundColor: DeckColors.backgroundColor,
         appBar: AuthBar(
           automaticallyImplyLeading: true,
-          title: 'View Flashcard',
+          title: isEditable ? 'Edit Flashcard' : 'View Flashcard',
           color: DeckColors.primaryColor,
           fontSize: 24,
-          rightIcon: isEditable ? Icons.close_rounded : DeckIcons.pencil,
-          onRightIconPressed: () {
+          rightIcon: isOwner
+              ? (isEditable ? Icons.close_rounded : DeckIcons.pencil)
+              : null,
+          onRightIconPressed: isOwner
+              ? () {
             setState(() {
               isEditable = !isEditable;
             });
-          },
+          }
+              : null,
         ),
         body: _isLoading ? const DeckLoadingDialog(
           message: "Updating your flashcard…",
