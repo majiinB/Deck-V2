@@ -167,10 +167,12 @@ class _LoginPageState extends State<LoginPage> {
                                     Navigator.of(context).push(
                                       RouteGenerator.createRoute(const BanAppealPage(adminReason: "Your account has been temporarily banned due to violating our community guidelines. We have noticed multiple infractions, including but not limited to inappropriate behavior, spamming, or abusive language. We take these violations seriously in order to maintain a positive and safe environment for all users.")),
                                     );
+                                    return;
                                   },
                                   button2: "No",
                                   onCancel: () {
                                     Navigator.of(context).pop();
+                                    return;
                                   },
                                 );
                                 return;

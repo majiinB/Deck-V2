@@ -26,7 +26,7 @@ class BanService{
 
   /// Sends a request to create a new ban appeal via API.
   Future<void> submitBanAppeal({
-    required String id,
+    String? id,
     required String userId,
     DateTime? appealedAt,
     required String title,
@@ -37,7 +37,6 @@ class BanService{
 
     final Map<String, dynamic> requestData = {
       'banAppealDetails': {
-        'id': id,
         'user_id': userId,
         'title': title,
         'details': details,

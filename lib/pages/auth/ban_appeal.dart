@@ -210,7 +210,6 @@ class _BanAppealPageState extends State<BanAppealPage> {
 
                       if (details.isNotEmpty) {
                         await BanService().submitBanAppeal(
-                          id: '',
                           userId: userId,
                           appealedAt: appealedAt,
                           title: title,
