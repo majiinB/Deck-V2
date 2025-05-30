@@ -152,9 +152,9 @@ class _LoginPageState extends State<LoginPage> {
                               // Authenticate using email and password.
                               await AuthService().signInWithEmail(
                                   emailController.text, passwordController.text);
-                              String? user = await BanService().retrieveBan(AuthService().getCurrentUser()!.uid);
-                              print(user);
-                              if(user == AuthService().getCurrentUser()!.uid) {
+                              Map<String, dynamic>? user = await BanService().retrieveBan(AuthService().getCurrentUser()!.uid);
+                              print("id: " + user?['id']);
+                              if(user?['user_id'] == AuthService().getCurrentUser()!.uid) {
                                 setState(() => _isLoading = false);
                                 showConfirmDialog(
                                   context,
@@ -165,7 +165,7 @@ class _LoginPageState extends State<LoginPage> {
                                       () {
                                     Navigator.of(context).pop();
                                     Navigator.of(context).push(
-                                      RouteGenerator.createRoute(const BanAppealPage(adminReason: "Your account has been temporarily banned due to violating our community guidelines. We have noticed multiple infractions, including but not limited to inappropriate behavior, spamming, or abusive language. We take these violations seriously in order to maintain a positive and safe environment for all users.")),
+                                      RouteGenerator.createRoute( BanAppealPage(banId: user?['id'], adminReason: "Your account has been temporarily banned due to violating our community guidelines. We have noticed multiple infractions, including but not limited to inappropriate behavior, spamming, or abusive language. We take these violations seriously in order to maintain a positive and safe environment for all users.")),
                                     );
                                     return;
                                   },

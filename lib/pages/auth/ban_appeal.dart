@@ -18,9 +18,9 @@ import '../misc/widget_method.dart';
 
 class BanAppealPage extends StatefulWidget {
   final String adminReason;
-
+  final String banId;
   const BanAppealPage({super.key,
-    required this.adminReason});
+    required this.adminReason, required this.banId});
 
   @override
   _BanAppealPageState createState() => _BanAppealPageState();
@@ -215,6 +215,7 @@ class _BanAppealPageState extends State<BanAppealPage> {
                           title: title,
                           details: details,
                           status: status,
+                          banId: widget.banId,
                         );
 
                         // Show confirmation dialog after submission
