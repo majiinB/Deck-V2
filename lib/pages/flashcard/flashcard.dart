@@ -597,7 +597,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
                                       context,
                                       "assets/images/Deck-Dialogue1.png",
                                       "Sorry but you cannot edit an already published deck.",
-                                      "Published decks are reviewed by are moderator to ensure appropriate content. Please unpublish first to edit your deck.",
+                                      "Published decks are reviewed by our moderator to ensure appropriate content. Please unpublish first to edit your deck.",
                                     );
                                   }
 

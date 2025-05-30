@@ -203,19 +203,35 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                       button2: 'Cancel',
                         onConfirm: () {
                           Navigator.of(context).pop(); // close confirm dialog
-
                           Future(() async {
+                            // Put delay to ensure the current dialog is popped out of the stack
                             await Future.delayed(Duration(milliseconds: 100));
-
                             try {
+                              // Fire up request
                               await widget.deck.publishOrUnpublishDeck();
+
+                              // Show Dialog
                               if (parentContext.mounted) {
+                                // Conditional Message
+                                String message = widget.deck.isPrivate ?
+                                "Successfully made a publish request! Please wait for our moderator's approval" :
+                                "Successfully unpublished the deck! You may now make changes to the deck.";
+                                // Conditional Title
+                                String title = widget.deck.isPrivate ?
+                                'Publish request for "${widget.deck.title}" deck has been made!' :
+                                'Successfully Unpublished "${widget.deck.title}';
+
+                                //Set the decks' field to true if its was published or public (isPrivate = false) already
+                                if(!widget.deck.isPrivate) widget.deck.isPrivate = true;
+
                                 showAlertDialog(
                                   parentContext,
                                   "assets/images/Deck-Dialogue3.png",
-                                  "Publish request for this deck has been made!",
-                                  "Successfully made a publish request! Please wait for our moderator's approval",
+                                  title,
+                                  message,
                                 );
+
+                                setState(() {});
                               }
                             } catch (e) {
                               print('Caught error: $e');
@@ -240,10 +256,19 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
               }
               ///E D I T  D E C K
               else if (index == 1) {
-                await Navigator.of(context).push(
+                if(widget.deck.isPrivate){
+                  await Navigator.of(context).push(
                     RouteGenerator.createRoute(EditDeck(deck: widget.deck,)),
+                  );
+                  setState(() {});
+                  return;
+                }
+                showAlertDialog(
+                  context,
+                  "assets/images/Deck-Dialogue1.png",
+                  "Sorry but you cannot edit an already published deck.",
+                  "Published decks are reviewed by our moderator to ensure appropriate content. Please unpublish first to edit your deck.",
                 );
-                setState(() {});
               }
               ///R E P O R T  D E C K
               else if (index == 2){
@@ -429,13 +454,33 @@ class _ViewDeckPageState extends State<ViewDeckPage> {
                           padding: const EdgeInsets.only(right: 8.0),
                           child: BuildButton(
                               onPressed: () async {
-                                await Navigator.push(
+                                if(widget.deck.flashcardCount >= 100){
+                                  showAlertDialog(
+                                    context,
+                                    "assets/images/Deck-Dialogue1.png",
+                                    "Sorry but you cannot add anymore cards.",
+                                    "A deck can only hold 100 flashcards. Creating a new deck is advised so that you will not overwhelmed",
+                                  );
+
+                                  return;
+                                }
+                                if(widget.deck.isPrivate){
+                                  await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => AddFlashcardPage(deck: widget.deck),
+                                    ),
+                                  );
+                                  widget.deck.flashcardCount++;
+                                  await _initDeckCards();
+                                  return;
+                                }
+                                showAlertDialog(
                                   context,
-                                  MaterialPageRoute(
-                                    builder: (context) => AddFlashcardPage(deck: widget.deck),
-                                  ),
+                                  "assets/images/Deck-Dialogue1.png",
+                                  "Sorry but you cannot add a flashcard to an already published deck.",
+                                  "Published decks are reviewed by our moderator to ensure appropriate content. Please unpublish first to edit your deck.",
                                 );
-                                await _initDeckCards();
                               },
                               buttonText: 'Add',
                               icon: Icons.add,
