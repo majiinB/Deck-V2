@@ -24,7 +24,7 @@ class FlashcardService{
       String url = '$deckManagerAPIUrl/v1/decks?limit=10';
       if(filter.toUpperCase() == "MY_DECKS"){
         url = '$deckManagerAPIUrl/v1/decks?limit=10';
-      }else if(filter.toUpperCase() == "PUBLISHED_DECKS"){
+      }else if(filter.toUpperCase() == "PUBLIC_DECKS"){
         url = '$deckManagerAPIUrl/v1/decks/public?limit=10';
       }else if(filter.toUpperCase() == "SAVED_DECKS"){
         url = '$deckManagerAPIUrl/v1/decks/saved?limit=10';

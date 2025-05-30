@@ -80,7 +80,10 @@ class _FlashcardPageState extends State<FlashcardPage> {
 
     if (user != null) {
       try{
+        print("this is the result of changing filter with no search");
+
         var result = await _flashcardService.getDecks(filter); // Call method to fetch decks
+        print(result);
         List<Deck> decks = result['decks'];
         String nextPageToken = result['nextPageToken'];
         if (!mounted) return;
@@ -526,19 +529,35 @@ class _FlashcardPageState extends State<FlashcardPage> {
                                           button2: 'Cancel',
                                           onConfirm: () async {
                                             Navigator.of(context).pop(); // close confirm dialog
-
                                             Future(() async {
+                                              // Put delay to ensure the current dialog is popped out of the stack
                                               await Future.delayed(Duration(milliseconds: 100));
-
                                               try {
+                                                // Fire up request
                                                 await _filteredDecks[index].publishOrUnpublishDeck();
+
+                                                // Show dialog
                                                 if (parentContext.mounted) {
+                                                  // Conditional Message
+                                                  String message = _filteredDecks[index].isPrivate ?
+                                                    "Successfully made a publish request! Please wait for our moderator's approval" :
+                                                    "Successfully unpublished the deck! You may now make changes to the deck.";
+                                                  // Conditional Title
+                                                  String title = _filteredDecks[index].isPrivate ?
+                                                    'Publish request for "${_filteredDecks[index].title}" deck has been made!' :
+                                                    'Successfully Unpublished "${_filteredDecks[index].title}';
+
+                                                  //Set the decks' field to true if its was published or public (isPrivate = false) already
+                                                  if(!_filteredDecks[index].isPrivate) _filteredDecks[index].isPrivate = true;
+
                                                   showAlertDialog(
                                                     parentContext,
                                                     "assets/images/Deck-Dialogue3.png",
-                                                    'Publish request for "${_filteredDecks[index].title}" deck has been made!',
-                                                    "Successfully made a publish request! Please wait for our moderator's approval",
+                                                    title,
+                                                    message,
                                                   );
+
+                                                  setState(() {});
                                                 }
                                               } catch (e) {
                                                 print('Caught error: $e');
@@ -564,12 +583,22 @@ class _FlashcardPageState extends State<FlashcardPage> {
 
                                   ///E D I T  D E C K
                                   else if (selectedIndex == 1) {
-                                    await Navigator.of(context).push(
-                                      RouteGenerator.createRoute(EditDeck(deck: _filteredDecks[index])),
+                                    if(_filteredDecks[index].isPrivate){
+                                      await Navigator.of(context).push(
+                                        RouteGenerator.createRoute(EditDeck(deck: _filteredDecks[index])),
+                                      );
+
+                                      setState(() {
+                                        _initUserDecks(_user);
+                                      });
+                                      return;
+                                    }
+                                    showAlertDialog(
+                                      context,
+                                      "assets/images/Deck-Dialogue1.png",
+                                      "Sorry but you cannot edit an already published deck.",
+                                      "Published decks are reviewed by are moderator to ensure appropriate content. Please unpublish first to edit your deck.",
                                     );
-                                    setState(() {
-                                      _initUserDecks(_user);
-                                    });
                                   }
 
                                   ///D E L E T E  D E C K
