@@ -153,8 +153,7 @@ class _LoginPageState extends State<LoginPage> {
                               await AuthService().signInWithEmail(
                                   emailController.text, passwordController.text);
                               Map<String, dynamic>? user = await BanService().retrieveBan(AuthService().getCurrentUser()!.uid);
-                              print("id: " + user?['id']);
-                              if(user?['user_id'] == AuthService().getCurrentUser()!.uid) {
+                              if(user != null && user?['user_id'] == AuthService().getCurrentUser()!.uid) {
                                 setState(() => _isLoading = false);
                                 showConfirmDialog(
                                   context,
