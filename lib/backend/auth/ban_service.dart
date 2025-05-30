@@ -7,7 +7,6 @@ import '../models/ban.dart';
 class BanService{
 
   /// Fetches a ban entry from the API by user ID.
-
   Future<Map<String,dynamic>?> retrieveBan(String userId) async {
     try {
       final QuerySnapshot<Map<String, dynamic>> querySnapshot =
@@ -21,6 +20,24 @@ class BanService{
     } catch (error) {
       print('Error retrieving ban: $error');
       return null;
+    }
+  }
+
+  /// Retrieves ban appeal
+  Future<bool> retrieveBanAppeal(String userId) async {
+    try {
+      final QuerySnapshot<Map<String, dynamic>> querySnapshot =
+      await FirebaseFirestore.instance.collection('ban_appeals').where('user_id', isEqualTo: userId).where('status', isEqualTo: "Pending").get();
+
+      final DocumentSnapshot<Map<String, dynamic>> doc = querySnapshot.docs.first;
+      if(!doc.exists){
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      print('Error retrieving ban: $error');
+      return false;
     }
   }
 

@@ -229,12 +229,6 @@ class _BanAppealPageState extends State<BanAppealPage> {
                               message: 'Appeal submitted. We’ll review it soon.',
                               button1: 'Ok',
                               onConfirm: () async {
-                                final authService = AuthService();
-                                await authService.signOut();
-                                GoogleSignIn _googleSignIn = GoogleSignIn();
-                                if (await _googleSignIn.isSignedIn()) {
-                                await _googleSignIn.signOut();
-                                }
                                 Navigator.pop(context);
                                 Navigator.pop(context);
                               },
