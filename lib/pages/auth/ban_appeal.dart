@@ -18,9 +18,9 @@ import '../misc/widget_method.dart';
 
 class BanAppealPage extends StatefulWidget {
   final String adminReason;
-
+  final String banId;
   const BanAppealPage({super.key,
-    required this.adminReason});
+    required this.adminReason, required this.banId});
 
   @override
   _BanAppealPageState createState() => _BanAppealPageState();
@@ -210,12 +210,12 @@ class _BanAppealPageState extends State<BanAppealPage> {
 
                       if (details.isNotEmpty) {
                         await BanService().submitBanAppeal(
-                          id: '',
                           userId: userId,
                           appealedAt: appealedAt,
                           title: title,
                           details: details,
                           status: status,
+                          banId: widget.banId,
                         );
 
                         // Show confirmation dialog after submission
@@ -229,12 +229,6 @@ class _BanAppealPageState extends State<BanAppealPage> {
                               message: 'Appeal submitted. We’ll review it soon.',
                               button1: 'Ok',
                               onConfirm: () async {
-                                final authService = AuthService();
-                                await authService.signOut();
-                                GoogleSignIn _googleSignIn = GoogleSignIn();
-                                if (await _googleSignIn.isSignedIn()) {
-                                await _googleSignIn.signOut();
-                                }
                                 Navigator.pop(context);
                                 Navigator.pop(context);
                               },
