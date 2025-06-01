@@ -11,11 +11,15 @@ import 'package:deck/pages/misc/widget_method.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
+import '../../backend/auth/ban_service.dart';
 import '../misc/custom widgets/buttons/custom_buttons.dart';
 import '../misc/custom widgets/dialogs/alert_dialog.dart';
+import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
 import '../misc/custom widgets/functions/loading.dart';
 import '../misc/custom widgets/textboxes/textboxes.dart';
+import 'ban_appeal.dart';
 
 class CreateAccountPage extends StatefulWidget {
   const CreateAccountPage({super.key});
@@ -328,7 +332,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                               final authService = AuthService();
                               try {
                                 final currentUser = await authService.signUpWithGoogle();
-                                final user = <String, dynamic> {
+                                final userDetails = <String, dynamic> {
                                   "email": currentUser?.email,
                                   "name": currentUser?.displayName,
                                   "user_id": currentUser?.uid,
@@ -338,10 +342,66 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                                 final db = FirebaseFirestore.instance;
                                 final snap = await db.collection("users").where('email',isEqualTo: currentUser?.email).get();
                                 if(snap.docs.isEmpty){
-                                  await db.collection("users").add(user);
+                                  await db.collection("users").add(userDetails);
                                 } else {
                                   await FCMService().renewToken();
                                 }
+
+                                String? uid = currentUser?.uid;
+
+                                if(uid == null) {
+                                  throw Error();
+                                }
+
+                                bool appealed = await BanService().retrieveBanAppeal(uid);
+
+                                if (appealed) {
+                                  setState(() => _isLoading = false);
+                                  // Display error dialog to the user.
+                                  showAlertDialog(
+                                    context,
+                                    "assets/images/Deck-Dialogue1.png",
+                                    "You already signed up for an appeal.",
+                                    "Please wait for approval sent to your email.",
+                                  );
+                                  return;
+                                }
+
+                                Map<String, dynamic>? user = await BanService().retrieveBan(uid);
+                                if (user != null && user['user_id'] == uid) {
+                                  final authService = AuthService();
+                                  await authService.signOut();
+                                  GoogleSignIn googleSignIn = GoogleSignIn();
+                                  if (await googleSignIn.isSignedIn()) {
+                                    await googleSignIn.signOut();
+                                  }
+                                  setState(() => _isLoading = false);
+                                  showConfirmDialog(
+                                    context,
+                                    "assets/images/Deck-Dialogue2.png",
+                                    "Access Denied",
+                                    "Your account has been banned. Would you like to submit an appeal?",
+                                    "Yes",
+                                        () {
+                                      Navigator.of(context).pop();
+                                      Navigator.of(context).push(
+                                        RouteGenerator.createRoute(BanAppealPage(
+                                            userId: uid,
+                                            banId: user['id'],
+                                            adminReason:
+                                            "Your account has been temporarily banned due to violating our community guidelines. We have noticed multiple infractions, including but not limited to inappropriate behavior, spamming, or abusive language. We take these violations seriously in order to maintain a positive and safe environment for all users.")),
+                                      );
+                                      return;
+                                    },
+                                    button2: "No",
+                                    onCancel: () {
+                                      Navigator.of(context).pop();
+                                      return;
+                                    },
+                                  );
+                                  return;
+                                }
+
                                 Navigator.of(context).pushAndRemoveUntil(
                                   RouteGenerator.createRoute(const AuthGate()),
                                       (Route<dynamic> route) => false, // Removes all previous routes

@@ -365,7 +365,8 @@ class _LoginPageState extends State<LoginPage> {
                             try {
                               final currentUser =
                                   await authService.signUpWithGoogle();
-                              final user = <String, dynamic>{
+
+                              final userDetails = <String, dynamic>{
                                 "email": currentUser?.email,
                                 "name": currentUser?.displayName,
                                 "user_id": currentUser?.uid,
@@ -378,9 +379,64 @@ class _LoginPageState extends State<LoginPage> {
                                   .where('email', isEqualTo: currentUser?.email)
                                   .get();
                               if (snap.docs.isEmpty) {
-                                await db.collection("users").add(user);
+                                await db.collection("users").add(userDetails);
                               } else {
                                 await FCMService().renewToken();
+                              }
+
+                              String? uid = currentUser?.uid;
+
+                              if(uid == null) {
+                                throw Error();
+                              }
+
+                              bool appealed = await BanService().retrieveBanAppeal(uid);
+
+                              if (appealed) {
+                                setState(() => _isLoading = false);
+                                // Display error dialog to the user.
+                                showAlertDialog(
+                                  context,
+                                  "assets/images/Deck-Dialogue1.png",
+                                  "You already signed up for an appeal.",
+                                  "Please wait for approval sent to your email.",
+                                );
+                                return;
+                              }
+
+                              Map<String, dynamic>? user = await BanService().retrieveBan(uid);
+                              if (user != null && user['user_id'] == uid) {
+                                final authService = AuthService();
+                                await authService.signOut();
+                                GoogleSignIn googleSignIn = GoogleSignIn();
+                                if (await googleSignIn.isSignedIn()) {
+                                  await googleSignIn.signOut();
+                                }
+                                setState(() => _isLoading = false);
+                                showConfirmDialog(
+                                  context,
+                                  "assets/images/Deck-Dialogue2.png",
+                                  "Access Denied",
+                                  "Your account has been banned. Would you like to submit an appeal?",
+                                  "Yes",
+                                      () {
+                                    Navigator.of(context).pop();
+                                    Navigator.of(context).push(
+                                      RouteGenerator.createRoute(BanAppealPage(
+                                          userId: uid,
+                                          banId: user['id'],
+                                          adminReason:
+                                          "Your account has been temporarily banned due to violating our community guidelines. We have noticed multiple infractions, including but not limited to inappropriate behavior, spamming, or abusive language. We take these violations seriously in order to maintain a positive and safe environment for all users.")),
+                                    );
+                                    return;
+                                  },
+                                  button2: "No",
+                                  onCancel: () {
+                                    Navigator.of(context).pop();
+                                    return;
+                                  },
+                                );
+                                return;
                               }
 
                               String? token = await authService.getIdToken();
