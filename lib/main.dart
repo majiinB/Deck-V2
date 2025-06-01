@@ -16,7 +16,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:provider/provider.dart';
 
-import 'backend/auth/auth_provider.dart';
 import 'backend/fcm/fcm_service.dart';
 import 'backend/task/task_provider.dart';
 import 'firebase_options.dart';
@@ -36,7 +35,6 @@ void main() async {
         // ChangeNotifierProvider(create: (context) => ThemeProvider()),
         ChangeNotifierProvider(create: (context) => TaskProvider()),
         ChangeNotifierProvider(create: (context) => ProfileProvider()),
-        ChangeNotifierProvider(create: (context) => AuthProvider()),
       ],
       child: const MyApp(),
     ),
