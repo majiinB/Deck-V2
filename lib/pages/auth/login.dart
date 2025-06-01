@@ -156,20 +156,35 @@ class _LoginPageState extends State<LoginPage> {
                                 await AuthService().signInWithEmail(
                                     emailController.text,
                                     passwordController.text);
-                                String uid = AuthService().getCurrentUser()!.uid;
-                                Map<String, dynamic>? user = await BanService().retrieveBan(uid);
+                                String? uid = AuthService().getCurrentUser()?.uid;
+
+                                if(uid == null) {
+                                  throw Error();
+                                }
+
                                 bool appealed = await BanService().retrieveBanAppeal(uid);
-                                if (appealed && user!.isNotEmpty) {
+
+                                if (appealed) {
+                                  setState(() => _isLoading = false);
+                                  // Display error dialog to the user.
+                                  showAlertDialog(
+                                    context,
+                                    "assets/images/Deck-Dialogue1.png",
+                                    "You already signed up for an appeal.",
+                                    "Please wait for approval sent to your email.",
+                                  );
+                                  return;
+                                }
+
+                                Map<String, dynamic>? user = await BanService().retrieveBan(uid);
+
+                                if (user != null && user['user_id'] == uid) {
                                   final authService = AuthService();
                                   await authService.signOut();
                                   GoogleSignIn googleSignIn = GoogleSignIn();
                                   if (await googleSignIn.isSignedIn()) {
                                     await googleSignIn.signOut();
                                   }
-                                }
-
-                                if (user!.isNotEmpty &&
-                                    user?['user_id'] == uid) {
                                   setState(() => _isLoading = false);
                                   showConfirmDialog(
                                     context,
@@ -178,22 +193,11 @@ class _LoginPageState extends State<LoginPage> {
                                     "Your account has been banned. Would you like to submit an appeal?",
                                     "Yes",
                                     () {
-                                      if (appealed) {
-                                        setState(() => _isLoading = false);
-                                        // Display error dialog to the user.
-                                        showAlertDialog(
-                                          context,
-                                          "assets/images/Deck-Dialogue1.png",
-                                          "You already signed up for an appeal.",
-                                          "Please wait for approval sent to your email.",
-                                        );
-                                        return;
-                                      }
-
                                       Navigator.of(context).pop();
                                       Navigator.of(context).push(
                                         RouteGenerator.createRoute(BanAppealPage(
-                                            banId: user?['id'],
+                                            userId: uid,
+                                            banId: user['id'],
                                             adminReason:
                                                 "Your account has been temporarily banned due to violating our community guidelines. We have noticed multiple infractions, including but not limited to inappropriate behavior, spamming, or abusive language. We take these violations seriously in order to maintain a positive and safe environment for all users.")),
                                       );

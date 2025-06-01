@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:deck/backend/auth/auth_service.dart';
 import 'package:deck/backend/auth/auth_utils.dart';
@@ -24,6 +26,7 @@ import '../misc/custom widgets/dialogs/confirmation_dialog.dart';
 import '../misc/custom widgets/images/profile_image.dart';
 import '../misc/custom widgets/tiles/settings_container.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:http/http.dart' as http;
 
 class AccountPage extends StatefulWidget {
   const AccountPage({super.key});
@@ -482,30 +485,28 @@ class AccountPageState extends State<AccountPage> {
 
                                         if (user != null) {
                                           String userId = user.uid;
+                                          String apiUrl = 'https://deck-auth-and-acc-api-taglvgaoma-uc.a.run.app/v1/auth/moderator/delete-account';
 
-                                          // Delete Firestore data (assuming user data is stored under 'users' collection)
-                                          // Delete user document from 'users' collection
-                                          final QuerySnapshot<Map<String, dynamic>> userQuery = await FirebaseFirestore.instance
-                                              .collection('users')
-                                              .where('user_id', isEqualTo: userId)
-                                              .get();
+                                          // delete
+                                          try {
+                                            final response = await http.delete(
+                                              Uri.parse(apiUrl),
+                                              headers: {
+                                                "Content-Type": "application/json",
+                                              },
+                                              body: jsonEncode({
+                                                "userId": userId, // Pass the user ID to delete
+                                              }),
+                                            );
 
-                                          for (var doc in userQuery.docs) {
-                                            await doc.reference.delete();
+                                            if (response.statusCode == 200) {
+                                              print("User deleted successfully.");
+                                            } else {
+                                              print("Failed to delete user: ${response.body}");
+                                            }
+                                          } catch (e) {
+                                            print("Error deleting user: $e");
                                           }
-
-                                          // Delete ban entries from 'bans' collection
-                                          final QuerySnapshot<Map<String, dynamic>> banQuery = await FirebaseFirestore.instance
-                                              .collection('bans')
-                                              .where('user_id', isEqualTo: userId)
-                                              .get();
-
-                                          for (var doc in banQuery.docs) {
-                                            await doc.reference.delete();
-                                          }
-
-                                          // Delete account from Firebase Authentication
-                                          await user.delete();
                                         }
 
                                         print('Account and associated Firestore data deleted successfully.');
