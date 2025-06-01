@@ -19,8 +19,9 @@ import '../misc/widget_method.dart';
 class BanAppealPage extends StatefulWidget {
   final String adminReason;
   final String banId;
+  final String userId;
   const BanAppealPage({super.key,
-    required this.adminReason, required this.banId});
+    required this.adminReason, required this.banId, required this.userId});
 
   @override
   _BanAppealPageState createState() => _BanAppealPageState();
@@ -202,7 +203,7 @@ class _BanAppealPageState extends State<BanAppealPage> {
                     onPressed: () async {
                       // Capture user input
                        // Replace with your actual ID generation logic
-                      String userId = AuthService().getCurrentUser()!.uid; // Retrieve the current user ID dynamically
+                      String userId = widget.userId; // Retrieve the current user ID dynamically
                       DateTime appealedAt = DateTime.now();
                       String title = 'Ban Appeal';
                       String details = appealDetails.text.trim();
