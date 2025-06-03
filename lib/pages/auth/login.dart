@@ -185,6 +185,9 @@ class _LoginPageState extends State<LoginPage> {
                                   if (await googleSignIn.isSignedIn()) {
                                     await googleSignIn.signOut();
                                   }
+
+
+
                                   setState(() => _isLoading = false);
                                   showConfirmDialog(
                                     context,
@@ -199,7 +202,7 @@ class _LoginPageState extends State<LoginPage> {
                                             userId: uid,
                                             banId: user['id'],
                                             adminReason:
-                                                "Your account has been temporarily banned due to violating our community guidelines. We have noticed multiple infractions, including but not limited to inappropriate behavior, spamming, or abusive language. We take these violations seriously in order to maintain a positive and safe environment for all users.")),
+                                                "Your account has been temporarily banned due to ${user['reason']}. We take these violations seriously in order to maintain a positive and safe environment for all users.")),
                                       );
                                       return;
                                     },
@@ -426,7 +429,7 @@ class _LoginPageState extends State<LoginPage> {
                                           userId: uid,
                                           banId: user['id'],
                                           adminReason:
-                                          "Your account has been temporarily banned due to violating our community guidelines. We have noticed multiple infractions, including but not limited to inappropriate behavior, spamming, or abusive language. We take these violations seriously in order to maintain a positive and safe environment for all users.")),
+                                          "Your account has been temporarily banned due to ${user['reason']}. We take these violations seriously in order to maintain a positive and safe environment for all users.")),
                                     );
                                     return;
                                   },
