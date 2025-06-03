@@ -16,7 +16,7 @@ class BanService{
       final DocumentSnapshot<Map<String, dynamic>> doc = querySnapshot.docs.first;
       final Map<String, dynamic> responseData = doc.data()!;
 
-      return {'user_id': responseData['user_id'], 'id': doc.id};
+      return {'user_id': responseData['user_id'], 'id': doc.id, 'reason': responseData['reason']};
     } catch (error) {
       print('Error retrieving ban: $error');
       return null;
