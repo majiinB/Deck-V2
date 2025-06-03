@@ -153,6 +153,7 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
                               fontSize: 32,
                             ),
                           ),
+                        if(isOwner)
                           const Text (
                             'Click the \'x\' icon above to exit edit mode.',
                             style: TextStyle(
@@ -171,6 +172,7 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
                               fontSize: 32,
                             ),
                           ),
+                        if(isOwner)
                           const Text (
                             'Click the pencil icon above to edit the flashcard',
                             style: TextStyle(
@@ -309,6 +311,7 @@ class _EditFlashcardPageState extends State<EditFlashcardPage> {
                           borderColor: DeckColors.primaryColor,
                         ),
                       ),
+                      if(isOwner)
                       Padding(
                         padding: EdgeInsets.only(top: isEditable? 10 : 20),
                         child: BuildButton(

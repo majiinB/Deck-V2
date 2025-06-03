@@ -66,7 +66,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
               surface: DeckColors.backgroundColor,
               primary: DeckColors.primaryColor,
               // Title, selected date and month/year picker color (dark and light mode)
-              onSurface: DeckColors.white,
+              onSurface: DeckColors.primaryColor,
               onPrimary: DeckColors.white,
             ),
             textButtonTheme: TextButtonThemeData(
